@@ -1,7 +1,7 @@
 import { AsyncStatus } from '@appello/common/lib/constants';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setAuth, setFirstInit, setProfileStatus, setUser } from './actions';
+import { setAuth, setFirstInit, setProfileStatus, setUser, signOut } from './actions';
 import { UserState } from './types';
 
 export const initialState: UserState = {
@@ -24,5 +24,11 @@ export const userReducer = createReducer(initialState, builder =>
     })
     .addCase(setFirstInit, (state, { payload }) => {
       state.firstInit = payload;
+    })
+    .addCase(signOut, (state) => {
+      state.profileStatus = AsyncStatus.IDLE;
+      state.profile = null;
+      state.auth = null;
+      state.firstInit = false;
     })
 );

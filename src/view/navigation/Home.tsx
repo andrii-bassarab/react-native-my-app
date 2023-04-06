@@ -1,19 +1,19 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import React from 'react';
-
-import { HomeScreen } from '~/view/screens/Home';
+import { Settings } from '../screens/Settings';
+import { MainStack } from './Main';
 
 const screenOptions = {
   gestureEnabled: false,
   headerShown: false,
 };
 
-const HomeStack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 export const HomeNavigator: React.FC = () => {
   return (
-    <HomeStack.Navigator screenOptions={screenOptions}>
-      <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-    </HomeStack.Navigator>
+    <Drawer.Navigator drawerContent={(props) => <Settings {...props} />} screenOptions={{}}>
+      <Drawer.Screen name="MainStack" component={MainStack} />
+    </Drawer.Navigator>
   );
 };

@@ -1,14 +1,15 @@
-import React, { useState } from "react"
-import { Dimensions, ScrollView, View } from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
+import React, { useState } from "react";
+import { Dimensions, ScrollView, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
-  children: React.ReactNode
+  children: React.ReactNode;
+  backgroundColor: string;
 }
 
-export const Screen: React.FC<Props> = ({ children }) => {
-  const insets = useSafeAreaInsets()
-  const dim = Dimensions.get("screen")
+export const Screen: React.FC<Props> = ({ children, backgroundColor}) => {
+  const insets = useSafeAreaInsets();
+  const dim = Dimensions.get("screen");
 
   if (dim.width >= dim.height) {
     return (
@@ -18,13 +19,13 @@ export const Screen: React.FC<Props> = ({ children }) => {
           paddingLeft: insets.left,
           paddingRight: insets.right,
           paddingBottom: insets.bottom,
-          backgroundColor: "rgba(35, 71, 99, 0.77)",
+          backgroundColor,
           flex: 1,
         }}
       >
         {children}
       </ScrollView>
-    )
+    );
   }
 
   return (
@@ -33,11 +34,11 @@ export const Screen: React.FC<Props> = ({ children }) => {
         paddingTop: insets.top,
         paddingLeft: insets.left,
         paddingRight: insets.right,
-        backgroundColor: "rgba(35, 71, 99, 0.77)",
+        backgroundColor,
         flex: 1,
       }}
     >
       {children}
     </View>
-  )
-}
+  );
+};

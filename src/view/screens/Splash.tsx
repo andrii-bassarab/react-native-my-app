@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
 } from "react-native"
 import { ModalLoader } from "../components/ModalLoader";
+import { useAppDispatch } from "~/store/hooks";
+import { setFirstInit } from "~/modules/user/actions";
 
 interface Props {
   children?: React.ReactNode
@@ -17,8 +19,19 @@ interface Props {
 export const SplashScreen: React.FC<Props> = ({route}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const [loader, setLoader] = useState(route.params?.loader || false)
+  const dispatch = useAppDispatch();
+
+  const initUserFirstTime = () => {
+    setTimeout(() => {
+      dispatch(setFirstInit(true));
+    }, 2000);
+  };
 
   useEffect(() => {
+    if (!loader) {
+      initUserFirstTime()
+    }
+  
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1500,
