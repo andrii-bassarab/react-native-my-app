@@ -1,25 +1,123 @@
-import 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Text, TouchableOpacity, View, SafeAreaView} from 'react-native';
+import "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { WelcomeBox } from "../components/WelcomeBox";
+import { ActivityItem } from "../components/ActivityItem";
+import { FlatList } from "react-native-gesture-handler";
 
-import ExampleIcon from '~/view/assets/icons/example.svg';
+const mocksData = [
+  {
+    title: "Inspect 2062 Gimli Ct.",
+    date: "Scheduled February 6, 2023 from 1:15pm to 2:15pm",
+    location: "2062 Gimli Ct. Great River, Mirkwood 43547",
+    status: "In Progress",
+  },
+  {
+    title: "Inspect 6002 Ironwood Ln",
+    date: "Scheduled January 20, 2022 from 12:00pm - 1:15pm",
+    location: "6002 Ironwood Ln Denver, CO 80260",
+    extra: "Samwise Gamgee",
+    status: "Passed",
+  },
+  {
+    title: "Inspect 6002 10 Orthanc Road",
+    date: "Scheduled January 15, 2022 from 12:00pm - 1:15pm",
+    location: "10 Orthanc Road Isengard, ME 10034",
+    extra: "Bruce Wayne",
+    status: "Failed",
+  },
+  {
+    title: "Inspect 2062 Gimli Ct.",
+    date: "Scheduled February 6, 2023 from 1:15pm to 2:15pm",
+    location: "2062 Gimli Ct. Great River, Mirkwood 43547",
+    status: "In Progress",
+  },
+  {
+    title: "Inspect 6002 Ironwood Ln",
+    date: "Scheduled January 20, 2022 from 12:00pm - 1:15pm",
+    location: "6002 Ironwood Ln Denver, CO 80260",
+    extra: "Samwise Gamgee",
+    status: "Passed",
+  },
+  {
+    title: "Inspect 6002 10 Orthanc Road",
+    date: "Scheduled January 15, 2022 from 12:00pm - 1:15pm",
+    location: "10 Orthanc Road Isengard, ME 10034",
+    extra: "Bruce Wayne",
+    status: "Failed",
+  },
+];
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const goToAuth = React.useCallback(() => {
-    navigation.navigate('Auth');
+    navigation.navigate("Auth");
   }, [navigation]);
 
   return (
-    <SafeAreaView>
-      <Text>Home Screen</Text>
-      <TouchableOpacity onPress={goToAuth}>
-        <Text>Go to auth</Text>
-      </TouchableOpacity>
-      <Text>Icon usage:</Text>
-      <ExampleIcon width={50} height={50} color="red" />
-    </SafeAreaView>
+    <View style={styles.screen}>
+      <View style={styles.content}>
+        {/* <ScrollView
+          showsVerticalScrollIndicator={false}
+        > */}
+        <WelcomeBox
+          backgroundColor="transparant"
+          textColor="rgba(127, 136, 141, 1)"
+        />
+        <View style={styles.activityBox}>
+          {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+            <View style={{paddingBottom: '20%'}}>
+              <FlatList
+                data={mocksData}
+                keyExtractor={(item, index) => `key-${index}`}
+                renderItem={({ item }) => <ActivityItem item={item} />}
+                ListHeaderComponent={() => (
+                  <Text style={styles.activityTitle}>Recent Activity</Text>
+                )}
+                ListFooterComponent={() => <View style={{ height: 10 }} />}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          {/* </ScrollView> */}
+        </View>
+        <TouchableOpacity onPress={goToAuth}>
+          <Text>Go to auth</Text>
+        </TouchableOpacity>
+        {/* </ScrollView> */}
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "#2C4660",
+    paddingTop: 15,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderTopRightRadius: 55,
+    borderTopLeftRadius: 55,
+    padding: 25,
+  },
+  activityBox: {
+    marginTop: 15,
+  },
+  activityTitle: {
+    fontSize: 16,
+    color: "#7F888D",
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+});

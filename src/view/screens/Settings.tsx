@@ -7,14 +7,15 @@ import DocumentIcon from "../assets/icons/document.svg";
 import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";
 import LogOutIcon from "../assets/icons/logout.svg";
-import HeaderBackground from "../assets/icons/settingsHeader.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { signOut } from "~/modules/user/actions";
+import { WelcomeBox } from "../components/WelcomeBox";
+import { colors } from "../theme";
 
 interface Props extends DrawerContentComponentProps {
 }
 
-export const Settings: React.FC<Props> = () => {
+export const Settings: React.FC<Props> = ({navigation}) => {
   const dispatch = useAppDispatch();
   const selectedFilter = useAppSelector((state) => state.user);
 
@@ -23,41 +24,30 @@ export const Settings: React.FC<Props> = () => {
   console.log('selectedFilter', selectedFilter)
 
   return (
-    <Screen backgroundColor="rgba(35, 71, 99, 1)">
+    <Screen backgroundColor={colors.layout}>
       <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: "10%" }}>
-        <View style={styles.headerContainer}>
-          <View style={styles.settingsIconBox}>
-            <Image
-              source={require("../assets/images/settings.png")}
-              style={styles.settingsIcon}
-            />
-            <Text style={styles.welcomeText}>Welcome</Text>
-            <Text style={{ ...styles.welcomeText, fontSize: 22, marginTop: 5 }}>
-              User name
-            </Text>
-          </View>
-        </View>
+        <WelcomeBox backgroundColor="transparant" textColor="#fff" height="25%" padding={25} iconSize="large"/>
         <Image
           source={require("../assets/images/settingsHeader.png")}
           style={{
             position: "absolute",
-            height: "30%",
+            height: "32%",
             width: "100%",
             zIndex: -1,
           }}
         />
         <View style={styles.contentContainer}>
           <View>
-            <TouchableOpacity style={styles.settingsItem}>
-              <DocumentIcon color="#7F878B" height="100%" />
+            <TouchableOpacity style={styles.settingsItem} onPress={() => navigation.navigate('Inspections')}>
+              <DocumentIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Inspections</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsItem}>
-              <WorkIcon color="#7F878B" height="100%" />
+            <TouchableOpacity style={styles.settingsItem} onPress={() => navigation.navigate('WorkOrder')}>
+              <WorkIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Work Orders</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.settingsItem}>
-              <SwitchIcon color="#7F878B" height="100%" />
+              <SwitchIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Switch Customer Site</Text>
             </TouchableOpacity>
           </View>
@@ -65,7 +55,7 @@ export const Settings: React.FC<Props> = () => {
             style={{ ...styles.settingsItem, borderBottomWidth: 0 }}
             onPress={logOut}
           >
-            <LogOutIcon color="#7F878B" height="100%" />
+            <LogOutIcon color={colors.primary} height="100%" />
             <Text style={styles.itemsText}>Log out</Text>
           </TouchableOpacity>
         </View>

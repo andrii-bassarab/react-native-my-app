@@ -1,12 +1,12 @@
-import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { ParamListBase } from '@react-navigation/native';
 import React from 'react';
 import { Text, TouchableOpacity, SafeAreaView} from 'react-native';
 
-export const Inspections = ({navigation}: {navigation: any}) => {
-  // const navigation = useNavigation();
 
+export const Inspections = ({navigation}: {navigation: DrawerNavigationProp<ParamListBase>}) => {
   const goToHome = React.useCallback(() => {
-    navigation.navigate('HomeScreen');
+    navigation.openDrawer();
   }, [navigation]);
 
   return (

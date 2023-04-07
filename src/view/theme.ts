@@ -1,6 +1,6 @@
 const colors = {
-  layout: '#F7F8F2',
-  primary: '#F6E69E',
+  layout: 'rgba(35, 71, 99, 1)',
+  primary: '#7F878B',
 };
 
 const layout = {

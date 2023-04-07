@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { useReduxDevToolsExtension } from "@react-navigation/devtools";
 import {
   NavigationContainer,
@@ -55,7 +56,7 @@ export const AppNavigator: React.FC = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <AppStack.Navigator screenOptions={screenOptions}>
+      <AppStack.Navigator screenOptions={screenOptions} initialRouteName='Home'>
         <AppStack.Screen name="Auth" component={AuthNavigator} />
         <AppStack.Screen name="Home" component={HomeNavigator} />
       </AppStack.Navigator>
