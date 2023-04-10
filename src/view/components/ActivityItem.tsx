@@ -1,5 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import CalendarIcon from '../assets/icons/calendar.svg';
+import { colors } from "../theme";
 
 interface Props {
   item: {
@@ -7,11 +9,12 @@ interface Props {
     date: string;
     location: string;
     status: string;
+    extra?: string;
   };
 }
 
-export const ActivityItem: React.FC<Props> = ({item}) => {
-  const {title, date, location, status } = item;
+export const ActivityItem: React.FC<Props> = ({ item }) => {
+  const { title, date, location, status, extra } = item;
 
   let itemColor = "#54B9D1";
 
@@ -38,7 +41,11 @@ export const ActivityItem: React.FC<Props> = ({item}) => {
           <Text style={{ ...styles.cardTitle, color: itemColor }}>{title}</Text>
           <Text style={{ color: itemColor, fontWeight: "600" }}>{status}</Text>
         </View>
-        <Text style={styles.textInfo}>{date}</Text>
+        <View style={styles.dateLabel}>
+          <CalendarIcon height={15} width={15} color={colors.primary} style={{marginRight: 5}} />
+          <Text style={styles.textInfo}>{date}</Text>
+        </View>
+        {extra && <Text style={styles.textInfo}>{extra}</Text>}
         <Text style={styles.textInfo}>{location}</Text>
       </View>
     </TouchableOpacity>
@@ -61,6 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    flexWrap: "wrap",
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -82,5 +90,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#8E8E8E",
   },
-  progress: {},
+  dateLabel: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }
 });

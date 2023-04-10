@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
+import { colors } from "../theme";
 
 interface Props {
   backgroundColor: string;
@@ -36,7 +37,7 @@ export const WelcomeBox: React.FC<Props> = ({
       />
       <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
       <Text style={{ ...styles.welcomeText, fontSize: 20, color: textColor }}>
-        User name
+        Nazar Kubyk
       </Text>
     </View>
   </View>
@@ -44,7 +45,7 @@ export const WelcomeBox: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: "rgba(35, 71, 99, 1)",
+    backgroundColor: colors.layout,
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
   },

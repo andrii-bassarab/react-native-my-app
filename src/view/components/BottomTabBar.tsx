@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    height: 80,
+    height: '10%',
     justifyContent: "center",
     alignItems: "center",
   },

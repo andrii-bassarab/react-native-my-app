@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState } from "react"
-import { RouteProp } from '@react-navigation/native';
+import React, { useEffect, useRef, useState } from "react";
+import { RouteProp } from "@react-navigation/native";
 import {
   View,
   SafeAreaView,
   StyleSheet,
   Animated,
   ActivityIndicator,
-} from "react-native"
+} from "react-native";
 import { ModalLoader } from "../components/ModalLoader";
 import { useAppDispatch } from "~/store/hooks";
 import { setFirstInit } from "~/modules/user/actions";
 
 interface Props {
-  children?: React.ReactNode
-  route: RouteProp<{ params: { loader?: boolean } }, 'params'>
+  children?: React.ReactNode;
+  route: RouteProp<{ params: { loader?: boolean } }, "params">;
 }
 
-export const SplashScreen: React.FC<Props> = ({route}) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current
-  const [loader, setLoader] = useState(route.params?.loader || false)
+export const SplashScreen: React.FC<Props> = ({ route }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [loader, setLoader] = useState(route.params?.loader || false);
   const dispatch = useAppDispatch();
 
   const initUserFirstTime = () => {
@@ -29,21 +29,21 @@ export const SplashScreen: React.FC<Props> = ({route}) => {
 
   useEffect(() => {
     if (!loader) {
-      initUserFirstTime()
+      initUserFirstTime();
     }
-  
+
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1500,
       useNativeDriver: true,
-    }).start()
+    }).start();
 
     return () => {
-      setLoader(false)
-    }
-  }, [])
+      setLoader(false);
+    };
+  }, []);
 
-  console.log(route?.params)
+  console.log(route?.params);
 
   return (
     <View style={styles.screen}>
@@ -52,13 +52,11 @@ export const SplashScreen: React.FC<Props> = ({route}) => {
           source={require("../assets/images/WhiteKansoLogo.png")}
           style={{ ...styles.logo, opacity: fadeAnim }}
         />
-        {loader && (
-          <ModalLoader />
-        )}
+        {loader && <ModalLoader />}
       </SafeAreaView>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -88,4 +86,4 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.33)",
     opacity: 0.9,
   },
-})
+});

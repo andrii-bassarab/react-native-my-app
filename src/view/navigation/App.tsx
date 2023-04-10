@@ -56,7 +56,7 @@ export const AppNavigator: React.FC = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <AppStack.Navigator screenOptions={screenOptions} initialRouteName='Home'>
+      <AppStack.Navigator screenOptions={screenOptions} initialRouteName='HomeNavigator'>
         <AppStack.Screen name="Auth" component={AuthNavigator} />
         <AppStack.Screen name="Home" component={HomeNavigator} />
       </AppStack.Navigator>

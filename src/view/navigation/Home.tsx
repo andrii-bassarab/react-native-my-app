@@ -14,7 +14,6 @@ export const HomeNavigator: React.FC = () => {
   const screenOptions = {
     headerStyle: {
       backgroundColor: "#2C4660",
-      borderColor: 'green',
     },
     headerLeft: () => (
       <NavigationDrawerStructure navigationProps={navigation} />

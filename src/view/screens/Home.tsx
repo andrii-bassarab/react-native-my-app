@@ -12,10 +12,10 @@ import { WelcomeBox } from "../components/WelcomeBox";
 import { ActivityItem } from "../components/ActivityItem";
 import { FlatList } from "react-native-gesture-handler";
 
-const mocksData = [
+export const mocksData = [
   {
     title: "Inspect 2062 Gimli Ct.",
-    date: "Scheduled February 6, 2023 from 1:15pm to 2:15pm",
+    date: "Created on January 20, 2022",
     location: "2062 Gimli Ct. Great River, Mirkwood 43547",
     status: "In Progress",
   },
@@ -28,30 +28,30 @@ const mocksData = [
   },
   {
     title: "Inspect 6002 10 Orthanc Road",
-    date: "Scheduled January 15, 2022 from 12:00pm - 1:15pm",
+    date: "Created on January 20, 2022",
     location: "10 Orthanc Road Isengard, ME 10034",
     extra: "Bruce Wayne",
     status: "Failed",
   },
   {
     title: "Inspect 2062 Gimli Ct.",
-    date: "Scheduled February 6, 2023 from 1:15pm to 2:15pm",
+    date: "Created on January 20, 2022",
     location: "2062 Gimli Ct. Great River, Mirkwood 43547",
-    status: "In Progress",
+    status: "Passed",
   },
   {
     title: "Inspect 6002 Ironwood Ln",
-    date: "Scheduled January 20, 2022 from 12:00pm - 1:15pm",
+    date: "Created on January 20, 2022",
     location: "6002 Ironwood Ln Denver, CO 80260",
     extra: "Samwise Gamgee",
-    status: "Passed",
+    status: "Failed",
   },
   {
     title: "Inspect 6002 10 Orthanc Road",
     date: "Scheduled January 15, 2022 from 12:00pm - 1:15pm",
     location: "10 Orthanc Road Isengard, ME 10034",
     extra: "Bruce Wayne",
-    status: "Failed",
+    status: "Scheduled",
   },
 ];
 
@@ -74,24 +74,21 @@ export const HomeScreen: React.FC = () => {
         />
         <View style={styles.activityBox}>
           {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-            <View style={{paddingBottom: '20%'}}>
-              <FlatList
-                data={mocksData}
-                keyExtractor={(item, index) => `key-${index}`}
-                renderItem={({ item }) => <ActivityItem item={item} />}
-                ListHeaderComponent={() => (
-                  <Text style={styles.activityTitle}>Recent Activity</Text>
-                )}
-                ListFooterComponent={() => <View style={{ height: 10 }} />}
-                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                showsVerticalScrollIndicator={false}
-              />
-            </View>
+          <View style={{ paddingBottom: "20%" }}>
+            <FlatList
+              data={mocksData}
+              keyExtractor={(item, index) => `key-${index}`}
+              renderItem={({ item }) => <ActivityItem item={item} />}
+              ListHeaderComponent={() => (
+                <Text style={styles.activityTitle}>Recent Activity</Text>
+              )}
+              ListFooterComponent={() => <View style={{ height: 10 }} />}
+              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
           {/* </ScrollView> */}
         </View>
-        <TouchableOpacity onPress={goToAuth}>
-          <Text>Go to auth</Text>
-        </TouchableOpacity>
         {/* </ScrollView> */}
       </View>
     </View>
@@ -110,6 +107,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 25,
+    paddingTop: 15,
   },
   activityBox: {
     marginTop: 15,

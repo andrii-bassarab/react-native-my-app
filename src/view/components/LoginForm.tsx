@@ -1,31 +1,33 @@
-import React, { useState } from "react"
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from "react-native"
-import { TextInput } from "react-native-gesture-handler"
-import EyeIcon from "../assets/icons/eyeslash.svg"
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import EyeIcon from "../assets/icons/eyeslash.svg";
+import { ParamListBase } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface Props {
-  goToHome: () => void
+  goToHome: () => void;
+  navigation: any
 }
 
-export const LoginForm: React.FC<Props> = ({goToHome}) => {
-  const [userName, setUserName] = useState("")
-  const [password, setPassword] = useState("")
-  const [hidePassword, setHidePassword] = useState(true)
-  const [errorLogin, setErrorLogin] = useState(false)
+export const LoginForm: React.FC<Props> = ({ goToHome, navigation }) => {
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [hidePassword, setHidePassword] = useState(true);
+  const [errorLogin, setErrorLogin] = useState(false);
 
   const handleSubmit = () => {
-    goToHome()
+    goToHome();
     // setTimeout(() => {
     //   setErrorLogin(true)
     // }, 3000);
-    setUserName('')
-    setPassword('')
-    setHidePassword(true)
+    setUserName("");
+    setPassword("");
+    setHidePassword(true);
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPassword')
   }
 
   return (
@@ -36,13 +38,19 @@ export const LoginForm: React.FC<Props> = ({goToHome}) => {
         <TextInput
           style={{
             ...styles.input,
-            borderColor: errorLogin ? 'rgba(219, 0, 28, 1)' : userName ? "rgba(37, 192, 220, 1)" : "#B4BCC0",
+            borderColor: errorLogin
+              ? "rgba(219, 0, 28, 1)"
+              : userName
+              ? "rgba(37, 192, 220, 1)"
+              : "#B4BCC0",
           }}
           value={userName}
           onChangeText={setUserName}
           placeholder="Username"
         />
-        {errorLogin && <Text style={styles.errorMessage}>*User does not exist.</Text>}
+        {errorLogin && (
+          <Text style={styles.errorMessage}>*User does not exist.</Text>
+        )}
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Password *</Text>
@@ -53,7 +61,11 @@ export const LoginForm: React.FC<Props> = ({goToHome}) => {
             alignItems: "center",
             ...styles.input,
             padding: 0,
-            borderColor: errorLogin ? 'rgba(219, 0, 28, 1)' : password ? "rgba(37, 192, 220, 1)" : "#B4BCC0",
+            borderColor: errorLogin
+              ? "rgba(219, 0, 28, 1)"
+              : password
+              ? "rgba(37, 192, 220, 1)"
+              : "#B4BCC0",
           }}
         >
           <TextInput
@@ -72,9 +84,13 @@ export const LoginForm: React.FC<Props> = ({goToHome}) => {
             />
           </TouchableOpacity>
         </View>
-        {errorLogin && <Text style={styles.errorMessage}>*Incorrect username or password.</Text>}
+        {errorLogin && (
+          <Text style={styles.errorMessage}>
+            *Incorrect username or password.
+          </Text>
+        )}
       </View>
-      <TouchableOpacity style={styles.forgotPasswordButton}>
+      <TouchableOpacity style={styles.forgotPasswordButton} onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -88,8 +104,8 @@ export const LoginForm: React.FC<Props> = ({goToHome}) => {
         <Text style={styles.signIn}>Sign In</Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   label: {
@@ -149,7 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   errorMessage: {
-    color: 'rgba(219, 0, 28, 1)',
+    color: "rgba(219, 0, 28, 1)",
     marginTop: 10,
-  }
-})
+  },
+});

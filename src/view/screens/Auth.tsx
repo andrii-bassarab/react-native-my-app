@@ -18,6 +18,7 @@ import { setUser } from "~/modules/user/actions";
 import { resetStore } from "~/modules/app/actions";
 import { LoginForm } from "../components/LoginForm";
 import { ModalLoader } from "../components/ModalLoader";
+import { colors } from "../theme";
 
 export const AuthScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -42,7 +43,7 @@ export const AuthScreen: React.FC = () => {
   console.log("events", events);
 
   return (
-    <Screen backgroundColor="rgba(35, 71, 99, 0.77)">
+    <Screen backgroundColor={colors.layout}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -55,7 +56,7 @@ export const AuthScreen: React.FC = () => {
                 style={{ width: "50%", resizeMode: "contain" }}
               />
             </View>
-            <LoginForm goToHome={goToHome} />
+            <LoginForm goToHome={goToHome} navigation={navigation} />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
