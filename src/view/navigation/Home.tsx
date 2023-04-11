@@ -1,10 +1,13 @@
-import 'react-native-gesture-handler';
-import { DrawerNavigationProp, createDrawerNavigator } from "@react-navigation/drawer";
+import "react-native-gesture-handler";
+import {
+  DrawerNavigationProp,
+  createDrawerNavigator,
+} from "@react-navigation/drawer";
 import React from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
-import { NavigationDrawerStructure } from '../components/NavigationDrawerStructure';
+import { NavigationDrawerStructure } from "../components/NavigationDrawerStructure";
 
 const Drawer = createDrawerNavigator();
 
@@ -20,12 +23,13 @@ export const HomeNavigator: React.FC = () => {
     ),
     headerTitle: () => null,
     headerShadowVisible: false,
+    drawerType: "front",
   };
 
   return (
     <Drawer.Navigator
       drawerContent={(props) => <Settings {...props} />}
-      screenOptions={screenOptions}
+      screenOptions={{ ...screenOptions, drawerType: "front" }}
     >
       <Drawer.Screen name="MainStack" component={MainStack} />
     </Drawer.Navigator>

@@ -7388,6 +7388,11 @@
   "resolved" "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz"
   "version" "0.70.3"
 
+"react-native-input-select@^0.26.0":
+  "integrity" "sha512-pkpE3PjUla+4MunNDgiPNM/kYwgY5nSV5IYD+4pmBD5+EfOcqc3YoUaMtGalc/GJ/WawmrZbugYcwcCficz2YA=="
+  "resolved" "https://registry.npmjs.org/react-native-input-select/-/react-native-input-select-0.26.0.tgz"
+  "version" "0.26.0"
+
 "react-native-reanimated@^2.15.0", "react-native-reanimated@>= 1.0.0":
   "integrity" "sha512-pNbcjIsqB72lsLGr7DvcXl07oovTvQUaBgP6CdkYtogmrCKUMcB+TDe2OjUNPWdzJ9JkgNIZZ1h71LM78H9HrQ=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-2.15.0.tgz"

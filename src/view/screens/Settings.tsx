@@ -17,11 +17,8 @@ interface Props extends DrawerContentComponentProps {
 
 export const Settings: React.FC<Props> = ({navigation}) => {
   const dispatch = useAppDispatch();
-  const selectedFilter = useAppSelector((state) => state.user);
 
   const logOut = () => dispatch(signOut());
-
-  console.log('selectedFilter', selectedFilter)
 
   return (
     <Screen backgroundColor={colors.layout}>

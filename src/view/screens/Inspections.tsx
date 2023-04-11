@@ -37,8 +37,6 @@ export const Inspections = () => {
     };
   }, [query]);
 
-  console.log(visibleInspections.length);
-
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.screenContainer}>

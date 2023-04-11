@@ -5,9 +5,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 interface Props {
   children: React.ReactNode;
   backgroundColor: string;
+  paddingTop?: string | number; 
 }
 
-export const Screen: React.FC<Props> = ({ children, backgroundColor}) => {
+export const Screen: React.FC<Props> = ({ children, backgroundColor, paddingTop}) => {
   const insets = useSafeAreaInsets();
   const dim = Dimensions.get("screen");
 
@@ -15,7 +16,7 @@ export const Screen: React.FC<Props> = ({ children, backgroundColor}) => {
     return (
       <ScrollView
         style={{
-          paddingTop: insets.top,
+          paddingTop: paddingTop ?? insets.top,
           paddingLeft: insets.left,
           paddingRight: insets.right,
           paddingBottom: insets.bottom,
@@ -31,7 +32,7 @@ export const Screen: React.FC<Props> = ({ children, backgroundColor}) => {
   return (
     <View
       style={{
-        paddingTop: insets.top,
+        paddingTop: paddingTop ?? insets.top,
         paddingLeft: insets.left,
         paddingRight: insets.right,
         backgroundColor,

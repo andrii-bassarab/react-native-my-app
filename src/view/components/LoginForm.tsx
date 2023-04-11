@@ -7,22 +7,22 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface Props {
   goToHome: () => void;
-  navigation: any
+  navigation: any;
+  setUserName: React.Dispatch<React.SetStateAction<string>>;
+  userName: string;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  errorLogin: boolean;
 }
 
-export const LoginForm: React.FC<Props> = ({ goToHome, navigation }) => {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+export const LoginForm: React.FC<Props> = ({ goToHome, navigation, setPassword, password, setUserName, userName, errorLogin }) => {
   const [hidePassword, setHidePassword] = useState(true);
-  const [errorLogin, setErrorLogin] = useState(false);
 
   const handleSubmit = () => {
     goToHome();
     // setTimeout(() => {
     //   setErrorLogin(true)
     // }, 3000);
-    setUserName("");
-    setPassword("");
     setHidePassword(true);
   };
 

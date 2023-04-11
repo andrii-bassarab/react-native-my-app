@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,38 +9,116 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  Alert,
 } from "react-native";
-import { actions as actionsTodo } from "../../modules/events";
+import { actions as actionsEvents } from "../../modules/events";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen";
-import { userReducer } from "~/modules/user/reducer";
-import { setUser } from "~/modules/user/actions";
-import { resetStore } from "~/modules/app/actions";
+import {
+  setAuth,
+  setFirstInit,
+  setCameraPermission,
+  setNotificationPermission,
+  setProfileStatus,
+  setUser,
+} from "~/modules/user/actions";
 import { LoginForm } from "../components/LoginForm";
 import { ModalLoader } from "../components/ModalLoader";
 import { colors } from "../theme";
+import { AsyncStatus } from "@appello/common/lib/constants";
 
 export const AuthScreen: React.FC = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorLogin, setErrorLogin] = useState(false);
 
   const dispatch = useAppDispatch();
 
-  const setTodos = () => dispatch(actionsTodo.setTodo("event"));
-
-  const goToHome = React.useCallback(() => {
-    setLoader(true);
-    setTimeout(() => {
-      setLoader(false);
-      navigation.navigate("Home");
-    }, 0);
-  }, [navigation]);
-
-  const selectedFilter = useAppSelector((state) => state.user);
+  const setTodos = () => dispatch(actionsEvents.setEvents("event"));
+  const currentUser = useAppSelector((state) => state.user);
   const events = useAppSelector((state) => state.events);
 
-  console.log("user", selectedFilter.profile);
-  console.log("events", events);
+  const handlePermissionNotification = useCallback(
+    () =>
+      new Promise((resolve, reject) => {
+        Alert.alert(
+          "“Doorways App” Would Like to Send You Notifications",
+          "Notifications may include alerts, sounds and icon badges. These can be configured in Settings.",
+          [
+            {
+              text: "Don't Allow",
+              onPress: () => {
+                dispatch(setNotificationPermission(false));
+                resolve("Don't Allow Notifications");
+              },
+            },
+            {
+              text: "OK",
+              onPress: () => {
+                dispatch(setNotificationPermission(true));
+                resolve("Allow Notifications");
+              },
+            },
+          ]
+        );
+      }),
+    [currentUser]
+  );
+
+  const handlePermissionCamera = useCallback(
+    () =>
+      new Promise((resolve, reject) => {
+        Alert.alert(
+          "“Doorways App” Would Like to Access the Camera",
+          "This will let you take photos and record video.",
+          [
+            {
+              text: "Don't Allow",
+              onPress: () => {
+                dispatch(setCameraPermission(false));
+                resolve("Don't Allow Notifications");
+              },
+            },
+            {
+              text: "OK",
+              onPress: () => {
+                dispatch(setCameraPermission(true));
+                resolve("Allow Notifications");
+              },
+            },
+          ]
+        );
+      }),
+    [currentUser]
+  );
+
+  const handleSubmit = useCallback(async () => {
+    setLoader(true);
+    try {
+      if (currentUser.firstInit) {
+        await handlePermissionCamera();
+        await handlePermissionNotification();
+      }
+
+      dispatch(setUser({ id: 1, email: "Nazar Kubyk" }));
+      dispatch(setProfileStatus(AsyncStatus.SUCCESS));
+      dispatch(setAuth({ access: "string", refresh: "string" }));
+      dispatch(setFirstInit(false));
+      setUserName("");
+      setPassword("");
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoader(false);
+    }
+  }, [currentUser]);
+
+  // console.log("loader", loader);
+
+  console.log("user", currentUser);
+  // console.log("events", events);
 
   return (
     <Screen backgroundColor={colors.layout}>
@@ -56,7 +134,15 @@ export const AuthScreen: React.FC = () => {
                 style={{ width: "50%", resizeMode: "contain" }}
               />
             </View>
-            <LoginForm goToHome={goToHome} navigation={navigation} />
+            <LoginForm
+              goToHome={handleSubmit}
+              navigation={navigation}
+              userName={userName}
+              setUserName={setUserName}
+              setPassword={setPassword}
+              password={password}
+              errorLogin={errorLogin}
+            />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

@@ -4,10 +4,10 @@ const eventsSlice = createSlice({
   name: "events",
   initialState: [],
   reducers: {
-    setTodo: (_state, action: PayloadAction<any>) => {
+    setEvents: (_state, action: PayloadAction<any>) => {
       return action.payload
     },
-    removeTodo: () => [],
+    clearEvents: () => [],
   },
 })
 

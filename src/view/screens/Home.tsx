@@ -11,6 +11,9 @@ import {
 import { WelcomeBox } from "../components/WelcomeBox";
 import { ActivityItem } from "../components/ActivityItem";
 import { FlatList } from "react-native-gesture-handler";
+import { useAppSelector } from "~/store/hooks";
+import { Screen } from "../components/Screen";
+import { colors } from "../theme";
 
 export const mocksData = [
   {
@@ -62,36 +65,71 @@ export const HomeScreen: React.FC = () => {
     navigation.navigate("Auth");
   }, [navigation]);
 
+  const currentUser = useAppSelector((state) => state.user);
+
+  console.log("userHome", currentUser.permissions);
+
   return (
-    <View style={styles.screen}>
-      <View style={styles.content}>
-        {/* <ScrollView
+    <Screen backgroundColor={colors.layout} paddingTop={0}>
+      <View style={styles.screen}>
+        <View style={styles.content}>
+          {/* <ScrollView
           showsVerticalScrollIndicator={false}
         > */}
-        <WelcomeBox
-          backgroundColor="transparant"
-          textColor="rgba(127, 136, 141, 1)"
-        />
-        <View style={styles.activityBox}>
-          {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-          <View style={{ paddingBottom: "20%" }}>
-            <FlatList
-              data={mocksData}
-              keyExtractor={(item, index) => `key-${index}`}
-              renderItem={({ item }) => <ActivityItem item={item} />}
-              ListHeaderComponent={() => (
-                <Text style={styles.activityTitle}>Recent Activity</Text>
-              )}
-              ListFooterComponent={() => <View style={{ height: 10 }} />}
-              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-              showsVerticalScrollIndicator={false}
-            />
+          <WelcomeBox
+            backgroundColor="transparant"
+            textColor="rgba(127, 136, 141, 1)"
+          />
+          <View style={styles.activityBox}>
+            {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+            <View style={{ paddingBottom: "20%" }}>
+              <FlatList
+                data={mocksData}
+                keyExtractor={(item, index) => `key-${index}`}
+                renderItem={({ item }) => <ActivityItem item={item} />}
+                ListHeaderComponent={() => (
+                  <Text style={styles.activityTitle}>Recent Activity</Text>
+                )}
+                ListFooterComponent={() => <View style={{ height: 10 }} />}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+            {/* </ScrollView> */}
           </View>
           {/* </ScrollView> */}
         </View>
-        {/* </ScrollView> */}
       </View>
-    </View>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "flex-end",
+          alignItems: "stretch",
+          backgroundColor: "rgba(0, 0, 0, 0.33)",
+          opacity: 1,
+        }}
+    
+      >
+        <View
+          style={{
+            height: "50%",
+            backgroundColor: "#fff",
+            borderTopRightRadius: 55,
+            borderTopLeftRadius: 55,
+            padding: 25,
+            paddingTop: 20,
+            alignItems: 'stretch'
+          }}
+        >
+          <View style={{height: 5, backgroundColor: 'rgba(193, 188, 185, 1)', alignSelf: 'center', width: '60%', borderRadius: 20}}/>
+          <Text>Choose Your Customer Site</Text>
+        </View>
+      </View>
+    </Screen>
   );
 };
 

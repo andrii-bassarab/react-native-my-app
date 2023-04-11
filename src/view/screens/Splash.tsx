@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RouteProp } from "@react-navigation/native";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+} from "@react-navigation/native";
 import {
   View,
   SafeAreaView,
@@ -14,17 +18,18 @@ import { setFirstInit } from "~/modules/user/actions";
 interface Props {
   children?: React.ReactNode;
   route: RouteProp<{ params: { loader?: boolean } }, "params">;
+  navigation: NavigationProp<ParamListBase>;
 }
 
-export const SplashScreen: React.FC<Props> = ({ route }) => {
+export const SplashScreen: React.FC<Props> = ({ route, navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [loader, setLoader] = useState(route.params?.loader || false);
   const dispatch = useAppDispatch();
 
   const initUserFirstTime = () => {
     setTimeout(() => {
-      dispatch(setFirstInit(true));
-    }, 2000);
+      navigation.navigate("Auth");
+    }, 1500);
   };
 
   useEffect(() => {
@@ -43,7 +48,7 @@ export const SplashScreen: React.FC<Props> = ({ route }) => {
     };
   }, []);
 
-  console.log(route?.params);
+  // console.log(route?.params);
 
   return (
     <View style={styles.screen}>

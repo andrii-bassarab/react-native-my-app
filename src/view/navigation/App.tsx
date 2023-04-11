@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { useReduxDevToolsExtension } from "@react-navigation/devtools";
 import {
   NavigationContainer,
@@ -7,12 +7,16 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AsyncStatus } from "@appello/common/lib/constants";
-import { AuthNavigator } from "./Auth";
+import { AuthNavigator } from "./AuthNavigator";
 import { HomeNavigator } from "./Home";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { SplashScreen } from "../screens/Splash";
-import { setProfileStatus, setFirstInit } from "~/modules/user/actions";
+import {
+  setProfileStatus,
+  setFirstInit,
+  setCameraPermission,
+  setNotificationPermission,
+} from "~/modules/user/actions";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -23,6 +27,7 @@ const AppStack = createNativeStackNavigator();
 
 export const AppNavigator: React.FC = () => {
   const navigationRef = useNavigationContainerRef();
+  const dispatch = useAppDispatch();
 
   useReduxDevToolsExtension(navigationRef);
 
@@ -41,14 +46,15 @@ export const AppNavigator: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("storage", getUser());
+    console.log("currentUser", currentUser);
   }, []);
 
-  if (!currentUser.auth && !currentUser.profile && !currentUser.firstInit) {
+  if (!currentUser.auth && !currentUser.profile) {
     return (
       <NavigationContainer ref={navigationRef}>
         <AppStack.Navigator screenOptions={screenOptions}>
           <AppStack.Screen name="SplashScreen" component={SplashScreen} />
+          <AppStack.Screen name="Auth" component={AuthNavigator} />
         </AppStack.Navigator>
       </NavigationContainer>
     );
@@ -56,8 +62,7 @@ export const AppNavigator: React.FC = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <AppStack.Navigator screenOptions={screenOptions} initialRouteName='HomeNavigator'>
-        <AppStack.Screen name="Auth" component={AuthNavigator} />
+      <AppStack.Navigator screenOptions={screenOptions} initialRouteName="Home">
         <AppStack.Screen name="Home" component={HomeNavigator} />
       </AppStack.Navigator>
     </NavigationContainer>

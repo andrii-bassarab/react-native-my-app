@@ -7,9 +7,15 @@ export interface UserState {
   profile: Nullable<UserProfileModel>;
   auth: Nullable<UserAuth>;
   firstInit: boolean;
+  permissions: Permissions
 }
 
 export interface UserAuth {
   access: string;
   refresh: string;
+}
+
+export type Permissions = {
+  camera: boolean;
+  notification: boolean;
 }
