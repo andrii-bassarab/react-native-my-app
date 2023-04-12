@@ -16,4 +16,6 @@ export const setFirstInit = createAction<boolean>('user/FIRST_INIT');
 
 export const setCameraPermission = createAction<boolean>('user/SET_CAMERA_PERMISSION');
 
-export const setNotificationPermission = createAction<boolean>('user/SET_NOTIFICATION_PERMISSION')
+export const setNotificationPermission = createAction<boolean>('user/SET_NOTIFICATION_PERMISSION');
+
+export const setShowSwitchSite = createAction<boolean>('user/SET_SHOW_SWITCH_SITE');

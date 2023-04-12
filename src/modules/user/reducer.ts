@@ -1,7 +1,7 @@
 import { AsyncStatus } from '@appello/common/lib/constants';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission } from './actions';
+import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite } from './actions';
 import { UserState } from './types';
 
 export const initialState: UserState = {
@@ -9,7 +9,8 @@ export const initialState: UserState = {
   profile: null,
   auth: null,
   firstInit: true,
-  permissions: {camera: false, notification: false}
+  permissions: {camera: false, notification: false},
+  showSwitchSite: false,
 };
 
 export const userReducer = createReducer(initialState, builder =>
@@ -37,5 +38,8 @@ export const userReducer = createReducer(initialState, builder =>
     })
     .addCase(setNotificationPermission, (state, {payload}) => {
       state.permissions.notification = payload
+    })
+    .addCase(setShowSwitchSite, (state, {payload}) => {
+      state.showSwitchSite = payload;
     })
 );

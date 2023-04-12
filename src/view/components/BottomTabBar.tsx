@@ -7,12 +7,24 @@ import DocumentIcon from "../assets/icons/document.svg";
 import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { setShowSwitchSite } from "~/modules/user/actions";
+import { CustomerSite } from "./CustomerSite";
 
-interface Props extends BottomTabBarProps {
-}
+interface Props extends BottomTabBarProps {}
 
-export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }) => {
+export const BottomTabBar: React.FC<Props> = ({
+  state,
+  descriptors,
+  navigation,
+}) => {
   const insets = useSafeAreaInsets();
+  const currentUser = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+
+  const openSwitchSite = () => {
+    dispatch(setShowSwitchSite(true));
+  };
 
   const detectIconByName = (label: string, color: string) => {
     switch (label) {
@@ -29,66 +41,72 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
     }
   };
 
-  return (
+  return currentUser.showSwitchSite ? (
+    <CustomerSite />
+  ) : (
     <View
       style={{
         ...styles.container,
         paddingBottom: insets.bottom / 2,
-        ...styles.shadowProp
+        ...styles.shadowProp,
       }}
     >
-      {state.routes.map(
-        (route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
 
-          const isFocused = state.index === index;
+        const isFocused = state.index === index;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true
-            });
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
+        const onLongPress = () => {
+          navigation.emit({
+            type: "tabLongPress",
+            target: route.key,
+          });
+        };
 
-          return (
-            <TouchableOpacity
-              accessibilityRole="button"
-              key={route.name}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              style={styles.item}
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            key={route.name}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={styles.item}
+          >
+            {typeof label === "string" &&
+              detectIconByName(label, isFocused ? "#25C0DC" : colors.primary)}
+            <Text
+              style={{
+                color: isFocused ? "#25C0DC" : colors.primary,
+                fontWeight: "500",
+              }}
             >
-              {typeof label === 'string' && detectIconByName(label, isFocused ? "#25C0DC" : colors.primary)}
-              <Text style={{ color: isFocused ? "#25C0DC" : colors.primary, fontWeight: '500' }}>
-                {typeof label === 'string' && label}
-              </Text>
-            </TouchableOpacity>
-          );
-        }
-      )}
-      <TouchableOpacity style={styles.item}>
+              {typeof label === "string" && label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+      <TouchableOpacity style={styles.item} onPress={openSwitchSite}>
         <SwitchIcon height="30%" color={colors.primary} />
-        <Text style={{color: colors.primary, fontWeight: '500'}}>Switch</Text>
+        <Text style={{ color: colors.primary, fontWeight: "500" }}>Switch</Text>
       </TouchableOpacity>
     </View>
   );
@@ -98,7 +116,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    height: '10%',
+    height: "10%",
     justifyContent: "center",
     alignItems: "center",
   },

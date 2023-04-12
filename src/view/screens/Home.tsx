@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -11,7 +11,7 @@ import {
 import { WelcomeBox } from "../components/WelcomeBox";
 import { ActivityItem } from "../components/ActivityItem";
 import { FlatList } from "react-native-gesture-handler";
-import { useAppSelector } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen";
 import { colors } from "../theme";
 
@@ -60,6 +60,7 @@ export const mocksData = [
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
   const goToAuth = React.useCallback(() => {
     navigation.navigate("Auth");
@@ -67,7 +68,10 @@ export const HomeScreen: React.FC = () => {
 
   const currentUser = useAppSelector((state) => state.user);
 
-  console.log("userHome", currentUser.permissions);
+  console.log("userHome", currentUser);
+
+  useEffect(() => {
+  }, []);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
@@ -100,35 +104,9 @@ export const HomeScreen: React.FC = () => {
           {/* </ScrollView> */}
         </View>
       </View>
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          justifyContent: "flex-end",
-          alignItems: "stretch",
-          backgroundColor: "rgba(0, 0, 0, 0.33)",
-          opacity: 1,
-        }}
-    
-      >
-        <View
-          style={{
-            height: "50%",
-            backgroundColor: "#fff",
-            borderTopRightRadius: 55,
-            borderTopLeftRadius: 55,
-            padding: 25,
-            paddingTop: 20,
-            alignItems: 'stretch'
-          }}
-        >
-          <View style={{height: 5, backgroundColor: 'rgba(193, 188, 185, 1)', alignSelf: 'center', width: '60%', borderRadius: 20}}/>
-          <Text>Choose Your Customer Site</Text>
-        </View>
-      </View>
+      {/* {currentUser.showSwitchSite && (
+        <CustomerSite />
+      )} */}
     </Screen>
   );
 };

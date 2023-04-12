@@ -8,7 +8,7 @@ import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";
 import LogOutIcon from "../assets/icons/logout.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { signOut } from "~/modules/user/actions";
+import { setShowSwitchSite, signOut } from "~/modules/user/actions";
 import { WelcomeBox } from "../components/WelcomeBox";
 import { colors } from "../theme";
 
@@ -19,6 +19,10 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   const logOut = () => dispatch(signOut());
+  const openSwitchSite = () => {
+    navigation.closeDrawer();
+    dispatch(setShowSwitchSite(true))
+  };
 
   return (
     <Screen backgroundColor={colors.layout}>
@@ -43,7 +47,7 @@ export const Settings: React.FC<Props> = ({navigation}) => {
               <WorkIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Work Orders</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsItem}>
+            <TouchableOpacity style={styles.settingsItem} onPress={openSwitchSite}>
               <SwitchIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Switch Customer Site</Text>
             </TouchableOpacity>

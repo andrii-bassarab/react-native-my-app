@@ -7,7 +7,8 @@ export interface UserState {
   profile: Nullable<UserProfileModel>;
   auth: Nullable<UserAuth>;
   firstInit: boolean;
-  permissions: Permissions
+  permissions: Permissions;
+  showSwitchSite: boolean;
 }
 
 export interface UserAuth {
