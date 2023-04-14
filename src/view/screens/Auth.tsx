@@ -21,11 +21,22 @@ import {
   setNotificationPermission,
   setProfileStatus,
   setUser,
+  setAvailableSites,
+  setShowSwitchSite,
 } from "~/modules/user/actions";
 import { LoginForm } from "../components/LoginForm";
 import { ModalLoader } from "../components/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
+
+const mocksSites = [
+  { name: "Kanso Industries", code: "Kanso Industries" },
+  { name: "Site 3", code: "Site 3" },
+  { name: "Site 2", code: "Site 2" },
+  { name: "Site 4", code: "Site 4" },
+  { name: "Site 5", code: "Site 5" },
+  { name: "Site 6", code: "Site 6" },
+];
 
 export const AuthScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -106,6 +117,12 @@ export const AuthScreen: React.FC = () => {
       dispatch(setProfileStatus(AsyncStatus.SUCCESS));
       dispatch(setAuth({ access: "string", refresh: "string" }));
       dispatch(setFirstInit(false));
+      dispatch(setAvailableSites(mocksSites));
+
+      if (mocksSites.length > 1 && !currentUser.selectedSite) {
+        dispatch(setShowSwitchSite(true));
+      }
+
       setUserName("");
       setPassword("");
     } catch (error) {

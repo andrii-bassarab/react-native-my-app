@@ -1,8 +1,10 @@
 import { AsyncStatus } from '@appello/common/lib/constants';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite } from './actions';
+import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite, setSelectedSite, setAvailableSites, setShowNotification } from './actions';
 import { UserState } from './types';
+import notificationsReducer, { actions as actionsNotifications } from '~/modules/notifications';
+import { useAppDispatch } from '~/store/hooks';
 
 export const initialState: UserState = {
   profileStatus: AsyncStatus.IDLE,
@@ -11,6 +13,9 @@ export const initialState: UserState = {
   firstInit: true,
   permissions: {camera: false, notification: false},
   showSwitchSite: false,
+  selectedSite: null,
+  availableSites: [],
+  showNotification: false,
 };
 
 export const userReducer = createReducer(initialState, builder =>
@@ -32,6 +37,9 @@ export const userReducer = createReducer(initialState, builder =>
       state.profile = null;
       state.auth = null;
       state.firstInit = true;
+      state.availableSites = [];
+      state.selectedSite = null;
+      state.showNotification = false;
     })
     .addCase(setCameraPermission, (state, {payload}) => {
       state.permissions.camera = payload
@@ -41,5 +49,14 @@ export const userReducer = createReducer(initialState, builder =>
     })
     .addCase(setShowSwitchSite, (state, {payload}) => {
       state.showSwitchSite = payload;
+    })
+    .addCase(setSelectedSite, (state, {payload}) => {
+      state.selectedSite = payload;
+    })
+    .addCase(setAvailableSites, (state, {payload}) => {
+      state.availableSites = payload;
+    })
+    .addCase(setShowNotification, (state, {payload}) => {
+      state.showNotification = payload;
     })
 );

@@ -8,7 +8,7 @@ import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { setShowSwitchSite } from "~/modules/user/actions";
+import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
 import { CustomerSite } from "./CustomerSite";
 
 interface Props extends BottomTabBarProps {}
@@ -23,6 +23,7 @@ export const BottomTabBar: React.FC<Props> = ({
   const dispatch = useAppDispatch();
 
   const openSwitchSite = () => {
+    dispatch(setShowNotification(false));
     dispatch(setShowSwitchSite(true));
   };
 

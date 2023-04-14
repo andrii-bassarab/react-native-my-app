@@ -7,10 +7,12 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { WelcomeBox } from "../components/WelcomeBox";
 import { ActivityItem } from "../components/ActivityItem";
 import { FlatList } from "react-native-gesture-handler";
+import { Notifications } from "./Notification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen";
 import { colors } from "../theme";
@@ -62,13 +64,16 @@ export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
 
+  // const [showNotification, setShowNotification] = useState(true);
+
   const goToAuth = React.useCallback(() => {
     navigation.navigate("Auth");
   }, [navigation]);
 
   const currentUser = useAppSelector((state) => state.user);
+  const notifications = useAppSelector((state) => state.notifications);
 
-  console.log("userHome", currentUser);
+  console.log("notifications", notifications);
 
   useEffect(() => {
   }, []);
@@ -102,6 +107,7 @@ export const HomeScreen: React.FC = () => {
             {/* </ScrollView> */}
           </View>
           {/* </ScrollView> */}
+          {currentUser.showNotification && <Notifications />}
         </View>
       </View>
       {/* {currentUser.showSwitchSite && (

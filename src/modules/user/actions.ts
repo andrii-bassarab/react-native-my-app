@@ -19,3 +19,9 @@ export const setCameraPermission = createAction<boolean>('user/SET_CAMERA_PERMIS
 export const setNotificationPermission = createAction<boolean>('user/SET_NOTIFICATION_PERMISSION');
 
 export const setShowSwitchSite = createAction<boolean>('user/SET_SHOW_SWITCH_SITE');
+
+export const setSelectedSite = createAction<Nullable<{ name: string, code: string }>>('user/SET_SELECTED_SITE');
+
+export const setAvailableSites = createAction<{ name: string, code: string }[]>('user/SET_AVAILABLE_SITES');
+
+export const setShowNotification = createAction<boolean>('user/SET_SHOW_NOTIFICATIONS');

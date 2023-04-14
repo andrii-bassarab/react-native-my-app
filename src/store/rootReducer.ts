@@ -5,6 +5,7 @@ import { createTransform, persistReducer } from 'redux-persist';
 import { resetStore } from '~/modules/app/actions';
 import { userReducer } from '~/modules/user/reducer';
 import eventsSlice from '~/modules/events';
+import notificationsReducer from '~/modules/notifications';
 
 const transforms = [
   createTransform(
@@ -21,13 +22,14 @@ const transforms = [
 const rootPersistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user'],
+  whitelist: ['user', 'notifications'],
   transforms,
 };
 
 const appReducer = combineReducers({
   user: userReducer,
   events: eventsSlice,
+  notifications: notificationsReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

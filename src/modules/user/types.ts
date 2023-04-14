@@ -9,6 +9,9 @@ export interface UserState {
   firstInit: boolean;
   permissions: Permissions;
   showSwitchSite: boolean;
+  selectedSite: Nullable<{ name: string, code: string }>;
+  availableSites: { name: string, code: string }[];
+  showNotification: boolean;
 }
 
 export interface UserAuth {

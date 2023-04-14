@@ -12,23 +12,16 @@ import {
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors } from "../theme";
 import SelectIcon from "../assets/icons/selectArrow.svg";
-import { setShowSwitchSite } from "~/modules/user/actions";
-
-const mocksSites = [
-  { name: "Kanso Industries", code: "Kanso Industries" },
-  { name: "Site 3", code: "Site 3" },
-  { name: "Site 2", code: "Site 2" },
-  { name: "Site 4", code: "Site 4" },
-  { name: "Site 5", code: "Site 5" },
-  { name: "Site 6", code: "Site 6" },
-];
+import { setSelectedSite, setShowSwitchSite } from "~/modules/user/actions";
 
 export const CustomerSite = () => {
-  const [selectedSite, setSelectedSite] = useState("Kanso Industries");
-  const [showDropdown, setShowDropdown] = useState(false);
-
   const currentUser = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+  const [chosenSite, setChosenSite] = useState(
+    currentUser.selectedSite || currentUser.availableSites[0]
+  );
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const closeSwitchSite = () => dispatch(setShowSwitchSite(false));
 
   const pan = useRef(new Animated.ValueXY()).current;
@@ -41,6 +34,12 @@ export const CustomerSite = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
+        if (
+          !currentUser.selectedSite &&
+          currentUser.availableSites.length > 1
+        ) {
+          return;
+        }
         if (gestureState.dy > 120) {
           pan.extractOffset();
           closeSwitchSite();
@@ -62,7 +61,13 @@ export const CustomerSite = () => {
 
   return (
     <View style={styles.screen}>
-      <Pressable style={{ flex: 1 }} onPress={closeSwitchSite}></Pressable>
+      <Pressable
+        style={{ flex: 1 }}
+        onPress={closeSwitchSite}
+        disabled={
+          !currentUser.selectedSite && currentUser.availableSites.length > 1
+        }
+      ></Pressable>
       <Animated.View
         style={{ ...styles.switchBox, transform: [{ translateY: pan.y }] }}
       >
@@ -83,28 +88,30 @@ export const CustomerSite = () => {
             style={styles.selectedLabel}
             onPress={() => setShowDropdown((prev) => !prev)}
           >
-            <Text style={styles.selectedText}>{selectedSite}</Text>
+            <Text style={styles.selectedText}>{chosenSite.name}</Text>
             <SelectIcon height={10} width={20} color={colors.primary} />
           </TouchableOpacity>
           {showDropdown && (
             <ScrollView style={styles.dropdownOptionsContainer}>
-              {mocksSites.map((site) => (
+              {currentUser.availableSites.map((site) => (
                 <TouchableOpacity
                   key={site.code}
                   style={{
                     ...styles.dropdownOptionsLabel,
-                    backgroundColor: selectedSite === site.name ? colors.blue : "#fff",
-                    borderTopWidth: selectedSite === site.name ? 0.5 : 0,
-                    borderBottomWidth: selectedSite === site.name ? 0.5 : 0,
+                    backgroundColor:
+                      chosenSite.name === site.name ? colors.blue : "#fff",
+                    borderTopWidth: chosenSite.name === site.name ? 0.5 : 0,
+                    borderBottomWidth: chosenSite.name === site.name ? 0.5 : 0,
                   }}
                   onPress={() => {
-                    setSelectedSite(site.name);
+                    setChosenSite(site);
                     setShowDropdown(false);
                   }}
                 >
                   <Text
                     style={{
-                      color: selectedSite === site.name ? "#fff" : colors.primary,
+                      color:
+                        chosenSite.name === site.name ? "#fff" : colors.primary,
                       fontSize: 16,
                     }}
                   >
@@ -116,7 +123,13 @@ export const CustomerSite = () => {
             </ScrollView>
           )}
         </View>
-        <TouchableOpacity style={styles.saveButton}>
+        <TouchableOpacity
+          style={styles.saveButton}
+          onPress={() => {
+            dispatch(setSelectedSite(chosenSite));
+            closeSwitchSite();
+          }}
+        >
           <Text style={styles.saveButtonText}>Apply</Text>
         </TouchableOpacity>
       </Animated.View>

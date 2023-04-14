@@ -8,7 +8,7 @@ import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";
 import LogOutIcon from "../assets/icons/logout.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { setShowSwitchSite, signOut } from "~/modules/user/actions";
+import { setShowNotification, setShowSwitchSite, signOut } from "~/modules/user/actions";
 import { WelcomeBox } from "../components/WelcomeBox";
 import { colors } from "../theme";
 
@@ -21,7 +21,8 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   const logOut = () => dispatch(signOut());
   const openSwitchSite = () => {
     navigation.closeDrawer();
-    dispatch(setShowSwitchSite(true))
+    dispatch(setShowNotification(false));
+    dispatch(setShowSwitchSite(true));
   };
 
   return (
