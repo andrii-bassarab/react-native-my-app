@@ -1,7 +1,7 @@
 import { AsyncStatus } from '@appello/common/lib/constants';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite, setSelectedSite, setAvailableSites, setShowNotification } from './actions';
+import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite, setSelectedSite, setAvailableSites, setShowNotification, setShowInspectionsFilter } from './actions';
 import { UserState } from './types';
 import notificationsReducer, { actions as actionsNotifications } from '~/modules/notifications';
 import { useAppDispatch } from '~/store/hooks';
@@ -16,6 +16,7 @@ export const initialState: UserState = {
   selectedSite: null,
   availableSites: [],
   showNotification: false,
+  showInspectionsFilterWindow: false,
 };
 
 export const userReducer = createReducer(initialState, builder =>
@@ -36,7 +37,7 @@ export const userReducer = createReducer(initialState, builder =>
       state.profileStatus = AsyncStatus.IDLE;
       state.profile = null;
       state.auth = null;
-      state.firstInit = true;
+      // state.firstInit = true;
       state.availableSites = [];
       state.selectedSite = null;
       state.showNotification = false;
@@ -58,5 +59,8 @@ export const userReducer = createReducer(initialState, builder =>
     })
     .addCase(setShowNotification, (state, {payload}) => {
       state.showNotification = payload;
+    })
+    .addCase(setShowInspectionsFilter, (state, {payload}) => {
+      state.showInspectionsFilterWindow = payload;
     })
 );

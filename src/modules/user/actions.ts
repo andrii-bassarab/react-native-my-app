@@ -25,3 +25,5 @@ export const setSelectedSite = createAction<Nullable<{ name: string, code: strin
 export const setAvailableSites = createAction<{ name: string, code: string }[]>('user/SET_AVAILABLE_SITES');
 
 export const setShowNotification = createAction<boolean>('user/SET_SHOW_NOTIFICATIONS');
+
+export const setShowInspectionsFilter = createAction<boolean>('user/SET_SHOW_INSPECTIONS_FILTER');

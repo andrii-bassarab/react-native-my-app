@@ -12,6 +12,7 @@ export interface UserState {
   selectedSite: Nullable<{ name: string, code: string }>;
   availableSites: { name: string, code: string }[];
   showNotification: boolean;
+  showInspectionsFilterWindow: boolean;
 }
 
 export interface UserAuth {

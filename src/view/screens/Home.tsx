@@ -20,42 +20,54 @@ import { colors } from "../theme";
 export const mocksData = [
   {
     title: "Inspect 2062 Gimli Ct.",
-    date: "Created on January 20, 2022",
+    date: "Created on April 05, 2023",
+    stringDate: '2023-04-05',
     location: "2062 Gimli Ct. Great River, Mirkwood 43547",
+    assigned: 'Unassigned',
     status: "In Progress",
   },
   {
     title: "Inspect 6002 Ironwood Ln",
-    date: "Scheduled January 20, 2022 from 12:00pm - 1:15pm",
+    date: "Scheduled May 02, 2023 from from 12:00pm - 1:15pm",
+    stringDate: '2023-05-02',
     location: "6002 Ironwood Ln Denver, CO 80260",
     extra: "Samwise Gamgee",
+    assigned: 'Me',
     status: "Passed",
   },
   {
     title: "Inspect 6002 10 Orthanc Road",
-    date: "Created on January 20, 2022",
+    date: "Created on April 11, 2023",
+    stringDate: '2023-04-11',
     location: "10 Orthanc Road Isengard, ME 10034",
     extra: "Bruce Wayne",
+    assigned: 'Me',
     status: "Failed",
   },
   {
     title: "Inspect 2062 Gimli Ct.",
-    date: "Created on January 20, 2022",
+    date: "Created on April 18, 2023",
+    stringDate: '2023-04-18',
     location: "2062 Gimli Ct. Great River, Mirkwood 43547",
+    assigned: 'Unassigned',
     status: "Passed",
   },
   {
     title: "Inspect 6002 Ironwood Ln",
-    date: "Created on January 20, 2022",
+    date: "Created on April 03, 2023",
+    stringDate: '2023-04-03',
     location: "6002 Ironwood Ln Denver, CO 80260",
     extra: "Samwise Gamgee",
-    status: "Failed",
+    assigned: 'Unassigned',
+    status: "New",
   },
   {
     title: "Inspect 6002 10 Orthanc Road",
-    date: "Scheduled January 15, 2022 from 12:00pm - 1:15pm",
+    date: "Scheduled May 10, 2023 from from 12:00pm - 1:15pm",
+    stringDate: '2023-05-10',
     location: "10 Orthanc Road Isengard, ME 10034",
     extra: "Bruce Wayne",
+    assigned: 'Me',
     status: "Scheduled",
   },
 ];
@@ -66,9 +78,9 @@ export const HomeScreen: React.FC = () => {
 
   // const [showNotification, setShowNotification] = useState(true);
 
-  const goToAuth = React.useCallback(() => {
-    navigation.navigate("Auth");
-  }, [navigation]);
+  // const goToAuth = React.useCallback(() => {
+  //   navigation.navigate("Auth");
+  // }, [navigation]);
 
   const currentUser = useAppSelector((state) => state.user);
   const notifications = useAppSelector((state) => state.notifications);

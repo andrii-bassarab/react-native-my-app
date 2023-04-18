@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { signOut } from "../user/actions";
 
 const notificationsSlice = createSlice({
   name: "notifications",
@@ -25,6 +26,11 @@ const notificationsSlice = createSlice({
     },
     clearNotifications: () => [],
   },
+  extraReducers: (builder) => {
+    builder.addCase(signOut.type, () => {
+      return [] 
+    })
+  }
 })
 
 export default notificationsSlice.reducer;
