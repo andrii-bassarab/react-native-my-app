@@ -1,13 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  FlatList,
-  Modal,
-  Pressable,
-} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Text, SafeAreaView, StyleSheet, View, FlatList, Modal, Pressable } from "react-native";
 import { colors } from "../theme";
 import { WelcomeBox } from "../components/WelcomeBox";
 import { SearchForm } from "../components/SearchForm";
@@ -19,25 +11,34 @@ import { setShowInspectionsFilter } from "~/modules/user/actions";
 import { InspectionsFilter } from "../components/InspectionsFilter";
 import { useMemo } from "react";
 import { ModalLoader } from "../components/ModalLoader";
+import SearchIcon from '../assets/icons/search.svg';
+import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 
-export const Inspections = () => {
+interface Props {
+  route: RouteProp<{ params: {} }, "params">;
+  navigation: NavigationProp<ParamListBase>;
+}
+
+export const Inspections: React.FC<Props> = ({route, navigation}) => {
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const [visibleInspections, setVisibleInspections] = useState<typeof mocksData>(mocksData);
-  const [statusNewUnscheduled, setStatusNewUnscheduled] = useState(true);
-  const [statusScheduled, setStatusScheduled] = useState(true);
-  const [statusIncomplete, setStatusIncomplete] = useState(true);
-  const [statusCompleted, setStatusCompleted] = useState(true);
-  const [assignedToMe, setAssignedToMe] = useState(true);
-  const [unassigned, setUnassigned] = useState(true);
-  const [sortBy, setSortBy] = useState<"Scheduled Date/Time" | "Status">("Scheduled Date/Time");
-  const [selectedDayStartFrom, setSelectedDayStartFrom] = useState("");
-  const [selectedDayBy, setSelectedDayBy] = useState("");
   const [loader, setLoader] = useState(false);
 
   const currentUser = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
+  const {
+    statusNewUnscheduled,
+    statusScheduled,
+    statusIncomplete,
+    statusCompleted,
+    assignedToMe,
+    unassigned,
+    sortBy,
+    selectedDayStartFrom,
+    selectedDayBy,
+  } = useAppSelector((state) => state.filterInspections);
 
+  const dispatch = useAppDispatch();
   const closeInspectionFilterWindow = () => dispatch(setShowInspectionsFilter(false));
 
   const getSortedInspections = () => {
@@ -53,13 +54,7 @@ export const Inspections = () => {
         const failed = prev.filter((item) => item.status === "Failed");
         const passed = prev.filter((item) => item.status === "Passed");
 
-        return [
-          ...inProgress,
-          ...scheduled,
-          ...newInspections,
-          ...failed,
-          ...passed,
-        ];
+        return [...inProgress, ...scheduled, ...newInspections, ...failed, ...passed];
       });
     }
   };
@@ -68,12 +63,64 @@ export const Inspections = () => {
     console.log("Making request...", query);
     setVisibleInspections((prev) =>
       prev.filter((item) =>
-        item.title
-          .toLocaleLowerCase()
-          .includes(query.trim().toLocaleLowerCase())
+        item.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
       )
     );
   };
+
+  const getFilteredInspections = useCallback(() => {
+    statusNewUnscheduled
+      ? setVisibleInspections((prev) => [
+          ...mocksData.filter((item) => item.status === "Unscheduled" || item.status === "New"),
+        ])
+      : setVisibleInspections([]);
+
+    statusScheduled &&
+      setVisibleInspections((prev) => [
+        ...prev,
+        ...mocksData.filter((item) => item.status === "Scheduled"),
+      ]);
+
+    statusIncomplete &&
+      setVisibleInspections((prev) => [
+        ...prev,
+        ...mocksData.filter((item) => item.status === "In Progress"),
+      ]);
+
+    statusCompleted &&
+      setVisibleInspections((prev) => [
+        ...prev,
+        ...mocksData.filter((item) => item.status === "Passed" || item.status === "Failed"),
+      ]);
+
+    if (assignedToMe && !unassigned) {
+      setVisibleInspections((prev) => prev.filter((item) => item.assigned === "Me"));
+    }
+
+    if (!assignedToMe && unassigned) {
+      setVisibleInspections((prev) => prev.filter((item) => item.assigned === "Unassigned"));
+    }
+
+    if (!assignedToMe && !unassigned) {
+      setVisibleInspections([]);
+    }
+
+    if (arrOFSelectedDates.length > 0) {
+      setVisibleInspections((prev) =>
+        prev.filter((item) => arrOFSelectedDates.includes(item.stringDate))
+      );
+    }
+  }, [
+    statusNewUnscheduled,
+    statusScheduled,
+    statusIncomplete,
+    statusCompleted,
+    assignedToMe,
+    unassigned,
+    query,
+    selectedDayStartFrom,
+    selectedDayBy,
+  ]);
 
   const getDatesInRange = (startDate: string, endDate: string) => {
     const dateArray = [];
@@ -93,64 +140,18 @@ export const Inspections = () => {
   );
 
   useEffect(() => {
-    statusNewUnscheduled
-      ? setVisibleInspections((prev) => [
-          ...mocksData.filter(
-            (item) => item.status === "Unscheduled" || item.status === "New"
-          ),
-        ])
-      : setVisibleInspections([]);
+    setTimeout(() => {
+      setLoader(true);
+    }, 200);
 
-    statusScheduled
-      ? setVisibleInspections((prev) => [
-          ...prev,
-          ...mocksData.filter((item) => item.status === "Scheduled"),
-        ])
-      : setVisibleInspections((prev) => prev);
-
-    statusIncomplete
-      ? setVisibleInspections((prev) => [
-          ...prev,
-          ...mocksData.filter(
-            (item) => item.status === "In Progress"
-          ),
-        ])
-      : setVisibleInspections((prev) => prev);
-
-    statusCompleted
-      ? setVisibleInspections((prev) => [
-          ...prev,
-          ...mocksData.filter((item) => item.status === "Passed" || item.status === "Failed"),
-        ])
-      : setVisibleInspections((prev) => prev);
-
-    if (assignedToMe && !unassigned) {
-      setVisibleInspections((prev) =>
-        prev.filter((item) => item.assigned === "Me")
-      );
-    }
-
-    if (!assignedToMe && unassigned) {
-      setVisibleInspections((prev) =>
-        prev.filter((item) => item.assigned === "Unassigned")
-      );
-    }
-
-    if (!assignedToMe && !unassigned) {
-      setVisibleInspections([]);
-    }
-
-    if (arrOFSelectedDates.length > 0) {
-      setVisibleInspections((prev) =>
-        prev.filter((item) => arrOFSelectedDates.includes(item.stringDate))
-      );
-    }
+    getFilteredInspections();
 
     getSortedInspections();
 
     const timeoutId = setTimeout(() => {
       makeRequest();
-    }, 700);
+      setLoader(false);
+    }, 500);
 
     return () => {
       clearTimeout(timeoutId);
@@ -172,22 +173,26 @@ export const Inspections = () => {
     <SafeAreaView style={styles.screen}>
       <View style={styles.screenContainer}>
         <View style={styles.content}>
-          <WelcomeBox
-            backgroundColor="transparant"
-            textColor={colors.primary}
-          />
+          <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
           <Text style={styles.title}>Inspections</Text>
           <SearchForm query={query} setQuery={setQuery} />
-          <View style={{ marginBottom: "45%", marginTop: 10 }}>
-            <FlatList
-              data={visibleInspections}
-              keyExtractor={(_item, index) => `key-${index}`}
-              renderItem={({ item }) => <ActivityItem item={item} />}
-              ListFooterComponent={() => <View style={{ height: 20 }} />}
-              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
+          {visibleInspections.length > 0 ? (
+            <View style={{ marginBottom: "45%", marginTop: 10 }}>
+              <FlatList
+                data={visibleInspections}
+                keyExtractor={(_item, index) => `key-${index}`}
+                renderItem={({ item }) => <ActivityItem item={item} onPress={() => navigation.navigate('InspectionItem', item)} />}
+                ListFooterComponent={() => <View style={{ height: 20 }} />}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          ) : (
+            <View style={styles.noResultContainer}>
+              <SearchIcon width="30%" height="30%" color="#C9D4DA" />
+              <Text style={styles.noResultText}>No search results found.</Text>
+            </View>
+          )}
         </View>
         {currentUser.showInspectionsFilterWindow && (
           <Modal transparent={true}>
@@ -198,31 +203,9 @@ export const Inspections = () => {
                 height: insets.top + 60,
               }}
             >
-              <Pressable
-                onPress={closeInspectionFilterWindow}
-                style={{ height: insets.top * 2 }}
-              />
+              <Pressable onPress={closeInspectionFilterWindow} style={{ height: insets.top + 60 }} />
             </View>
-            <InspectionsFilter
-              statusNewUnscheduled={statusNewUnscheduled}
-              setStatusNewUnscheduled={setStatusNewUnscheduled}
-              statusScheduled={statusScheduled}
-              setStatusScheduled={setStatusScheduled}
-              statusIncomplete={statusIncomplete}
-              setStatusIncomplete={setStatusIncomplete}
-              statusCompleted={statusCompleted}
-              setStatusCompleted={setStatusCompleted}
-              assignedToMe={assignedToMe}
-              setAssignedToMe={setAssignedToMe}
-              unassigned={unassigned}
-              setUnassigned={setUnassigned}
-              selectedDayStartFrom={selectedDayStartFrom}
-              setSelectedDayStartFrom={setSelectedDayStartFrom}
-              selectedDayBy={selectedDayBy}
-              setSelectedDayBy={setSelectedDayBy}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-            />
+            <InspectionsFilter />
           </Modal>
         )}
       </View>
@@ -234,7 +217,7 @@ export const Inspections = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#2C4660",
+    backgroundColor: colors.layout,
   },
   screenContainer: {
     paddingTop: 15,
@@ -261,15 +244,15 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     marginBottom: "3%",
   },
-  notificationsLabel: {
-    height: 5,
-    backgroundColor: "rgba(193, 188, 185, 1)",
-    alignSelf: "center",
-    width: "60%",
-    borderRadius: 40,
-  },
-  notificationsLabelBox: {
-    paddingVertical: 10,
+  noResultContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  noResultText: {
+    color: colors.primary,
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 20
+  }
 });

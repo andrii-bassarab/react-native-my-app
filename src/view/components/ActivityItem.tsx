@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import CalendarIcon from '../assets/icons/calendar.svg';
 import { colors } from "../theme";
+import { getInspectionColor } from "~/utils/getInspectionColor";
 
 interface Props {
   item: {
@@ -11,31 +12,16 @@ interface Props {
     status: string;
     extra?: string;
   };
+  onPress?: () => void
 }
 
-export const ActivityItem: React.FC<Props> = ({ item }) => {
+export const ActivityItem: React.FC<Props> = ({ item, onPress }) => {
   const { title, date, location, status, extra } = item;
 
-  let itemColor = "#54B9D1";
-
-  switch (status) {
-    case "In Progress":
-    case "Scheduled":
-    case "New":
-      itemColor = "#54B9D1";
-      break;
-    case "Passed":
-      itemColor = "#96BF5B";
-      break;
-    case "Failed":
-      itemColor = "#ED6A5F";
-      break;
-    default:
-      itemColor = "#54B9D1";
-  }
+  const itemColor = getInspectionColor(status);
 
   return (
-    <TouchableOpacity style={[styles.card, styles.shadowProp]}>
+    <TouchableOpacity style={[styles.card, styles.shadowProp]} onPress={onPress}>
       <View style={{ ...styles.mainInfo, borderColor: itemColor }}>
         <View style={styles.content}>
           <Text style={{ ...styles.cardTitle, color: itemColor }}>{title}</Text>

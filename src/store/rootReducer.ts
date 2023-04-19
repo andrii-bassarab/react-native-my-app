@@ -6,6 +6,7 @@ import { resetStore } from '~/modules/app/actions';
 import { userReducer } from '~/modules/user/reducer';
 import eventsSlice from '~/modules/events';
 import notificationsReducer from '~/modules/notifications';
+import filterInspectionsReducer from '~/modules/filterInspections';
 
 const transforms = [
   createTransform(
@@ -30,6 +31,7 @@ const appReducer = combineReducers({
   user: userReducer,
   events: eventsSlice,
   notifications: notificationsReducer,
+  filterInspections: filterInspectionsReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

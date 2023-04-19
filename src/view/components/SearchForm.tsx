@@ -6,27 +6,38 @@ import { colors } from "../theme";
 import { TextInput } from "react-native-gesture-handler";
 import { useAppDispatch } from "~/store/hooks";
 import { setShowInspectionsFilter } from "~/modules/user/actions";
+import CloseIcon from "../assets/svg/close";
 
 interface Props {
   query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const SearchForm: React.FC<Props> = ({query, setQuery}) => {
+export const SearchForm: React.FC<Props> = ({ query, setQuery }) => {
   const dispatch = useAppDispatch();
 
   return (
     <View style={styles.formContainer}>
       <View style={[styles.searchLabel, styles.shadowProp]}>
-        <SearchIcon color={colors.primary} width={15} height={15} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          value={query}
-          onChangeText={setQuery}
-        />
+        <View style={styles.inputContainer}>
+          <SearchIcon color={colors.primary} width={15} height={15} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            value={query}
+            onChangeText={setQuery}
+          />
+        </View>
+        {query && (
+          <TouchableOpacity onPress={() => setQuery('')}>
+            <CloseIcon size={24} />
+          </TouchableOpacity>
+        )}
       </View>
-      <TouchableOpacity style={styles.filterButton} onPress={() => dispatch(setShowInspectionsFilter(true))}>
+      <TouchableOpacity
+        style={styles.filterButton}
+        onPress={() => dispatch(setShowInspectionsFilter(true))}
+      >
         <SettingInspectionsIcon color="#fff" width={30} height={30} />
       </TouchableOpacity>
     </View>
@@ -50,13 +61,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
+    flexWrap: "wrap",
     borderWidth: 1,
     borderColor: colors.primary,
     flex: 1,
     alignSelf: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 30,
+    paddingRight: 5,
+    paddingLeft: 20,
+    borderRadius: 40,
     marginRight: "5%",
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -75,5 +87,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -1, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 8,
   },
 });

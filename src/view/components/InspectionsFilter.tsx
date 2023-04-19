@@ -16,244 +16,243 @@ import SelectIcon from "../assets/icons/selectArrow.svg";
 import CustomCheckbox from "./CustomCheckbox";
 import { CustomSelect } from "./CustomSelect";
 import { CalendarRange } from "./CalendarRange";
+import { actions as filterInspectionsActions } from "../../modules/filterInspections";
 
-interface Props {
-  statusNewUnscheduled: boolean;
-  setStatusNewUnscheduled: React.Dispatch<React.SetStateAction<boolean>>;
-  statusScheduled: boolean;
-  setStatusScheduled: React.Dispatch<React.SetStateAction<boolean>>;
-  statusIncomplete: boolean;
-  setStatusIncomplete: React.Dispatch<React.SetStateAction<boolean>>;
-  statusCompleted: boolean;
-  setStatusCompleted: React.Dispatch<React.SetStateAction<boolean>>;
-  assignedToMe: boolean;
-  setAssignedToMe: React.Dispatch<React.SetStateAction<boolean>>;
-  unassigned: boolean;
-  setUnassigned: React.Dispatch<React.SetStateAction<boolean>>;
-  sortBy: "Scheduled Date/Time" | "Status";
-  setSortBy: React.Dispatch<
-    React.SetStateAction<"Scheduled Date/Time" | "Status">
-  >;
-  selectedDayStartFrom: string;
-  setSelectedDayStartFrom: React.Dispatch<React.SetStateAction<string>>;
-  selectedDayBy: string;
-  setSelectedDayBy: React.Dispatch<React.SetStateAction<string>>;
-}
+export const InspectionsFilter = () => {
+    const currentUser = useAppSelector((state) => state.user);
+    const dispatch = useAppDispatch();
+    const {
+      statusNewUnscheduled,
+      statusScheduled,
+      statusIncomplete,
+      statusCompleted,
+      assignedToMe,
+      unassigned,
+      sortBy,
+      selectedDayStartFrom,
+      selectedDayBy,
+    } = useAppSelector((state) => state.filterInspections);
 
-export const InspectionsFilter: React.FC<Props> = ({
-  statusNewUnscheduled,
-  setStatusNewUnscheduled,
-  statusScheduled,
-  setStatusScheduled,
-  statusIncomplete,
-  setStatusIncomplete,
-  statusCompleted,
-  setStatusCompleted,
-  assignedToMe,
-  setAssignedToMe,
-  unassigned,
-  setUnassigned,
-  sortBy,
-  setSortBy,
-  selectedDayStartFrom,
-  setSelectedDayStartFrom,
-  selectedDayBy,
-  setSelectedDayBy,
-}) => {
-  const currentUser = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
-  // const [statusNewUnscheduled, setStatusNewUnscheduled] = useState(false);
-  // const [statusScheduled, setStatusScheduled] = useState(false);
-  // const [statusIncomplete, setStatusIncomplete] = useState(false);
-  // const [statusCompleted, setStatusCompleted] = useState(false);
-  // const [assignedToMe, setAssignedToMe] = useState(false);
-  // const [unassigned, setUnassigned] = useState(false);
-  // const [sortBy, setSortBy] = useState("Scheduled Date/Time");
-  const sortByOptions = ["Scheduled Date/Time", "Status"];
-  // const [selectedDayStartFrom, setSelectedDayStartFrom] = useState("");
-  // const [selectedDayBy, setSelectedDayBy] = useState("");
-  const [showCalendar, setShowCalendar] = useState(false);
+    const {
+      setStatusNewUnscheduled,
+      setStatusScheduled,
+      setStatusIncomplete,
+      setStatusCompleted,
+      setAssignedToMe,
+      setUnassigned,
+      setSortBy,
+      setSelectedDayStartFrom,
+      setSelectedDayBy,
+    } = filterInspectionsActions;
 
-  const closeInspectionFilterWindow = () =>
-    dispatch(setShowInspectionsFilter(false));
+    const [statusNewUnscheduledChange, setStatusNewUnscheduledChange] = useState(statusNewUnscheduled);
+    const [statusScheduledChange, setStatusScheduledChange] = useState(statusScheduled);
+    const [statusIncompleteChange, setStatusIncompleteChange] = useState(statusIncomplete);
+    const [statusCompletedChange, setStatusCompletedChange] = useState(statusCompleted);
+    const [assignedToMeChange, setAssignedToMeChange] = useState(assignedToMe);
+    const [unassignedChange, setUnassignedChange] = useState(unassigned);
+    const [sortByChange, setSortByChange] = useState(sortBy);
+    const sortByOptions = ["Scheduled Date/Time", "Status"];
+    const [selectedDayStartFromChange, setSelectedDayStartFromChange] = useState(selectedDayStartFrom);
+    const [selectedDayByChange, setSelectedDayByChange] = useState(selectedDayBy);
+    const [showCalendarChange, setShowCalendarChange] = useState(false);
 
-  const getDataToShow = (data: string) => {
-    const arrOfData = data.split("-");
+    const closeInspectionFilterWindow = () => dispatch(setShowInspectionsFilter(false));
 
-    return `${arrOfData[1]}/${arrOfData[2]}/${arrOfData[0]}`;
-  };
-
-  const position = new Animated.ValueXY({ x: 0, y: 500 });
-  const pan = useRef(new Animated.ValueXY()).current;
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: (event, gestureState) => {
-        if (gestureState.dy > 250) {
-          pan.extractOffset();
-          closeInspectionFilterWindow();
-        }
-        if (gestureState.dy > 0) {
-          Animated.event([null, { dx: pan.x, dy: pan.y }], {
-            useNativeDriver: false,
-          })(event, gestureState);
-        }
-      },
-      onPanResponderRelease: () => {
-        Animated.spring(pan, {
-          toValue: { x: 0, y: 0 },
-          useNativeDriver: false,
-        }).start();
-      },
-    })
-  ).current;
-
-  useEffect(() => {
-    return Animated.timing(position, {
-      toValue: { x: 0, y: 0 },
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, []);
-
-  useEffect(() => {
-    pan.y.setValue(0);
-
-    return () => {
+    const applyChangesFilter = () => {
+      dispatch(setStatusNewUnscheduled(statusNewUnscheduledChange));
+      dispatch(setStatusScheduled(statusScheduledChange));
+      dispatch(setStatusIncomplete(statusIncompleteChange));
+      dispatch(setStatusCompleted(statusCompletedChange));
+      dispatch(setAssignedToMe(assignedToMeChange));
+      dispatch(setUnassigned(unassignedChange));
+      dispatch(setSortBy(sortByChange));
+      dispatch(setSelectedDayStartFrom(selectedDayStartFromChange));
+      dispatch(setSelectedDayBy(selectedDayByChange));
       closeInspectionFilterWindow();
     };
-  }, []);
 
-  const handleHideCalendar = (event: GestureResponderEvent) => {
-    event.stopPropagation();
-    setShowCalendar(false);
-  };
+    const getDataToShow = (data: string) => {
+      const arrOfData = data.split("-");
 
-  const clearFilters = () => {
-    setSelectedDayStartFrom("");
-    setSelectedDayBy("");
-    setStatusNewUnscheduled(true);
-    setStatusScheduled(true);
-    setStatusIncomplete(true);
-    setStatusCompleted(true);
-    setAssignedToMe(true);
-    setUnassigned(true);
-    setSortBy("Scheduled Date/Time");
-  };
+      return `${arrOfData[1]}/${arrOfData[2]}/${arrOfData[0]}`;
+    };
 
-  console.log("currentUser", currentUser);
+    const position = new Animated.ValueXY({ x: 0, y: 0 });
+    const pan = useRef(new Animated.ValueXY()).current;
+    const panResponder = useRef(
+      PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderMove: (event, gestureState) => {
+          if (gestureState.dy > 250) {
+            pan.extractOffset();
+            closeInspectionFilterWindow();
+          }
+          if (gestureState.dy > 0) {
+            Animated.event([null, { dx: pan.x, dy: pan.y }], {
+              useNativeDriver: false,
+            })(event, gestureState);
+          }
+        },
+        onPanResponderRelease: () => {
+          Animated.spring(pan, {
+            toValue: { x: 0, y: 0 },
+            useNativeDriver: false,
+          }).start();
+        },
+      })
+    ).current;
 
-  return (
-    <Animated.View
-      style={[
-        styles.content,
-        styles.shadowProp,
-        position.getLayout(),
-        { transform: [{ translateY: pan.y }] },
-      ]}
-    >
-      <Pressable onPress={handleHideCalendar}>
-        <Animated.View {...panResponder.panHandlers}>
-          <TouchableOpacity style={styles.labelBox} activeOpacity={0.5}>
-            <View style={styles.closeLabel} />
-          </TouchableOpacity>
-        </Animated.View>
-        <Text style={styles.title}>Filter and Sort By</Text>
-        {showCalendar && (
-          <View
-            style={styles.calendarBox}
-          >
-            <CalendarRange
-              selectedDayStartFrom={selectedDayStartFrom}
-              selectedDayBy={selectedDayBy}
-              setSelectedDayStartFrom={setSelectedDayStartFrom}
-              setSelectedDayBy={setSelectedDayBy}
-              setShowCalendar={setShowCalendar}
+    useEffect(() => {
+      return Animated.timing(position, {
+        toValue: { x: 0, y: 0 },
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }, []);
+
+    useEffect(() => {
+      pan.y.setValue(0);
+
+      return () => {
+        closeInspectionFilterWindow();
+      };
+    }, []);
+
+    const handleHideCalendar = (event: GestureResponderEvent) => {
+      event.stopPropagation();
+      setShowCalendarChange(false);
+    };
+
+    const clearFilters = () => {
+      setSelectedDayStartFromChange("");
+      setSelectedDayByChange("");
+      setStatusNewUnscheduledChange(true);
+      setStatusScheduledChange(true);
+      setStatusIncompleteChange(true);
+      setStatusCompletedChange(true);
+      setAssignedToMeChange(true);
+      setUnassignedChange(true);
+      setSortByChange("Scheduled Date/Time");
+    };
+
+    return (
+      <Animated.View
+        style={[
+          styles.content,
+          styles.shadowProp,
+          position.getLayout(),
+          { transform: [{ translateY: pan.y }] },
+        ]}
+      >
+        <Pressable onPress={handleHideCalendar}>
+          <Animated.View {...panResponder.panHandlers}>
+            <TouchableOpacity style={styles.labelBox} activeOpacity={0.5}>
+              <View style={styles.closeLabel} />
+            </TouchableOpacity>
+          </Animated.View>
+          <Text style={styles.title}>Filter and Sort By</Text>
+          {showCalendarChange && (
+            <View style={styles.calendarBox}>
+              <CalendarRange
+                selectedDayStartFrom={selectedDayStartFromChange}
+                selectedDayBy={selectedDayByChange}
+                setSelectedDayStartFrom={setSelectedDayStartFromChange}
+                setSelectedDayBy={setSelectedDayByChange}
+                setShowCalendar={setShowCalendarChange}
+              />
+            </View>
+          )}
+          <View style={styles.calendar}>
+            <Text style={styles.calendarTitle}>Scheduled Date Range</Text>
+            <TouchableOpacity
+              style={styles.calendarRange}
+              onPress={() => setShowCalendarChange(true)}
+            >
+              <Text style={styles.dataRangeText}>
+                {selectedDayStartFromChange
+                  ? getDataToShow(selectedDayStartFromChange)
+                  : "__/__/____"}
+              </Text>
+              <Text style={styles.dataRangeText}>to</Text>
+              <Text style={styles.dataRangeText}>
+                {selectedDayByChange
+                  ? getDataToShow(selectedDayByChange)
+                  : "__/__/____"}
+              </Text>
+              <SelectIcon color={colors.primary} height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusTitle}>Status</Text>
+            <View style={styles.statusBox}>
+              <View>
+                <CustomCheckbox
+                  checked={statusNewUnscheduledChange}
+                  onChange={setStatusNewUnscheduledChange}
+                  label="New & Unscheduled"
+                />
+                <CustomCheckbox
+                  checked={statusIncompleteChange}
+                  onChange={setStatusIncompleteChange}
+                  label="Incomplete"
+                />
+              </View>
+              <View>
+                <CustomCheckbox
+                  checked={statusScheduledChange}
+                  onChange={setStatusScheduledChange}
+                  label="Scheduled"
+                />
+                <CustomCheckbox
+                  checked={statusCompletedChange}
+                  onChange={setStatusCompletedChange}
+                  label="Completed"
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusTitle}>Assigned To</Text>
+            <View style={styles.statusBox}>
+              <CustomCheckbox
+                checked={assignedToMeChange}
+                onChange={setAssignedToMeChange}
+                label="Me"
+              />
+              <CustomCheckbox
+                checked={unassignedChange}
+                onChange={setUnassignedChange}
+                label="Unassigned"
+              />
+            </View>
+          </View>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusTitle}>Sort By</Text>
+            <CustomSelect
+              data={sortByOptions}
+              selectedItem={sortByChange}
+              setSelectedItem={setSortByChange}
             />
           </View>
-        )}
-        <View style={styles.calendar}>
-          <Text style={styles.calendarTitle}>Scheduled Date Range</Text>
+        </Pressable>
+        <Pressable style={styles.buttonsContainer} onPress={handleHideCalendar}>
           <TouchableOpacity
-            style={styles.calendarRange}
-            onPress={() => setShowCalendar(true)}
+            style={styles.clearFiltersButtton}
+            onPress={clearFilters}
           >
-            <Text style={styles.dataRangeText}>
-              {selectedDayStartFrom
-                ? getDataToShow(selectedDayStartFrom)
-                : "__/__/____"}
-            </Text>
-            <Text style={styles.dataRangeText}>to</Text>
-            <Text style={styles.dataRangeText}>
-              {selectedDayBy ? getDataToShow(selectedDayBy) : "__/__/____"}
-            </Text>
-            <SelectIcon color={colors.primary} height={15} width={15} />
+            <Text style={styles.clearButtonText}>Clear Filters</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusTitle}>Status</Text>
-          <View style={styles.statusBox}>
-            <View>
-              <CustomCheckbox
-                checked={statusNewUnscheduled}
-                onChange={setStatusNewUnscheduled}
-                label="New & Unscheduled"
-              />
-              <CustomCheckbox
-                checked={statusIncomplete}
-                onChange={setStatusIncomplete}
-                label="Incomplete"
-              />
-            </View>
-            <View>
-              <CustomCheckbox
-                checked={statusScheduled}
-                onChange={setStatusScheduled}
-                label="Scheduled"
-              />
-              <CustomCheckbox
-                checked={statusCompleted}
-                onChange={setStatusCompleted}
-                label="Completed"
-              />
-            </View>
-          </View>
-        </View>
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusTitle}>Assigned To</Text>
-          <View style={styles.statusBox}>
-            <CustomCheckbox
-              checked={assignedToMe}
-              onChange={setAssignedToMe}
-              label="Me"
-            />
-            <CustomCheckbox
-              checked={unassigned}
-              onChange={setUnassigned}
-              label="Unassigned"
-            />
-          </View>
-        </View>
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusTitle}>Sort By</Text>
-          <CustomSelect
-            data={sortByOptions}
-            selectedItem={sortBy}
-            setSelectedItem={setSortBy}
-          />
-        </View>
-      </Pressable>
-      <Pressable style={styles.buttonsContainer} onPress={handleHideCalendar}>
-        <TouchableOpacity style={styles.clearFiltersButtton} onPress={clearFilters}>
-          <Text style={styles.clearButtonText}>Clear Filters</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.applyFiltersButtton} onPress={closeInspectionFilterWindow}>
-          <Text style={styles.applyButtonText}>Apply Filters</Text>
-        </TouchableOpacity>
-      </Pressable>
-    </Animated.View>
-  );
-};
+          <TouchableOpacity
+            style={styles.applyFiltersButtton}
+            onPress={applyChangesFilter}
+          >
+            <Text style={styles.applyButtonText}>Apply Filters</Text>
+          </TouchableOpacity>
+        </Pressable>
+      </Animated.View>
+    );
+  };
 
 const styles = StyleSheet.create({
   content: {
