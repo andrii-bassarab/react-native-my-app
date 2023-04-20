@@ -9,12 +9,12 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { WelcomeBox } from "../components/WelcomeBox";
-import { ActivityItem } from "../components/ActivityItem";
+import { WelcomeBox } from "../components/Screen/WelcomeBox";
+import { ActivityItem } from "../components/Inspections/ActivityItem";
 import { FlatList } from "react-native-gesture-handler";
 import { Notifications } from "./Notification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { Screen } from "../components/Screen";
+import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 
 export const mocksData = [

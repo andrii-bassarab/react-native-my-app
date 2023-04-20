@@ -6,8 +6,8 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { colors } from "../theme";
-import SelectIcon from "../assets/icons/selectArrow.svg";
+import { colors } from "../../theme";
+import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 
 interface Props {
   data: string[];

@@ -1,9 +1,10 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import CalendarIcon from "../assets/icons/calendar.svg";
+import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColor } from "~/utils/getInspectionColor";
-import { colors } from "../theme";
-import LeftErrow from "../assets/icons/leftArrow.svg";
+import { colors } from "../../theme";
+import LeftErrow from "~/view/assets/icons/leftArrow.svg";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   item: {
@@ -13,7 +14,7 @@ interface Props {
     status: string;
     extra?: string;
   };
-  goBack: () => void
+  goBack: () => void;
 }
 
 export const SelectedInspection: React.FC<Props> = ({ item, goBack }) => {
@@ -34,9 +35,21 @@ export const SelectedInspection: React.FC<Props> = ({ item, goBack }) => {
           <CalendarIcon height={10} width={10} color={colors.primary} style={{ marginRight: 5 }} />
           <Text style={styles.textInfo}>{date}</Text>
         </View>
-        <TouchableOpacity style={styles.startInspectionButton}>
-          <Text style={styles.startInspectionText}>Start Inspection</Text>
-        </TouchableOpacity>
+        {(status === InspectionStatus.NEW || status === InspectionStatus.SCHEDULED) && (
+          <TouchableOpacity style={styles.startInspectionButton}>
+            <Text style={styles.startInspectionText}>Start Inspection</Text>
+          </TouchableOpacity>
+        )}
+        {status === InspectionStatus.INPROGRESS && (
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <TouchableOpacity style={{ ...styles.startInspectionButton, width: "48%", borderColor: colors.blue, borderWidth: 1, backgroundColor: '#fff' }}>
+              <Text style={{...styles.startInspectionText, color: colors.blue}}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ ...styles.startInspectionButton, width: "48%" }}>
+              <Text style={styles.startInspectionText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -44,13 +57,13 @@ export const SelectedInspection: React.FC<Props> = ({ item, goBack }) => {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'center',
+    alignItems: "center",
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 15,
     width: "98%",
     flexWrap: "wrap",
@@ -88,23 +101,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   goBackButton: {
-    padding: 10,
+    padding: 8,
     borderWidth: 1,
     borderColor: colors.blue,
     marginRight: 10,
     borderRadius: 6,
   },
   startInspectionButton: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginTop: 15,
-    paddingVertical: 8,
+    paddingVertical: 5,
     paddingHorizontal: 20,
     backgroundColor: colors.layout,
-    borderRadius: 20
+    borderRadius: 20,
+    textAlign: "justify",
+    justifyContent: "center",
+    alignItems: "center",
   },
   startInspectionText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16
-  }
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
 });

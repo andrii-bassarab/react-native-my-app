@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { actions as actionsEvents } from "../../modules/events";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { Screen } from "../components/Screen";
+import { Screen } from "../components/Screen/Screen";
 import {
   setAuth,
   setFirstInit,
@@ -24,8 +24,8 @@ import {
   setAvailableSites,
   setShowSwitchSite,
 } from "~/modules/user/actions";
-import { LoginForm } from "../components/LoginForm";
-import { ModalLoader } from "../components/ModalLoader";
+import { LoginForm } from "../components/Auth/LoginForm";
+import { ModalLoader } from "../components/Custom/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
 

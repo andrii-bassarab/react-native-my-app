@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, SafeAreaView, StyleSheet, View, FlatList, Modal, Pressable } from "react-native";
 import { colors } from "../theme";
-import { WelcomeBox } from "../components/WelcomeBox";
-import { SearchForm } from "../components/SearchForm";
+import { WelcomeBox } from "../components/Screen/WelcomeBox";
+import { SearchForm } from "../components/Inspections/SearchForm";
 import { mocksData } from "../screens/Home";
-import { ActivityItem } from "../components/ActivityItem";
+import { ActivityItem } from "../components/Inspections/ActivityItem";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { setShowInspectionsFilter } from "~/modules/user/actions";
-import { InspectionsFilter } from "../components/InspectionsFilter";
+import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
 import { useMemo } from "react";
-import { ModalLoader } from "../components/ModalLoader";
+import { ModalLoader } from "../components/Custom/ModalLoader";
 import SearchIcon from '../assets/icons/search.svg';
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 

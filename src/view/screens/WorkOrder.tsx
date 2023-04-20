@@ -2,7 +2,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { ParamListBase } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { Text, SafeAreaView, StyleSheet, View, Animated } from "react-native";
-import { WelcomeBox } from "../components/WelcomeBox";
+import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors } from "../theme";
 import BuilderIncon from "../assets/icons/build.svg";
 import SettingsDetail from "../assets/icons/settings.svg";

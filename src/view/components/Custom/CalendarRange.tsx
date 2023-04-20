@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { colors } from "../theme";
+import { colors } from "../../theme";
 import { Calendar } from "react-native-calendars";
 
 interface DateObject {

@@ -7,7 +7,7 @@ import React from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
-import { NavigationDrawerStructure } from "../components/NavigationDrawerStructure";
+import { NavigationDrawerStructure } from "../components/Navigation/NavigationDrawerStructure";
 import { useAppSelector } from "~/store/hooks";
 import { colors } from "../theme";
 

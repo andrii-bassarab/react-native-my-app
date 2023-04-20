@@ -11,7 +11,7 @@ import {
   Animated,
   ActivityIndicator,
 } from "react-native";
-import { ModalLoader } from "../components/ModalLoader";
+import { ModalLoader } from "../components/Custom/ModalLoader";
 import { useAppDispatch } from "~/store/hooks";
 import { setFirstInit } from "~/modules/user/actions";
 

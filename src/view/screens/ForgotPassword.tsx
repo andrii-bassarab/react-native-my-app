@@ -6,7 +6,7 @@ import {
   Image,
   Text,
 } from "react-native";
-import { Screen } from "../components/Screen";
+import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import LeftErrow from "../assets/icons/leftArrow.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";

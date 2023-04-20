@@ -3,8 +3,8 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { DrawerActions, ParamListBase } from "@react-navigation/native";
-import DrawerToggleIcon from "../assets/icons/drawerToggle.svg";
-import NotificationIcon from "../assets/icons/notification.svg";
+import DrawerToggleIcon from "../../assets/icons/drawerToggle.svg";
+import NotificationIcon from "../../assets/icons/notification.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
 

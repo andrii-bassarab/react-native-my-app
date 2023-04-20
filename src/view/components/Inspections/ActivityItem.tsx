@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import CalendarIcon from '../assets/icons/calendar.svg';
-import { colors } from "../theme";
+import CalendarIcon from '../../assets/icons/calendar.svg';
+import { colors } from "../../theme";
 import { getInspectionColor } from "~/utils/getInspectionColor";
 
 interface Props {

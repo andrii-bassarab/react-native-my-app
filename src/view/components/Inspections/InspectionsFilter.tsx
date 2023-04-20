@@ -9,14 +9,14 @@ import {
   PanResponder,
   GestureResponderEvent,
 } from "react-native";
-import { colors } from "../theme";
+import { colors } from "~/view/theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowInspectionsFilter } from "~/modules/user/actions";
-import SelectIcon from "../assets/icons/selectArrow.svg";
-import CustomCheckbox from "./CustomCheckbox";
-import { CustomSelect } from "./CustomSelect";
-import { CalendarRange } from "./CalendarRange";
-import { actions as filterInspectionsActions } from "../../modules/filterInspections";
+import SelectIcon from "~/view/assets/icons/selectArrow.svg";
+import CustomCheckbox from "../Custom/CustomCheckbox";
+import { CustomSelect } from "../Custom/CustomSelect";
+import { CalendarRange } from "../Custom/CalendarRange";
+import { actions as filterInspectionsActions } from "../../../modules/filterInspections";
 
 export const InspectionsFilter = () => {
     const currentUser = useAppSelector((state) => state.user);

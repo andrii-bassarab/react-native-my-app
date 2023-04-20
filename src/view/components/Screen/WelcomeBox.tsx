@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
-import { colors } from "../theme";
+import { colors } from "../../theme";
 
 interface Props {
   backgroundColor: string;
@@ -27,7 +27,7 @@ export const WelcomeBox: React.FC<Props> = ({
   >
     <View style={styles.settingsIconBox}>
       <Image
-        source={require("../assets/images/settings.png")}
+        source={require("~/view/assets/images/settings.png")}
         style={{
           ...styles.settingsIcon,
           height: iconSize === "large" ? 80 : 50,

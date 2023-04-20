@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
-import SettingInspectionsIcon from "../assets/icons/settingInspections.svg";
-import SearchIcon from "../assets/icons/search.svg";
-import { colors } from "../theme";
+import React from "react";
+import { TouchableOpacity, StyleSheet, View } from "react-native";
+import SettingInspectionsIcon from "~/view/assets/icons/settingInspections.svg";
+import SearchIcon from "~/view/assets/icons/search.svg";
+import { colors } from "../../theme";
 import { TextInput } from "react-native-gesture-handler";
 import { useAppDispatch } from "~/store/hooks";
 import { setShowInspectionsFilter } from "~/modules/user/actions";
-import CloseIcon from "../assets/svg/close";
+import CloseIcon from "~/view/assets/svg/close";
 
 interface Props {
   query: string;

@@ -1,7 +1,7 @@
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import React from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import { Screen } from "../components/Screen";
+import { Screen } from "../components/Screen/Screen";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import DocumentIcon from "../assets/icons/document.svg";
 import WorkIcon from "../assets/icons/work.svg";
@@ -9,7 +9,7 @@ import SwitchIcon from "../assets/icons/switch.svg";
 import LogOutIcon from "../assets/icons/logout.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification, setShowSwitchSite, signOut } from "~/modules/user/actions";
-import { WelcomeBox } from "../components/WelcomeBox";
+import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors } from "../theme";
 
 interface Props extends DrawerContentComponentProps {

@@ -1,10 +1,14 @@
 import React from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
-import { Screen } from "../components/Screen";
+import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { SelectedInspection } from "../components/SelectedInspection";
+import { SelectedInspection } from "../components/Inspections/SelectedInspection";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { TopTabBar } from "../components/Navigation/TopTabBar";
+import { InspectionStatus } from "~/types/inspectionStatus";
+import { InspectionDetails } from "../components/InspectionItem/InspectionDetail/InspectionDetail";
 
 interface Inspection {
   title: string;
@@ -21,18 +25,58 @@ interface Props {
   navigation: NavigationProp<ParamListBase>;
 }
 
+const Tab = createMaterialTopTabNavigator();
+
+function DetailsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Details!</Text>
+    </View>
+  );
+}
+
+function CommentsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Comments!</Text>
+    </View>
+  );
+}
+
+function FilesScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Files!</Text>
+    </View>
+  );
+}
+
+function ResultsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Results!</Text>
+    </View>
+  );
+}
+
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
 
   const goBack = () => navigation.navigate("Inspections");
-
-  console.log("item", inspection);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screen}>
         <View style={styles.content}>
           <SelectedInspection item={inspection} goBack={goBack} />
+          <Tab.Navigator tabBar={(props) => <TopTabBar {...props} />} initialRouteName="HomeScreen">
+            {(inspection.status !== InspectionStatus.NEW && inspection.status !== InspectionStatus.SCHEDULED) && (
+              <Tab.Screen name="Inspect" component={ResultsScreen} />
+            )}
+            <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
+            <Tab.Screen name="Comments" component={CommentsScreen} />
+            <Tab.Screen name="Files" component={FilesScreen} />
+          </Tab.Navigator>
         </View>
       </View>
     </Screen>
@@ -52,5 +96,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 55,
     padding: 25,
     paddingTop: 25,
+    paddingBottom: 0,
   },
 });

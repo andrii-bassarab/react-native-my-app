@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { HomeScreen } from '../screens/Home';
 import { Inspections } from '../screens/Inspections';
 import { InspectionNavigation } from '../navigation/InspectionNavigation';
-import { BottomTabBar } from '../components/BottomTabBar';
+import { BottomTabBar } from '../components/Navigation/BottomTabBar';
 import { WorkOrder } from '../screens/WorkOrder';
 import { useAppDispatch } from '~/store/hooks';
 import { actions as actionsNotifications } from "../../modules/notifications";

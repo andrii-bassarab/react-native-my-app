@@ -1,15 +1,15 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { colors } from "../theme";
+import { colors } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import HomeIcon from "../assets/icons/home.svg";
-import DocumentIcon from "../assets/icons/document.svg";
-import WorkIcon from "../assets/icons/work.svg";
-import SwitchIcon from "../assets/icons/switch.svg";
+import HomeIcon from "~/view/assets/icons/home.svg";
+import DocumentIcon from "~/view/assets/icons/document.svg";
+import WorkIcon from "~/view/assets/icons/work.svg";
+import SwitchIcon from "~/view/assets/icons/switch.svg";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
-import { CustomerSite } from "./CustomerSite";
+import { CustomerSite } from "../Screen/CustomerSite";
 
 interface Props extends BottomTabBarProps {}
 

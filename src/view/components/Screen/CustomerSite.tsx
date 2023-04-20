@@ -10,8 +10,8 @@ import {
   Pressable,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { colors } from "../theme";
-import SelectIcon from "../assets/icons/selectArrow.svg";
+import { colors } from "../../theme";
+import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 import { setSelectedSite, setShowSwitchSite } from "~/modules/user/actions";
 
 export const CustomerSite = () => {
