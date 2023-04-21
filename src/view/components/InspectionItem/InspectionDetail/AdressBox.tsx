@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
 import { Inspection } from "~/types/Inspection";
 import EditIcon from "~/view/assets/icons/edit.svg";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   inspection: Inspection;
@@ -23,9 +24,12 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.labelText}>Address:</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
           <Text style={styles.text}>{inspection.location}</Text>
-          <TouchableOpacity>
-            <EditIcon color={colors.blue} height={15} width={15} />
-          </TouchableOpacity>
+          {inspection.status !== InspectionStatus.FAILED &&
+            inspection.status !== InspectionStatus.PASSED && (
+              <TouchableOpacity>
+                <EditIcon color={colors.blue} height={15} width={15} />
+              </TouchableOpacity>
+            )}
         </View>
       </View>
       <View style={styles.label}>

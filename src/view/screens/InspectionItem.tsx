@@ -9,6 +9,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { TopTabBar } from "../components/Navigation/TopTabBar";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { InspectionDetails } from "../components/InspectionItem/InspectionDetail/InspectionDetail";
+import { InspectionInspect } from "../components/InspectionItem/InspectionInspect/InspectionInspect";
 
 interface Inspection {
   title: string;
@@ -64,18 +65,31 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   const goBack = () => navigation.navigate("Inspections");
 
+  const inspectOptions = {
+    tabBarLabel:
+      inspection.status === InspectionStatus.PASSED || inspection.status === InspectionStatus.FAILED
+        ? "Results"
+        : "Inspect",
+  };
+
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screen}>
         <View style={styles.content}>
           <SelectedInspection item={inspection} goBack={goBack} />
           <Tab.Navigator tabBar={(props) => <TopTabBar {...props} />} initialRouteName="HomeScreen">
-            {(inspection.status !== InspectionStatus.NEW && inspection.status !== InspectionStatus.SCHEDULED) && (
-              <Tab.Screen name="Inspect" component={ResultsScreen} />
-            )}
+            {inspection.status !== InspectionStatus.NEW &&
+              inspection.status !== InspectionStatus.SCHEDULED && (
+                <Tab.Screen
+                  name="Inspect"
+                  component={InspectionInspect}
+                  options={inspectOptions}
+                  initialParams={inspection}
+                />
+              )}
             <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
-            <Tab.Screen name="Comments" component={CommentsScreen} />
-            <Tab.Screen name="Files" component={FilesScreen} />
+            <Tab.Screen name="Comments" component={CommentsScreen} initialParams={inspection} />
+            <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
           </Tab.Navigator>
         </View>
       </View>

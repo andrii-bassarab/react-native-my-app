@@ -2,39 +2,21 @@ import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
 import { Inspection } from "~/types/Inspection";
-import EditIcon from "~/view/assets/icons/edit.svg";
-import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   inspection: Inspection;
 }
 
-export const AssignedBox: React.FC<Props> = ({ inspection }) => {
+export const CustomAttributes: React.FC<Props> = ({ inspection }) => {
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
-        <Text style={styles.labelText}>Assigned:</Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-          <Text style={styles.text}>{inspection.assigned}</Text>
-          {inspection.status !== InspectionStatus.FAILED &&
-            inspection.status !== InspectionStatus.PASSED && (
-              <TouchableOpacity>
-                <EditIcon color={colors.blue} height={15} width={15} />
-              </TouchableOpacity>
-            )}
-        </View>
+        <Text style={styles.labelText}>Custom Attributes:</Text>
+          <Text style={styles.text}></Text>
       </View>
       <View style={styles.label}>
-        <Text style={styles.labelText}>Appointment Time:</Text>
-        <Text style={styles.text}>{inspection.date}</Text>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Inspection Type:</Text>
-        <Text style={styles.text}>Annual</Text>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Inspection Form:</Text>
-        <Text style={styles.text}>HQS</Text>
+        <Text style={styles.labelText}>Dog on Premises:</Text>
+        <Text style={styles.text}>No</Text>
       </View>
     </View>
   );

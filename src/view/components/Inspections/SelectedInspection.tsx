@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
-import { getInspectionColor } from "~/utils/getInspectionColor";
+import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { colors } from "../../theme";
 import LeftErrow from "~/view/assets/icons/leftArrow.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
@@ -20,7 +20,7 @@ interface Props {
 export const SelectedInspection: React.FC<Props> = ({ item, goBack }) => {
   const { title, date, location, status, extra } = item;
 
-  const itemColor = getInspectionColor(status);
+  const itemColor = getInspectionColorByStatus(status);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>

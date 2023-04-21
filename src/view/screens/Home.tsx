@@ -85,7 +85,7 @@ export const HomeScreen: React.FC = () => {
   const currentUser = useAppSelector((state) => state.user);
   const notifications = useAppSelector((state) => state.notifications);
 
-  console.log("notifications", notifications);
+  // console.log("notifications", notifications);
 
   useEffect(() => {
   }, []);

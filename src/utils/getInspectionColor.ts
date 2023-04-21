@@ -1,14 +1,29 @@
-export const getInspectionColor = (status: string) => {
+import { colors } from "~/view/theme";
+
+export const getInspectionColorByStatus = (status: string) => {
   switch (status) {
     case "In Progress":
     case "Scheduled":
     case "New":
-      return "#54B9D1";
+      return colors.blue;
     case "Passed":
-      return "#96BF5B";
+      return colors.green;
     case "Failed":
-      return "#ED6A5F";
+      return colors.red;
     default:
-      return "#54B9D1";
+      return colors.blue;
+  }
+}
+
+export const getColorCategoryByResult = (result: string, status: string) => {
+  switch (true) {
+    case result == "No results yet":
+      return colors.blue;
+    case status === "Complete" && result === "Passed":
+      return colors.green;
+    case status === "Complete" && result === "Failed":
+      return colors.red;
+    default:
+      return colors.blue;
   }
 }

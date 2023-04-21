@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import CalendarIcon from '../../assets/icons/calendar.svg';
 import { colors } from "../../theme";
-import { getInspectionColor } from "~/utils/getInspectionColor";
+import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 
 interface Props {
   item: {
@@ -18,7 +18,7 @@ interface Props {
 export const ActivityItem: React.FC<Props> = ({ item, onPress }) => {
   const { title, date, location, status, extra } = item;
 
-  const itemColor = getInspectionColor(status);
+  const itemColor = getInspectionColorByStatus(status);
 
   return (
     <TouchableOpacity style={[styles.card, styles.shadowProp]} onPress={onPress}>

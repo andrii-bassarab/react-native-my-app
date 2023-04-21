@@ -11,35 +11,39 @@ import CloseIcon from "~/view/assets/svg/close";
 interface Props {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
+  showFilterButton?: boolean;
+  placeholder?: string;
 }
 
-export const SearchForm: React.FC<Props> = ({ query, setQuery }) => {
+export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton, placeholder }) => {
   const dispatch = useAppDispatch();
 
   return (
     <View style={styles.formContainer}>
-      <View style={[styles.searchLabel, styles.shadowProp]}>
+      <View style={[styles.searchLabel, styles.shadowProp, !showFilterButton && {marginRight: 0}]}>
         <View style={styles.inputContainer}>
           <SearchIcon color={colors.primary} width={15} height={15} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search"
+            placeholder={placeholder || "Search"}
             value={query}
             onChangeText={setQuery}
           />
         </View>
         {query && (
-          <TouchableOpacity onPress={() => setQuery('')}>
+          <TouchableOpacity onPress={() => setQuery("")}>
             <CloseIcon size={24} />
           </TouchableOpacity>
         )}
       </View>
-      <TouchableOpacity
-        style={styles.filterButton}
-        onPress={() => dispatch(setShowInspectionsFilter(true))}
-      >
-        <SettingInspectionsIcon color="#fff" width={30} height={30} />
-      </TouchableOpacity>
+      {showFilterButton && (
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => dispatch(setShowInspectionsFilter(true))}
+        >
+          <SettingInspectionsIcon color="#fff" width={30} height={30} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

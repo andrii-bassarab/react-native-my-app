@@ -6,14 +6,13 @@ import { RouteProp } from "@react-navigation/native";
 import { Inspection } from "~/types/Inspection";
 import { AssignedBox } from "./AssignedBox";
 import { AdressBox } from "./AdressBox";
+import { CustomAttributes } from "./CustomAttributes";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
 }
 
 export const InspectionDetails: React.FC<Props> = ({ route }) => {
-  console.log(route);
-
   return (
     <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
       <StatusBox inspection={route.params} />
@@ -21,6 +20,8 @@ export const InspectionDetails: React.FC<Props> = ({ route }) => {
       <AssignedBox inspection={route.params} />
       <View style={{ height: 10 }} />
       <AdressBox inspection={route.params} />
+      <View style={{ height: 10 }} />
+      <CustomAttributes inspection={route.params} />
       <View style={{ height: 20 }} />
     </ScrollView>
   );

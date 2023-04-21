@@ -175,7 +175,7 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
         <View style={styles.content}>
           <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
           <Text style={styles.title}>Inspections</Text>
-          <SearchForm query={query} setQuery={setQuery} />
+          <SearchForm query={query} setQuery={setQuery} showFilterButton={true} />
           {visibleInspections.length > 0 ? (
             <View style={{ marginBottom: "45%", marginTop: 10 }}>
               <FlatList
