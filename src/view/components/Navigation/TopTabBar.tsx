@@ -86,7 +86,7 @@ const style = StyleSheet.create({
   },
   button: {
     backgroundColor: "#fff",
-    padding: 5,
+    paddingVertical: 5,
     flex: 1,
   },
   active: {

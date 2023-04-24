@@ -17,6 +17,7 @@ import {
   setCameraPermission,
   setNotificationPermission,
 } from "~/modules/user/actions";
+import { Toast } from "../components/Custom/Toast";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -65,6 +66,7 @@ export const AppNavigator: React.FC = () => {
       <AppStack.Navigator screenOptions={screenOptions} initialRouteName="Home">
         <AppStack.Screen name="Home" component={HomeNavigator} />
       </AppStack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 };

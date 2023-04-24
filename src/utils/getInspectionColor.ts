@@ -17,7 +17,9 @@ export const getInspectionColorByStatus = (status: string) => {
 
 export const getColorCategoryByResult = (result: string, status: string) => {
   switch (true) {
-    case result == "No results yet":
+    case status === "--":
+      return colors.darkGrey;
+    case status === "Incomplete" && result == "No results yet":
       return colors.blue;
     case status === "Complete" && result === "Passed":
       return colors.green;

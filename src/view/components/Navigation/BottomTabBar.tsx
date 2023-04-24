@@ -6,6 +6,7 @@ import HomeIcon from "~/view/assets/icons/home.svg";
 import DocumentIcon from "~/view/assets/icons/document.svg";
 import WorkIcon from "~/view/assets/icons/work.svg";
 import SwitchIcon from "~/view/assets/icons/switch.svg";
+import SyncIcon from "~/view/assets/icons/sync.svg";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
@@ -13,11 +14,7 @@ import { CustomerSite } from "../Screen/CustomerSite";
 
 interface Props extends BottomTabBarProps {}
 
-export const BottomTabBar: React.FC<Props> = ({
-  state,
-  descriptors,
-  navigation,
-}) => {
+export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   const currentUser = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -106,8 +103,8 @@ export const BottomTabBar: React.FC<Props> = ({
         );
       })}
       <TouchableOpacity style={styles.item} onPress={openSwitchSite}>
-        <SwitchIcon height="30%" color={colors.primary} />
-        <Text style={{ color: colors.primary, fontWeight: "500" }}>Switch</Text>
+        <SyncIcon height="35%" color={colors.primary} />
+        <Text style={{ color: colors.primary, fontWeight: "500" }}>Sync</Text>
       </TouchableOpacity>
     </View>
   );

@@ -3,7 +3,6 @@ import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/nati
 import { View, Text, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { TopTabBar } from "../components/Navigation/TopTabBar";
@@ -28,14 +27,6 @@ interface Props {
 
 const Tab = createMaterialTopTabNavigator();
 
-function DetailsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Details!</Text>
-    </View>
-  );
-}
-
 function CommentsScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -48,14 +39,6 @@ function FilesScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Files!</Text>
-    </View>
-  );
-}
-
-function ResultsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Results!</Text>
     </View>
   );
 }

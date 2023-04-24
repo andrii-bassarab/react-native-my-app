@@ -1,9 +1,13 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { getColorCategoryByResult } from "~/utils/getInspectionColor";
 import { colors } from "~/view/theme";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
 import FailedIcon from "~/view/assets/icons/failed.svg";
+import DotsIcon from "~/view/assets/icons/dots.svg";
+import DeleteIcon from "~/view/assets/icons/delete.svg";
+import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
+import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
 
 interface Props {
   category: {
@@ -12,18 +16,44 @@ interface Props {
     result: string;
     items: number;
     photos: string;
+    categoryAdded?: boolean;
   };
 }
 
 export const InspectionCategory: React.FC<Props> = ({ category }) => {
   const { title, status, result, items, photos } = category;
+  const [showDeleteLabel, setShowDeleteLabel] = useState(false);
+  const [showDeleteModalWindow, setShowDeleteModalWindow] = useState(false);
 
   const itemColor = getColorCategoryByResult(result, status);
+
+  const onContinue = () => {
+    setShowDeleteModalWindow(false);
+    setShowDeleteLabel(false);
+  };
 
   return (
     <View style={[styles.card, styles.shadowProp, { borderColor: itemColor }]}>
       <View style={{ ...styles.mainInfo, borderColor: itemColor }}>
-        <Text style={{ ...styles.cardTitle, color: itemColor }}>{title}</Text>
+        <View style={styles.titleLabel}>
+          <Text style={{ ...styles.cardTitle, color: itemColor }}>{title}</Text>
+          {category.categoryAdded && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {showDeleteLabel && (
+                <TouchableOpacity
+                  style={[styles.deleteLabel, styles.shadowProp]}
+                  onPress={() => setShowDeleteModalWindow((prev) => !prev)}
+                >
+                  <DeleteIcon color={colors.layout} width={20} height={15} />
+                  <Text>Delete</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity onPress={() => setShowDeleteLabel((prev) => !prev)}>
+                <DotsIcon color={colors.primary} height={15} width={15} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
         <View style={styles.content}>
           <View style={{ flex: 1 }}>
             <View style={styles.label}>
@@ -45,18 +75,26 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
               <Text style={styles.text}>{photos}</Text>
             </View>
           </View>
-          {status === "Complete" && result === "Passed" && (
-            <View style={{ flex: 0.2, alignItems: "center" }}>
+          <View style={{ flex: 0.2, alignItems: "center" }}>
+            {status === "Complete" && result === "Passed" && (
               <CompletedIcon color={"#96BF5B"} height={30} width={30} />
-            </View>
-          )}
-          {status === "Complete" && result === "Failed" && (
-            <View style={styles.failedBox}>
-              <FailedIcon color={"#fff"} height={15} width={15} />
-            </View>
-          )}
+            )}
+            {status === "Complete" && result === "Failed" && (
+              <View style={styles.failedBox}>
+                <FailedIcon color={"#fff"} height={15} width={15} />
+              </View>
+            )}
+          </View>
         </View>
       </View>
+      {showDeleteModalWindow && (
+        <ModalDeleteItem
+          title={"Are you sure you want to delete \“Living Room (Additional)\”?"}
+          Icon={DeleteModalIcon}
+          onContinue={onContinue}
+          onCancel={onContinue}
+        />
+      )}
     </View>
   );
 };
@@ -75,7 +113,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     height: 100,
     borderWidth: 2,
-    marginBottom: 10
+    marginBottom: 10,
   },
   content: {
     flexDirection: "row",
@@ -124,5 +162,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.red,
     borderRadius: 100,
+  },
+  titleLabel: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  deleteLabel: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginRight: 5,
   },
 });

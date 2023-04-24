@@ -31,12 +31,12 @@ export const MainStack: React.FC = () => {
 
   const { loading, error, data } = useQuery(GET_ALL_INSPECTIONS);
 
-  console.log('---------------------')
-  console.log('data', data?.inspections?.edges)
-  console.log('error', new Date('2021-11-03T06:00:00.000Z').toLocaleString())
-  console.log('---------------------')
-
   useEffect(() => {
+    console.log('---------------------')
+    console.log('data', data?.inspections?.edges)
+    console.log('error', new Date('2021-11-03T06:00:00.000Z').toLocaleString())
+    console.log('---------------------')
+
     if (data && data.inspections?.edges) {
       dispatch(actionsInspections.setInspections(data.inspections?.edges))
     }
