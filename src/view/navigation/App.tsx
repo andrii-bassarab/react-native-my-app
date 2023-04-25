@@ -33,6 +33,7 @@ export const AppNavigator: React.FC = () => {
   useReduxDevToolsExtension(navigationRef);
 
   const currentUser = useAppSelector((state) => state.user);
+  const toastNotification = useAppSelector((state) => state.toastNotification)
 
   const getUser = async () => {
     try {
@@ -45,10 +46,6 @@ export const AppNavigator: React.FC = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    console.log("currentUser", currentUser);
-  }, []);
 
   if (!currentUser.auth && !currentUser.profile) {
     return (
@@ -66,7 +63,7 @@ export const AppNavigator: React.FC = () => {
       <AppStack.Navigator screenOptions={screenOptions} initialRouteName="Home">
         <AppStack.Screen name="Home" component={HomeNavigator} />
       </AppStack.Navigator>
-      <Toast />
+      {toastNotification.showToast && <Toast />}
     </NavigationContainer>
   );
 };

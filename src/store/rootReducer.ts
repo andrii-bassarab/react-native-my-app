@@ -8,6 +8,7 @@ import eventsSlice from '~/modules/events';
 import notificationsReducer from '~/modules/notifications';
 import filterInspectionsReducer from '~/modules/filterInspections';
 import inspectionsReducer from '~/modules/inspections';
+import toastNotificationReducer from '~/modules/toastNotification';
 
 const transforms = [
   createTransform(
@@ -34,6 +35,7 @@ const appReducer = combineReducers({
   notifications: notificationsReducer,
   filterInspections: filterInspectionsReducer,
   inspections: inspectionsReducer,
+  toastNotification: toastNotificationReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
-import { RouteProp } from "@react-navigation/native";
+import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Inspection } from "~/types/Inspection";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { InspectionCategory } from "./InspectionCategory";
@@ -50,9 +50,10 @@ const mocksCategory = [
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
+  navigation: NavigationProp<ParamListBase>;
 }
 
-export const InspectionInspect: React.FC<Props> = ({ route }) => {
+export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const [query, setQuery] = useState("");
   const [visibleCategory, setVisibleCategory] = useState(mocksCategory);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
@@ -83,7 +84,9 @@ export const InspectionInspect: React.FC<Props> = ({ route }) => {
       <View style={{ height: 15 }} />
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         {visibleCategory.map((category, index) => (
-          <InspectionCategory key={index} category={category} />
+          <TouchableOpacity key={index} onPress={() => navigation.navigate('InspectionCategory', {inspection: route.params, category})}>
+            <InspectionCategory category={category} />
+          </TouchableOpacity>
         ))}
       </ScrollView>
       {showModalAddCategory && (

@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '~/view/theme';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Animated } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { colors } from "~/view/theme";
+import { actionsToastNotification } from "../../../modules/toastNotification";
+import CompletedIcon from "~/view/assets/icons/completed.svg";
 
-export const Toast = ({ message }: any) => {
-  const [isVisible, setIsVisible] = useState(true);
+export const Toast = () => {
+  const dispatch = useAppDispatch();
+  const toastNotification = useAppSelector((state) => state.toastNotification);
+  const hideToastNotification = () => dispatch(actionsToastNotification.hideToastMessage());
+
+  const { showToast, toastMessage } = toastNotification;
+
   const [fadeAnim] = useState(new Animated.Value(0));
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    if (isVisible) {
+    if (showToast) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 500,
         useNativeDriver: true,
       }).start(() => {
         setTimeout(() => {
@@ -20,11 +28,7 @@ export const Toast = ({ message }: any) => {
         }, 3000);
       });
     }
-  }, [isVisible]);
-
-  const showToast = () => {
-    setIsVisible(true);
-  };
+  }, [showToast]);
 
   const hideToast = () => {
     Animated.timing(fadeAnim, {
@@ -32,38 +36,40 @@ export const Toast = ({ message }: any) => {
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
-      setIsVisible(false);
+      hideToastNotification();
     });
   };
 
   return (
     <View style={styles.container}>
-      {isVisible && (
-        <Animated.View style={[styles.toast, { opacity: fadeAnim, paddingTop: insets.top }]}>
-          <Text style={styles.text}>{"message"}</Text>
-        </Animated.View>
-      )}
+      <Animated.View style={[styles.toast, { opacity: fadeAnim, paddingTop: insets.top }]}>
+        <CompletedIcon width={30} height={30} color={"#fff"} style={{marginRight: "10%"}} />
+        <Text style={styles.text}>{toastMessage}</Text>
+      </Animated.View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    alignItems: 'center',
-    width: "100%"
+    alignItems: "center",
+    width: "100%",
   },
   toast: {
     backgroundColor: colors.green,
     borderRadius: 5,
     padding: 10,
     width: "100%",
-    alignItems: 'center'
+    alignItems: "center",
+    flexDirection: 'row',
+    paddingHorizontal: "10%"
   },
   text: {
-    color: '#fff',
+    color: "#fff",
+    fontWeight: "600",
   },
 });

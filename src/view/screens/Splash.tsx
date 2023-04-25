@@ -9,11 +9,8 @@ import {
   SafeAreaView,
   StyleSheet,
   Animated,
-  ActivityIndicator,
 } from "react-native";
 import { ModalLoader } from "../components/Custom/ModalLoader";
-import { useAppDispatch } from "~/store/hooks";
-import { setFirstInit } from "~/modules/user/actions";
 
 interface Props {
   children?: React.ReactNode;
@@ -24,7 +21,6 @@ interface Props {
 export const SplashScreen: React.FC<Props> = ({ route, navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [loader, setLoader] = useState(route.params?.loader || false);
-  const dispatch = useAppDispatch();
 
   const initUserFirstTime = () => {
     setTimeout(() => {
@@ -47,8 +43,6 @@ export const SplashScreen: React.FC<Props> = ({ route, navigation }) => {
       setLoader(false);
     };
   }, []);
-
-  // console.log(route?.params);
 
   return (
     <View style={styles.screen}>

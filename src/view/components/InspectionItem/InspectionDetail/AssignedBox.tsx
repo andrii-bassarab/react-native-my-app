@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
 import { Inspection } from "~/types/Inspection";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { ModalScreen } from "../../Custom/ModalScreen";
+import { CustomSelect } from "../../Custom/CustomSelect";
 
 interface Props {
   inspection: Inspection;
 }
 
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
+  const [showModalAssigned, setShowModalAssigned] = useState(false);
+  const [assignedTo, setAssignedTo] = useState(inspection.assigned);
+  const assignedOptions = ["Me", "Unassigned"];
+
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
@@ -18,7 +24,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
           <Text style={styles.text}>{inspection.assigned}</Text>
           {inspection.status !== InspectionStatus.FAILED &&
             inspection.status !== InspectionStatus.PASSED && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
                 <EditIcon color={colors.blue} height={15} width={15} />
               </TouchableOpacity>
             )}
@@ -36,6 +42,25 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.labelText}>Inspection Form:</Text>
         <Text style={styles.text}>HQS</Text>
       </View>
+      {showModalAssigned && (
+        <ModalScreen
+          closeModalFunction={() => setShowModalAssigned(false)}
+          height={"40%"}
+          percentSwipeToClose={0.2}
+        >
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Assigned To</Text>
+            <CustomSelect
+              data={assignedOptions}
+              selectedItem={assignedTo}
+              setSelectedItem={setAssignedTo}
+            />
+            <TouchableOpacity style={styles.modalSaveButton}>
+              <Text style={styles.modalSaveButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </ModalScreen>
+      )}
     </View>
   );
 };
@@ -78,5 +103,29 @@ const styles = StyleSheet.create({
     textAlign: "left",
     flex: 1,
     fontSize: 13,
+  },
+  modalContainer: {
+    alignItems: "stretch",
+    flex: 1,
+    marginTop: "10%",
+  },
+  modalTitle: {
+    color: colors.darkGrey,
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  modalSaveButton: {
+    paddingVertical: 6,
+    width: "40%",
+    borderRadius: 50,
+    backgroundColor: colors.layout,
+    marginTop: 20,
+    alignItems: "center",
+    alignSelf: "flex-end",
+  },
+  modalSaveButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
   },
 });
