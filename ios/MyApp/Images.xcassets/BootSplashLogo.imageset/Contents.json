@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "WhiteKansoLogo.png",
+      "filename" : "logoSquare.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "WhiteKansoLogo (1).png",
+      "filename" : "logoSquare (2).png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "WhiteKansoLogo (2).png",
+      "filename" : "logoSquare (3).png",
       "idiom" : "universal",
       "scale" : "3x"
     }
