@@ -8,9 +8,10 @@ interface Props {
   Icon: React.FC<SvgProps>;
   onContinue: () => void;
   onCancel: () => void;
+  message?: string;
 }
 
-export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCancel }) => {
+export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCancel, message }) => {
   return (
     <Modal transparent={true}>
       <Pressable
@@ -32,6 +33,7 @@ export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCa
             <Icon color="#fff" width={90} height={90} />
           </View>
           <Text style={styles.title}>{title}</Text>
+          {message && <Text style={styles.message}>{message}</Text>}
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
               style={{ ...styles.button, borderColor: colors.blue }}
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 50,
+    marginTop: 40,
   },
   button: {
     borderRadius: 40,
@@ -112,4 +114,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: colors.blue,
   },
+  message: {
+    marginTop: 15,
+    color: colors.darkGrey,
+    fontWeight: '500'
+  }
 });

@@ -76,6 +76,7 @@ const style = StyleSheet.create({
   container: {
     paddingTop: 20,
     paddingBottom: 10,
+    paddingHorizontal: 25,
     elevation: 0,
   },
   bar: {

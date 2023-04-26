@@ -3,8 +3,6 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite, setSelectedSite, setAvailableSites, setShowNotification, setShowInspectionsFilter } from './actions';
 import { UserState } from './types';
-import notificationsReducer, { actions as actionsNotifications } from '~/modules/notifications';
-import { useAppDispatch } from '~/store/hooks';
 
 export const initialState: UserState = {
   profileStatus: AsyncStatus.IDLE,

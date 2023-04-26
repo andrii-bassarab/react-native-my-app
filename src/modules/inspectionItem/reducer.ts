@@ -1,0 +1,70 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+const initialState = {
+  hasUnsavedChanges: false,
+  categories: [
+    {
+      title: "Living Room",
+      status: "--",
+      result: "--",
+      items: 0,
+      photos: "No",
+    },
+    {
+      title: "Kitchen",
+      status: "Complete",
+      result: "Failed",
+      items: 2,
+      photos: "Yes",
+    },
+    {
+      title: "Bathroom",
+      status: "Complete",
+      result: "Passed",
+      items: 7,
+      photos: "Yes",
+    },
+    {
+      title: "Bedroom",
+      status: "Complete",
+      result: "Failed",
+      items: 0,
+      photos: "No",
+    },
+    {
+      title: "Living Room (addition)",
+      status: "Incomplete",
+      result: "No results yet",
+      items: 0,
+      photos: "No",
+      categoryAdded: true,
+    },
+  ],
+  assigned: '',
+  phoneNumber: ''
+}
+
+const inspectionItemSlice = createSlice({
+  name: "inspectionItem",
+  initialState: initialState,
+  reducers: {
+    setHasUnsavedChanges: (state, action: PayloadAction<boolean>) => {
+      state.hasUnsavedChanges = action.payload
+    },
+    setAssigned: (state, action: PayloadAction<string>) => {
+      state.assigned = action.payload;
+    },
+    setPhoneNumber: (state, action: PayloadAction<string>) => {
+      state.phoneNumber = action.payload;
+    },
+    clearInspectionItem: () => ({
+      hasUnsavedChanges: false,
+      categories: [],
+      assigned: '',
+      phoneNumber: '',
+    }),
+  },
+})
+
+export default inspectionItemSlice.reducer
+export const { actions: actionsInspectionItem } = inspectionItemSlice

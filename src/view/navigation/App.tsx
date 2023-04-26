@@ -1,9 +1,6 @@
 import "react-native-gesture-handler";
 import { useReduxDevToolsExtension } from "@react-navigation/devtools";
-import {
-  NavigationContainer,
-  useNavigationContainerRef,
-} from "@react-navigation/native";
+import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,19 +30,7 @@ export const AppNavigator: React.FC = () => {
   useReduxDevToolsExtension(navigationRef);
 
   const currentUser = useAppSelector((state) => state.user);
-  const toastNotification = useAppSelector((state) => state.toastNotification)
-
-  const getUser = async () => {
-    try {
-      const userData = await AsyncStorage.getItem("firstOpen");
-
-      console.log("console", JSON.parse(userData || "[]"));
-
-      if (!userData) return "error";
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const toastNotification = useAppSelector((state) => state.toastNotification);
 
   if (!currentUser.auth && !currentUser.profile) {
     return (

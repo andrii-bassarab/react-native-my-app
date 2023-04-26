@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
@@ -9,6 +9,10 @@ import { TopTabBar } from "../components/Navigation/TopTabBar";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { InspectionDetails } from "../components/InspectionItem/InspectionDetail/InspectionDetail";
 import { InspectionInspect } from "../components/InspectionItem/InspectionInspect/InspectionInspect";
+import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
+import SaveIcon from "~/view/assets/icons/save.svg";
+import { useAppSelector } from "~/store/hooks";
+import { InspectionComments } from "../components/InspectionItem/InspectionComments/InspectionComments";
 
 interface Inspection {
   title: string;
@@ -27,14 +31,6 @@ interface Props {
 
 const Tab = createMaterialTopTabNavigator();
 
-function CommentsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Comments!</Text>
-    </View>
-  );
-}
-
 function FilesScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -45,6 +41,9 @@ function FilesScreen() {
 
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
+  const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const currentInspection = useAppSelector((state) => state.inspectionItem);
 
   const goBack = () => navigation.navigate("Inspections");
 
@@ -59,7 +58,21 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screen}>
         <View style={styles.content}>
-          <SelectedInspection item={inspection} goBack={goBack} />
+          <View style={{ paddingHorizontal: 25 }}>
+            <SelectedInspection item={inspection} goBack={() => setShowModalUnsavedChanges(true)} />
+          </View>
+          {showModalUnsavedChanges && (
+            <ModalDeleteItem
+              title={"You have unsaved changes. Unsaved changes will be lost."}
+              Icon={SaveIcon}
+              onContinue={() => {
+                setShowModalUnsavedChanges(false);
+                goBack();
+              }}
+              onCancel={() => setShowModalUnsavedChanges(false)}
+              message="Are you sure you want to leave without saving changes?"
+            />
+          )}
           <Tab.Navigator tabBar={(props) => <TopTabBar {...props} />} initialRouteName="HomeScreen">
             {inspection.status !== InspectionStatus.NEW &&
               inspection.status !== InspectionStatus.SCHEDULED && (
@@ -71,7 +84,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
                 />
               )}
             <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
-            <Tab.Screen name="Comments" component={CommentsScreen} initialParams={inspection} />
+            <Tab.Screen name="Comments" component={InspectionComments} initialParams={inspection} />
             <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
           </Tab.Navigator>
         </View>
@@ -91,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    padding: 25,
+    // paddingHorizontal: 25,
     paddingTop: 25,
     paddingBottom: 0,
   },
