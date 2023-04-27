@@ -8,45 +8,8 @@ import { InspectionCategory } from "./InspectionCategory";
 import { InspecitonAddCategory } from "./InspectionAddCategory";
 import { ModalAddCategory } from "./ModalAddCategory";
 import { Category } from "~/types/Category";
-
-const mocksCategory = [
-  {
-    title: "Living Room",
-    status: "--",
-    result: "--",
-    items: 0,
-    photos: "No",
-  },
-  {
-    title: "Kitchen",
-    status: "Complete",
-    result: "Failed",
-    items: 2,
-    photos: "Yes",
-  },
-  {
-    title: "Bathroom",
-    status: "Complete",
-    result: "Passed",
-    items: 7,
-    photos: "Yes",
-  },
-  {
-    title: "Bedroom",
-    status: "Complete",
-    result: "Failed",
-    items: 0,
-    photos: "No",
-  },
-  {
-    title: "Living Room (addition)",
-    status: "Incomplete",
-    result: "No results yet",
-    items: 0,
-    photos: "No",
-    categoryAdded: true,
-  },
-];
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
@@ -54,23 +17,26 @@ interface Props {
 }
 
 export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
+  const dispatch = useAppDispatch();
+
+  // const addNewCategory = (newCategory: Category) => dispatch(actionsInspectionItem.addCategory(newCategory));
+  const { categories } = useAppSelector((state) => state.inspectionItem);
+
   const [query, setQuery] = useState("");
-  const [visibleCategory, setVisibleCategory] = useState(mocksCategory);
+  // const [visibleCategory, setVisibleCategory] = useState(categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
-  const addNewCategory = (newCategory: Category) => {
-    setVisibleCategory((prev) => [...prev, newCategory]);
-  };
-
-  useEffect(() => {
-    setVisibleCategory(
-      mocksCategory.filter((category) =>
-        category.title.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
-      )
-    );
-  }, [query]);
+  // useEffect(() => {
+  //   setVisibleCategory(
+  //     categories.filter((category) =>
+  //       category.title.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
+  //     )
+  //   );
+  // }, [query]);
 
   useEffect(() => {}, []);
+
+  console.log(categories)
 
   return (
     <View style={styles.content}>
@@ -83,7 +49,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
       </TouchableOpacity>
       <View style={{ height: 15 }} />
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        {visibleCategory.map((category, index) => (
+        {categories.map((category, index) => (
           <TouchableOpacity key={index} onPress={() => navigation.navigate('InspectionCategory', {inspection: route.params, category})}>
             <InspectionCategory category={category} />
           </TouchableOpacity>
@@ -92,7 +58,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
       {showModalAddCategory && (
         <ModalAddCategory
           closeModal={() => setShowModalAddCategory(false)}
-          addNewCategory={addNewCategory}
         />
       )}
     </View>

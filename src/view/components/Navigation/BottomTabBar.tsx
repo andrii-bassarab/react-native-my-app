@@ -79,6 +79,10 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
           });
         };
 
+        if (typeof label === "string" && label === "InspectionNavigation") {
+          return null;
+        }
+
         return (
           <TouchableOpacity
             accessibilityRole="button"

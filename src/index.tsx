@@ -33,6 +33,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// AppRegistry.registerComponent('Kanso', () => App);
+
 const RootApp: React.FC = () => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>

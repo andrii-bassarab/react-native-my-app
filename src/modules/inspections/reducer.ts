@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { InspectionItem } from "~/types/InspectionItem"
 
 const inspectionsSlice = createSlice({
   name: "inspections",
-  initialState: [],
+  initialState: [] as InspectionItem[],
   reducers: {
-    setInspections: (_state, action: PayloadAction<any>) => {
+    setInspections: (_state, action: PayloadAction<InspectionItem[]>) => {
       return action.payload
     },
     clearInspections: () => [],
@@ -12,4 +13,4 @@ const inspectionsSlice = createSlice({
 })
 
 export default inspectionsSlice.reducer
-export const { actions } = inspectionsSlice
+export const { actions: actionsInspections } = inspectionsSlice

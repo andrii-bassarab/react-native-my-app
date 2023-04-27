@@ -1,37 +1,52 @@
-import React from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
+import React, { useId } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from "react-native";
+import { Comment } from "~/types/Comment";
+import { getVisibleDate } from "~/utils/visibleDate";
 import { colors } from "~/view/theme";
 
 interface Props {
-  comment: {
-    id: string;
-    author: string;
-    comment: string;
-    date: string;
-  };
+  comment: Comment;
   index: number;
   arrayLength: number;
 }
 
 export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) => {
   return (
-    <View>
-      <View style={styles.timePoint} />
-      <View
-        style={[
-          styles.card,
-          index === arrayLength - 1 && { borderLeftWidth: 0, borderColor: "#fff" },
-        ]}
-      >
-        <View style={{ flex: 1 }}>
-          <View style={styles.header}>
-            <Text style={styles.author}>{comment.author + "-"}</Text>
-            <Text style={styles.date}>{comment.date}</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View>
+          <View style={styles.timePoint} />
+          <View
+            style={[
+              styles.card,
+              index === arrayLength - 1 && { borderLeftWidth: 0, borderColor: "#fff" },
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <View style={styles.header}>
+                <Text style={styles.author}>{comment.author + "-"}</Text>
+                <Text style={styles.date}>
+                  {(Date.parse(comment.date)) >= Date.now() - 5 * 60 * 1000 ? 'Now' : getVisibleDate(new Date(comment.date)) }
+                </Text>
+              </View>
+              <Text style={styles.comment}>{comment.comment}</Text>
+            </View>
           </View>
-          <Text style={styles.comment}>{comment.comment}</Text>
         </View>
-      </View>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

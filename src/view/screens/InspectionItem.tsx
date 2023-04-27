@@ -43,7 +43,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const currentInspection = useAppSelector((state) => state.inspectionItem);
+  const currentInspection = useAppSelector((state) => state?.inspectionItem);
 
   const goBack = () => navigation.navigate("Inspections");
 

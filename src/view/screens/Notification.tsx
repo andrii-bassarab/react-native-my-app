@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification } from "~/modules/user/actions";
 import { ScrollView } from "react-native-gesture-handler";
 import { actions as actionsNotifications } from "../../modules/notifications";
-import { visibleDate } from "~/utils/visibleDate";
+import { getVisibleDate } from "~/utils/visibleDate";
 
 export const Notifications: React.FC = () => {
   const dispatch = useAppDispatch();

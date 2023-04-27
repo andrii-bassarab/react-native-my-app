@@ -4,14 +4,20 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "~/view/theme";
 import { CustomSelect } from "../../Custom/CustomSelect";
 import { Category } from "~/types/Category";
+import { useAppDispatch } from "~/store/hooks";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   closeModal: () => void;
-  addNewCategory: (newCategory: Category) => void;
 }
 
-export const ModalAddCategory: React.FC<Props> = ({ closeModal, addNewCategory }) => {
+export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
   const insets = useSafeAreaInsets();
+
+  const dispatch = useAppDispatch();
+
+  const addNewCategory = (newCategory: Category) => dispatch(actionsInspectionItem.addCategory(newCategory));
+
   const [selectedCategory, setSelectedCategory] = useState("Select Inspection Category");
   const [categoryError, setCategoryError] = useState("");
   const [displayName, setDisplayName] = useState("");

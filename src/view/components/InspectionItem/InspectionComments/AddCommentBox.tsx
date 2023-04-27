@@ -1,19 +1,26 @@
-import React from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity
-} from "react-native";
+import React, { useId } from "react";
+import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import { Comment } from "~/types/Comment";
 import { colors } from "~/view/theme";
 
 interface Props {
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
+  addNewComment: (newComment: Comment) => void;
 }
 
-export const AddCommentBox: React.FC<Props> = ({ input, setInput }) => {
+export const AddCommentBox: React.FC<Props> = ({ input, setInput, addNewComment }) => {
+  const newComment = {
+    id: new Date().toLocaleString(),
+    author: "Me",
+    comment: input,
+  };
+
+  const handleAddNewComment = (newComment: Comment) => {
+    addNewComment({ ...newComment, date: new Date().toJSON() });
+    setInput("");
+  };
+
   return (
     <View style={styles.content}>
       <TextInput
@@ -25,7 +32,10 @@ export const AddCommentBox: React.FC<Props> = ({ input, setInput }) => {
         onChangeText={setInput}
         placeholderTextColor={"#979797"}
       />
-      <TouchableOpacity style={styles.commentButton}>
+      <TouchableOpacity
+        style={styles.commentButton}
+        onPress={() => handleAddNewComment({ ...newComment, date: new Date().toJSON() })}
+      >
         <Text style={styles.commentButtonText}>Comment</Text>
       </TouchableOpacity>
     </View>
@@ -36,7 +46,8 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: "#fff",
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+    paddingLeft: 10
   },
   inputLabel: {
     paddingHorizontal: 20,

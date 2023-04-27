@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Category } from "~/types/Category";
 
 const initialState = {
   hasUnsavedChanges: false,
@@ -39,7 +40,7 @@ const initialState = {
       photos: "No",
       categoryAdded: true,
     },
-  ],
+  ] as Category[],
   assigned: '',
   phoneNumber: ''
 }
@@ -48,6 +49,9 @@ const inspectionItemSlice = createSlice({
   name: "inspectionItem",
   initialState: initialState,
   reducers: {
+    addCategory: (state, action: PayloadAction<Category>) => {
+      state.categories = [action.payload, ...state.categories]
+    },
     setHasUnsavedChanges: (state, action: PayloadAction<boolean>) => {
       state.hasUnsavedChanges = action.payload
     },

@@ -19,6 +19,11 @@ const node = {
       state: "The Shire",
       postalCode: 33111,
     },
+    inspectionComments: {
+      commentBody: "Please knock, if no response, then you can enter.",
+      createdBy: "heather@hdslabs.com",
+      createdOn: "2020-04-13T19:19:31.460Z",
+    },
     household: {
       lastActionName: "Interim Recertification",
       headOfHouseholdId: "5dec1a82ccba88001629772e", //tenant
