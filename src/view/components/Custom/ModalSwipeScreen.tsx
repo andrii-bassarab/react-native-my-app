@@ -18,7 +18,7 @@ interface Props {
   percentSwipeToClose: number;
 }
 
-export const ModalScreen: React.FC<Props> = ({ closeModalFunction, children, height, percentSwipeToClose }) => {
+export const ModalSwipeScreen: React.FC<Props> = ({ closeModalFunction, children, height, percentSwipeToClose }) => {
   const windowHeight = Dimensions.get('window').height;
   const insets = useSafeAreaInsets();
 

@@ -8,18 +8,16 @@ import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NavigationDrawerStructure } from "../components/Navigation/NavigationDrawerStructure";
-import { useAppSelector } from "~/store/hooks";
 import { colors } from "../theme";
 
 const Drawer = createDrawerNavigator();
 
-export const HomeNavigator: React.FC = () => {
+export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
-  const currentUser = useAppSelector((state) => state.user);
 
   const screenOptions = {
     headerStyle: {
-      backgroundColor: currentUser.showSwitchSite ? "#1B2C3C" : colors.layout,
+      backgroundColor: colors.layout,
     },
     headerLeft: () => (
       <NavigationDrawerStructure navigationProps={navigation} />

@@ -24,7 +24,7 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
       author: "Nick Gomes",
       comment:
         "Tenants mentioned they were not please about the work order completed last week ad request a new maintenance tech come out to solve the problem.",
-      date: "2023-07-06T07:00:00.000Z",
+      date: "2022-07-06T07:00:00.000Z",
     },
     {
       id: useId(),

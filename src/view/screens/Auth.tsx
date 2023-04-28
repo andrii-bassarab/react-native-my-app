@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, ParamListBase, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
@@ -39,7 +39,7 @@ const mocksSites = [
 ];
 
 export const AuthScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [loader, setLoader] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");

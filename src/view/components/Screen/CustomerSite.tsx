@@ -8,6 +8,8 @@ import {
   Animated,
   PanResponder,
   Pressable,
+  Modal,
+  Dimensions,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors } from "../../theme";
@@ -15,6 +17,7 @@ import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 import { setSelectedSite, setShowSwitchSite } from "~/modules/user/actions";
 
 export const CustomerSite = () => {
+  const windowHeight = Dimensions.get('window').height;
   const currentUser = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [chosenSite, setChosenSite] = useState(
@@ -34,13 +37,10 @@ export const CustomerSite = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (
-          !currentUser.selectedSite &&
-          currentUser.availableSites.length > 1
-        ) {
+        if (!currentUser.selectedSite && currentUser.availableSites.length > 1) {
           return;
         }
-        if (gestureState.dy > 120) {
+        if (gestureState.dy > windowHeight * 0.15) {
           pan.extractOffset();
           closeSwitchSite();
         }
@@ -60,94 +60,94 @@ export const CustomerSite = () => {
   ).current;
 
   return (
-    <View style={styles.screen}>
+    <Modal transparent>
       <Pressable
-        style={{ flex: 1 }}
-        onPress={closeSwitchSite}
-        disabled={
-          !currentUser.selectedSite && currentUser.availableSites.length > 1
-        }
-      ></Pressable>
-      <Animated.View
-        style={{ ...styles.switchBox, transform: [{ translateY: pan.y }] }}
+        style={styles.modalOverlay}
+        onPress={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          closeSwitchSite();
+        }}
+        disabled={!currentUser.selectedSite && currentUser.availableSites.length > 1}
       >
         <Animated.View
-          style={styles.switchSiteLabelBox}
-          {...panResponder.panHandlers}
-        >
-          <View style={styles.switchSiteLabel} />
-        </Animated.View>
-        <Text style={styles.switchSiteTitle}>Choose Your Customer Site</Text>
-        <View
-          style={{
-            ...styles.dropdownContainer,
-            borderWidth: showDropdown ? 1 : 0,
+          style={{ ...styles.switchBox, transform: [{ translateY: pan.y }] }}
+          onStartShouldSetResponder={() => true}
+          onTouchEnd={(event) => {
+            event.stopPropagation();
           }}
         >
-          <TouchableOpacity
-            style={styles.selectedLabel}
-            onPress={() => setShowDropdown((prev) => !prev)}
+          <Animated.View style={styles.switchSiteLabelBox} {...panResponder.panHandlers}>
+            <TouchableOpacity style={{ flex: 1, justifyContent: "center" }}>
+              <View style={styles.switchSiteLabel} />
+            </TouchableOpacity>
+          </Animated.View>
+          <Text style={styles.switchSiteTitle}>Choose Your Customer Site</Text>
+          <View
+            style={{
+              ...styles.dropdownContainer,
+              borderWidth: showDropdown ? 1 : 0,
+            }}
           >
-            <Text style={styles.selectedText}>{chosenSite.name}</Text>
-            <SelectIcon height={10} width={20} color={colors.primary} />
-          </TouchableOpacity>
-          {showDropdown && (
-            <ScrollView style={styles.dropdownOptionsContainer}>
-              {currentUser.availableSites.map((site) => (
-                <TouchableOpacity
-                  key={site.code}
-                  style={{
-                    ...styles.dropdownOptionsLabel,
-                    backgroundColor:
-                      chosenSite.name === site.name ? colors.blue : "#fff",
-                    borderTopWidth: chosenSite.name === site.name ? 0.5 : 0,
-                    borderBottomWidth: chosenSite.name === site.name ? 0.5 : 0,
-                  }}
-                  onPress={() => {
-                    setChosenSite(site);
-                    setShowDropdown(false);
-                  }}
-                >
-                  <Text
+            <TouchableOpacity
+              style={styles.selectedLabel}
+              onPress={() => setShowDropdown((prev) => !prev)}
+            >
+              <Text style={styles.selectedText}>{chosenSite.name}</Text>
+              <SelectIcon height={10} width={20} color={colors.primary} />
+            </TouchableOpacity>
+            {showDropdown && (
+              <ScrollView style={styles.dropdownOptionsContainer}>
+                {currentUser.availableSites.map((site) => (
+                  <TouchableOpacity
+                    key={site.code}
                     style={{
-                      color:
-                        chosenSite.name === site.name ? "#fff" : colors.primary,
-                      fontSize: 16,
+                      ...styles.dropdownOptionsLabel,
+                      backgroundColor: chosenSite.name === site.name ? colors.blue : "#fff",
+                      borderTopWidth: chosenSite.name === site.name ? 0.5 : 0,
+                      borderBottomWidth: chosenSite.name === site.name ? 0.5 : 0,
+                    }}
+                    onPress={() => {
+                      setChosenSite(site);
+                      setShowDropdown(false);
                     }}
                   >
-                    {site.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-              <View style={{ height: 15 }}></View>
-            </ScrollView>
-          )}
-        </View>
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={() => {
-            dispatch(setSelectedSite(chosenSite));
-            closeSwitchSite();
-          }}
-        >
-          <Text style={styles.saveButtonText}>Apply</Text>
-        </TouchableOpacity>
-      </Animated.View>
-    </View>
+                    <Text
+                      style={{
+                        color: chosenSite.name === site.name ? "#fff" : colors.primary,
+                        fontSize: 16,
+                      }}
+                    >
+                      {site.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+                <View style={{ height: 15 }}></View>
+              </ScrollView>
+            )}
+          </View>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => {
+              dispatch(setSelectedSite(chosenSite));
+              closeSwitchSite();
+            }}
+          >
+            <Text style={styles.saveButtonText}>Apply</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </Pressable>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  modalOverlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.40)",
+    opacity: 1,
+    flex: 1,
     justifyContent: "flex-end",
     alignItems: "stretch",
-    backgroundColor: "rgba(0, 0, 0, 0.33)",
-    opacity: 1,
   },
   dropdownContainer: {
     marginTop: 20,
@@ -203,15 +203,17 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   switchSiteLabelBox: {
-    paddingVertical: 10,
+    marginTop: 10,
+    height: 25,
+    justifyContent: "center",
   },
   switchBox: {
-    height: "55%",
+    height: "50%",
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 30,
-    paddingTop: 10,
+    paddingTop: 0,
     alignItems: "stretch",
   },
   switchSiteTitle: {

@@ -22,7 +22,9 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   const openSwitchSite = () => {
     navigation.closeDrawer();
     dispatch(setShowNotification(false));
-    dispatch(setShowSwitchSite(true));
+    setTimeout(() => {
+      dispatch(setShowSwitchSite(true));
+    }, 100);
   };
 
   return (

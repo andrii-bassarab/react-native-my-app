@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthNavigator } from "./AuthNavigator";
-import { HomeNavigator } from "./Home";
+import { HomeNavigation } from "./HomeNavigation";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { SplashScreen } from "../screens/Splash";
 import {
@@ -46,7 +46,7 @@ export const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <AppStack.Navigator screenOptions={screenOptions} initialRouteName="Home">
-        <AppStack.Screen name="Home" component={HomeNavigator} />
+        <AppStack.Screen name="Home" component={HomeNavigation} />
       </AppStack.Navigator>
       {toastNotification.showToast && <Toast />}
     </NavigationContainer>

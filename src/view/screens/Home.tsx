@@ -80,7 +80,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const currentUser = useAppSelector((state) => state.user);
   const notifications = useAppSelector((state) => state.notifications);
-  const inspecions = useAppSelector((state) => state.inspections);
+  const {inspections} = useAppSelector((state) => state.inspections);
 
   // console.log("notifications", notifications);
 
@@ -88,22 +88,27 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     console.log("---------------------");
-    console.log("inspecions", inspecions);
+    console.log("inspecions", inspections);
     console.log("error", error);
     console.log("loading", loading);
     console.log("---------------------");
 
-    if (data && data.inspections?.edges && typeof data.inspections?.edges === "object") {
-      dispatch(
-        actionsInspections.setInspections(
-          data.inspections?.edges.map((item: any) => ({
-            ...item.node,
-            visibleStatus: getInspectionStatus(item.node.status, item.node.hasPassed),
-          })) as InspectionItem[]
-        )
-      );
+    dispatch(actionsInspections.setLoading(loading))
+
+    if (
+      data &&
+      data.inspections?.edges &&
+      Array.isArray(data.inspections?.edges) &&
+      data.inspections?.edges.every((edge: any) => typeof edge === "object" && edge.node && typeof edge.node === "object")
+    ) {
+      const inspectionsFromServer = data.inspections.edges.map((item: any) => ({
+        ...item.node,
+        visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
+      })) as InspectionItem[];
+  
+      dispatch(actionsInspections.setInspections(inspectionsFromServer))
     }
-  }, [data]);
+  }, [data, loading]);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
@@ -111,12 +116,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.content}>
           <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
           <View style={styles.activityBox}>
-            {loading ? (
-              <ModalLoader />
-            ) : (
               <View style={{ paddingBottom: "20%" }}>
                 <FlatList
-                  data={inspecions}
+                  data={inspections}
                   keyExtractor={(item, index) => `key-${index}`}
                   renderItem={({ item }) => (
                     <InspectionCard
@@ -144,7 +146,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                   showsVerticalScrollIndicator={false}
                 />
               </View>
-            )}
           </View>
           {currentUser.showNotification && <Notifications />}
         </View>

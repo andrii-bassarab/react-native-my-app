@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import EyeIcon from "~/view/assets/icons/eyeslash.svg";
-import { ParamListBase } from "@react-navigation/native";
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface Props {
   goToHome: () => void;
-  navigation: any;
+  navigation: NavigationProp<ParamListBase>;
   setUserName: React.Dispatch<React.SetStateAction<string>>;
   userName: string;
   setPassword: React.Dispatch<React.SetStateAction<string>>;

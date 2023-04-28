@@ -60,3 +60,26 @@ const inspectionTemplates = {
     },
   },
 };
+
+const comment = {
+  data: {
+    householdMembers: {
+      edges: [
+        {
+          node: {
+            firstName: "Gary",
+            middleName: "L",
+            lastName: "Ellis",
+          },
+          cursor: "MA==",
+        },
+      ],
+      pageInfo: {
+        startCursor: "MA==",
+        endCursor: "MA==",
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    },
+  },
+};

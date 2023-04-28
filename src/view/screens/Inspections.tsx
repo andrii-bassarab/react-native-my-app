@@ -13,6 +13,8 @@ import { useMemo } from "react";
 import { ModalLoader } from "../components/Custom/ModalLoader";
 import SearchIcon from '../assets/icons/search.svg';
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
+import { Screen } from "../components/Screen/Screen";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
@@ -48,11 +50,11 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
       );
     } else {
       setVisibleInspections((prev) => {
-        const newInspections = prev.filter((item) => item.status === "New");
-        const scheduled = prev.filter((item) => item.status === "Scheduled");
-        const inProgress = prev.filter((item) => item.status === "In Progress");
-        const failed = prev.filter((item) => item.status === "Failed");
-        const passed = prev.filter((item) => item.status === "Passed");
+        const newInspections = prev.filter((item) => item.status === InspectionStatus.NEW);
+        const scheduled = prev.filter((item) => item.status === InspectionStatus.SCHEDULED);
+        const inProgress = prev.filter((item) => item.status === InspectionStatus.INPROGRESS);
+        const failed = prev.filter((item) => item.status === InspectionStatus.FAILED);
+        const passed = prev.filter((item) => item.status === InspectionStatus.PASSED);
 
         return [...inProgress, ...scheduled, ...newInspections, ...failed, ...passed];
       });
@@ -170,7 +172,7 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
   ]);
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screenContainer}>
         <View style={styles.content}>
           <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
@@ -210,7 +212,7 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
         )}
       </View>
       {loader && <ModalLoader />}
-    </SafeAreaView>
+    </Screen>
   );
 };
 

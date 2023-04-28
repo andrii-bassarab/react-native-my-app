@@ -1,11 +1,12 @@
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { ParamListBase } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
-import { Text, SafeAreaView, StyleSheet, View, Animated } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Text, StyleSheet, View, Animated } from "react-native";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors } from "../theme";
 import BuilderIncon from "../assets/icons/build.svg";
 import SettingsDetail from "../assets/icons/settings.svg";
+import { Screen } from "../components/Screen/Screen";
 
 interface Props {
   navigation: BottomTabNavigationProp<ParamListBase>;
@@ -23,7 +24,7 @@ export const WorkOrder: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screenContainer}>
         <View style={styles.content}>
           <WelcomeBox
@@ -48,7 +49,7 @@ export const WorkOrder: React.FC<Props> = ({ navigation }) => {
           </Animated.View>
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 };
 

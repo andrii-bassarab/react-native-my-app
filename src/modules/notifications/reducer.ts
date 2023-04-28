@@ -1,37 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { signOut } from "../user/actions";
+import { NotificationItem } from "~/types/NotificationItem";
 
 const notificationsSlice = createSlice({
   name: "notifications",
-  initialState: [] as ({
-    title: string;
-    detail: string[];
-    date: string;
-} | {
-    title: string;
-    date: string;
-    detail?: undefined;
-})[],
+  initialState: [] as NotificationItem[],
   reducers: {
-    setNotifications: (_state, action: PayloadAction<({
-      title: string;
-      detail: string[];
-      date: string;
-  } | {
-      title: string;
-      date: string;
-      detail?: undefined;
-  })[]>) => {
+    setNotifications: (_state, action: PayloadAction<NotificationItem[]>) => {
       return action.payload
     },
     clearNotifications: () => [],
+    addNotification: (state, action: PayloadAction<NotificationItem>) => {
+      return [action.payload, ...state]
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(signOut.type, () => {
-      return [] 
+      return []
     })
   }
 })
 
 export default notificationsSlice.reducer;
-export const { actions } = notificationsSlice;
+export const { actions: actionsNotifications } = notificationsSlice;

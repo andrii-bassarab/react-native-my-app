@@ -4,7 +4,7 @@ import { colors } from "~/view/theme";
 import { Inspection } from "~/types/Inspection";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { ModalScreen } from "../../Custom/ModalScreen";
+import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { CustomSelect } from "../../Custom/CustomSelect";
 
 interface Props {
@@ -43,7 +43,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.text}>HQS</Text>
       </View>
       {showModalAssigned && (
-        <ModalScreen
+        <ModalSwipeScreen
           closeModalFunction={() => setShowModalAssigned(false)}
           height={"40%"}
           percentSwipeToClose={0.2}
@@ -59,7 +59,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
-        </ModalScreen>
+        </ModalSwipeScreen>
       )}
     </View>
   );

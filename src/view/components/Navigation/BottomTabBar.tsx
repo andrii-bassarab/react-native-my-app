@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { colors } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,6 +11,9 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
 import { CustomerSite } from "../Screen/CustomerSite";
+import { NetworkStatus, useQuery } from "@apollo/client";
+import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import { actionsInspections } from "~/modules/inspections";
 
 interface Props extends BottomTabBarProps {}
 
@@ -19,10 +22,13 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
   const currentUser = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
-  const openSwitchSite = () => {
-    dispatch(setShowNotification(false));
-    dispatch(setShowSwitchSite(true));
-  };
+  const { refetch, loading, data, error, networkStatus } = useQuery(GET_ALL_INSPECTIONS, {
+    notifyOnNetworkStatusChange: true,
+  });
+
+  useEffect(() => {
+    dispatch(actionsInspections.setLoading(loading))
+  }, [loading]);
 
   const detectIconByName = (label: string, color: string) => {
     switch (label) {
@@ -106,7 +112,7 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
           </TouchableOpacity>
         );
       })}
-      <TouchableOpacity style={styles.item} onPress={openSwitchSite}>
+      <TouchableOpacity style={styles.item} onPress={() => refetch({})}>
         <SyncIcon height="35%" color={colors.primary} />
         <Text style={{ color: colors.primary, fontWeight: "500" }}>Sync</Text>
       </TouchableOpacity>

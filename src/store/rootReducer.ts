@@ -26,7 +26,7 @@ const transforms = [
 const rootPersistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user', 'notifications'],
+  whitelist: ['user', 'notifications', 'inspections'],
   transforms,
 };
 

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   PanResponder,
+  Dimensions,
 } from "react-native";
 import NotificationsIcon from "../assets/icons/notifications.svg";
 import SyncIcon from "../assets/icons/sync.svg";
@@ -13,35 +14,23 @@ import { colors } from "../theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { setShowNotification } from "~/modules/user/actions";
 import { ScrollView } from "react-native-gesture-handler";
-import { actions as actionsNotifications } from "../../modules/notifications";
-import { getVisibleDate } from "~/utils/visibleDate";
 
 export const Notifications: React.FC = () => {
+  const windowHeight = Dimensions.get('window').height;
   const dispatch = useAppDispatch();
   const notifications = useAppSelector((state) => state.notifications);
-  const position = new Animated.ValueXY({ x: 0, y: 500 });
-
+  const position = useMemo(() => new Animated.ValueXY({ x: 0, y: 500 }) ,[]);
   const pan = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
     pan.y.setValue(0);
-
-    // setTimeout(() => {
-    //   const date = visibleDate(new Date());
-    //   dispatch(
-    //     actionsNotifications.setEvents([
-    //       { title: "new Notification", date },
-    //       ...notifications,
-    //     ])
-    //   );
-    // }, 3000);
-  }, []);
+  }, [position]);
 
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (gestureState.dy > 350) {
+        if (gestureState.dy > windowHeight * 0.3) {
           pan.extractOffset();
           dispatch(setShowNotification(false));
         }
@@ -69,7 +58,6 @@ export const Notifications: React.FC = () => {
   }, [position]);
 
   return (
-    // <View style={styles.screen}>
     <Animated.View
       style={[
         styles.shadowProp,
@@ -123,7 +111,6 @@ export const Notifications: React.FC = () => {
         </>
       )}
     </Animated.View>
-    // </View>
   );
 };
 
@@ -147,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    padding: 30,
+    paddingHorizontal: 30,
     paddingTop: 10,
   },
   notificationsLabel: {
