@@ -12,19 +12,21 @@ import NotificationsIcon from "../assets/icons/notifications.svg";
 import SyncIcon from "../assets/icons/sync.svg";
 import { colors } from "../theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { setShowNotification } from "~/modules/user/actions";
 import { ScrollView } from "react-native-gesture-handler";
+import { getVisibleDate } from "~/utils/visibleDate";
+import { actionsShowWindow } from "~/modules/showWindow";
+import { actionsNotifications } from "~/modules/notifications";
 
 export const Notifications: React.FC = () => {
-  const windowHeight = Dimensions.get('window').height;
+  const windowHeight = Dimensions.get("window").height;
   const dispatch = useAppDispatch();
-  const notifications = useAppSelector((state) => state.notifications);
-  const position = useMemo(() => new Animated.ValueXY({ x: 0, y: 500 }) ,[]);
+  const { notifications, unreadMessage } = useAppSelector((state) => state.notifications);
+  const position = useMemo(() => new Animated.ValueXY({ x: 0, y: windowHeight * 0.4 }), []);
   const pan = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
-    pan.y.setValue(0);
-  }, [position]);
+    dispatch(actionsNotifications.resetUnreadMessage());
+  }, [unreadMessage]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -32,7 +34,7 @@ export const Notifications: React.FC = () => {
       onPanResponderMove: (event, gestureState) => {
         if (gestureState.dy > windowHeight * 0.3) {
           pan.extractOffset();
-          dispatch(setShowNotification(false));
+          dispatch(actionsShowWindow.setShowNotification(false));
         }
         if (gestureState.dy > 0) {
           Animated.event([null, { dx: pan.x, dy: pan.y }], {
@@ -50,6 +52,8 @@ export const Notifications: React.FC = () => {
   ).current;
 
   useEffect(() => {
+    pan.y.setValue(0);
+
     return Animated.timing(position, {
       toValue: { x: 0, y: 0 },
       duration: 300,
@@ -67,10 +71,7 @@ export const Notifications: React.FC = () => {
       ]}
     >
       <Animated.View {...panResponder.panHandlers}>
-        <TouchableOpacity
-          style={styles.notificationsLabelBox}
-          activeOpacity={0.5}
-        >
+        <TouchableOpacity style={styles.notificationsLabelBox} activeOpacity={0.5}>
           <View style={styles.notificationsLabel} />
         </TouchableOpacity>
       </Animated.View>
@@ -81,9 +82,7 @@ export const Notifications: React.FC = () => {
             <View key={index} style={styles.notificationItem}>
               <SyncIcon color={colors.layout} width={40} height={40} />
               <View style={{ marginLeft: 10 }}>
-                <Text style={styles.notificationItemTitle}>
-                  {notification.title}
-                </Text>
+                <Text style={styles.notificationItemTitle}>{notification.title}</Text>
                 <View>
                   {notification.detail &&
                     notification.detail.map((item, index) => (
@@ -93,11 +92,12 @@ export const Notifications: React.FC = () => {
                     ))}
                 </View>
                 <Text style={styles.notificationItemDate}>
-                  {notification.date}
+                  {getVisibleDate(new Date(notification.date))}
                 </Text>
               </View>
             </View>
           ))}
+          <View style={{ height: 20 }} />
         </ScrollView>
       ) : (
         <>
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 22,
     fontWeight: "600",
-    color: "#808080",
+    color: colors.darkGrey,
   },
   noNotificationText: {
     alignSelf: "center",
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   notificationItemDate: {
-    color: "#808080",
+    color: colors.darkGrey,
     fontSize: 16,
   },
   notificationItemDetail: {

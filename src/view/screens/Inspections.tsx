@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, SafeAreaView, StyleSheet, View, FlatList, Modal, Pressable } from "react-native";
+import { Text, StyleSheet, View, FlatList, Modal, Pressable } from "react-native";
 import { colors } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
@@ -7,7 +7,6 @@ import { mocksData } from "../screens/Home";
 import { ActivityItem } from "../components/Inspections/ActivityItem";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { setShowInspectionsFilter } from "~/modules/user/actions";
 import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
 import { useMemo } from "react";
 import { ModalLoader } from "../components/Custom/ModalLoader";
@@ -15,6 +14,7 @@ import SearchIcon from '../assets/icons/search.svg';
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Screen } from "../components/Screen/Screen";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { actionsShowWindow } from "~/modules/showWindow";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
@@ -22,12 +22,12 @@ interface Props {
 }
 
 export const Inspections: React.FC<Props> = ({route, navigation}) => {
-  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const [visibleInspections, setVisibleInspections] = useState<typeof mocksData>(mocksData);
   const [loader, setLoader] = useState(false);
 
-  const currentUser = useAppSelector((state) => state.user);
+  const showWindow = useAppSelector((state) => state.showWindow);
+
   const {
     statusNewUnscheduled,
     statusScheduled,
@@ -41,7 +41,7 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
   } = useAppSelector((state) => state.filterInspections);
 
   const dispatch = useAppDispatch();
-  const closeInspectionFilterWindow = () => dispatch(setShowInspectionsFilter(false));
+  const closeInspectionFilterWindow = () => dispatch(actionsShowWindow.setShowInspectionsFilter(false));
 
   const getSortedInspections = () => {
     if (sortBy === "Scheduled Date/Time") {
@@ -142,22 +142,11 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoader(true);
-    }, 200);
-
+    setLoader(true);
     getFilteredInspections();
-
     getSortedInspections();
-
-    const timeoutId = setTimeout(() => {
-      makeRequest();
-      setLoader(false);
-    }, 500);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    makeRequest();
+    setLoader(false);
   }, [
     statusNewUnscheduled,
     statusScheduled,
@@ -196,19 +185,8 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
             </View>
           )}
         </View>
-        {currentUser.showInspectionsFilterWindow && (
-          <Modal transparent={true}>
-            <View
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.33)",
-                opacity: 0.9,
-                height: insets.top + 60,
-              }}
-            >
-              <Pressable onPress={closeInspectionFilterWindow} style={{ height: insets.top + 60 }} />
-            </View>
+        {showWindow.showInspectionsFilter && (
             <InspectionsFilter />
-          </Modal>
         )}
       </View>
       {loader && <ModalLoader />}

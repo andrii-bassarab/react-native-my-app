@@ -1,0 +1,54 @@
+import { gql } from '@apollo/client';
+import { makeRequest } from '~/utils/fetch';
+
+export const GET_HOUSEHOLD_NAME = gql`
+  query($householdId: String!) {
+    householdMembers(
+      first: 10
+      where: {
+        householdId: { eq: $householdId }
+      }
+    ) {
+      edges {
+        node {
+          firstName
+          middleName
+          lastName
+        }
+        cursor
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+`
+
+export const getHouseHoldNameById = (id: string) => makeRequest("occupancy", `
+  query {
+    householdMembers(
+      first: 10
+      where: {
+          householdId: {eq: "${id}"}
+      }
+    ) {
+      edges {
+        node {
+          firstName
+          middleName
+          lastName
+        }
+        cursor
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+`);

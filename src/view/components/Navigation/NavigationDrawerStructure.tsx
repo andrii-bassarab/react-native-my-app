@@ -6,11 +6,11 @@ import { DrawerActions, ParamListBase } from "@react-navigation/native";
 import DrawerToggleIcon from "../../assets/icons/drawerToggle.svg";
 import NotificationIcon from "../../assets/icons/notification.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
-import { NetworkStatus, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import SyncIcon from "~/view/assets/icons/sync.svg";
 import { colors } from "~/view/theme";
+import { actionsShowWindow } from "~/modules/showWindow";
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;
@@ -19,18 +19,21 @@ interface Props {
 export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) => {
   const dispatch = useAppDispatch();
 
+  const { inspectionsSync } = useAppSelector((state) => state.inspections);
+  const showWindow = useAppSelector((state) => state.showWindow);
+  const { unreadMessage } = useAppSelector((state) => state.notifications);
+
   const toggleDrawer = () => {
-    dispatch(setShowSwitchSite(false));
+    dispatch(actionsShowWindow.setShowSwitchSite(false));
     navigationProps.dispatch(DrawerActions.openDrawer());
   };
+
   const toggleNotifications = () => {
     navigationProps.navigate("HomeScreen");
-    dispatch(setShowSwitchSite(false));
-    dispatch(setShowNotification(!currentUser.showNotification));
+    dispatch(actionsShowWindow.setShowSwitchSite(false));
+    dispatch(actionsShowWindow.setShowNotification(!showWindow.showNotification));
   };
 
-  const currentUser = useAppSelector((state) => state.user);
-  const { inspectionsSync } = useAppSelector((state) => state.inspections);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const { loading } = useQuery(GET_ALL_INSPECTIONS, {
@@ -78,14 +81,17 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
               // opacity: fadeAnim,
             }}
           >
-            <Animated.View style={{transform: [{rotate: spin}] }}>
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
               <SyncIcon color={colors.blue} height={25} width={30} />
             </Animated.View>
             <Text style={{ color: colors.blue, fontWeight: "600" }}>Syncing In Progress</Text>
           </Animated.View>
         )}
         <TouchableOpacity onPress={toggleNotifications}>
-          <NotificationIcon color="#fff" height="25" />
+          <NotificationIcon color="#fff" height="30" />
+          {unreadMessage > 0 && <View style={styles.unreadIcon}>
+            <Text style={styles.unreadMessageText}>{unreadMessage}</Text>
+          </View>}
         </TouchableOpacity>
       </View>
     </View>
@@ -108,5 +114,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 5,
     borderRadius: 20,
+  },
+  unreadMessageText: {
+    color: "#fff",
+    fontSize: 12,
+  },
+  unreadIcon: {
+    height: 15,
+    width: 15,
+    backgroundColor: "#FEBB11",
+    position: "absolute",
+    left: "50%",
+    top: 0,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

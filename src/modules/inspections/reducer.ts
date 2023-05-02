@@ -13,12 +13,22 @@ const inspectionsSlice = createSlice({
     setInspections: (state, action: PayloadAction<InspectionItem[]>) => {
       state.inspections = action.payload
     },
+    pushInspection: (state, action: PayloadAction<InspectionItem>) => {
+      state.inspections = [...state.inspections, action.payload]
+    },
     clearInspections: (state) => {
       state.inspections = []
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.inspectionsSync = action.payload
-    }
+    },
+    setVisibleHouseholdName: (state, action: PayloadAction<[string, string]>) => {
+      const selectedInspection = state.inspections.find(inspection => inspection.id === action.payload[0]);
+
+      if (selectedInspection) {
+        selectedInspection.visibleHouseholdName = action.payload[1];
+      }
+    },
   },
 })
 

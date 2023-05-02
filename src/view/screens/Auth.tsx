@@ -22,12 +22,12 @@ import {
   setProfileStatus,
   setUser,
   setAvailableSites,
-  setShowSwitchSite,
 } from "~/modules/user/actions";
 import { LoginForm } from "../components/Auth/LoginForm";
 import { ModalLoader } from "../components/Custom/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
+import { actionsShowWindow } from "~/modules/showWindow";
 
 const mocksSites = [
   { name: "Kanso Industries", code: "Kanso Industries" },
@@ -120,7 +120,7 @@ export const AuthScreen: React.FC = () => {
       dispatch(setAvailableSites(mocksSites));
 
       if (mocksSites.length > 1 && !currentUser.selectedSite) {
-        dispatch(setShowSwitchSite(true));
+        dispatch(actionsShowWindow.setShowSwitchSite(true));
       }
 
       setUserName("");

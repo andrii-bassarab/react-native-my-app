@@ -14,6 +14,7 @@ export interface InspectionItem {
   completedOn: string;
   hasPermissionToEnter: boolean;
   visibleStatus: InspectionStatus;
+  visibleHouseholdName: string
   unit: {
     id: string;
     streetAddress: string;

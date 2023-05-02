@@ -8,11 +8,8 @@ export interface UserState {
   auth: Nullable<UserAuth>;
   firstInit: boolean;
   permissions: Permissions;
-  showSwitchSite: boolean;
   selectedSite: Nullable<{ name: string, code: string }>;
   availableSites: { name: string, code: string }[];
-  showNotification: boolean;
-  showInspectionsFilterWindow: boolean;
 }
 
 export interface UserAuth {

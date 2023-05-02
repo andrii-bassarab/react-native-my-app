@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -14,7 +14,8 @@ import {
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
-import { setSelectedSite, setShowSwitchSite } from "~/modules/user/actions";
+import { setSelectedSite } from "~/modules/user/actions";
+import { actionsShowWindow } from "~/modules/showWindow";
 
 export const CustomerSite = () => {
   const windowHeight = Dimensions.get('window').height;
@@ -25,12 +26,19 @@ export const CustomerSite = () => {
   );
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const closeSwitchSite = () => dispatch(setShowSwitchSite(false));
+  const closeSwitchSite = () => dispatch(actionsShowWindow.setShowSwitchSite(false));
 
+  const position = useMemo(() => new Animated.ValueXY({ x: 0, y: windowHeight * 0.15 }), []);
   const pan = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
     pan.y.setValue(0);
+
+    return Animated.timing(position, {
+      toValue: { x: 0, y: 0 },
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
   }, []);
 
   const panResponder = useRef(
@@ -71,7 +79,7 @@ export const CustomerSite = () => {
         disabled={!currentUser.selectedSite && currentUser.availableSites.length > 1}
       >
         <Animated.View
-          style={{ ...styles.switchBox, transform: [{ translateY: pan.y }] }}
+          style={[{ ...styles.switchBox, transform: [{ translateY: pan.y }] }, position.getLayout(),]}
           onStartShouldSetResponder={() => true}
           onTouchEnd={(event) => {
             event.stopPropagation();

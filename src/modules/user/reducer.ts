@@ -1,7 +1,16 @@
 import { AsyncStatus } from '@appello/common/lib/constants';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setAuth, setFirstInit, setCameraPermission, setProfileStatus, setUser, signOut, setNotificationPermission, setShowSwitchSite, setSelectedSite, setAvailableSites, setShowNotification, setShowInspectionsFilter } from './actions';
+import { 
+  setAuth, 
+  setFirstInit, 
+  setCameraPermission, 
+  setProfileStatus, 
+  setUser, signOut, 
+  setNotificationPermission,
+  setSelectedSite, 
+  setAvailableSites, 
+} from './actions';
 import { UserState } from './types';
 
 export const initialState: UserState = {
@@ -9,12 +18,9 @@ export const initialState: UserState = {
   profile: null,
   auth: null,
   firstInit: true,
-  permissions: {camera: false, notification: false},
-  showSwitchSite: false,
+  permissions: { camera: false, notification: false },
   selectedSite: null,
   availableSites: [],
-  showNotification: false,
-  showInspectionsFilterWindow: false,
 };
 
 export const userReducer = createReducer(initialState, builder =>
@@ -38,27 +44,17 @@ export const userReducer = createReducer(initialState, builder =>
       // state.firstInit = true;
       state.availableSites = [];
       state.selectedSite = null;
-      state.showNotification = false;
     })
-    .addCase(setCameraPermission, (state, {payload}) => {
+    .addCase(setCameraPermission, (state, { payload }) => {
       state.permissions.camera = payload
     })
-    .addCase(setNotificationPermission, (state, {payload}) => {
+    .addCase(setNotificationPermission, (state, { payload }) => {
       state.permissions.notification = payload
     })
-    .addCase(setShowSwitchSite, (state, {payload}) => {
-      state.showSwitchSite = payload;
-    })
-    .addCase(setSelectedSite, (state, {payload}) => {
+    .addCase(setSelectedSite, (state, { payload }) => {
       state.selectedSite = payload;
     })
-    .addCase(setAvailableSites, (state, {payload}) => {
+    .addCase(setAvailableSites, (state, { payload }) => {
       state.availableSites = payload;
-    })
-    .addCase(setShowNotification, (state, {payload}) => {
-      state.showNotification = payload;
-    })
-    .addCase(setShowInspectionsFilter, (state, {payload}) => {
-      state.showInspectionsFilterWindow = payload;
     })
 );

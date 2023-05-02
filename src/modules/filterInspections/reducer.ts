@@ -47,4 +47,4 @@ const filterInspectionsSlice = createSlice({
 })
 
 export default filterInspectionsSlice.reducer
-export const { actions } = filterInspectionsSlice
+export const { actions: filterInspectionsActions } = filterInspectionsSlice

@@ -6,7 +6,7 @@ import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 interface Props {
   data: string[];
   selectedItem: string;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
   maxHeight?: number | string;
   selectedItemColor?: string
   error?: string;

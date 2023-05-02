@@ -10,6 +10,7 @@ import filterInspectionsReducer from '~/modules/filterInspections';
 import inspectionsReducer from '~/modules/inspections';
 import inspectionItemReducer from '~/modules/inspectionItem';
 import toastNotificationReducer from '~/modules/toastNotification';
+import showWindowReducer from '~/modules/showWindow';
 
 const transforms = [
   createTransform(
@@ -38,6 +39,7 @@ const appReducer = combineReducers({
   inspections: inspectionsReducer,
   toastNotification: toastNotificationReducer,
   inspectionItem: inspectionItemReducer,
+  showWindow: showWindowReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

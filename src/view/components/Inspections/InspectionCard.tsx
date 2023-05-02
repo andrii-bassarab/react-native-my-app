@@ -5,6 +5,7 @@ import { colors } from "~/view/theme";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { InspectionItem } from "~/types/InspectionItem";
+import { HouseHoldName } from "./HouseHoldName";
 
 interface Props {
   item: InspectionItem;
@@ -13,11 +14,9 @@ interface Props {
 
 export const InspectionCard: React.FC<Props> = ({ item, onPress }) => {
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
+
   return (
-    <TouchableOpacity
-      style={[styles.card, styles.shadowProp]}
-      onPress={onPress}
-    >
+    <TouchableOpacity style={[styles.card, styles.shadowProp]} onPress={onPress}>
       <View style={{ ...styles.mainInfo, borderColor: itemColor }}>
         <View style={styles.contentCard}>
           <Text style={{ ...styles.cardTitle, color: itemColor }}>
@@ -26,7 +25,7 @@ export const InspectionCard: React.FC<Props> = ({ item, onPress }) => {
           <Text style={{ color: itemColor, fontWeight: "600" }}>{item.visibleStatus}</Text>
         </View>
         <View style={styles.dateLabel}>
-          <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 5 }} />
+          <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 2 }} />
           <Text style={styles.textInfo}>
             {item.scheduledOn
               ? `Scheduled ${getInspectionDate(new Date(item.scheduledOn))} ${
@@ -35,10 +34,12 @@ export const InspectionCard: React.FC<Props> = ({ item, onPress }) => {
               : `Created on ${getInspectionDate(new Date(item.createdOn))}`}
           </Text>
         </View>
-        {/* {true && <Text style={styles.textInfo}>{}</Text>} */}
-        <Text
-          style={styles.textInfo}
-        >{`${item.unit.streetAddress} ${item.unit.city}, ${item.unit.state} ${item.unit.postalCode}`}</Text>
+        {item.household?.headOfHouseholdId && (
+          <HouseHoldName inspection={item} />
+        )}
+        <Text style={styles.textInfo}>
+          {`${item.unit.streetAddress} ${item.unit.city}, ${item.unit.state} ${item.unit.postalCode}`}
+        </Text>
       </View>
     </TouchableOpacity>
   );

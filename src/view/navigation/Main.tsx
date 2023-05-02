@@ -7,7 +7,6 @@ import { BottomTabBar } from "../components/Navigation/BottomTabBar";
 import { WorkOrder } from "../screens/WorkOrder";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsNotifications } from "../../modules/notifications";
-import { getVisibleDate } from "~/utils/visibleDate";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NotificationItem } from "~/types/NotificationItem";
 import { useQuery } from "@apollo/client";
@@ -24,11 +23,9 @@ const BottomTabs = createBottomTabNavigator();
 export const MainStack: React.FC = () => {
   const dispatch = useAppDispatch();
   const { inspections, inspectionsSync } = useAppSelector((state) => state.inspections);
-  const notifications = useAppSelector((state) => state.notifications);
+  const { notifications } = useAppSelector((state) => state.notifications);
 
-  const { data } = useQuery(GET_ALL_INSPECTIONS, {
-    notifyOnNetworkStatusChange: true,
-  });
+  const { data } = useQuery(GET_ALL_INSPECTIONS);
 
   const prevSyncStatus = getPreviousValue(inspectionsSync);
 
@@ -36,7 +33,7 @@ export const MainStack: React.FC = () => {
     () => ({
       title: `${inspections.length} inspections pending to be synced`,
       detail: inspections.map((inspection) => `Inspect ${inspection.unit.streetAddress}`),
-      date: getVisibleDate(new Date()),
+      date: new Date().toJSON(),
       type: "Pending",
     }),
     [inspectionsSync]
@@ -45,7 +42,7 @@ export const MainStack: React.FC = () => {
   const newSyncInProgressNotification: NotificationItem = useMemo(
     () => ({
       title: "Syncing in progress",
-      date: getVisibleDate(new Date()),
+      date: new Date().toJSON(),
       type: "InProgress",
     }),
     [inspectionsSync]
@@ -53,7 +50,7 @@ export const MainStack: React.FC = () => {
 
   const newSuccessfullyNotification: NotificationItem = {
     title: `${inspections.length} inspections synced successfully`,
-    date: getVisibleDate(new Date()),
+    date: new Date().toJSON(),
     type: "InProgress",
   };
 
@@ -69,34 +66,54 @@ export const MainStack: React.FC = () => {
   //   } catch (error) {
   //     console.log(error.message);
   //   }
-  //   console.log('Total size of storage:', size, 'bytes');
+  //   console.log("Total size of storage:", size, "bytes");
   // }
+
+  const filterLastFifteenDays = (items: NotificationItem[]) => {
+    const today = new Date();
+    const fifteenDaysAgo = new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000);
+    const lastFifteenDaysItems = items?.filter((item) => {
+      const itemDate = new Date(item?.date);
+      return itemDate >= fifteenDaysAgo;
+    });
+
+    return lastFifteenDaysItems?.slice(0, 100);
+  };
 
   useEffect(() => {
     // getStorageSize();
-    // const date = getVisibleDate(new Date());
-    // dispatch(actionsNotifications.setNotifications([{title: 'Syncing in progress', date}, ...mocksNotifications]));
 
     if (inspectionsSync) {
-      dispatch(actionsNotifications.addNotification(newPendingNotification));
-      dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
-    }
-  }, [inspectionsSync, data]);
-
-  useEffect(() => {
-    if (prevSyncStatus && inspectionsSync !== prevSyncStatus && !inspectionsSync) {
       dispatch(
         actionsNotifications.setNotifications(
-          notifications.map(({ title, date, type }) => ({
+          filterLastFifteenDays(notifications).map(({ title, date, type }) => ({
             title: title.replace("pending", "waiting"),
             date,
             type,
           }))
         )
       );
-      dispatch(actionsNotifications.addNotification(newSuccessfullyNotification));
+      dispatch(actionsNotifications.addNotification(newPendingNotification));
+      dispatch(actionsNotifications.addUnreadMessage(1));
     }
-  }, [inspectionsSync, prevSyncStatus]);
+  }, [inspectionsSync]);
+
+  useEffect(() => {
+    if (data && prevSyncStatus && inspectionsSync !== prevSyncStatus && !inspectionsSync) {
+      dispatch(
+        actionsNotifications.setNotifications(
+          filterLastFifteenDays(notifications).map(({ title, date, type }) => ({
+            title: title.replace("pending", "waiting"),
+            date,
+            type,
+          }))
+        )
+      );
+      dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
+      dispatch(actionsNotifications.addNotification(newSuccessfullyNotification));
+      dispatch(actionsNotifications.addUnreadMessage(2));
+    }
+  }, [inspectionsSync, prevSyncStatus, data]);
 
   return (
     <BottomTabs.Navigator

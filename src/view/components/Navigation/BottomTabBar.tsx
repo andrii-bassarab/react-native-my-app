@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { colors } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,9 +9,8 @@ import SwitchIcon from "~/view/assets/icons/switch.svg";
 import SyncIcon from "~/view/assets/icons/sync.svg";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { setShowNotification, setShowSwitchSite } from "~/modules/user/actions";
 import { CustomerSite } from "../Screen/CustomerSite";
-import { NetworkStatus, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { actionsInspections } from "~/modules/inspections";
 
@@ -19,10 +18,10 @@ interface Props extends BottomTabBarProps {}
 
 export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
-  const currentUser = useAppSelector((state) => state.user);
+  const showWindow = useAppSelector((state) => state.showWindow);
   const dispatch = useAppDispatch();
 
-  const { refetch, loading, data, error, networkStatus } = useQuery(GET_ALL_INSPECTIONS, {
+  const { refetch, loading } = useQuery(GET_ALL_INSPECTIONS, {
     notifyOnNetworkStatusChange: true,
   });
 
@@ -45,7 +44,7 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
     }
   };
 
-  return currentUser.showSwitchSite ? (
+  return showWindow.showSwitchSite ? (
     <CustomerSite />
   ) : (
     <View
@@ -85,10 +84,6 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
           });
         };
 
-        if (typeof label === "string" && label === "InspectionNavigation") {
-          return null;
-        }
-
         return (
           <TouchableOpacity
             accessibilityRole="button"
@@ -100,10 +95,10 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
             style={styles.item}
           >
             {typeof label === "string" &&
-              detectIconByName(label, isFocused ? "#25C0DC" : colors.primary)}
+              detectIconByName(label, isFocused ? colors.blue : colors.primary)}
             <Text
               style={{
-                color: isFocused ? "#25C0DC" : colors.primary,
+                color: isFocused ? colors.blue : colors.primary,
                 fontWeight: "500",
               }}
             >

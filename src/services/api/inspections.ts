@@ -35,5 +35,6 @@ export const GET_ALL_INSPECTIONS = gql`
       hasNextPage
       hasPreviousPage
     }
+    }
   }
-}`;
+`;

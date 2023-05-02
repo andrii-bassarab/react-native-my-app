@@ -5,8 +5,8 @@ import SearchIcon from "~/view/assets/icons/search.svg";
 import { colors } from "../../theme";
 import { TextInput } from "react-native-gesture-handler";
 import { useAppDispatch } from "~/store/hooks";
-import { setShowInspectionsFilter } from "~/modules/user/actions";
 import CloseIcon from "~/view/assets/svg/close";
+import { actionsShowWindow } from "~/modules/showWindow";
 
 interface Props {
   query: string;
@@ -39,7 +39,7 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
       {showFilterButton && (
         <TouchableOpacity
           style={styles.filterButton}
-          onPress={() => dispatch(setShowInspectionsFilter(true))}
+          onPress={() => dispatch(actionsShowWindow.setShowInspectionsFilter(true))}
         >
           <SettingInspectionsIcon color="#fff" width={30} height={30} />
         </TouchableOpacity>
