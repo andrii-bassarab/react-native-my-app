@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TouchableOpacity, View, Text, StyleSheet, TextInput } from "react-native";
+import React from "react";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { colors } from "../../theme";
@@ -9,15 +9,11 @@ import { Category } from "~/types/Category";
 import { useAppDispatch } from "~/store/hooks";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { SelectedCategory } from "../InspectionItem/InspectionInspect/SelectedCategory";
+import { InspectionItem } from "~/types/InspectionItem";
+import { getInspectionDate } from "~/utils/visibleDate";
 
 interface Props {
-  item: {
-    title: string;
-    date: string;
-    location: string;
-    status: string;
-    extra?: string;
-  };
+  item: InspectionItem;
   goBack: () => void;
   includeCategory?: boolean;
   category?: Category;
@@ -29,13 +25,10 @@ export const SelectedInspection: React.FC<Props> = ({
   includeCategory = false,
   category = null,
 }) => {
-  const { title, date, location, status, extra } = item;
-
   const dispatch = useAppDispatch();
-  const showToast = (message: string) =>
-    dispatch(actionsToastNotification.showToastMessage(message));
+  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
 
-  const itemColor = getInspectionColorByStatus(status);
+  const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -47,22 +40,29 @@ export const SelectedInspection: React.FC<Props> = ({
           ...styles.mainInfo,
           borderColor: itemColor,
           borderLeftWidth: includeCategory ? 0 : 3,
-          paddingLeft: includeCategory ? 0 : 10, 
+          paddingLeft: includeCategory ? 0 : 10,
         }}
       >
         <View style={styles.content}>
-          <Text style={{ ...styles.cardTitle, color: itemColor }}>{title}</Text>
+          <Text style={{ ...styles.cardTitle, color: itemColor }}>
+            {`Inspect ${item.unit?.streetAddress}`}
+          </Text>
         </View>
         <View style={styles.dateLabel}>
           <CalendarIcon height={10} width={10} color={colors.primary} style={{ marginRight: 5 }} />
-          <Text style={styles.textInfo}>{date}</Text>
+          <Text style={styles.textInfo}>
+            {item.scheduledOn
+              ? `Scheduled ${getInspectionDate(new Date(item.scheduledOn))} ${
+                  item.visitationRange ? `from ${item.visitationRange}` : ""}`
+              : `Created on ${getInspectionDate(new Date(item.createdOn))}`}
+          </Text>
         </View>
-        {(status === InspectionStatus.NEW || status === InspectionStatus.SCHEDULED) && (
+        {(item.visibleStatus === InspectionStatus.NEW || item.visibleStatus === InspectionStatus.SCHEDULED) && (
           <TouchableOpacity style={styles.startInspectionButton}>
             <Text style={styles.startInspectionText}>Start Inspection</Text>
           </TouchableOpacity>
         )}
-        {status === InspectionStatus.INPROGRESS && (
+        {item.visibleStatus === InspectionStatus.INPROGRESS && (
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity
               style={[styles.startInspectionButton, styles.saveButton]}
@@ -75,9 +75,7 @@ export const SelectedInspection: React.FC<Props> = ({
             </TouchableOpacity>
           </View>
         )}
-        {includeCategory && category && (
-          <SelectedCategory category={category}/>
-        )}
+        {includeCategory && category && <SelectedCategory category={category} />}
       </View>
     </View>
   );

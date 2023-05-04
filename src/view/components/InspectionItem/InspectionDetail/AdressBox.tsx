@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image } from "react-native";
 import { colors } from "~/view/theme";
-import { Inspection } from "~/types/Inspection";
+import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 
 interface Props {
-  inspection: Inspection;
+  inspection: InspectionItem;
 }
 
 const mocksDetails = [
@@ -29,7 +29,9 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
 
     const phoneNumberLength = phoneNumber.length;
     if (phoneNumberLength > 6) {
-      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
+      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(
+        6
+      )}`;
     } else if (phoneNumberLength > 3) {
       phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
     } else {
@@ -49,7 +51,9 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       <View style={styles.label}>
         <Text style={styles.labelText}>Address:</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-          <Text style={styles.text}>{inspection.location}</Text>
+          <Text style={styles.text}>
+            {`${inspection.unit.streetAddress} ${inspection.unit.city}, ${inspection.unit.state} ${inspection.unit.postalCode}`}
+          </Text>
           {inspection.status !== InspectionStatus.FAILED &&
             inspection.status !== InspectionStatus.PASSED && (
               <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
@@ -60,7 +64,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Tenant:</Text>
-        <Text style={styles.text}>Samwise Gamgee</Text>
+        <Text style={styles.text}>{inspection.visibleHouseholdName}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Last Inspection Date:</Text>
@@ -68,17 +72,31 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Permission to Enter:</Text>
-        <Text style={styles.text}>Yes</Text>
+        <Text style={styles.text}>{inspection.hasPermissionToEnter ? "Yes" : "No"}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Details:</Text>
         <View style={{ flex: 1 }}>
-          {mocksDetails.map((item, index) => (
-            <View key={index} style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>{item.count}</Text>
-            </View>
-          ))}
+          <View style={styles.detailBox}>
+            <Text style={styles.text}>Bedrooms:</Text>
+            <Text style={styles.text}>{inspection.unit.numberOfBedrooms}</Text>
+          </View>
+          <View style={styles.detailBox}>
+            <Text style={styles.text}>Bathroom:</Text>
+            <Text style={styles.text}>{inspection.unit.numberOfBathrooms}</Text>
+          </View>
+          <View style={styles.detailBox}>
+            <Text style={styles.text}>Sq. ft:</Text>
+            <Text style={styles.text}>{inspection.unit.squareFootage || "--"}</Text>
+          </View>
+          <View style={styles.detailBox}>
+            <Text style={styles.text}>Handicap:</Text>
+            <Text style={styles.text}>{inspection.unit.isHandicapAccessible ? "Yes" : "No"}</Text>
+          </View>
+          <View style={styles.detailBox}>
+            <Text style={styles.text}>Year Built:</Text>
+            <Text style={styles.text}>{inspection.unit.yearConstructed || "--"}</Text>
+          </View>
         </View>
       </View>
       <View style={styles.label}>
@@ -112,7 +130,10 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
                 keyboardType="phone-pad"
               />
             </View>
-            <TouchableOpacity style={styles.modalSaveButton} onPress={() => setShowModalPhoneNumber(false)}>
+            <TouchableOpacity
+              style={styles.modalSaveButton}
+              onPress={() => setShowModalPhoneNumber(false)}
+            >
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
@@ -190,17 +211,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 2,
-    marginTop: 20
+    marginTop: 20,
   },
   modalPhoneNumber: {
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderLeftWidth: 3,
-    borderColor: "#EBEBEB"
+    borderColor: "#EBEBEB",
   },
   modalFlag: {
     width: 20,
     resizeMode: "contain",
+  },
+  detailBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5
   },
 });

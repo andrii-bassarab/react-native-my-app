@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useEffect } from "react";
+import React from "react";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -50,8 +50,8 @@ const httpLink = split(
     const definition = getMainDefinition(query);
     return definition.kind === "OperationDefinition" && definition.operation === "query";
   },
-  occupancyHttpLink,
   maintenanceHttpLink,
+  occupancyHttpLink,
 );
 
 const client = new ApolloClient({

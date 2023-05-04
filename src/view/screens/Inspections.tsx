@@ -1,29 +1,29 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, StyleSheet, View, FlatList, Modal, Pressable } from "react-native";
+import { Text, StyleSheet, View, FlatList } from "react-native";
 import { colors } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
-import { mocksData } from "../screens/Home";
-import { ActivityItem } from "../components/Inspections/ActivityItem";
-import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAppSelector } from "~/store/hooks";
 import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
 import { useMemo } from "react";
 import { ModalLoader } from "../components/Custom/ModalLoader";
-import SearchIcon from '../assets/icons/search.svg';
+import SearchIcon from "../assets/icons/search.svg";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Screen } from "../components/Screen/Screen";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { actionsShowWindow } from "~/modules/showWindow";
+import { InspectionCard } from "../components/Inspections/InspectionCard";
+import { getCalendarVisibleDate } from "~/utils/visibleDate";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
   navigation: NavigationProp<ParamListBase>;
 }
 
-export const Inspections: React.FC<Props> = ({route, navigation}) => {
+export const Inspections: React.FC<Props> = ({ route, navigation }) => {
+  const { inspections } = useAppSelector((state) => state.inspections);
+
   const [query, setQuery] = useState("");
-  const [visibleInspections, setVisibleInspections] = useState<typeof mocksData>(mocksData);
+  const [visibleInspections, setVisibleInspections] = useState(inspections);
   const [loader, setLoader] = useState(false);
 
   const showWindow = useAppSelector((state) => state.showWindow);
@@ -40,23 +40,30 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
     selectedDayBy,
   } = useAppSelector((state) => state.filterInspections);
 
-  const dispatch = useAppDispatch();
-  const closeInspectionFilterWindow = () => dispatch(actionsShowWindow.setShowInspectionsFilter(false));
-
   const getSortedInspections = () => {
     if (sortBy === "Scheduled Date/Time") {
       setVisibleInspections((prev) =>
-        prev.sort((current, next) => current.date.localeCompare(next.date))
+        prev.sort((current, next) => {
+          if (current.scheduledOn && next.scheduledOn) {
+            return new Date(current.scheduledOn).getTime() - new Date(next.scheduledOn).getTime();
+          } else if (current.scheduledOn) {
+            return -1;
+          } else if (next.scheduledOn) {
+            return 1;
+          } else {
+            return new Date(current.createdOn).getTime() - new Date(next.createdOn).getTime();
+          }
+        })
       );
     } else {
       setVisibleInspections((prev) => {
-        const newInspections = prev.filter((item) => item.status === InspectionStatus.NEW);
-        const scheduled = prev.filter((item) => item.status === InspectionStatus.SCHEDULED);
-        const inProgress = prev.filter((item) => item.status === InspectionStatus.INPROGRESS);
-        const failed = prev.filter((item) => item.status === InspectionStatus.FAILED);
-        const passed = prev.filter((item) => item.status === InspectionStatus.PASSED);
+        const newInspections = prev.filter((item) => item.visibleStatus === InspectionStatus.NEW);
+        const scheduled = prev.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED);
+        const inProgress = prev.filter((item) => item.visibleStatus === InspectionStatus.INPROGRESS);
+        const failed = prev.filter((item) => item.visibleStatus === InspectionStatus.FAILED);
+        const passed = prev.filter((item) => item.visibleStatus === InspectionStatus.PASSED);
 
-        return [...inProgress, ...scheduled, ...newInspections, ...failed, ...passed];
+        return [...inProgress, ...scheduled, ...newInspections, ...passed, ...failed];
       });
     }
   };
@@ -65,7 +72,7 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
     console.log("Making request...", query);
     setVisibleInspections((prev) =>
       prev.filter((item) =>
-        item.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
+        item.unit.streetAddress.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
       )
     );
   };
@@ -73,34 +80,46 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
   const getFilteredInspections = useCallback(() => {
     statusNewUnscheduled
       ? setVisibleInspections((prev) => [
-          ...mocksData.filter((item) => item.status === "Unscheduled" || item.status === "New"),
+          ...inspections.filter(
+            (item) =>
+              item.visibleStatus === InspectionStatus.UNSCHEDULED ||
+              item.status === InspectionStatus.NEW
+          ),
         ])
       : setVisibleInspections([]);
 
     statusScheduled &&
       setVisibleInspections((prev) => [
         ...prev,
-        ...mocksData.filter((item) => item.status === "Scheduled"),
+        ...inspections.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED),
       ]);
 
     statusIncomplete &&
       setVisibleInspections((prev) => [
         ...prev,
-        ...mocksData.filter((item) => item.status === "In Progress"),
+        ...inspections.filter((item) => item.visibleStatus === InspectionStatus.INPROGRESS),
       ]);
 
     statusCompleted &&
       setVisibleInspections((prev) => [
         ...prev,
-        ...mocksData.filter((item) => item.status === "Passed" || item.status === "Failed"),
+        ...inspections.filter(
+          (item) =>
+            item.visibleStatus === InspectionStatus.PASSED ||
+            item.visibleStatus === InspectionStatus.FAILED
+        ),
       ]);
 
     if (assignedToMe && !unassigned) {
-      setVisibleInspections((prev) => prev.filter((item) => item.assigned === "Me"));
+      setVisibleInspections((prev) =>
+        prev.filter((item) => item.assignedTo === "5e94b7f0fa86cf0016c4d92c")
+      );
     }
 
     if (!assignedToMe && unassigned) {
-      setVisibleInspections((prev) => prev.filter((item) => item.assigned === "Unassigned"));
+      setVisibleInspections((prev) =>
+        prev.filter((item) => item.assignedTo !== "5e94b7f0fa86cf0016c4d92c")
+      );
     }
 
     if (!assignedToMe && !unassigned) {
@@ -109,7 +128,13 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
 
     if (arrOFSelectedDates.length > 0) {
       setVisibleInspections((prev) =>
-        prev.filter((item) => arrOFSelectedDates.includes(item.stringDate))
+        prev.filter((item) =>
+          arrOFSelectedDates.includes(
+            item.scheduledOn
+              ? getCalendarVisibleDate(new Date(item.scheduledOn))
+              : getCalendarVisibleDate(new Date(item.createdOn))
+          )
+        )
       );
     }
   }, [
@@ -171,8 +196,13 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
             <View style={{ marginBottom: "45%", marginTop: 10 }}>
               <FlatList
                 data={visibleInspections}
-                keyExtractor={(_item, index) => `key-${index}`}
-                renderItem={({ item }) => <ActivityItem item={item} onPress={() => navigation.navigate('InspectionItem', item)} />}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <InspectionCard
+                    item={item}
+                    onPress={() => navigation.navigate("InspectionItem", item)}
+                  />
+                )}
                 ListFooterComponent={() => <View style={{ height: 20 }} />}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 showsVerticalScrollIndicator={false}
@@ -185,9 +215,7 @@ export const Inspections: React.FC<Props> = ({route, navigation}) => {
             </View>
           )}
         </View>
-        {showWindow.showInspectionsFilter && (
-            <InspectionsFilter />
-        )}
+        {showWindow.showInspectionsFilter && <InspectionsFilter />}
       </View>
       {loader && <ModalLoader />}
     </Screen>
@@ -226,13 +254,13 @@ const styles = StyleSheet.create({
   },
   noResultContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   noResultText: {
     color: colors.primary,
     fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 20
-  }
+    fontWeight: "600",
+    marginBottom: 20,
+  },
 });

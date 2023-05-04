@@ -15,12 +15,23 @@ export const GET_ALL_INSPECTIONS = gql`
         hasPassed
         createdOn
         createdBy
+        completedOn
+        completedBy
         unit {
             id
             streetAddress
             city
             state
             postalCode
+            numberOfBedrooms
+            numberOfBathrooms
+            squareFootage
+            isHandicapAccessible
+            yearConstructed
+            landlord{
+                firstName
+                lastName
+            }
         }
         household{
             lastActionName

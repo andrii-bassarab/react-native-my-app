@@ -1,26 +1,31 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { colors } from "~/view/theme";
-import { Inspection } from "~/types/Inspection";
+import { InspectionItem } from "~/types/InspectionItem";
+import { getInspectionDate } from "~/utils/visibleDate";
 
 interface Props {
-  inspection: Inspection;
+  inspection: InspectionItem;
 }
 
 export const StatusBox: React.FC<Props> = ({ inspection }) => {
+  console.log("inspection.hasPassed", inspection.hasPassed)
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
         <Text style={styles.labelText}>Status:</Text>
-        <Text style={styles.text}>{inspection.status}</Text>
+        <Text style={styles.text}>{`${
+          inspection.status[0].toLocaleUpperCase() + inspection.status.slice(1)
+        }`}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Date Completed:</Text>
-        <Text style={styles.text}>--</Text>
+        <Text style={styles.text}>
+          {inspection.completedOn ? `${getInspectionDate(new Date(inspection.completedOn))}` : "--"}
+        </Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Result:</Text>
-        <Text style={styles.text}>--</Text>
+        <Text style={styles.text}>{inspection.status === "complete" ? inspection.hasPassed ? "Passed" : "Failed" : "--"}</Text>
       </View>
     </View>
   );

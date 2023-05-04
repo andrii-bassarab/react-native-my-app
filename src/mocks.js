@@ -12,12 +12,26 @@ const node = {
     createdBy: "heather@hdslabs.com",
     completedOn: "",
     hasPermissionToEnter: true, //permission to enter
+    inspectionComments: [{
+      createdBy: "string",
+      createdOn: "string",
+      commentBody: "string",
+    }],
     unit: {
       id: "5dec0c8accba88001629756a",
       streetAddress: "2889 Bagshot Row",
       city: "Hobbiton",
       state: "The Shire",
       postalCode: 33111,
+      numberOfBedrooms: 1,
+      numberOfBathrooms: 1,
+      squareFootage: 1 || null,
+      isHandicapAccessible: false,
+      yearConstructed: 1 | null,
+      landlord: {
+          firstName: "string",
+          lastName: "string",
+      } || null,
     },
     inspectionComments: {
       commentBody: "Please knock, if no response, then you can enter.",
@@ -32,7 +46,10 @@ const node = {
   cursor: "MA==",
 };
 
-//landlord, phone another endpoint
+// lastInspectionDate
+// custom Attributes
+// Dog on Premises
+// assigned
 
 const inspectionTemplates = {
   inspectionTemplates: {

@@ -4,17 +4,16 @@ import { View, Text, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
-import { Inspection } from "~/types/Inspection";
+import { InspectionItem } from "~/types/InspectionItem";
 import { Category } from "~/types/Category";
 
 interface Props {
-  route: RouteProp<{ params: { category: Category; inspection: Inspection } }, "params">;
+  route: RouteProp<{ params: { category: Category; inspection: InspectionItem } }, "params">;
   navigation: NavigationProp<ParamListBase>;
 }
 
 export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { inspection } = route.params;
-  const { category } = route.params;
+  const { inspection, category } = route.params;
 
   const goBack = () => navigation.goBack();
 

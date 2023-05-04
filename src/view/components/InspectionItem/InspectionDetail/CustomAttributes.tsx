@@ -1,10 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { colors } from "~/view/theme";
-import { Inspection } from "~/types/Inspection";
+import { View, StyleSheet, Text } from "react-native";
+import { InspectionItem } from "~/types/InspectionItem";
 
 interface Props {
-  inspection: Inspection;
+  inspection: InspectionItem;
 }
 
 export const CustomAttributes: React.FC<Props> = ({ inspection }) => {

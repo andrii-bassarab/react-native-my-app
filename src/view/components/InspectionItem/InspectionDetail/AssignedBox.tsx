@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
-import { Inspection } from "~/types/Inspection";
+import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { CustomSelect } from "../../Custom/CustomSelect";
+import { getInspectionDate } from "~/utils/visibleDate";
 
 interface Props {
-  inspection: Inspection;
+  inspection: InspectionItem;
 }
 
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
   const [showModalAssigned, setShowModalAssigned] = useState(false);
-  const [assignedTo, setAssignedTo] = useState(inspection.assigned);
+  const [assignedTo, setAssignedTo] = useState(inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned");
   const assignedOptions = ["Me", "Unassigned"];
 
   return (
@@ -21,7 +22,9 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
       <View style={styles.label}>
         <Text style={styles.labelText}>Assigned:</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-          <Text style={styles.text}>{inspection.assigned}</Text>
+          <Text style={styles.text}>
+            {inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"}
+          </Text>
           {inspection.status !== InspectionStatus.FAILED &&
             inspection.status !== InspectionStatus.PASSED && (
               <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
@@ -32,11 +35,15 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Appointment Time:</Text>
-        <Text style={styles.text}>{inspection.date}</Text>
+        <Text style={styles.text}>
+          {inspection.scheduledOn
+            ? `${getInspectionDate(new Date(inspection.scheduledOn))} ${inspection.visitationRange ? `from ${inspection.visitationRange}` : ""}`
+            : "--"}
+        </Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Inspection Type:</Text>
-        <Text style={styles.text}>Annual</Text>
+        <Text style={styles.text}>{inspection.inspectionType}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Inspection Form:</Text>

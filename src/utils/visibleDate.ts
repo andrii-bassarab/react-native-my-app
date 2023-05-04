@@ -12,4 +12,10 @@ export const getInspectionDate = (date: Date) => {
     'July', 'August', 'September', 'October', 'November', 'December'];
 
   return `${months[Number(month) - 1]} ${day?.length < 2 ? `0${day}` : day}, ${year}`
+};
+
+export const getCalendarVisibleDate = (date: Date) => {
+  const [day, month, year] = date.toLocaleDateString().split('/');
+
+  return `${day.length > 1 ? day : "0" + day}-${month.length > 1 ? month : "0" + month}-${year}`
 }

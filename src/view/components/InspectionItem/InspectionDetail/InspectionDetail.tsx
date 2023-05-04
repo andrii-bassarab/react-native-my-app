@@ -3,13 +3,13 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { StatusBox } from "./StatusBox";
 import { colors } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
-import { Inspection } from "~/types/Inspection";
+import { InspectionItem } from "~/types/InspectionItem";
 import { AssignedBox } from "./AssignedBox";
 import { AdressBox } from "./AdressBox";
 import { CustomAttributes } from "./CustomAttributes";
 
 interface Props {
-  route: RouteProp<{ params: Inspection }, "params">;
+  route: RouteProp<{ params: InspectionItem }, "params">;
 }
 
 export const InspectionDetails: React.FC<Props> = ({ route }) => {

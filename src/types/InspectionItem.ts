@@ -11,7 +11,8 @@ export interface InspectionItem {
   hasPassed: boolean;
   createdOn: string;
   createdBy: string;
-  completedOn: string;
+  completedOn: string | null;
+  completedBy: string | null;
   hasPermissionToEnter: boolean;
   visibleStatus: InspectionStatus;
   visibleHouseholdName: string
@@ -21,6 +22,15 @@ export interface InspectionItem {
     city: string;
     state: string;
     postalCode: number;
+    numberOfBedrooms: number;
+    numberOfBathrooms: number;
+    squareFootage: number | null;
+    isHandicapAccessible: boolean;
+    yearConstructed: number | null;
+    landlord: [{
+        firstName: string;
+        lastName: string;
+    }] | null
   };
   household: {
     lastActionName: string;

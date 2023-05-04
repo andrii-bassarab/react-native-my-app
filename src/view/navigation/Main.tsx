@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsNotifications } from "../../modules/notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NotificationItem } from "~/types/NotificationItem";
-import { useQuery } from "@apollo/client";
+import { useQuery, NetworkStatus } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 
@@ -25,9 +25,10 @@ export const MainStack: React.FC = () => {
   const { inspections, inspectionsSync } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
 
-  const { data } = useQuery(GET_ALL_INSPECTIONS);
+  const { data, networkStatus } = useQuery(GET_ALL_INSPECTIONS);
 
   const prevSyncStatus = getPreviousValue(inspectionsSync);
+  const prevNetworkStatus = getPreviousValue(networkStatus);
 
   const newPendingNotification: NotificationItem = useMemo(
     () => ({
@@ -99,7 +100,19 @@ export const MainStack: React.FC = () => {
   }, [inspectionsSync]);
 
   useEffect(() => {
-    if (data && prevSyncStatus && inspectionsSync !== prevSyncStatus && !inspectionsSync) {
+    // console.log("data", data);
+    // console.log("inspectionsSync", inspectionsSync);
+    // console.log("prevSyncStatus", prevSyncStatus);
+    // console.log("networkStatus", networkStatus);
+
+    if (
+      (data && prevSyncStatus && inspectionsSync !== prevSyncStatus && !inspectionsSync) ||
+      (data &&
+        prevSyncStatus === false &&
+        inspectionsSync === false &&
+        networkStatus === 7 &&
+        prevNetworkStatus === 1)
+    ) {
       dispatch(
         actionsNotifications.setNotifications(
           filterLastFifteenDays(notifications).map(({ title, date, type }) => ({

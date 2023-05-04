@@ -13,16 +13,7 @@ import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
 import SaveIcon from "~/view/assets/icons/save.svg";
 import { useAppSelector } from "~/store/hooks";
 import { InspectionComments } from "../components/InspectionItem/InspectionComments/InspectionComments";
-
-interface Inspection {
-  title: string;
-  date: string;
-  stringDate: string;
-  location: string;
-  assigned: string;
-  status: string;
-  extra?: string;
-}
+import { InspectionItem as Inspection } from "~/types/InspectionItem";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
@@ -49,10 +40,12 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   const inspectOptions = {
     tabBarLabel:
-      inspection.status === InspectionStatus.PASSED || inspection.status === InspectionStatus.FAILED
+      inspection.visibleStatus === InspectionStatus.PASSED || inspection.status === InspectionStatus.FAILED
         ? "Results"
         : "Inspect",
   };
+
+  console.log("inspection", inspection)
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
