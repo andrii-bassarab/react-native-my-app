@@ -105,7 +105,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Phone:</Text>
-        <Text style={styles.text}>{"(123) 123-1234"}</Text>
+        <Text style={styles.text}>{inspection.householdPhone}</Text>
       </View>
       {showModalPhoneNumber && (
         <ModalSwipeScreen

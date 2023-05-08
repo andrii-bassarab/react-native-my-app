@@ -11,7 +11,7 @@ import { InspectionDetails } from "../components/InspectionItem/InspectionDetail
 import { InspectionInspect } from "../components/InspectionItem/InspectionInspect/InspectionInspect";
 import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
 import SaveIcon from "~/view/assets/icons/save.svg";
-import { useAppSelector } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionComments } from "../components/InspectionItem/InspectionComments/InspectionComments";
 import { InspectionItem as Inspection } from "~/types/InspectionItem";
 
@@ -32,6 +32,9 @@ function FilesScreen() {
 
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
+  const dispatch = useAppDispatch();
+  const {startSignature} = useAppSelector(state => state.inspectionItem);
+
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const currentInspection = useAppSelector((state) => state?.inspectionItem);
@@ -45,14 +48,14 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
         : "Inspect",
   };
 
-  console.log("inspection", inspection)
+  console.log("startSignature", startSignature);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screen}>
         <View style={styles.content}>
           <View style={{ paddingHorizontal: 25 }}>
-            <SelectedInspection item={inspection} goBack={() => setShowModalUnsavedChanges(true)} />
+            <SelectedInspection item={inspection} goBack={() => goBack()} />
           </View>
           {showModalUnsavedChanges && (
             <ModalDeleteItem
@@ -66,7 +69,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
               message="Are you sure you want to leave without saving changes?"
             />
           )}
-          <Tab.Navigator tabBar={(props) => <TopTabBar {...props} />} initialRouteName="HomeScreen">
+          {!startSignature && <Tab.Navigator tabBar={(props) => <TopTabBar {...props} />} initialRouteName="HomeScreen">
             {inspection.status !== InspectionStatus.NEW &&
               inspection.status !== InspectionStatus.SCHEDULED && (
                 <Tab.Screen
@@ -79,7 +82,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
             <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
             <Tab.Screen name="Comments" component={InspectionComments} initialParams={inspection} />
             <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
-          </Tab.Navigator>
+          </Tab.Navigator>}
         </View>
       </View>
     </Screen>

@@ -37,7 +37,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
 
   const newCategory = {
     title: displayName,
-    status: "Icnomplete",
+    status: "Incomplete",
     result: "No results yet",
     items: 0,
     photos: "No",

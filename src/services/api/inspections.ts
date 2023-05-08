@@ -17,6 +17,12 @@ export const GET_ALL_INSPECTIONS = gql`
         createdBy
         completedOn
         completedBy
+        householdPhone
+        inspectionComments {
+          createdBy
+          createdOn
+          commentBody
+        }
         unit {
             id
             streetAddress

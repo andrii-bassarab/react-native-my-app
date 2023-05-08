@@ -31,8 +31,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
     );
   }, [query, categories]);
 
-  console.log(categories);
-
   return (
     <View style={styles.content}>
       <View style={{ padding: 2 }}>

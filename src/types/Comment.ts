@@ -1,6 +1,5 @@
 export interface Comment {
-  id: string;
-  author: string;
-  comment: string;
-  date: string;
+  createdBy: string;
+  createdOn: string;
+  commentBody: string;
 }

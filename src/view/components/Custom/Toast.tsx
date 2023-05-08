@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors } from "~/view/theme";
 import { actionsToastNotification } from "../../../modules/toastNotification";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
+import SyncIcon from "~/view/assets/icons/sync.svg";
 
 export const Toast = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +26,7 @@ export const Toast = () => {
       }).start(() => {
         setTimeout(() => {
           hideToast();
-        }, 3000);
+        }, 2000);
       });
     }
   }, [showToast]);
@@ -33,7 +34,7 @@ export const Toast = () => {
   const hideToast = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 500,
       useNativeDriver: true,
     }).start(() => {
       hideToastNotification();
@@ -43,7 +44,11 @@ export const Toast = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.toast, { opacity: fadeAnim, paddingTop: insets.top }]}>
-        <CompletedIcon width={30} height={30} color={"#fff"} style={{marginRight: "10%"}} />
+        {toastMessage === "Success! Sync is complete." ? (
+          <SyncIcon width={30} height={30} color={"#fff"} style={{ marginRight: "10%" }} />
+        ) : (
+          <CompletedIcon width={30} height={30} color={"#fff"} style={{ marginRight: "10%" }} />
+        )}
         <Text style={styles.text}>{toastMessage}</Text>
       </Animated.View>
     </View>
@@ -62,11 +67,11 @@ const styles = StyleSheet.create({
   toast: {
     backgroundColor: colors.green,
     borderRadius: 5,
-    padding: 10,
+    paddingBottom: 10,
     width: "100%",
     alignItems: "center",
-    flexDirection: 'row',
-    paddingHorizontal: "10%"
+    flexDirection: "row",
+    paddingHorizontal: "10%",
   },
   text: {
     color: "#fff",

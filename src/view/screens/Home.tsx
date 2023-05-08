@@ -72,36 +72,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [data, loading]);
 
-  // useEffect(() => {
-  //   dispatch(actionsInspections.pushInspection({
-  //     id: "5e94bb43fa86cf0016c4d9fe",
-  //     scheduledOn: "2020-04-21T06:00:00.000Z", //appointment time
-  //     visitationRange: null,
-  //     assignedTo: "5e94b7f0fa86cf0016c4d92c",
-  //     status: "complete",
-  //     inspectionType: "Initial", //how often should i do inspection
-  //     propertyType: "unit", //openspace | unit
-  //     hasPassed: true,
-  //     createdOn: "2020-04-13T19:19:31.525Z",
-  //     createdBy: "heather@hdslabs.com",
-  //     completedOn: "",
-  //     hasPermissionToEnter: true, //permission to enter
-  //     unit: {
-  //       id: "5dec0c8accba88001629g756a",
-  //       streetAddress: "2889 Bagshot Row",
-  //       city: "Hobbiton",
-  //       state: "The Shire",
-  //       postalCode: 33111,
-  //     },
-  //     visibleStatus: InspectionStatus.PASSED,
-  //     visibleHouseholdName: '',
-  //     household: {
-  //       lastActionName: "Interim Recertification",
-  //       headOfHouseholdId: "6157769d2dc0505b2c7259c8", //tenant
-  //     },
-  //   }))
-  // }, [])
-
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
       <View style={styles.screen}>
@@ -120,7 +90,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                         item,
                       })
                     }
-                    item={item}
+                    inspection={item}
                   />
                 )}
                 ListHeaderComponent={() => (

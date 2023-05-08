@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
@@ -6,11 +6,12 @@ import { colors } from "../../theme";
 import LeftErrow from "~/view/assets/icons/leftArrow.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { Category } from "~/types/Category";
-import { useAppDispatch } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { SelectedCategory } from "../InspectionItem/InspectionInspect/SelectedCategory";
 import { InspectionItem } from "~/types/InspectionItem";
 import { getInspectionDate } from "~/utils/visibleDate";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   item: InspectionItem;
@@ -26,8 +27,10 @@ export const SelectedInspection: React.FC<Props> = ({
   category = null,
 }) => {
   const dispatch = useAppDispatch();
-  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
+  const startSignatureScreen = () => dispatch(actionsInspectionItem.setStartSignature(true));
+  const { startSignature } = useAppSelector((state) => state.inspectionItem);
 
+  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   return (
@@ -53,16 +56,18 @@ export const SelectedInspection: React.FC<Props> = ({
           <Text style={styles.textInfo}>
             {item.scheduledOn
               ? `Scheduled ${getInspectionDate(new Date(item.scheduledOn))} ${
-                  item.visitationRange ? `from ${item.visitationRange}` : ""}`
+                  item.visitationRange ? `from ${item.visitationRange}` : ""
+                }`
               : `Created on ${getInspectionDate(new Date(item.createdOn))}`}
           </Text>
         </View>
-        {(item.visibleStatus === InspectionStatus.NEW || item.visibleStatus === InspectionStatus.SCHEDULED) && (
+        {(item.visibleStatus === InspectionStatus.NEW ||
+          item.visibleStatus === InspectionStatus.SCHEDULED) && (
           <TouchableOpacity style={styles.startInspectionButton}>
             <Text style={styles.startInspectionText}>Start Inspection</Text>
           </TouchableOpacity>
         )}
-        {item.visibleStatus === InspectionStatus.INPROGRESS && (
+        {!startSignature && item.visibleStatus === InspectionStatus.INPROGRESS && (
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity
               style={[styles.startInspectionButton, styles.saveButton]}
@@ -70,10 +75,20 @@ export const SelectedInspection: React.FC<Props> = ({
             >
               <Text style={{ ...styles.startInspectionText, color: colors.blue }}>Save</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ ...styles.startInspectionButton, width: "48%" }}>
+            <TouchableOpacity
+              style={{ ...styles.startInspectionButton, width: "48%" }}
+              onPress={startSignatureScreen}
+            >
               <Text style={styles.startInspectionText}>Submit</Text>
             </TouchableOpacity>
           </View>
+        )}
+        {startSignature && (
+          <TouchableOpacity style={[styles.startInspectionButton, styles.startSignatureButton]}>
+            <Text style={{ ...styles.startInspectionText, color: "#fff" }}>
+              Pass Remaining and Submit
+            </Text>
+          </TouchableOpacity>
         )}
         {includeCategory && category && <SelectedCategory category={category} />}
       </View>
@@ -116,6 +131,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     alignSelf: "stretch",
     width: "100%",
+    paddingRight: 5,
   },
   textInfo: {
     fontSize: 13,
@@ -154,5 +170,10 @@ const styles = StyleSheet.create({
     borderColor: colors.blue,
     borderWidth: 1,
     backgroundColor: "#fff",
+  },
+  startSignatureButton: {
+    width: "100%",
+    backgroundColor: colors.green,
+    alignSelf: "center",
   },
 });

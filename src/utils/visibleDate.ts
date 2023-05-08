@@ -15,7 +15,7 @@ export const getInspectionDate = (date: Date) => {
 };
 
 export const getCalendarVisibleDate = (date: Date) => {
-  const [day, month, year] = date.toLocaleDateString().split('/');
+  const [month, day, year] = date.toLocaleDateString().split('/');
 
-  return `${day.length > 1 ? day : "0" + day}-${month.length > 1 ? month : "0" + month}-${year}`
+  return `${year}-${month.length > 1 ? month : "0" + month}-${day.length > 1 ? day : "0" + day}`
 }

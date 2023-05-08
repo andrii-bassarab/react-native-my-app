@@ -56,7 +56,7 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
         useNativeDriver: true,
       })
     ).start();
-  }, [inspectionsSync]);
+  });
 
   useEffect(() => {
     if (loading) {
@@ -118,10 +118,11 @@ const styles = StyleSheet.create({
   unreadMessageText: {
     color: "#fff",
     fontSize: 12,
+    fontWeight: '600'
   },
   unreadIcon: {
-    height: 15,
-    width: 15,
+    height: 16,
+    width: 16,
     backgroundColor: "#FEBB11",
     position: "absolute",
     left: "50%",

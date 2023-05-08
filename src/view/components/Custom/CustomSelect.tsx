@@ -4,9 +4,9 @@ import { colors } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 
 interface Props {
-  data: string[];
+  data: (string | {name: string, code: string})[];
   selectedItem: string;
-  setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
   maxHeight?: number | string;
   selectedItemColor?: string
   error?: string;
@@ -50,7 +50,7 @@ export const CustomSelect: React.FC<Props> = ({
                 borderBottomWidth: selectedItem === item ? 0.5 : 0,
               }}
               onPress={() => {
-                setSelectedItem(item);
+                setSelectedItem(typeof item === "string" ? item : item.code);
                 setShowDropdown(false);
               }}
             >
@@ -60,7 +60,7 @@ export const CustomSelect: React.FC<Props> = ({
                   fontSize: 16,
                 }}
               >
-                {item}
+                {typeof item === "string" ? item : item.name}
               </Text>
             </TouchableOpacity>
           ))}

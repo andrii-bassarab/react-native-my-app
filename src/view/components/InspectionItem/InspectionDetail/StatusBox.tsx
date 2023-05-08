@@ -8,7 +8,6 @@ interface Props {
 }
 
 export const StatusBox: React.FC<Props> = ({ inspection }) => {
-  console.log("inspection.hasPassed", inspection.hasPassed)
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>

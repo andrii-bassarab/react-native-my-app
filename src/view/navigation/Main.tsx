@@ -12,6 +12,7 @@ import { NotificationItem } from "~/types/NotificationItem";
 import { useQuery, NetworkStatus } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
+import { actionsToastNotification } from "~/modules/toastNotification";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -24,6 +25,8 @@ export const MainStack: React.FC = () => {
   const dispatch = useAppDispatch();
   const { inspections, inspectionsSync } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
+
+  const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Sync is complete."));
 
   const { data, networkStatus } = useQuery(GET_ALL_INSPECTIONS);
 
@@ -125,6 +128,7 @@ export const MainStack: React.FC = () => {
       dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
       dispatch(actionsNotifications.addNotification(newSuccessfullyNotification));
       dispatch(actionsNotifications.addUnreadMessage(2));
+      showToastNotification();
     }
   }, [inspectionsSync, prevSyncStatus, data]);
 

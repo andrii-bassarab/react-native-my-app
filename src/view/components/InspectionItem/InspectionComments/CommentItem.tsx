@@ -1,14 +1,5 @@
-import React, { useId } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-} from "react-native";
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
 import { Comment } from "~/types/Comment";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { colors } from "~/view/theme";
@@ -21,41 +12,37 @@ interface Props {
 
 export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) => {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View>
-          <View style={styles.timePoint} />
-          <View
-            style={[
-              styles.card,
-              index === arrayLength - 1 && { borderLeftWidth: 0, borderColor: "#fff" },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <View style={styles.header}>
-                <Text style={styles.author}>{comment.author + "-"}</Text>
-                <Text style={styles.date}>
-                  {(Date.parse(comment.date)) >= Date.now() - 5 * 60 * 1000 ? 'Now' : getVisibleDate(new Date(comment.date)) }
-                </Text>
-              </View>
-              <Text style={styles.comment}>{comment.comment}</Text>
-            </View>
+    <View>
+      <View style={styles.timePoint} />
+      <View
+        style={[
+          styles.card,
+          index === arrayLength - 1 && { borderLeftWidth: 0, borderColor: "#fff" },
+        ]}
+      >
+        <View style={{ flex: 1 }}>
+          <View style={styles.header}>
+            <Text style={styles.author}>{comment.createdBy + " -"}</Text>
+            <Text style={styles.date}>
+              {Date.parse(comment.createdOn) >= Date.now() - 5 * 60 * 1000
+                ? "Now"
+                : getVisibleDate(new Date(comment.createdOn))}
+            </Text>
           </View>
+          <Text style={styles.comment}>{comment.commentBody}</Text>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
+    flexWrap: 'wrap'
   },
   card: {
-    paddingBottom: "10%",
+    paddingBottom: "8%",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-start",
@@ -65,7 +52,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   author: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "700",
     color: "#8E8E8E",
   },
@@ -73,6 +60,7 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
     color: "#8E8E8E",
     fontWeight: "500",
+    fontSize: 13
   },
   comment: {
     color: "#8E8E8E",

@@ -8,11 +8,11 @@ import { InspectionItem } from "~/types/InspectionItem";
 import { HouseHoldName } from "./HouseHoldName";
 
 interface Props {
-  item: InspectionItem;
+  inspection: InspectionItem;
   onPress: () => void;
 }
 
-export const InspectionCard: React.FC<Props> = ({ item, onPress }) => {
+export const InspectionCard: React.FC<Props> = ({ inspection: item, onPress }) => {
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   return (

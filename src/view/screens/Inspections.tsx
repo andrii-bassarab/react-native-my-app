@@ -199,7 +199,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <InspectionCard
-                    item={item}
+                    inspection={item}
                     onPress={() => navigation.navigate("InspectionItem", item)}
                   />
                 )}

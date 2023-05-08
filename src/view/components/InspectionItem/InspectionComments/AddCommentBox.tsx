@@ -1,5 +1,17 @@
 import React, { useId } from "react";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { actionsToastNotification } from "~/modules/toastNotification";
+import { useAppDispatch } from "~/store/hooks";
 import { Comment } from "~/types/Comment";
 import { colors } from "~/view/theme";
 
@@ -10,35 +22,45 @@ interface Props {
 }
 
 export const AddCommentBox: React.FC<Props> = ({ input, setInput, addNewComment }) => {
+  const dispatch = useAppDispatch();
+  const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Comment added."));
+
   const newComment = {
-    id: new Date().toLocaleString(),
-    author: "Me",
-    comment: input,
+    createdBy: "Me",
+    commentBody: input,
   };
 
   const handleAddNewComment = (newComment: Comment) => {
-    addNewComment({ ...newComment, date: new Date().toJSON() });
+    addNewComment(newComment);
     setInput("");
+    showToastNotification();
   };
 
   return (
-    <View style={styles.content}>
-      <TextInput
-        style={styles.inputLabel}
-        placeholder="Write a comment..."
-        textAlignVertical="top"
-        multiline={true}
-        value={input}
-        onChangeText={setInput}
-        placeholderTextColor={"#979797"}
-      />
-      <TouchableOpacity
-        style={styles.commentButton}
-        onPress={() => handleAddNewComment({ ...newComment, date: new Date().toJSON() })}
-      >
-        <Text style={styles.commentButtonText}>Comment</Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.content}>
+          <TextInput
+            style={styles.inputLabel}
+            placeholder="Write a comment..."
+            textAlignVertical="top"
+            multiline={true}
+            value={input}
+            onChangeText={setInput}
+            placeholderTextColor={"#979797"}
+          />
+          <TouchableOpacity
+            style={styles.commentButton}
+            onPress={() => handleAddNewComment({ ...newComment, createdOn: new Date().toJSON() })}
+          >
+            <Text style={styles.commentButtonText}>Comment</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -47,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     justifyContent: "space-between",
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   inputLabel: {
     paddingHorizontal: 20,

@@ -1,9 +1,10 @@
 import { InspectionStatus } from "./inspectionStatus";
+import { Comment } from "./Comment";
 
 export interface InspectionItem {
   id: string;
   scheduledOn: string | null;
-  visitationRange: null | string;
+  visitationRange: string | null;
   assignedTo: string;
   status: string;
   inspectionType: string;
@@ -14,8 +15,10 @@ export interface InspectionItem {
   completedOn: string | null;
   completedBy: string | null;
   hasPermissionToEnter: boolean;
+  householdPhone: string | null;
   visibleStatus: InspectionStatus;
-  visibleHouseholdName: string
+  visibleHouseholdName: string;
+  inspectionComments: Comment[];
   unit: {
     id: string;
     streetAddress: string;
