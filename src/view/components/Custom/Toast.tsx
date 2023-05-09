@@ -26,7 +26,7 @@ export const Toast = () => {
       }).start(() => {
         setTimeout(() => {
           hideToast();
-        }, 2000);
+        }, 1500);
       });
     }
   }, [showToast]);

@@ -15,7 +15,7 @@ import { getInspectionStatus } from "~/utils/getInspectionStatus";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { GET_HOUSEHOLD_NAME, getHouseHoldNameById } from "~/services/api/HouseHoldMembers";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
-import { InspectionStatus } from "~/types/inspectionStatus";
+import { GET_INSPECTION_TEMPLATES } from "~/services/api/InspectionTemplates";
 
 interface Props {
   navigation: NavigationProp<ParamListBase>;
@@ -30,6 +30,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const showWindow = useAppSelector((state) => state.showWindow);
 
   const { loading, error, data } = useQuery(GET_ALL_INSPECTIONS);
+  const {
+    data: inspectionTemplateInfo,
+    loading: loadingInspectionTemplateInfo,
+    error: errorInspectionTemplateInfo,
+  } = useQuery(GET_INSPECTION_TEMPLATES);
   // const {
   //   data: dataHouseHold,
   //   error: errorHouseHold,
@@ -56,21 +61,25 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
     if (
       data &&
+      inspectionTemplateInfo &&
       data.inspections?.edges &&
       Array.isArray(data.inspections?.edges) &&
+      Array.isArray(inspectionTemplateInfo?.inspectionTemplates?.edges) &&
       data.inspections?.edges.every(
         (edge: any) => typeof edge === "object" && edge.node && typeof edge.node === "object"
       )
     ) {
+      const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
       const inspectionsFromServer = data.inspections.edges.map((item: any) => ({
         ...item.node,
         visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
         visibleHouseholdName: "",
+        visibleInspectionForm: arrayOfInspectionTemplates.find(template => template.node.id === item.node.templateId)?.node?.name || ""
       })) as InspectionItem[];
-
+  
       dispatch(actionsInspections.setInspections(inspectionsFromServer));
     }
-  }, [data, loading]);
+  }, [data, loading, inspectionTemplateInfo]);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>

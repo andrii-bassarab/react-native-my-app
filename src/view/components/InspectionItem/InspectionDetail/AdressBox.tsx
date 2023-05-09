@@ -21,6 +21,9 @@ const mocksDetails = [
 export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const [showModalPhoneNumber, setShowModalPhoneNumber] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [visiblePhoneNumber, setVisiblePhoneNumber] = useState(
+    inspection.unit.landlord?.phoneNumber
+  );
 
   const formatPhoneNumber = (input: string) => {
     let phoneNumber = input.replace(/\D/g, "");
@@ -44,6 +47,16 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const handleChangeText = (input: string) => {
     const formattedPhoneNumber = formatPhoneNumber(input);
     setPhoneNumber(formattedPhoneNumber);
+  };
+
+  const handleSavePhoneNumber = () => {
+    setVisiblePhoneNumber(phoneNumber);
+    setShowModalPhoneNumber(false);
+  };
+
+  const handleCloseModalPhone = () => {
+    setShowModalPhoneNumber(false);
+    setPhoneNumber("");
   };
 
   return (
@@ -101,15 +114,17 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Landlord:</Text>
-        <Text style={styles.text}>Saruman Istar</Text>
+        <Text style={styles.text}>{`${inspection.unit.landlord?.firstName || ""} ${
+          inspection.unit.landlord?.lastName || ""
+        }`}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Phone:</Text>
-        <Text style={styles.text}>{inspection.householdPhone}</Text>
+        <Text style={styles.text}>{visiblePhoneNumber || null}</Text>
       </View>
       {showModalPhoneNumber && (
         <ModalSwipeScreen
-          closeModalFunction={() => setShowModalPhoneNumber(false)}
+          closeModalFunction={handleCloseModalPhone}
           height={"40%"}
           percentSwipeToClose={0.2}
         >
@@ -130,10 +145,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
                 keyboardType="phone-pad"
               />
             </View>
-            <TouchableOpacity
-              style={styles.modalSaveButton}
-              onPress={() => setShowModalPhoneNumber(false)}
-            >
+            <TouchableOpacity style={styles.modalSaveButton} onPress={handleSavePhoneNumber}>
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
@@ -227,6 +239,6 @@ const styles = StyleSheet.create({
   detailBox: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5
+    marginTop: 5,
   },
 });

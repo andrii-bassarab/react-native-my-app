@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const GET_ALL_INSPECTIONS = gql`
   query GetInspections {
-    inspections {
+    inspections(order: { createdOn: ASC }, first: 30) {
     edges {
       node {
         id
@@ -12,6 +12,7 @@ export const GET_ALL_INSPECTIONS = gql`
         status
         inspectionType
         propertyType
+        templateId
         hasPassed
         createdOn
         createdBy

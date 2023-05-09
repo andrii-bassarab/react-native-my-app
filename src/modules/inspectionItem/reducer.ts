@@ -41,10 +41,9 @@ const initialState = {
       categoryAdded: true,
     },
   ] as Category[],
-  assigned: '',
-  phoneNumber: '',
   startSignature: false,
-}
+  signatureCount: 3,
+};
 
 const inspectionItemSlice = createSlice({
   name: "inspectionItem",
@@ -56,21 +55,14 @@ const inspectionItemSlice = createSlice({
     setHasUnsavedChanges: (state, action: PayloadAction<boolean>) => {
       state.hasUnsavedChanges = action.payload
     },
-    setAssigned: (state, action: PayloadAction<string>) => {
-      state.assigned = action.payload;
-    },
-    setPhoneNumber: (state, action: PayloadAction<string>) => {
-      state.phoneNumber = action.payload;
-    },
     setStartSignature: (state, action: PayloadAction<boolean>) => {
       state.startSignature = action.payload;
     },
     clearInspectionItem: () => ({
       hasUnsavedChanges: false,
       categories: [],
-      assigned: '',
-      phoneNumber: '',
       startSignature: false,
+      signatureCount: 0,
     }),
   },
 })

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
@@ -14,6 +14,8 @@ import SaveIcon from "~/view/assets/icons/save.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionComments } from "../components/InspectionItem/InspectionComments/InspectionComments";
 import { InspectionItem as Inspection } from "~/types/InspectionItem";
+import { SignatureView } from "../components/Signature/SignatureView";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
@@ -33,9 +35,10 @@ function FilesScreen() {
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const {startSignature} = useAppSelector(state => state.inspectionItem);
+  const { startSignature } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
+  // const [startSignature, setStartSignature] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const currentInspection = useAppSelector((state) => state?.inspectionItem);
 
@@ -43,12 +46,19 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   const inspectOptions = {
     tabBarLabel:
-      inspection.visibleStatus === InspectionStatus.PASSED || inspection.status === InspectionStatus.FAILED
+      inspection.visibleStatus === InspectionStatus.PASSED ||
+      inspection.status === InspectionStatus.FAILED
         ? "Results"
         : "Inspect",
   };
 
-  console.log("startSignature", startSignature);
+  useEffect(() => {
+    return () => {
+      dispatch(actionsInspectionItem.setStartSignature(false));
+    };
+  }, []);
+
+  console.log("inspection", inspection);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={0}>
@@ -69,20 +79,30 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
               message="Are you sure you want to leave without saving changes?"
             />
           )}
-          {!startSignature && <Tab.Navigator tabBar={(props) => <TopTabBar {...props} />} initialRouteName="HomeScreen">
-            {inspection.status !== InspectionStatus.NEW &&
-              inspection.status !== InspectionStatus.SCHEDULED && (
-                <Tab.Screen
-                  name="Inspect"
-                  component={InspectionInspect}
-                  options={inspectOptions}
-                  initialParams={inspection}
-                />
-              )}
-            <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
-            <Tab.Screen name="Comments" component={InspectionComments} initialParams={inspection} />
-            <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
-          </Tab.Navigator>}
+          {!startSignature && (
+            <Tab.Navigator
+              tabBar={(props) => <TopTabBar {...props} />}
+              initialRouteName="HomeScreen"
+            >
+              {inspection.status !== InspectionStatus.NEW &&
+                inspection.status !== InspectionStatus.SCHEDULED && (
+                  <Tab.Screen
+                    name="Inspect"
+                    component={InspectionInspect}
+                    options={inspectOptions}
+                    initialParams={inspection}
+                  />
+                )}
+              <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
+              <Tab.Screen
+                name="Comments"
+                component={InspectionComments}
+                initialParams={inspection}
+              />
+              <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
+            </Tab.Navigator>
+          )}
+          {startSignature && <SignatureView inspection={inspection} />}
         </View>
       </View>
     </Screen>

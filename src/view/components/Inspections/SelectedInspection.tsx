@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
@@ -28,9 +28,10 @@ export const SelectedInspection: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const startSignatureScreen = () => dispatch(actionsInspectionItem.setStartSignature(true));
-  const { startSignature } = useAppSelector((state) => state.inspectionItem);
+  const { startSignature, signatureCount } = useAppSelector((state) => state.inspectionItem);
 
-  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
+  const showToast = (message: string) =>
+    dispatch(actionsToastNotification.showToastMessage(message));
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   return (
@@ -84,9 +85,12 @@ export const SelectedInspection: React.FC<Props> = ({
           </View>
         )}
         {startSignature && (
-          <TouchableOpacity style={[styles.startInspectionButton, styles.startSignatureButton]}>
+          <TouchableOpacity
+            style={[styles.startInspectionButton, styles.startSignatureButton]}
+            disabled={signatureCount !== 3}
+          >
             <Text style={{ ...styles.startInspectionText, color: "#fff" }}>
-              Pass Remaining and Submit
+              {signatureCount === 3 ? "Complete" : "Pass Remaining and Submit"}
             </Text>
           </TouchableOpacity>
         )}

@@ -83,7 +83,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
           ...inspections.filter(
             (item) =>
               item.visibleStatus === InspectionStatus.UNSCHEDULED ||
-              item.status === InspectionStatus.NEW
+              item.visibleStatus === InspectionStatus.NEW
           ),
         ])
       : setVisibleInspections([]);

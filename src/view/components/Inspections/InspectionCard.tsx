@@ -22,7 +22,7 @@ export const InspectionCard: React.FC<Props> = ({ inspection: item, onPress }) =
           <Text style={{ ...styles.cardTitle, color: itemColor }}>
             {`Inspection ${item.unit.streetAddress}`}
           </Text>
-          <Text style={{ color: itemColor, fontWeight: "600" }}>{item.visibleStatus}</Text>
+          <Text style={{ color: itemColor, fontWeight: "600", marginLeft: 5 }}>{item.visibleStatus}</Text>
         </View>
         <View style={styles.dateLabel}>
           <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 2 }} />
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
   contentCard: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     flexWrap: "wrap",
   },
@@ -72,6 +71,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: "500",
+    flex: 1
   },
   mainInfo: {
     borderLeftWidth: 3,

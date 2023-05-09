@@ -24,6 +24,13 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = MyApp;
 		};
+		84D600DC2A090758001A0CEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84D600D82A090758001A0CEF /* RSSignatureCapture.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0C53A99E1B56113D004F2642;
+			remoteInfo = RSSignatureCapture;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +48,7 @@
 		36913F41283CEDC4004B87C5 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = MyApp/BootSplash.storyboard; sourceTree = "<group>"; };
 		557E42D2EF90E39039B4B009 /* Pods-MyApp-MyAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-MyAppTests.release.xcconfig"; path = "Target Support Files/Pods-MyApp-MyAppTests/Pods-MyApp-MyAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		5682C2E11A30CED675ECF6F3 /* Pods-MyApp-MyAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-MyAppTests.debug.xcconfig"; path = "Target Support Files/Pods-MyApp-MyAppTests/Pods-MyApp-MyAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		84D600D82A090758001A0CEF /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
 		C372A222779626C9F9A76D75 /* libPods-MyApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3588870A1C2C5B2F2D4E8BA /* libPods-MyApp-MyAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp-MyAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -109,6 +117,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				84D600D82A090758001A0CEF /* RSSignatureCapture.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -133,6 +142,14 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* MyApp.app */,
 				00E356EE1AD99517003FC87E /* MyAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84D600D92A090758001A0CEF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84D600DD2A090758001A0CEF /* libRSSignatureCapture.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -222,6 +239,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 84D600D92A090758001A0CEF /* Products */;
+					ProjectRef = 84D600D82A090758001A0CEF /* RSSignatureCapture.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* MyApp */,
@@ -229,6 +252,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		84D600DD2A090758001A0CEF /* libRSSignatureCapture.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRSSignatureCapture.a;
+			remoteRef = 84D600DC2A090758001A0CEF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {

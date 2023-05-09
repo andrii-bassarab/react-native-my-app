@@ -14,17 +14,28 @@ interface Props {
 
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
   const [showModalAssigned, setShowModalAssigned] = useState(false);
-  const [assignedTo, setAssignedTo] = useState(inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned");
+  const [assignedTo, setAssignedTo] = useState(
+    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"
+  );
   const assignedOptions = ["Me", "Unassigned"];
+  const [visibleAssignedTo, setVisibleAssignedTo] = useState(assignedTo);
+
+  const closeModalAssigned = () => {
+    setShowModalAssigned(false);
+    setAssignedTo(visibleAssignedTo);
+  };
+
+  const saveAssignedTo = () => {
+    setShowModalAssigned(false);
+    setVisibleAssignedTo(assignedTo);
+  };
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
         <Text style={styles.labelText}>Assigned:</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-          <Text style={styles.text}>
-            {inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"}
-          </Text>
+          <Text style={styles.text}>{visibleAssignedTo}</Text>
           {inspection.status !== InspectionStatus.FAILED &&
             inspection.status !== InspectionStatus.PASSED && (
               <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
@@ -37,7 +48,9 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.labelText}>Appointment Time:</Text>
         <Text style={styles.text}>
           {inspection.scheduledOn
-            ? `${getInspectionDate(new Date(inspection.scheduledOn))} ${inspection.visitationRange ? `from ${inspection.visitationRange}` : ""}`
+            ? `${getInspectionDate(new Date(inspection.scheduledOn))} ${
+                inspection.visitationRange ? `from ${inspection.visitationRange}` : ""
+              }`
             : "--"}
         </Text>
       </View>
@@ -47,11 +60,11 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Inspection Form:</Text>
-        <Text style={styles.text}>HQS</Text>
+        <Text style={styles.text}>{inspection.visibleInspectionForm}</Text>
       </View>
       {showModalAssigned && (
         <ModalSwipeScreen
-          closeModalFunction={() => setShowModalAssigned(false)}
+          closeModalFunction={closeModalAssigned}
           height={"40%"}
           percentSwipeToClose={0.2}
         >
@@ -62,7 +75,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
               selectedItem={assignedTo}
               setSelectedItem={setAssignedTo}
             />
-            <TouchableOpacity style={styles.modalSaveButton}>
+            <TouchableOpacity style={styles.modalSaveButton} onPress={saveAssignedTo}>
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>

@@ -9,6 +9,7 @@ export interface InspectionItem {
   status: string;
   inspectionType: string;
   propertyType: string;
+  templateId: string | null;
   hasPassed: boolean;
   createdOn: string;
   createdBy: string;
@@ -18,6 +19,7 @@ export interface InspectionItem {
   householdPhone: string | null;
   visibleStatus: InspectionStatus;
   visibleHouseholdName: string;
+  visibleInspectionForm: string;
   inspectionComments: Comment[];
   unit: {
     id: string;
@@ -30,10 +32,11 @@ export interface InspectionItem {
     squareFootage: number | null;
     isHandicapAccessible: boolean;
     yearConstructed: number | null;
-    landlord: [{
+    landlord: {
         firstName: string;
         lastName: string;
-    }] | null
+        phoneNumber: string | null;
+    } | null
   };
   household: {
     lastActionName: string;

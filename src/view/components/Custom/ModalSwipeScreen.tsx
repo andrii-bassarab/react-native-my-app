@@ -48,10 +48,6 @@ export const ModalSwipeScreen: React.FC<Props> = ({ closeModalFunction, children
 
   useEffect(() => {
     pan.y.setValue(0);
-
-    return () => {
-      closeModalFunction();
-    };
   }, []);
 
   return (
