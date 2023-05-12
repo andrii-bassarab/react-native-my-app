@@ -30,8 +30,7 @@ export const SelectedInspection: React.FC<Props> = ({
   const startSignatureScreen = () => dispatch(actionsInspectionItem.setStartSignature(true));
   const { startSignature, signatureCount } = useAppSelector((state) => state.inspectionItem);
 
-  const showToast = (message: string) =>
-    dispatch(actionsToastNotification.showToastMessage(message));
+  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   return (
@@ -63,12 +62,12 @@ export const SelectedInspection: React.FC<Props> = ({
           </Text>
         </View>
         {(item.visibleStatus === InspectionStatus.NEW ||
-          item.visibleStatus === InspectionStatus.SCHEDULED) && (
+          item.visibleStatus === InspectionStatus.SCHEDULED) && !includeCategory && (
           <TouchableOpacity style={styles.startInspectionButton}>
             <Text style={styles.startInspectionText}>Start Inspection</Text>
           </TouchableOpacity>
         )}
-        {!startSignature && item.visibleStatus === InspectionStatus.INPROGRESS && (
+        {!startSignature && item.visibleStatus === InspectionStatus.INPROGRESS && !includeCategory && (
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity
               style={[styles.startInspectionButton, styles.saveButton]}
@@ -124,6 +123,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   cardTitle: {
     fontSize: 16,

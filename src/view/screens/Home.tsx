@@ -56,9 +56,45 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   // console.log("loadingHouseholdId", loadingHouseHold);
   // console.log("dataHouseholdId", dataHouseHold?.householdMembers?.edges[0]?.node);
 
-  useEffect(() => {
-    dispatch(actionsInspections.setLoading(loading));
+  const getArrayOfInspections = async () => {
+    dispatch(actionsInspections.setLoading(true));
 
+    const arrayOfDataInspections = data.inspections.edges;
+    const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
+
+    const responceOfHouseHoldName = await Promise.all(
+      arrayOfDataInspections.map(({ node }: any) =>
+        getHouseHoldNameById(node.household?.headOfHouseholdId)
+      )
+    );
+
+    const arrayOfHouseHoldName = responceOfHouseHoldName.map(
+      (item) => item.data?.householdMembers?.edges[0]?.node
+    );
+
+    const getVisibleHouseHoldName = (index: number) => {
+      const nameResponse = arrayOfHouseHoldName[index];
+
+      return nameResponse ? `${nameResponse.firstName}${
+        nameResponse.middleName ? " " + nameResponse.middleName : ""
+      } ${nameResponse.lastName}` : "";
+    };
+
+    const inspectionsFromServer = arrayOfDataInspections.map((item: any, index: number) => ({
+      ...item.node,
+      visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
+      visibleInspectionForm:
+        arrayOfInspectionTemplates.find((template) => template.node.id === item.node.templateId)
+          ?.node?.name || "",
+      visibleHouseholdName: getVisibleHouseHoldName(index),
+    })) as InspectionItem[];
+
+    dispatch(actionsInspections.setLoading(false));
+
+    dispatch(actionsInspections.setInspections(inspectionsFromServer));
+  };
+
+  useEffect(() => {
     if (
       data &&
       inspectionTemplateInfo &&
@@ -69,21 +105,12 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
         (edge: any) => typeof edge === "object" && edge.node && typeof edge.node === "object"
       )
     ) {
-      const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
-      const inspectionsFromServer = data.inspections.edges.map((item: any) => ({
-        ...item.node,
-        visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
-        visibleHouseholdName: "",
-        visibleInspectionForm: arrayOfInspectionTemplates.find(template => template.node.id === item.node.templateId)?.node?.name || ""
-      })) as InspectionItem[];
-  
-      dispatch(actionsInspections.setInspections(inspectionsFromServer));
+      getArrayOfInspections();
     }
   }, [data, loading, inspectionTemplateInfo]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={0}>
-      <View style={styles.screen}>
+    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
         <View style={styles.content}>
           <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
           <View style={styles.activityBox}>
@@ -113,24 +140,17 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           </View>
           {showWindow.showNotification && <Notifications />}
         </View>
-      </View>
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.layout,
-    paddingTop: 15,
-  },
   content: {
     flex: 1,
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 25,
-    paddingTop: 15,
   },
   activityBox: {
     marginTop: 15,

@@ -15,7 +15,7 @@ interface Props {
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
   const [showModalAssigned, setShowModalAssigned] = useState(false);
   const [assignedTo, setAssignedTo] = useState(
-    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"
+    inspection.scheduledOn ? "Me" : "Unassigned"
   );
   const assignedOptions = ["Me", "Unassigned"];
   const [visibleAssignedTo, setVisibleAssignedTo] = useState(assignedTo);
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -1, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   labelText: {
     color: "#8E8E8E",

@@ -32,7 +32,7 @@ export const Notifications: React.FC = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (gestureState.dy > windowHeight * 0.3) {
+        if (gestureState.dy > windowHeight * 0.4) {
           pan.extractOffset();
           dispatch(actionsShowWindow.setShowNotification(false));
         }
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
+    elevation: 3,
   },
   notificationItem: {
     marginTop: 20,

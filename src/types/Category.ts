@@ -5,4 +5,5 @@ export interface Category {
   items: number,
   photos: string,
   categoryAdded?: boolean,
+  categoryApplyToInspection: boolean,
 }

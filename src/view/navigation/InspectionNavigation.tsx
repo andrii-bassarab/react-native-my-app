@@ -6,6 +6,7 @@ import { Inspections } from "../screens/Inspections";
 import { InspectionCategoryScreen } from "../screens/InspectionCategoryView";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Inspection } from "~/types/Inspection";
+import { colors } from "../theme";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -28,7 +29,7 @@ export const InspectionNavigation: React.FC<Props> = ({ navigation, route }) => 
   }, [route.params]);
 
   return (
-    <InspectionStack.Navigator screenOptions={screenOptions} initialRouteName="Inspections">
+    <InspectionStack.Navigator screenOptions={{...screenOptions, contentStyle: {backgroundColor: colors.layout}}} initialRouteName="Inspections">
       <InspectionStack.Screen name="Inspections" component={Inspections} />
       <InspectionStack.Screen name="InspectionItem" component={InspectionItem} />
       <InspectionStack.Screen name="InspectionCategory" component={InspectionCategoryScreen} />

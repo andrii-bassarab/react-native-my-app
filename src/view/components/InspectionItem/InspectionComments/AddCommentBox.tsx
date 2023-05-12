@@ -37,11 +37,11 @@ export const AddCommentBox: React.FC<Props> = ({ input, setInput, addNewComment 
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={{ flex: 1 }}
+    // >
+    //   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.content}>
           <TextInput
             style={styles.inputLabel}
@@ -59,8 +59,8 @@ export const AddCommentBox: React.FC<Props> = ({ input, setInput, addNewComment 
             <Text style={styles.commentButtonText}>Comment</Text>
           </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+    //   {/* </TouchableWithoutFeedback>
+    // </KeyboardAvoidingView> */}
   );
 };
 

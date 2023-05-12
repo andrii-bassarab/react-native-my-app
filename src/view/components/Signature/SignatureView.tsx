@@ -26,6 +26,8 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
 
   // console.log("/Users/admin/Library/Developer/CoreSimulator/Devices/7D53D6A0-D122-4176-8AE8-9FB9AB4E6A31/data/Containers/Data/Application/03278D27-F9E7-4F4E-83C1-3CA22F24C84F/Documents/signature.png")
 
+  // console.log("pathSignInspector",pathSignInspector)
+
   const onSaveEvent = (result: SaveEventParams) => {
     setStartSignatureDraw(false);
     setShowSignModalScreen(false);
@@ -146,8 +148,8 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
             source={{ uri: pathSignInspector }}
             style={{ width: 100, height: 100, backgroundColor: "red" }}
           />
-        )}
-        {pathSignLandlord && (
+        )} */}
+        { /* {pathSignLandlord && (
           <Image
             source={{ uri: pathSignLandlord }}
             style={{ width: 100, height: 100, backgroundColor: "green" }}

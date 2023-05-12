@@ -10,6 +10,7 @@ const initialState = {
       result: "--",
       items: 0,
       photos: "No",
+      categoryApplyToInspection: true,
     },
     {
       title: "Kitchen",
@@ -17,6 +18,7 @@ const initialState = {
       result: "Failed",
       items: 2,
       photos: "Yes",
+      categoryApplyToInspection: false,
     },
     {
       title: "Bathroom",
@@ -24,6 +26,7 @@ const initialState = {
       result: "Passed",
       items: 7,
       photos: "Yes",
+      categoryApplyToInspection: true,
     },
     {
       title: "Bedroom",
@@ -31,6 +34,7 @@ const initialState = {
       result: "Failed",
       items: 0,
       photos: "No",
+      categoryApplyToInspection: false,
     },
     {
       title: "Living Room (addition)",
@@ -39,6 +43,7 @@ const initialState = {
       items: 0,
       photos: "No",
       categoryAdded: true,
+      categoryApplyToInspection: true,
     },
   ] as Category[],
   startSignature: false,
@@ -64,6 +69,13 @@ const inspectionItemSlice = createSlice({
       startSignature: false,
       signatureCount: 0,
     }),
+    setToggleCategoryApplyToInspection: (state, { payload }: PayloadAction<Category>) => {
+      const foundCategory = state.categories.find(category => category.title === payload.title);
+
+      if (foundCategory) {
+        foundCategory.categoryApplyToInspection = !foundCategory.categoryApplyToInspection;
+      }
+    }
   },
 })
 

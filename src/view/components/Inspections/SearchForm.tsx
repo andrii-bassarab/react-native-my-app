@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, View } from "react-native";
+import { TouchableOpacity, StyleSheet, View, Platform } from "react-native";
 import SettingInspectionsIcon from "~/view/assets/icons/settingInspections.svg";
 import SearchIcon from "~/view/assets/icons/search.svg";
 import { colors } from "../../theme";
@@ -25,6 +25,7 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
           <SearchIcon color={colors.primary} width={15} height={15} />
           <TextInput
             style={styles.searchInput}
+            textAlignVertical="center"
             placeholder={placeholder || "Search"}
             value={query}
             onChangeText={setQuery}
@@ -85,12 +86,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingLeft: "5%",
     flex: 1,
+    lineHeight: 20,
   },
   shadowProp: {
     shadowColor: "#171717",
     shadowOffset: { width: -1, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   inputContainer: {
     flexDirection: "row",

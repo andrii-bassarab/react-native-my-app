@@ -186,8 +186,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   ]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={0}>
-      <View style={styles.screenContainer}>
+    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
         <View style={styles.content}>
           <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
           <Text style={styles.title}>Inspections</Text>
@@ -216,8 +215,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
           )}
         </View>
         {showWindow.showInspectionsFilter && <InspectionsFilter />}
-      </View>
-      {loader && <ModalLoader />}
+      {/* // {loader && <ModalLoader />} */}
     </Screen>
   );
 };
@@ -227,23 +225,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.layout,
   },
-  screenContainer: {
-    paddingTop: 15,
-    flex: 1,
-  },
   content: {
     flex: 1,
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 25,
-    paddingTop: 15,
   },
   shadowProp: {
     shadowColor: "#171717",
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
+    elevation: 3,
   },
   title: {
     color: colors.primary,

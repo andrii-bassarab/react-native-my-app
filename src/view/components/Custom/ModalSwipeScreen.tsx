@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
+    elevation: 3,
   },
   closeLabel: {
     height: 5,

@@ -13,10 +13,12 @@ import { useQuery, NetworkStatus } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 import { actionsToastNotification } from "~/modules/toastNotification";
+import { colors } from "../theme";
 
 const screenOptions = {
   gestureEnabled: false,
   headerShown: false,
+  contentStyle: { backgroundColor: "blue" },
 };
 
 const BottomTabs = createBottomTabNavigator();
@@ -137,6 +139,7 @@ export const MainStack: React.FC = () => {
       screenOptions={screenOptions}
       initialRouteName="HomeScreen"
       tabBar={(props) => <BottomTabBar {...props} />}
+      sceneContainerStyle={{backgroundColor: colors.layout}}
     >
       <BottomTabs.Screen
         name="HomeScreen"

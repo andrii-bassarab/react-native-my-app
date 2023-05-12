@@ -1,11 +1,14 @@
 import React from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Animated, TouchableOpacity } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
 import { Category } from "~/types/Category";
+import { СharacterCard } from "../components/CategoryView/СharacterCard";
+import { AmenitiesCard } from "../components/CategoryView/AmenitiesCard";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   route: RouteProp<{ params: { category: Category; inspection: InspectionItem } }, "params">;
@@ -15,33 +18,58 @@ interface Props {
 export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route }) => {
   const { inspection, category } = route.params;
 
+  const { categories } = useAppSelector((state) => state.inspectionItem);
+
+  const foundCategory = categories.find((item) => item.title === category.title);
+
   const goBack = () => navigation.goBack();
 
-  console.log(category);
-
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={0}>
-      <View style={styles.screen}>
-        <View style={styles.content}>
-          <SelectedInspection
-            item={inspection}
-            goBack={goBack}
-            includeCategory
-            category={category}
+    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
+      <View style={styles.content}>
+        <SelectedInspection item={inspection} goBack={goBack} includeCategory category={category} />
+        <View style={{ height: 15 }}></View>
+        <ScrollView style={{ paddingHorizontal: 5 }} showsVerticalScrollIndicator={false}>
+          <СharacterCard
+            title="Electricity"
+            message="Are there at least two working outlets or one working outlet and one working light fixture?"
+            result="Passed"
+            categoryApplyToInspection={foundCategory?.categoryApplyToInspection}
           />
-          {/* <Text>{category.title}</Text> */}
-        </View>
+          <СharacterCard
+            title="Window Condition"
+            message="Are there at least two working outlets or one working outlet and one working light fixture?"
+            result="Passed"
+            categoryApplyToInspection={foundCategory?.categoryApplyToInspection}
+          />
+          <СharacterCard
+            title="Security"
+            message="Are there at least two working outlets or one working outlet and one working light fixture?"
+            result="Passed"
+            categoryApplyToInspection={foundCategory?.categoryApplyToInspection}
+          />
+          <Text style={styles.amenitiesTitle}>Amenities</Text>
+          <AmenitiesCard
+            title="The living room has high quality floors or wall coverings"
+            message="Are there at least two working outlets or one working outlet and one working light fixture?"
+            result="Yes"
+            categoryApplyToInspection={foundCategory?.categoryApplyToInspection}
+          />
+          <AmenitiesCard
+            title="The living room has high quality floors or wall coverings"
+            result="Yes"
+            categoryApplyToInspection={foundCategory?.categoryApplyToInspection}
+          />
+          <TouchableOpacity style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save and Go Back</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.layout,
-    paddingTop: 15,
-  },
   content: {
     flex: 1,
     backgroundColor: "#fff",
@@ -68,5 +96,25 @@ const styles = StyleSheet.create({
     textAlign: "left",
     flex: 1,
     fontSize: 13,
+  },
+  amenitiesTitle: {
+    color: colors.textGrey,
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: "3%",
+  },
+  saveButton: {
+    alignSelf: "center",
+    alignItems: "center",
+    backgroundColor: colors.layout,
+    paddingVertical: "3%",
+    paddingHorizontal: "10%",
+    borderRadius: 30,
+    marginBottom: "5%",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

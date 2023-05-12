@@ -14,17 +14,23 @@ export const HouseHoldName: React.FC<Props> = ({ inspection }) => {
   const dispatch = useAppDispatch();
   // const {inspections} = useAppSelector(state => state.inspections);
 
-  useEffect(() => {
-    getHouseHoldNameById(inspection.household.headOfHouseholdId)
-      .then((res) => {
-        const nameResponse = res.data?.householdMembers?.edges[0]?.node;
-        if (nameResponse) {
-          const newHouseHoldName = `${nameResponse.firstName} ${nameResponse.middleName} ${nameResponse.lastName}`;
+  // useEffect(() => {
 
-          dispatch(actionsInspections.setVisibleHouseholdName([inspection.id, newHouseHoldName]));
-        }
-      });
-  }, []);
+  //   console.log('====================================');
+  //   console.log("Renderrrrrrr");
+  //   console.log('====================================');
+
+  //   getHouseHoldNameById(inspection.household.headOfHouseholdId)
+  //     .then((res) => {
+  //       const nameResponse = res.data?.householdMembers?.edges[0]?.node;
+
+  //       if (nameResponse) {
+  //         const newHouseHoldName = `${nameResponse.firstName}${nameResponse.middleName ? (" " + nameResponse.middleName) : ""} ${nameResponse.lastName}`;
+
+  //         dispatch(actionsInspections.setVisibleHouseholdName([inspection.id, newHouseHoldName]));
+  //       }
+  //     });
+  // }, []);
 
   // const { loading, error, data } = useQuery(GET_HOUSEHOLD_NAME, {
   //   variables: {

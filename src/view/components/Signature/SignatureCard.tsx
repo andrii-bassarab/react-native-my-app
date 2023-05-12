@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   signButton: {
     flex: 1,

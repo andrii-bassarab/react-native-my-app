@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   labelText: {
     color: "#8E8E8E",

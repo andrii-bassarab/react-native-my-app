@@ -4,7 +4,7 @@ import { colors } from '~/view/theme';
 
 interface Props {
   value: boolean;
-  onValueChange: (value: boolean) => void;
+  onValueChange: () => void;
   activeColor?: string;
   inactiveColor?: string;
   containerStyle?: object;
@@ -17,9 +17,6 @@ export const CustomToggleInput: React.FC<Props> = ({
   inactiveColor = colors.primary,
   containerStyle = {},
 }) => {
-  const toggleValue = () => {
-    onValueChange(!value);
-  };
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -28,7 +25,7 @@ export const CustomToggleInput: React.FC<Props> = ({
           styles.toggle,
           value ? { backgroundColor: activeColor } : { backgroundColor: inactiveColor },
         ]}
-        onPress={toggleValue}
+        onPress={onValueChange}
       >
         <View style={[styles.toggleText, { alignSelf: value ? 'flex-end' : 'flex-start' }]} />
       </TouchableOpacity>

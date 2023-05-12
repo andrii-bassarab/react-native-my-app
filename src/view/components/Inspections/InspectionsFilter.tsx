@@ -10,6 +10,7 @@ import {
   GestureResponderEvent,
   Modal,
   Dimensions,
+  Platform,
 } from "react-native";
 import { colors } from "~/view/theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -279,12 +280,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 55,
     padding: 30,
     paddingTop: 10,
+    marginTop: Platform.OS === "ios" ? 0 : "15%",
   },
   shadowProp: {
     shadowColor: "#171717",
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
+    elevation: 3,
   },
   title: {
     color: colors.primary,

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
@@ -61,60 +69,64 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   console.log("inspection", inspection);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={0}>
-      <View style={styles.screen}>
-        <View style={styles.content}>
-          <View style={{ paddingHorizontal: 25 }}>
-            <SelectedInspection item={inspection} goBack={() => goBack()} />
-          </View>
-          {showModalUnsavedChanges && (
-            <ModalDeleteItem
-              title={"You have unsaved changes. Unsaved changes will be lost."}
-              Icon={SaveIcon}
-              onContinue={() => {
-                setShowModalUnsavedChanges(false);
-                goBack();
-              }}
-              onCancel={() => setShowModalUnsavedChanges(false)}
-              message="Are you sure you want to leave without saving changes?"
-            />
-          )}
-          {!startSignature && (
-            <Tab.Navigator
-              tabBar={(props) => <TopTabBar {...props} />}
-              initialRouteName="HomeScreen"
-            >
-              {inspection.status !== InspectionStatus.NEW &&
-                inspection.status !== InspectionStatus.SCHEDULED && (
-                  <Tab.Screen
-                    name="Inspect"
-                    component={InspectionInspect}
-                    options={inspectOptions}
-                    initialParams={inspection}
-                  />
-                )}
-              <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
-              <Tab.Screen
-                name="Comments"
-                component={InspectionComments}
-                initialParams={inspection}
+    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
+      {/* <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+          <View style={styles.content}>
+            <View style={{ paddingHorizontal: 25 }}>
+              <SelectedInspection item={inspection} goBack={() => goBack()} />
+            </View>
+            {showModalUnsavedChanges && (
+              <ModalDeleteItem
+                title={"You have unsaved changes. Unsaved changes will be lost."}
+                Icon={SaveIcon}
+                onContinue={() => {
+                  setShowModalUnsavedChanges(false);
+                  goBack();
+                }}
+                onCancel={() => setShowModalUnsavedChanges(false)}
+                message="Are you sure you want to leave without saving changes?"
               />
-              <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
-            </Tab.Navigator>
-          )}
-          {startSignature && <SignatureView inspection={inspection} />}
-        </View>
-      </View>
+            )}
+            {!startSignature && (
+              <Tab.Navigator
+                tabBar={(props) => <TopTabBar {...props} />}
+                initialRouteName="HomeScreen"
+              >
+                {inspection.status !== InspectionStatus.NEW &&
+                  inspection.status !== InspectionStatus.SCHEDULED && (
+                    <Tab.Screen
+                      name="Inspect"
+                      component={InspectionInspect}
+                      options={inspectOptions}
+                      initialParams={inspection}
+                    />
+                  )}
+                <Tab.Screen
+                  name="Details"
+                  component={InspectionDetails}
+                  initialParams={inspection}
+                />
+                <Tab.Screen
+                  name="Comments"
+                  component={InspectionComments}
+                  initialParams={inspection}
+                />
+                <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
+              </Tab.Navigator>
+            )}
+            {startSignature && <SignatureView inspection={inspection} />}
+          </View>
+        {/* </TouchableWithoutFeedback>
+      </KeyboardAvoidingView> */}
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.layout,
-    paddingTop: 15,
-  },
   content: {
     flex: 1,
     backgroundColor: "#fff",

@@ -32,7 +32,7 @@ export const getHouseHoldNameById = (id: string) => makeRequest("occupancy", `
     householdMembers(
       first: 10
       where: {
-          householdId: {eq: "${id}"}
+        id: {eq: "${id}"}
       }
     ) {
       edges {

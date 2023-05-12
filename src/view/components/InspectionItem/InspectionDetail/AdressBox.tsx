@@ -81,7 +81,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Last Inspection Date:</Text>
-        <Text style={styles.text}>April 20, 2023</Text>
+        <Text style={styles.text}>April 20, 2022</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Permission to Enter:</Text>
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   labelText: {
     color: "#8E8E8E",

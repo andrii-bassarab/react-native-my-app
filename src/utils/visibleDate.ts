@@ -1,7 +1,7 @@
 export const getVisibleDate = (date: Date) => {
-  const arrOfDate = date.toLocaleString().split(' ');
+  const [currentTime, midDay] = date.toLocaleTimeString().split(' ');
 
-  return `${arrOfDate[0]?.slice(0, -1)} at ${arrOfDate[1]?.slice(0, -3)} ${arrOfDate[2]?.toLowerCase()}`
+  return `${date.toLocaleDateString()} at ${currentTime?.slice(0, -3)} ${midDay ? midDay.toLocaleLowerCase() : ""}`
 }
 
 export const getInspectionDate = (date: Date) => {

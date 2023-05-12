@@ -1,20 +1,32 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
 import { CustomToggleInput } from "../../Custom/CustomToggleInput";
 import { Category } from "~/types/Category";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
-  category: Category
+  category: Category;
 }
 
-export const SelectedCategory: React.FC<Props> = ({category}) => {
+export const SelectedCategory: React.FC<Props> = ({ category }) => {
+  const dispatch = useAppDispatch();
   const [categoryIncludeInspection, setCategoryIncludeInspection] = useState(true);
-  const {status, result, items, photos, } = category;
+  const { status, result, items, photos } = category;
+  const { categories } = useAppSelector((state) => state.inspectionItem);
+
+  // const [toggleCategoryApplyToInspection, setToggleCategoryApplyToInspection] = useState(categoryApplyToInspection);
+
+  const foundCategory = categories.find((item) => item.title === category.title);
+
+  const changeApplyCategoryValue = () => {
+    dispatch(actionsInspectionItem.setToggleCategoryApplyToInspection(category));
+  };
 
   return (
     <View style={styles.categoryBox}>
-      <Text style={{ fontSize: 18, fontWeight: "700", color: colors.darkGrey }}>
+      <Text style={{ fontSize: 16, fontWeight: "700", color: colors.darkGrey }}>
         {category.title}
       </Text>
       <View style={styles.content}>
@@ -41,10 +53,12 @@ export const SelectedCategory: React.FC<Props> = ({category}) => {
       </View>
       <View style={styles.applyCategoryBox}>
         <Text style={styles.categoryApplyText}>Does this category apply to the inspection?</Text>
-        <CustomToggleInput
-          value={categoryIncludeInspection}
-          onValueChange={setCategoryIncludeInspection}
-        />
+        {foundCategory && (
+          <CustomToggleInput
+            value={foundCategory?.categoryApplyToInspection}
+            onValueChange={changeApplyCategoryValue}
+          />
+        )}
       </View>
     </View>
   );

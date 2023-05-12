@@ -1,5 +1,5 @@
 import React, { useState, useId } from "react";
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView, Text, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native";
 import { colors } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -18,42 +18,45 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
   const [input, setInput] = useState("");
   const [comments, setComments] = useState(inspectionComments);
 
-  const handleAddNewComment = (newComment: Comment) => setComments((prev) => [newComment, ...prev])
+  const handleAddNewComment = (newComment: Comment) => setComments((prev) => [newComment, ...prev]);
 
   return (
-    <View style={styles.content}>
-      <View style={[styles.container, styles.shadowProp]}>
-        {comments.length > 0 ? (
-          <View style={{ flex: 2, marginBottom: 10 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {comments.map((comment, index, array) => (
-                <CommentItem
-                  key={index}
-                  comment={comment}
-                  index={index}
-                  arrayLength={array.length}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.content}>
+          <View style={[styles.container, styles.shadowProp]}>
+            {comments.length > 0 ? (
+              <View style={{ flex: 2, marginBottom: 10 }}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {comments.map((comment, index, array) => (
+                    <CommentItem
+                      key={index}
+                      comment={comment}
+                      index={index}
+                      arrayLength={array.length}
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+            ) : (
+              <View style={{ flex: 1.5 }}>
+                <CommentIcon
+                  width={"100%"}
+                  height={"70%"}
+                  color={"#DADADA"}
+                  style={{ alignSelf: "center" }}
                 />
-              ))}
-            </ScrollView>
+                <Text style={styles.noCommentText}>No comments</Text>
+              </View>
+            )}
+            <AddCommentBox input={input} setInput={setInput} addNewComment={handleAddNewComment} />
           </View>
-        ) : (
-          <View style={{ flex: 1.5 }}>
-            <CommentIcon
-              width={"100%"}
-              height={"70%"}
-              color={"#DADADA"}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.noCommentText}>No comments</Text>
-          </View>
-        )}
-        <AddCommentBox
-          input={input}
-          setInput={setInput}
-          addNewComment={handleAddNewComment}
-        />
-      </View>
-    </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -70,6 +73,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
+    elevation: 3,
   },
   container: {
     flex: 1,

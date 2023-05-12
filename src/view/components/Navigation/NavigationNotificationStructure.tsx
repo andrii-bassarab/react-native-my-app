@@ -1,32 +1,23 @@
-import "react-native-gesture-handler";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
 import React, { useEffect, useRef } from "react";
-import { TouchableOpacity, View, Text, Animated, StyleSheet, Easing, Platform } from "react-native";
-import { DrawerActions, ParamListBase } from "@react-navigation/native";
-import DrawerToggleIcon from "../../assets/icons/drawerToggle.svg";
+import { Animated, View, Text, TouchableOpacity, StyleSheet, Platform, Easing } from "react-native";
 import NotificationIcon from "../../assets/icons/notification.svg";
-import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import SyncIcon from "~/view/assets/icons/sync.svg";
-import { colors } from "~/view/theme";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsShowWindow } from "~/modules/showWindow";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { ParamListBase } from "@react-navigation/native";
+import { colors } from "~/view/theme";
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;
 }
 
-export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) => {
+export const NavigationNotificationStructure: React.FC<Props> = ({ navigationProps }) => {
   const dispatch = useAppDispatch();
 
   const { inspectionsSync } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
   const { unreadMessage } = useAppSelector((state) => state.notifications);
-
-  const toggleDrawer = () => {
-    dispatch(actionsShowWindow.setShowSwitchSite(false));
-    navigationProps.dispatch(DrawerActions.openDrawer());
-  };
 
   const toggleNotifications = () => {
     navigationProps.navigate("HomeScreen");
@@ -35,11 +26,6 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
   };
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  const { loading } = useQuery(GET_ALL_INSPECTIONS, {
-    notifyOnNetworkStatusChange: true,
-  });
-
   const spinValue = new Animated.Value(0);
 
   const spin = spinValue.interpolate({
@@ -59,20 +45,40 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
   });
 
   useEffect(() => {
-    if (loading) {
+    if (inspectionsSync) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start();
     }
-  }, [loading]);
+  }, [inspectionsSync]);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={toggleDrawer}>
-        <DrawerToggleIcon color="#fff" height="20" />
-      </TouchableOpacity>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        {inspectionsSync && (
+          <Animated.View
+            style={{
+              ...styles.syncContent,
+              // opacity: fadeAnim,
+            }}
+          >
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              <SyncIcon color={colors.blue} height={25} width={30} />
+            </Animated.View>
+            <Text style={{ color: colors.blue, fontWeight: "600" }}>Syncing In Progress</Text>
+          </Animated.View>
+        )}
+        <TouchableOpacity onPress={toggleNotifications}>
+          <NotificationIcon color="#fff" height="30" />
+          {unreadMessage > 0 && (
+            <View style={styles.unreadIcon}>
+              <Text style={styles.unreadMessageText}>{unreadMessage}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -80,9 +86,9 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "flex-end",
     alignItems: "center",
-    marginLeft: 10,
+    marginRight: 15,
     paddingVertical: 5,
   },
   syncContent: {
@@ -97,7 +103,7 @@ const styles = StyleSheet.create({
   unreadMessageText: {
     color: "#fff",
     fontSize: 12,
-    fontWeight: '700'
+    fontWeight: "700",
   },
   unreadIcon: {
     height: 16,

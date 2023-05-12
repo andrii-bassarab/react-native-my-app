@@ -9,6 +9,7 @@ import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NavigationDrawerStructure } from "../components/Navigation/NavigationDrawerStructure";
 import { colors } from "../theme";
+import { NavigationNotificationStructure } from "../components/Navigation/NavigationNotificationStructure";
 
 const Drawer = createDrawerNavigator();
 
@@ -22,6 +23,9 @@ export const HomeNavigation: React.FC = () => {
     headerLeft: () => (
       <NavigationDrawerStructure navigationProps={navigation} />
     ),
+    headerRight: () => (
+      <NavigationNotificationStructure navigationProps={navigation} />
+    ),
     headerTitle: () => null,
     headerShadowVisible: false,
     drawerType: "front",
@@ -30,7 +34,7 @@ export const HomeNavigation: React.FC = () => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <Settings {...props} />}
-      screenOptions={{ ...screenOptions, drawerType: "front" }}
+      screenOptions={{ ...screenOptions, drawerType: "front", sceneContainerStyle: {backgroundColor: colors.layout} }}
     >
       <Drawer.Screen name="MainStack" component={MainStack} />
     </Drawer.Navigator>

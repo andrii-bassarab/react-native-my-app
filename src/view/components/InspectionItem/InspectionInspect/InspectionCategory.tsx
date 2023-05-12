@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -1, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+    elevation: 3,
   },
   cardTitle: {
     fontSize: 16,

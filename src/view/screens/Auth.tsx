@@ -139,31 +139,24 @@ export const AuthScreen: React.FC = () => {
 
   return (
     <Screen backgroundColor={colors.layout}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.screen}>
-            <View style={styles.logo}>
-              <Image
-                source={require("../assets/images/WhiteKansoLogo.png")}
-                style={{ width: "50%", resizeMode: "contain" }}
-              />
-            </View>
-            <LoginForm
-              goToHome={handleSubmit}
-              navigation={navigation}
-              userName={userName}
-              setUserName={setUserName}
-              setPassword={setPassword}
-              password={password}
-              errorLogin={errorLogin}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-      {loader && <ModalLoader />}
+      <View style={styles.screen}>
+        <View style={styles.logo}>
+          <Image
+            source={require("../assets/images/WhiteKansoLogo.png")}
+            style={{ width: "50%", resizeMode: "contain" }}
+          />
+        </View>
+        <LoginForm
+          goToHome={handleSubmit}
+          navigation={navigation}
+          userName={userName}
+          setUserName={setUserName}
+          setPassword={setPassword}
+          password={password}
+          errorLogin={errorLogin}
+        />
+      </View>
+      {/* {loader && <ModalLoader />} */}
     </Screen>
   );
 };
