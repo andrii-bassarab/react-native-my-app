@@ -41,7 +41,7 @@ export const userReducer = createReducer(initialState, builder =>
       state.profileStatus = AsyncStatus.IDLE;
       state.profile = null;
       state.auth = null;
-      // state.firstInit = true;
+      state.firstInit = true;
       state.availableSites = [];
       state.selectedSite = null;
     })

@@ -28,6 +28,7 @@ import { ModalLoader } from "../components/Custom/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
 import { actionsShowWindow } from "~/modules/showWindow";
+import { PERMISSIONS, RESULTS, request, requestNotifications } from "react-native-permissions";
 
 const mocksSites = [
   { name: "Kanso Industries", code: "Kanso Industries" },
@@ -105,12 +106,24 @@ export const AuthScreen: React.FC = () => {
     [currentUser]
   );
 
+  const handleCameraPersission = () => {
+    request(Platform.OS === "ios" ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA).then(
+      (result) => {
+        console.log(result);
+      }
+    );
+
+    requestNotifications(['alert', 'sound', 'badge']).then((result) => {
+      console.log("requestNotifications", result)
+    });
+  };
+
   const handleSubmit = useCallback(async () => {
     setLoader(true);
     try {
       if (currentUser.firstInit) {
-        await handlePermissionCamera();
-        await handlePermissionNotification();
+        await handleCameraPersission();
+        // await handlePermissionNotification();
       }
 
       dispatch(setUser({ id: 1, email: "Nazar Kubyk" }));
