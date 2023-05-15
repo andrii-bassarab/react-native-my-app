@@ -7,12 +7,12 @@ import {
   Text,
   PanResponder,
   Dimensions,
+  ScrollView
 } from "react-native";
 import NotificationsIcon from "../assets/icons/notifications.svg";
 import SyncIcon from "../assets/icons/sync.svg";
 import { colors } from "../theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { ScrollView } from "react-native-gesture-handler";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { actionsNotifications } from "~/modules/notifications";

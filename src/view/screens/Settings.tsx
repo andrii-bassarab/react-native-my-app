@@ -1,8 +1,7 @@
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import React from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Screen } from "../components/Screen/Screen";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import DocumentIcon from "../assets/icons/document.svg";
 import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";

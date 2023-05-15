@@ -50,80 +50,22 @@ export const AuthScreen: React.FC = () => {
 
   const setTodos = () => dispatch(actionsEvents.setEvents("event"));
   const currentUser = useAppSelector((state) => state.user);
-  const events = useAppSelector((state) => state.events);
 
-  const handlePermissionNotification = useCallback(
-    () =>
-      new Promise((resolve, reject) => {
-        Alert.alert(
-          "“Doorways App” Would Like to Send You Notifications",
-          "Notifications may include alerts, sounds and icon badges. These can be configured in Settings.",
-          [
-            {
-              text: "Don't Allow",
-              onPress: () => {
-                dispatch(setNotificationPermission(false));
-                resolve("Don't Allow Notifications");
-              },
-            },
-            {
-              text: "OK",
-              onPress: () => {
-                dispatch(setNotificationPermission(true));
-                resolve("Allow Notifications");
-              },
-            },
-          ]
-        );
-      }),
-    [currentUser]
-  );
+  const handleRequestPermissions = async () => {
+    const resultRequestCamera = await request(Platform.OS === "ios" ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA)
+    console.log("requestCameraPermissions", resultRequestCamera);
 
-  const handlePermissionCamera = useCallback(
-    () =>
-      new Promise((resolve, reject) => {
-        Alert.alert(
-          "“Doorways App” Would Like to Access the Camera",
-          "This will let you take photos and record video.",
-          [
-            {
-              text: "Don't Allow",
-              onPress: () => {
-                dispatch(setCameraPermission(false));
-                resolve("Don't Allow Notifications");
-              },
-            },
-            {
-              text: "OK",
-              onPress: () => {
-                dispatch(setCameraPermission(true));
-                resolve("Allow Notifications");
-              },
-            },
-          ]
-        );
-      }),
-    [currentUser]
-  );
-
-  const handleCameraPersission = () => {
-    request(Platform.OS === "ios" ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA).then(
-      (result) => {
-        console.log("requestCameraPermissions", result);
-      }
-    );
-
-    requestNotifications(['alert', 'sound', 'badge']).then((result) => {
-      console.log("requestNotifications", result)
-    });
+    const resultRequestNotifications = await requestNotifications(['alert', 'sound', 'badge'])
+    console.log("requestNotifications", resultRequestNotifications)
   };
 
   const handleSubmit = useCallback(async () => {
     setLoader(true);
     try {
+      setLoader(false);
+  
       if (currentUser.firstInit) {
-        await handleCameraPersission();
-        // await handlePermissionNotification();
+        await handleRequestPermissions();
       }
 
       dispatch(setUser({ id: 1, email: "Nazar Kubyk" }));
@@ -140,7 +82,6 @@ export const AuthScreen: React.FC = () => {
       setPassword("");
     } catch (error) {
       console.error("Error:", error);
-    } finally {
       setLoader(false);
     }
   }, [currentUser]);
@@ -169,7 +110,7 @@ export const AuthScreen: React.FC = () => {
           errorLogin={errorLogin}
         />
       </View>
-      {/* {loader && <ModalLoader />} */}
+      {loader && <ModalLoader />}
     </Screen>
   );
 };

@@ -1,9 +1,8 @@
 import "react-native-gesture-handler";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import React, { useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, FlatList } from "react-native";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
-import { FlatList } from "react-native-gesture-handler";
 import { Notifications } from "./Notification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";

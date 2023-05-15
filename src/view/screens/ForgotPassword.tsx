@@ -5,11 +5,11 @@ import {
   StyleSheet,
   Image,
   Text,
+  TouchableOpacity
 } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import LeftErrow from "../assets/icons/leftArrow.svg";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface Props {
   children?: React.ReactNode;
