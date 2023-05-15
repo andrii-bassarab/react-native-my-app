@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Platform } from "react-native";
 import { SignatureCard } from "./SignatureCard";
 import { ModalSwipeScreen } from "../Custom/ModalSwipeScreen";
 import SignatureCapture, { SaveEventParams } from "react-native-signature-capture";
@@ -39,7 +39,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
     switch (currentPathNumber) {
       case 0:
         console.log("render 1");
-        setPathSignInspector(result.pathName);
+        Platform.OS === 'ios' ? setPathSignInspector(result.pathName) : setPathSignInspector(result.encoded)
         return;
       case 1:
         console.log("render 1");
@@ -90,7 +90,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
 
     return (
       <Image
-        source={{ uri: pathSignInspector }}
+        source={{ uri: Platform.OS === 'ios' ? pathSignInspector : `data:image/png;base64,${pathSignInspector}` }}
         style={[styles.imageviewSignature, { display: currentPathNumber === 0 ? "flex" : "none" }]}
       />
     );

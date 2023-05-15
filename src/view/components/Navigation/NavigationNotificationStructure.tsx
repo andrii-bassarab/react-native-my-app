@@ -15,7 +15,7 @@ interface Props {
 export const NavigationNotificationStructure: React.FC<Props> = ({ navigationProps }) => {
   const dispatch = useAppDispatch();
 
-  const { inspectionsSync } = useAppSelector((state) => state.inspections);
+  const { visibleLoader } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
   const { unreadMessage } = useAppSelector((state) => state.notifications);
 
@@ -45,19 +45,19 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
   });
 
   useEffect(() => {
-    if (inspectionsSync) {
+    if (visibleLoader) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start();
     }
-  }, [inspectionsSync]);
+  }, [visibleLoader]);
 
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        {inspectionsSync && (
+        {visibleLoader && (
           <Animated.View
             style={{
               ...styles.syncContent,

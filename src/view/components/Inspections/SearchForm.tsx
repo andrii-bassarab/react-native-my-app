@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     paddingLeft: "5%",
     flex: 1,
     lineHeight: 20,
+    paddingVertical: 0
   },
   shadowProp: {
     shadowColor: "#171717",
