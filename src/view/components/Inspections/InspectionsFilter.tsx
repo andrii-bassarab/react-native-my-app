@@ -146,7 +146,7 @@ export const InspectionsFilter = () => {
   return (
     <Modal transparent>
       <Pressable
-        style={{...styles.modalOverlay, paddingTop: insets.top * 2}}
+        style={{...styles.modalOverlay, paddingTop: Platform.OS === "ios" ? insets.top + 10 : 0}}
         onPress={(event) => {
           event.stopPropagation();
           event.preventDefault();
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 55,
     padding: 30,
     paddingTop: 10,
-    marginTop: Platform.OS === "ios" ? 0 : "15%",
+    marginTop: Platform.OS === "ios" ? "10%" : "15%",
   },
   shadowProp: {
     shadowColor: "#171717",

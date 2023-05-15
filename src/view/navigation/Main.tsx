@@ -18,21 +18,21 @@ import { colors } from "../theme";
 const screenOptions = {
   gestureEnabled: false,
   headerShown: false,
-  contentStyle: { backgroundColor: "blue" },
+  contentStyle: { backgroundColor: colors.layout },
 };
 
 const BottomTabs = createBottomTabNavigator();
 
 export const MainStack: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { inspections, inspectionsSync } = useAppSelector((state) => state.inspections);
+  const { inspections, visibleLoader } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
 
   const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Sync is complete."));
 
   const { data, networkStatus } = useQuery(GET_ALL_INSPECTIONS);
 
-  const prevSyncStatus = getPreviousValue(inspectionsSync);
+  const prevSyncStatus = getPreviousValue(visibleLoader);
   const prevNetworkStatus = getPreviousValue(networkStatus);
 
   const newPendingNotification: NotificationItem = useMemo(
@@ -42,7 +42,7 @@ export const MainStack: React.FC = () => {
       date: new Date().toJSON(),
       type: "Pending",
     }),
-    [inspectionsSync]
+    [visibleLoader]
   );
 
   const newSyncInProgressNotification: NotificationItem = useMemo(
@@ -51,7 +51,7 @@ export const MainStack: React.FC = () => {
       date: new Date().toJSON(),
       type: "InProgress",
     }),
-    [inspectionsSync]
+    [visibleLoader]
   );
 
   const newSuccessfullyNotification: NotificationItem = {
@@ -89,7 +89,7 @@ export const MainStack: React.FC = () => {
   useEffect(() => {
     // getStorageSize();
 
-    if (inspectionsSync) {
+    if (visibleLoader) {
       dispatch(
         actionsNotifications.setNotifications(
           filterLastFifteenDays(notifications).map(({ title, date, type }) => ({
@@ -102,7 +102,7 @@ export const MainStack: React.FC = () => {
       dispatch(actionsNotifications.addNotification(newPendingNotification));
       dispatch(actionsNotifications.addUnreadMessage(1));
     }
-  }, [inspectionsSync]);
+  }, [visibleLoader]);
 
   useEffect(() => {
     // console.log("data", data);
@@ -111,10 +111,10 @@ export const MainStack: React.FC = () => {
     // console.log("networkStatus", networkStatus);
 
     if (
-      (data && prevSyncStatus && inspectionsSync !== prevSyncStatus && !inspectionsSync) ||
+      (data && prevSyncStatus && visibleLoader !== prevSyncStatus && !visibleLoader) ||
       (data &&
         prevSyncStatus === false &&
-        inspectionsSync === false &&
+        visibleLoader === false &&
         networkStatus === 7 &&
         prevNetworkStatus === 1)
     ) {
@@ -132,7 +132,7 @@ export const MainStack: React.FC = () => {
       dispatch(actionsNotifications.addUnreadMessage(2));
       showToastNotification();
     }
-  }, [inspectionsSync, prevSyncStatus, data]);
+  }, [visibleLoader, prevSyncStatus, data]);
 
   return (
     <BottomTabs.Navigator

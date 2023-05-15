@@ -4,6 +4,7 @@ import { InspectionItem } from "~/types/InspectionItem";
 const initialState = {
   inspections: [] as InspectionItem[],
   inspectionsSync: false,
+  visibleLoader: false,
 };
 
 const inspectionsSlice = createSlice({
@@ -21,6 +22,9 @@ const inspectionsSlice = createSlice({
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.inspectionsSync = action.payload
+    },
+    setVisibleLoading: (state, action: PayloadAction<boolean>) => {
+      state.visibleLoader = action.payload
     },
     setVisibleHouseholdName: (state, action: PayloadAction<[string, string]>) => {
       const selectedInspection = state.inspections.find(inspection => inspection.id === action.payload[0]);

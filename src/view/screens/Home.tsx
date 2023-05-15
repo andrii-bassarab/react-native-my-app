@@ -25,7 +25,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const currentUser = useAppSelector((state) => state.user);
   const { notifications } = useAppSelector((state) => state.notifications);
-  const { inspections } = useAppSelector((state) => state.inspections);
+  const { inspections, inspectionsSync } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
 
   const { loading, error, data } = useQuery(GET_ALL_INSPECTIONS);
@@ -56,8 +56,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   // console.log("dataHouseholdId", dataHouseHold?.householdMembers?.edges[0]?.node);
 
   const getArrayOfInspections = async () => {
-    dispatch(actionsInspections.setLoading(true));
-
     const arrayOfDataInspections = data.inspections.edges;
     const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
 
@@ -89,12 +87,14 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     })) as InspectionItem[];
 
     dispatch(actionsInspections.setLoading(false));
+    dispatch(actionsInspections.setVisibleLoading(false));
 
     dispatch(actionsInspections.setInspections(inspectionsFromServer));
   };
 
   useEffect(() => {
     if (
+      !inspectionsSync &&
       data &&
       inspectionTemplateInfo &&
       data.inspections?.edges &&
@@ -106,7 +106,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     ) {
       getArrayOfInspections();
     }
-  }, [data, loading, inspectionTemplateInfo]);
+  }, [data, inspectionTemplateInfo, inspectionsSync]);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>

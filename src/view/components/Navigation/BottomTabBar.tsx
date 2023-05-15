@@ -26,7 +26,11 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
   });
 
   useEffect(() => {
-    dispatch(actionsInspections.setLoading(loading))
+    dispatch(actionsInspections.setLoading(loading));
+
+    if (loading) {
+      dispatch(actionsInspections.setVisibleLoading(true));
+    }
   }, [loading]);
 
   const detectIconByName = (label: string, color: string) => {

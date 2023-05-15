@@ -10,6 +10,7 @@ import {
   Pressable,
   Modal,
   Dimensions,
+  Platform,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors } from "../../theme";
@@ -159,10 +160,13 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     marginTop: 20,
-    borderRadius: 20,
     borderColor: colors.primary,
     borderTopWidth: 0,
     zIndex: 2,
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
+    borderBottomLeftRadius: Platform.OS === "ios" ? 20 : 0,
+    borderBottomRightRadius: Platform.OS === "ios" ? 20 : 0,
   },
   selectedLabel: {
     borderRadius: 50,
