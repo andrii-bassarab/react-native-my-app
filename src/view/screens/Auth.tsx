@@ -109,7 +109,7 @@ export const AuthScreen: React.FC = () => {
   const handleCameraPersission = () => {
     request(Platform.OS === "ios" ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA).then(
       (result) => {
-        console.log(result);
+        console.log("requestCameraPermissions", result);
       }
     );
 
