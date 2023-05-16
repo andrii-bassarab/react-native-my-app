@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  Platform,
+  Image,
+} from "react-native";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -12,6 +20,9 @@ import TakePhotoIcon from "~/view/assets/icons/takePhoto.svg";
 import ImageGallery from "~/view/assets/icons/gallery.svg";
 import { colors } from "~/view/theme";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
+import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
+import { getInspectionDate } from "~/utils/visibleDate";
 
 const mocksFiles = [
   {
@@ -55,6 +66,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const [query, setQuery] = useState("");
   const [visibleFiles, setVisibleFiles] = useState(mocksFiles);
   const [showModalAddFile, setShowModalAddFile] = useState(false);
+  const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
 
   useEffect(() => {
     setVisibleFiles(
@@ -63,6 +75,85 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       )
     );
   }, [query, mocksFiles]);
+
+  const handleCloseModalAddFile = () => setShowModalAddFile(false);
+
+  const handleTakePhoto = async () => {
+    const result = await launchCamera({ mediaType: "photo" });
+    handleCloseModalAddFile();
+
+    if (
+      result.assets &&
+      Array.isArray(result.assets) &&
+      typeof result.assets[0] === "object" &&
+      result.assets[0].hasOwnProperty("uri")
+    ) {
+      const asset = result.assets[0];
+
+      setNewPhoto(result.assets[0]);
+
+      setVisibleFiles((prev) => [
+        ...prev,
+        {
+          name: asset.fileName || "",
+          docFormat: asset.fileName?.split(".")[1] || "",
+          uploadTime: getInspectionDate(new Date()) || "",
+        },
+      ]);
+    }
+
+    console.log("handleTakePhoto", result);
+  };
+
+  const handleChoosePhoto = async () => {
+    const result = await launchImageLibrary({ mediaType: "photo" });
+    handleCloseModalAddFile();
+
+    if (
+      result.assets &&
+      Array.isArray(result.assets) &&
+      typeof result.assets[0] === "object" &&
+      result.assets[0].hasOwnProperty("uri")
+    ) {
+      const asset = result.assets[0];
+
+      setNewPhoto(result.assets[0]);
+
+      setVisibleFiles((prev) => [
+        ...prev,
+        {
+          name: asset.fileName || "",
+          docFormat: asset.fileName?.split(".")[1] || "",
+          uploadTime: getInspectionDate(new Date(), true) || "",
+        },
+      ]);
+    }
+
+    console.log("handleImageLibraryPhoto", result);
+  };
+
+  // console.log("PERMISSIONS", check(PERMISSIONS.ANDROID.CAMERA)
+  // .then((result) => {
+  //   switch (result) {
+  //     case RESULTS.UNAVAILABLE:
+  //       console.log('This feature is not available (on this device / in this context)');
+  //       break;
+  //     case RESULTS.DENIED:
+  //       console.log('The permission has not been requested / is denied but requestable');
+  //       break;
+  //     case RESULTS.LIMITED:
+  //       console.log('The permission is limited: some actions are possible');
+  //       break;
+  //     case RESULTS.GRANTED:
+  //       console.log('The permission is granted');
+  //       break;
+  //     case RESULTS.BLOCKED:
+  //       console.log('The permission is denied and not requestable anymore');
+  //       break;
+  //   }
+  // }))
+
+  console.log(newPhoto);
 
   return (
     <View style={styles.content}>
@@ -84,6 +175,12 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   <InspectionFileCard file={file} />
                 </TouchableOpacity>
               ))}
+              <Image
+                source={{
+                  uri: newPhoto?.uri,
+                }}
+                style={{ height: 200, width: 200, resizeMode: "cover" }}
+              />
               <View style={{ height: "5%" }} />
             </ScrollView>
           ) : (
@@ -111,6 +208,12 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   <InspectionFileCard file={file} />
                 </TouchableOpacity>
               ))}
+              <Image
+                source={{
+                  uri: newPhoto?.uri,
+                }}
+                style={{ height: 200, width: 200, resizeMode: "cover" }}
+              />
               <View style={{ height: 20 }} />
             </ScrollView>
           ) : (
@@ -128,7 +231,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       )}
       {showModalAddFile && (
         <ModalSwipeScreen
-          closeModalFunction={() => setShowModalAddFile(false)}
+          closeModalFunction={handleCloseModalAddFile}
           height={"50%"}
           percentSwipeToClose={0.2}
         >
@@ -136,13 +239,19 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             <Text style={styles.modalTitle}>Add File</Text>
             <View style={styles.modalPhotoButtons}>
               <View style={styles.fileButtonContainer}>
-                <TouchableOpacity style={[styles.fileButton, styles.shadowProp]}>
+                <TouchableOpacity
+                  style={[styles.fileButton, styles.shadowProp]}
+                  onPress={handleTakePhoto}
+                >
                   <TakePhotoIcon width={"60%"} height={"60%"} color={"#D7D7D7"} />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Take photo</Text>
               </View>
               <View style={styles.fileButtonContainer}>
-                <TouchableOpacity style={[styles.fileButton, styles.shadowProp]}>
+                <TouchableOpacity
+                  style={[styles.fileButton, styles.shadowProp]}
+                  onPress={handleChoosePhoto}
+                >
                   <ImageGallery width={"60%"} height={"60%"} color={"#D7D7D7"} />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Choose from Gallery</Text>

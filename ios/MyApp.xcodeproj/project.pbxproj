@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		36913F42283CEDC4004B87C5 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36913F41283CEDC4004B87C5 /* BootSplash.storyboard */; };
 		70D521C6C7C771220E2D24C4 /* libPods-MyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C372A222779626C9F9A76D75 /* libPods-MyApp.a */; };
+		843560C92A13B1CA00BC04B0 /* libReact-RCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 843560C82A13B1CA00BC04B0 /* libReact-RCTImage.a */; };
 		A5DB52D1D2F562DB1117E778 /* libPods-MyApp-MyAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3588870A1C2C5B2F2D4E8BA /* libPods-MyApp-MyAppTests.a */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +49,7 @@
 		36913F41283CEDC4004B87C5 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = MyApp/BootSplash.storyboard; sourceTree = "<group>"; };
 		557E42D2EF90E39039B4B009 /* Pods-MyApp-MyAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-MyAppTests.release.xcconfig"; path = "Target Support Files/Pods-MyApp-MyAppTests/Pods-MyApp-MyAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		5682C2E11A30CED675ECF6F3 /* Pods-MyApp-MyAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-MyAppTests.debug.xcconfig"; path = "Target Support Files/Pods-MyApp-MyAppTests/Pods-MyApp-MyAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		843560C82A13B1CA00BC04B0 /* libReact-RCTImage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libReact-RCTImage.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84D600D82A090758001A0CEF /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
 		C372A222779626C9F9A76D75 /* libPods-MyApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3588870A1C2C5B2F2D4E8BA /* libPods-MyApp-MyAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp-MyAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843560C92A13B1CA00BC04B0 /* libReact-RCTImage.a in Frameworks */,
 				70D521C6C7C771220E2D24C4 /* libPods-MyApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,6 +110,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				843560C82A13B1CA00BC04B0 /* libReact-RCTImage.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				C372A222779626C9F9A76D75 /* libPods-MyApp.a */,
 				E3588870A1C2C5B2F2D4E8BA /* libPods-MyApp-MyAppTests.a */,

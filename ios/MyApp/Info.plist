@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
   <string>This will let you take photos and record video.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<key>NSMicrophoneUsageDescription</key>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

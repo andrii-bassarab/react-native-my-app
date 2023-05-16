@@ -39,14 +39,14 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
     switch (currentPathNumber) {
       case 0:
         console.log("render 1");
-        Platform.OS === 'ios' ? setPathSignInspector(result.pathName) : setPathSignInspector(result.encoded)
+        setPathSignInspector(result.pathName)
         return;
       case 1:
-        console.log("render 1");
+        console.log("render 2");
         setPathSignLandlord(result.pathName);
         return;
       case 2:
-        console.log("render 2");
+        console.log("render 3");
         setPathSignTenant(result.pathName);
         return;
     }
@@ -90,7 +90,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
 
     return (
       <Image
-        source={{ uri: Platform.OS === 'ios' ? pathSignInspector : `data:image/png;base64,${pathSignInspector}` }}
+        source={{ uri: true ? pathSignInspector : `data:image/png;base64,${pathSignInspector}` }}
         style={[styles.imageviewSignature, { display: currentPathNumber === 0 ? "flex" : "none" }]}
       />
     );
@@ -179,6 +179,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
                 showBorder={false}
                 onSaveEvent={onSaveEvent}
                 onTouchStart={() => setStartSignatureDraw(true)}
+                saveImageFileInExtStorage={true}
               />
             </View>
             <View style={styles.buttonsContainer}>
