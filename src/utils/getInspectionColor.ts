@@ -29,3 +29,20 @@ export const getColorCategoryByResult = (result: string, status: string) => {
       return colors.blue;
   }
 }
+
+export const getColorIconFileByFormat = (fileFormat: string) => {
+  switch (true) {
+    case fileFormat === "pdf":
+      return colors.red;
+    case fileFormat === "doc":
+      return colors.blue;
+    case fileFormat === "csv":
+      return colors.green;
+    case fileFormat === "jpg":
+      return "#ECCB5A";
+    case fileFormat === "png":
+      return "#ED9F3D";
+    default:
+      return "#ED9F3D";
+  }
+}

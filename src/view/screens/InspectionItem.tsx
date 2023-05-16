@@ -24,6 +24,7 @@ import { InspectionComments } from "../components/InspectionItem/InspectionComme
 import { InspectionItem as Inspection } from "~/types/InspectionItem";
 import { SignatureView } from "../components/Signature/SignatureView";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { InspectionFilesView } from "../components/InspectionItem/InspectionFiles/InspectionFilesView";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
@@ -31,14 +32,6 @@ interface Props {
 }
 
 const Tab = createMaterialTopTabNavigator();
-
-function FilesScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Files!</Text>
-    </View>
-  );
-}
 
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
@@ -115,7 +108,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
                   component={InspectionComments}
                   initialParams={inspection}
                 />
-                <Tab.Screen name="Files" component={FilesScreen} initialParams={inspection} />
+                <Tab.Screen name="Files" component={InspectionFilesView} initialParams={inspection} />
               </Tab.Navigator>
             )}
             {startSignature && <SignatureView inspection={inspection} />}

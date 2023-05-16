@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Text, TouchableOpacity, View, StyleSheet, TextInput } from "react-native";
 import EyeIcon from "~/view/assets/icons/eyeslash.svg";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

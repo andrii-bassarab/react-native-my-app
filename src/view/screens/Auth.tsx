@@ -56,7 +56,7 @@ export const AuthScreen: React.FC = () => {
     console.log("requestCameraPermissions", resultRequestCamera);
 
     const resultRequestNotifications = await requestNotifications(['alert', 'sound', 'badge'])
-    console.log("requestNotifications", resultRequestNotifications)
+    console.log("requestNotificationsPermissions", resultRequestNotifications)
   };
 
   const handleSubmit = useCallback(async () => {

@@ -1,9 +1,8 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, View, Platform } from "react-native";
+import { TouchableOpacity, StyleSheet, View, Platform, TextInput } from "react-native";
 import SettingInspectionsIcon from "~/view/assets/icons/settingInspections.svg";
 import SearchIcon from "~/view/assets/icons/search.svg";
 import { colors } from "../../theme";
-import { TextInput } from "react-native-gesture-handler";
 import { useAppDispatch } from "~/store/hooks";
 import CloseIcon from "~/view/assets/svg/close";
 import { actionsShowWindow } from "~/modules/showWindow";
