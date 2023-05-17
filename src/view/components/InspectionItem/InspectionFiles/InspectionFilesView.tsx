@@ -23,6 +23,8 @@ import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { getInspectionDate } from "~/utils/visibleDate";
+import DocumentPicker, { DocumentPickerOptions } from "react-native-document-picker";
+import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes";
 
 const mocksFiles = [
   {
@@ -79,57 +81,84 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const handleCloseModalAddFile = () => setShowModalAddFile(false);
 
   const handleTakePhoto = async () => {
-    const result = await launchCamera({ mediaType: "photo" });
-    handleCloseModalAddFile();
+    try {
+      const takenPhoto = await launchCamera({ mediaType: "photo" });
+      handleCloseModalAddFile();
 
-    if (
-      result.assets &&
-      Array.isArray(result.assets) &&
-      typeof result.assets[0] === "object" &&
-      result.assets[0].hasOwnProperty("uri")
-    ) {
-      const asset = result.assets[0];
+      if (
+        takenPhoto.assets &&
+        Array.isArray(takenPhoto.assets) &&
+        typeof takenPhoto.assets[0] === "object" &&
+        takenPhoto.assets[0].hasOwnProperty("uri")
+      ) {
+        const asset = takenPhoto.assets[0];
 
-      setNewPhoto(result.assets[0]);
+        setNewPhoto(takenPhoto.assets[0]);
 
-      setVisibleFiles((prev) => [
-        ...prev,
-        {
-          name: asset.fileName || "",
-          docFormat: asset.fileName?.split(".")[1] || "",
-          uploadTime: getInspectionDate(new Date()) || "",
-        },
-      ]);
+        setVisibleFiles((prev) => [
+          ...prev,
+          {
+            name: asset.fileName || "",
+            docFormat: asset.fileName?.split(".")[1] || "",
+            uploadTime: getInspectionDate(new Date(), true) || "",
+          },
+        ]);
+      }
+
+      console.log("handleTakePhoto:", takenPhoto);
+    } catch (e) {
+      console.log("TakenPhotoError:", e);
     }
-
-    console.log("handleTakePhoto", result);
   };
 
   const handleChoosePhoto = async () => {
-    const result = await launchImageLibrary({ mediaType: "photo" });
-    handleCloseModalAddFile();
+    try {
+      const chosenImageFromGallery = await launchImageLibrary({ mediaType: "photo" });
+      handleCloseModalAddFile();
 
-    if (
-      result.assets &&
-      Array.isArray(result.assets) &&
-      typeof result.assets[0] === "object" &&
-      result.assets[0].hasOwnProperty("uri")
-    ) {
-      const asset = result.assets[0];
+      if (
+        chosenImageFromGallery.assets &&
+        Array.isArray(chosenImageFromGallery.assets) &&
+        typeof chosenImageFromGallery.assets[0] === "object" &&
+        chosenImageFromGallery.assets[0].hasOwnProperty("uri")
+      ) {
+        const asset = chosenImageFromGallery.assets[0];
 
-      setNewPhoto(result.assets[0]);
+        setNewPhoto(chosenImageFromGallery.assets[0]);
 
-      setVisibleFiles((prev) => [
-        ...prev,
-        {
-          name: asset.fileName || "",
-          docFormat: asset.fileName?.split(".")[1] || "",
-          uploadTime: getInspectionDate(new Date(), true) || "",
-        },
-      ]);
+        setVisibleFiles((prev) => [
+          ...prev,
+          {
+            name: asset.fileName || "",
+            docFormat: asset.fileName?.split(".")[1] || "",
+            uploadTime: getInspectionDate(new Date(), true) || "",
+          },
+        ]);
+      }
+
+      console.log("handleImageLibraryPhoto", chosenImageFromGallery);
+    } catch (e) {
+      console.log("ImageLibraryPhotoError", e);
     }
+  };
 
-    console.log("handleImageLibraryPhoto", result);
+  const handleSelectFile = async () => {
+    try {
+      const optionsDocumentPicker: DocumentPickerOptions<SupportedPlatforms> = {
+        type: [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "text/csv",
+        ],
+      };
+
+      const chosenFile = await DocumentPicker.pick(optionsDocumentPicker);
+
+      console.log("chosenFile", chosenFile);
+    } catch (e) {
+      console.log("DocumentPickerError", e);
+    }
   };
 
   // console.log("PERMISSIONS", check(PERMISSIONS.ANDROID.CAMERA)
@@ -152,8 +181,6 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   //       break;
   //   }
   // }))
-
-  console.log(newPhoto);
 
   return (
     <View style={styles.content}>
@@ -257,7 +284,10 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                 <Text style={styles.fileButtonText}>Choose from Gallery</Text>
               </View>
               <View style={styles.fileButtonContainer}>
-                <TouchableOpacity style={[styles.fileButton, styles.shadowProp]}>
+                <TouchableOpacity
+                  style={[styles.fileButton, styles.shadowProp]}
+                  onPress={handleSelectFile}
+                >
                   <FileIcon width={"60%"} height={"60%"} color={"#D7D7D7"} />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Add File From Documents</Text>
@@ -288,7 +318,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     backgroundColor: "#fff",
-    paddingHorizontal: "3%",
+    paddingLeft: "3%",
+    paddingRight: "2%",
     paddingVertical: "4%",
     marginBottom: "5%",
   },

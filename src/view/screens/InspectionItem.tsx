@@ -59,7 +59,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     };
   }, []);
 
-  console.log("inspection", inspection);
+  // console.log("inspection", inspection);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>

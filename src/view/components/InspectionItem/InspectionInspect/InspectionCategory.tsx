@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from "react-native";
 import { getColorCategoryByResult } from "~/utils/getInspectionColor";
 import { colors } from "~/view/theme";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
@@ -32,13 +32,18 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
     setShowDeleteLabel(false);
   };
 
+  const handleClickOnDotsIcon = (event: GestureResponderEvent) => {
+    event.stopPropagation();
+    setShowDeleteLabel((prev) => !prev);
+  }
+
   return (
     <View style={[styles.card, styles.shadowProp, { borderColor: itemColor }]}>
       <View style={{ ...styles.mainInfo, borderColor: itemColor }}>
         <View style={styles.titleLabel}>
-          <Text style={{ ...styles.cardTitle, color: itemColor }}>{title}</Text>
+          <Text style={{ ...styles.cardTitle, color: itemColor, flex: 1.5 }}>{title}</Text>
           {category.categoryAdded && (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 0.2 }}>
               {showDeleteLabel && (
                 <TouchableOpacity
                   style={[styles.deleteLabel, styles.shadowProp]}
@@ -48,7 +53,10 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
                   <Text>Delete</Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity onPress={() => setShowDeleteLabel((prev) => !prev)}>
+              <TouchableOpacity
+                onPress={handleClickOnDotsIcon}
+                style={{ paddingHorizontal: "50%", paddingVertical: "10%", }}
+              >
                 <DotsIcon color={colors.primary} height={15} width={15} />
               </TouchableOpacity>
             </View>
@@ -89,7 +97,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
       </View>
       {showDeleteModalWindow && (
         <ModalDeleteItem
-          title={"Are you sure you want to delete \“Living Room (Additional)\”?"}
+          title={"Are you sure you want to delete “Living Room (Additional)”?"}
           Icon={DeleteModalIcon}
           onContinue={onContinue}
           onCancel={onContinue}
@@ -129,7 +137,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: "500",
-    marginBottom: 6,
   },
   mainInfo: {
     flex: 1,
@@ -178,5 +185,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     marginRight: 5,
+    position: 'absolute',
+    right: "100%"
   },
 });

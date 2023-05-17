@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createElement, useState } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  Image,
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors } from "~/view/theme";
@@ -17,6 +18,9 @@ import { CustomSelect } from "../Custom/CustomSelect";
 import PlusIcon from "~/view/assets/icons/plus.svg";
 import CameraIcon from "~/view/assets/icons/camera.svg";
 import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
+import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
+import CloseIcon from "~/view/assets/icons/failed.svg";
+import { ModalViewImage } from "./ModalViewImage";
 
 interface Props {
   title: string;
@@ -53,6 +57,64 @@ export const СharacterCard: React.FC<Props> = ({
   const [selectedResult, setSelectedResult] = useState<string>(result);
   const [comment, setComment] = useState("");
   const [openMainInfo, setOpenMainInfo] = useState(false);
+  const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
+  const [images, setImages] = useState<Asset[]>([]);
+  const [showModalImage, setShowModalImage] = useState(false);
+
+  const handleTakePhoto = async () => {
+    try {
+      const takenPhoto = await launchCamera({ mediaType: "photo" });
+
+      if (
+        takenPhoto.assets &&
+        Array.isArray(takenPhoto.assets) &&
+        typeof takenPhoto.assets[0] === "object" &&
+        takenPhoto.assets[0].hasOwnProperty("uri")
+      ) {
+        const asset = takenPhoto.assets[0];
+
+        setNewPhoto(asset);
+
+        setImages((prev) => [...prev, asset]);
+      }
+
+      console.log("TakenPhoto:", takenPhoto);
+    } catch (e) {
+      console.log("TakenPhotoError:", e);
+    }
+  };
+
+  const handleChoosePhoto = async () => {
+    try {
+      const chosenImageFromGallery = await launchImageLibrary({ mediaType: "photo" });
+
+      if (
+        chosenImageFromGallery.assets &&
+        Array.isArray(chosenImageFromGallery.assets) &&
+        typeof chosenImageFromGallery.assets[0] === "object" &&
+        chosenImageFromGallery.assets[0].hasOwnProperty("uri")
+      ) {
+        const asset = chosenImageFromGallery.assets[0];
+
+        setNewPhoto(chosenImageFromGallery.assets[0]);
+
+        setImages((prev) => [...prev, asset]);
+      }
+
+      console.log("ImageLibraryPhoto", chosenImageFromGallery);
+    } catch (e) {
+      console.log("ImageLibraryPhotoError", e);
+    }
+  };
+
+  const handleDeleteImage = (imageToDelete: Asset) => {
+    setImages((prev) => prev.filter((photo) => photo.fileName !== imageToDelete.fileName));
+  };
+
+  const handleOpenModalImage = (imageToSet: Asset) => {
+    setNewPhoto(imageToSet);
+    setShowModalImage(true);
+  }
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -131,17 +193,40 @@ export const СharacterCard: React.FC<Props> = ({
                   <Text style={styles.labelItemText}>Add Photos</Text>
                   <View style={styles.buttonsTakePhotoContainer}>
                     <View>
-                      <TouchableOpacity style={styles.takePhotoButton}>
+                      <TouchableOpacity style={styles.takePhotoButton} onPress={handleChoosePhoto}>
                         <PlusIcon color={"rgba(51, 51, 51, 0.33)"} width={"40%"} height={"40%"} />
                       </TouchableOpacity>
                       <Text style={styles.photoName}>From Gallery</Text>
                     </View>
                     <View>
-                      <TouchableOpacity style={styles.takePhotoButton}>
+                      <TouchableOpacity style={styles.takePhotoButton} onPress={handleTakePhoto}>
                         <CameraIcon color={"rgba(51, 51, 51, 0.33)"} width={"60%"} height={"60%"} />
                       </TouchableOpacity>
                       <Text style={styles.photoName}>Take Photo</Text>
                     </View>
+                  </View>
+                  <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                    {images.map((photo) => (
+                      <View style={styles.photoLabel} key={photo.uri}>
+                        <TouchableOpacity onPress={() => handleOpenModalImage(photo)}>
+                          <Image
+                            source={{
+                              uri: photo?.uri,
+                            }}
+                            style={styles.photoImage}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.deletePhoto}
+                          onPress={() => handleDeleteImage(photo)}
+                        >
+                          <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
+                        </TouchableOpacity>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.imageFileName}>
+                          {photo.fileName}
+                        </Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
               ) : (
@@ -153,6 +238,12 @@ export const СharacterCard: React.FC<Props> = ({
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
+      )}
+      {showModalImage && (
+        <ModalViewImage
+          closeModalFunction={() => setShowModalImage(false)}
+          image={newPhoto}
+        />
       )}
     </View>
   );
@@ -262,5 +353,38 @@ const styles = StyleSheet.create({
     color: colors.textGrey,
     fontWeight: "500",
     fontSize: 14,
+  },
+  photoLabel: {
+    flexWrap: "wrap",
+    width: 70,
+    overflow: "hidden",
+    marginTop: "5%",
+    marginRight: 20,
+  },
+  photoImage: {
+    width: 70,
+    height: 70,
+    resizeMode: "cover",
+    borderRadius: 10,
+  },
+  imageFileName: {
+    fontSize: 11,
+    flexWrap: "wrap",
+    width: 60,
+    alignSelf: "center",
+    color: colors.textGrey,
+    fontWeight: "400",
+    marginTop: "5%",
+  },
+  deletePhoto: {
+    borderRadius: 100,
+    position: "absolute",
+    backgroundColor: "#BDBDBD",
+    width: 20,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    right: 5,
+    top: 5,
   },
 });

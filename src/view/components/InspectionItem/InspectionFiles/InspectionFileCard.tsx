@@ -15,7 +15,7 @@ interface Props {
 export const InspectionFileCard: React.FC<Props> = ({ file }) => {
   return (
     <View style={styles.card}>
-      <View style={styles.card}>
+      <View style={{ ...styles.label, width: "35%" }}>
         <View
           style={{
             ...styles.docFileIcon,
@@ -26,10 +26,10 @@ export const InspectionFileCard: React.FC<Props> = ({ file }) => {
         </View>
         <Text style={[styles.fileInfoText, styles.fileNameText]}>{file.name}</Text>
       </View>
-      <View style={styles.card}>
+      <View style={{...styles.label, width: "50%", justifyContent: "space-between"}}>
         <Text style={styles.fileInfoText}>{file.uploadTime}</Text>
-        <TouchableOpacity style={styles.deleteButton}>
-          <DotsIcon color={colors.darkGrey} height={15} width={10}/>
+        <TouchableOpacity style={styles.deleteButton} onPress={(e) => e.stopPropagation()}>
+          <DotsIcon color={colors.darkGrey} height={15} width={10} />
         </TouchableOpacity>
       </View>
     </View>
@@ -38,34 +38,42 @@ export const InspectionFileCard: React.FC<Props> = ({ file }) => {
 
 const styles = StyleSheet.create({
   card: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    width: "100%"
+  },
+  label: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    // flexWrap: "wrap",
   },
   docFileIcon: {
     height: 35,
     width: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 10,
-    marginRight: 5
+    marginRight: 5,
   },
   fileInfoText: {
     color: colors.darkGrey,
     fontWeight: "400",
-    fontSize: 12
+    fontSize: 12,
   },
   docIconText: {
-    color: '#fff',
-    textTransform: 'uppercase',
+    color: "#fff",
+    textTransform: "uppercase",
     fontWeight: "700",
-    fontSize: 13
+    fontSize: 13,
   },
   fileNameText: {
     color: "#5F6064",
   },
   deleteButton: {
-    paddingHorizontal: "1%"
-  }
+    paddingHorizontal: "3%",
+  },
 });
