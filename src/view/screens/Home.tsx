@@ -28,12 +28,13 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { inspections, inspectionsSync } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
 
-  const { loading, error, data } = useQuery(GET_ALL_INSPECTIONS);
-  const {
-    data: inspectionTemplateInfo,
-    loading: loadingInspectionTemplateInfo,
-    error: errorInspectionTemplateInfo,
-  } = useQuery(GET_INSPECTION_TEMPLATES);
+  // const { loading, error, data } = useQuery(GET_ALL_INSPECTIONS);
+  // const {
+  //   data: inspectionTemplateInfo,
+  //   loading: loadingInspectionTemplateInfo,
+  //   error: errorInspectionTemplateInfo,
+  // } = useQuery(GET_INSPECTION_TEMPLATES);
+  
   // const {
   //   data: dataHouseHold,
   //   error: errorHouseHold,
@@ -55,59 +56,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   // console.log("loadingHouseholdId", loadingHouseHold);
   // console.log("dataHouseholdId", dataHouseHold?.householdMembers?.edges[0]?.node);
 
-  const getArrayOfInspections = async () => {
-    const arrayOfDataInspections = data.inspections.edges;
-    const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
-
-    const responceOfHouseHoldName = await Promise.all(
-      arrayOfDataInspections.map(({ node }: any) =>
-        getHouseHoldNameById(node.household?.headOfHouseholdId)
-      )
-    );
-
-    const arrayOfHouseHoldName = responceOfHouseHoldName.map(
-      (item) => item.data?.householdMembers?.edges[0]?.node
-    );
-
-    const getVisibleHouseHoldName = (index: number) => {
-      const nameResponse = arrayOfHouseHoldName[index];
-
-      return nameResponse ? `${nameResponse.firstName}${
-        nameResponse.middleName ? " " + nameResponse.middleName : ""
-      } ${nameResponse.lastName}` : "";
-    };
-
-    const inspectionsFromServer = arrayOfDataInspections.map((item: any, index: number) => ({
-      ...item.node,
-      visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
-      visibleInspectionForm:
-        arrayOfInspectionTemplates.find((template) => template.node.id === item.node.templateId)
-          ?.node?.name || "",
-      visibleHouseholdName: getVisibleHouseHoldName(index),
-    })) as InspectionItem[];
-
-    dispatch(actionsInspections.setLoading(false));
-    dispatch(actionsInspections.setVisibleLoading(false));
-
-    dispatch(actionsInspections.setInspections(inspectionsFromServer));
-  };
-
-  useEffect(() => {
-    if (
-      !inspectionsSync &&
-      data &&
-      inspectionTemplateInfo &&
-      data.inspections?.edges &&
-      Array.isArray(data.inspections?.edges) &&
-      Array.isArray(inspectionTemplateInfo?.inspectionTemplates?.edges) &&
-      data.inspections?.edges.every(
-        (edge: any) => typeof edge === "object" && edge.node && typeof edge.node === "object"
-      )
-    ) {
-      getArrayOfInspections();
-    }
-  }, [data, inspectionTemplateInfo, inspectionsSync]);
-
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
         <View style={styles.content}>
@@ -116,7 +64,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <View style={{ paddingBottom: "20%" }}>
               <FlatList
                 data={inspections}
-                keyExtractor={(item, index) => `key-${index}`}
+                keyExtractor={(item, index) => `key-${item.id}`}
                 renderItem={({ item }) => (
                   <InspectionCard
                     onPress={() =>

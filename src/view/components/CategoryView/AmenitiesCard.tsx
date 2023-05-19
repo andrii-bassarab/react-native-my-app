@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
@@ -13,11 +12,7 @@ import {
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors } from "~/view/theme";
-import { CustomSelect } from "../Custom/CustomSelect";
-import PlusIcon from "~/view/assets/icons/plus.svg";
-import CameraIcon from "~/view/assets/icons/camera.svg";
 import { CustomRadioCheckbox } from "../Custom/CustomRadioCheckbox";
-import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   title: string;

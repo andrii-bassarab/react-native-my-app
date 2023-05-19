@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet, ScrollView, StyleProp, ViewStyle } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ScrollView,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { colors } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 
 interface Props {
-  data: (string | {name: string, code: string})[];
+  data: (string | { name: string; code: string })[];
   selectedItem: string;
   setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
   maxHeight?: number | string;
-  selectedItemColor?: string
+  selectedItemColor?: string;
   error?: string;
   dropdownStyle?: StyleProp<ViewStyle>;
   selectedItemStyle?: StyleProp<ViewStyle>;
@@ -26,18 +34,43 @@ export const CustomSelect: React.FC<Props> = ({
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const handleSelectItem = (
+    item:
+      | string
+      | {
+          name: string;
+          code: string;
+        }
+  ) => {
+    setSelectedItem(typeof item === "string" ? item : item.code);
+    setShowDropdown(false);
+  };
+
   return (
     <View
-      style={[{
-        ...styles.dropdownContainer,
-        borderWidth: showDropdown ? 1 : 0,
-      }, dropdownStyle]}
+      style={[
+        {
+          ...styles.dropdownContainer,
+          borderWidth: showDropdown ? 1 : 0,
+        },
+        dropdownStyle,
+      ]}
     >
       <TouchableOpacity
-        style={[{...styles.selectedLabel, borderColor: error ? colors.red : colors.primary}, selectedItemStyle]}
+        style={[
+          { ...styles.selectedLabel, borderColor: error ? colors.red : colors.primary },
+          selectedItemStyle,
+        ]}
         onPress={() => setShowDropdown((prev) => !prev)}
       >
-        <Text style={{...styles.selectedText, color: selectedItemColor ? selectedItemColor : colors.primary}}>{selectedItem}</Text>
+        <Text
+          style={{
+            ...styles.selectedText,
+            color: selectedItemColor ? selectedItemColor : colors.primary,
+          }}
+        >
+          {selectedItem}
+        </Text>
         <SelectIcon height={10} width={20} color={colors.primary} />
       </TouchableOpacity>
       {showDropdown && (
@@ -53,10 +86,7 @@ export const CustomSelect: React.FC<Props> = ({
                 borderTopWidth: selectedItem === item ? 0.5 : 0,
                 borderBottomWidth: selectedItem === item ? 0.5 : 0,
               }}
-              onPress={() => {
-                setSelectedItem(typeof item === "string" ? item : item.code);
-                setShowDropdown(false);
-              }}
+              onPress={() => handleSelectItem(item)}
             >
               <Text
                 style={{
@@ -80,6 +110,8 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     marginTop: 20,
     borderRadius: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     borderColor: colors.primary,
     borderTopWidth: 0,
     zIndex: 2,
@@ -94,6 +126,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: '#fff',
+    zIndex: 3
   },
   selectedText: {
     fontSize: 16,
@@ -114,7 +148,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: colors.red,
     marginLeft: "5%",
-    fontWeight: '600',
-    marginTop: 5
-  }
+    fontWeight: "600",
+    marginTop: 5,
+  },
 });

@@ -22,7 +22,8 @@ export const getInspectionDate = (date: Date, showTimeDate: boolean | undefined 
 };
 
 export const getCalendarVisibleDate = (date: Date) => {
-  const [month, day, year] = date.toLocaleDateString().split('/');
+  const [month, day] = date.toLocaleDateString().split('/');
+  const currYear = date.getFullYear();
 
-  return `${year}-${month.length > 1 ? month : "0" + month}-${day.length > 1 ? day : "0" + day}`
+  return `${currYear}-${month.length > 1 ? month : "0" + month}-${day.length > 1 ? day : "0" + day}`
 }

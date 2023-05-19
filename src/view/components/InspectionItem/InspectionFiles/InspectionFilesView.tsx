@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  Platform,
-  Image,
-} from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform } from "react-native";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { ModalAddCategory } from "../InspectionInspect/ModalAddCategory";
 import { InspectionFilesAddButton } from "./InspectionFilesAddButton";
 import { InspectionItem } from "~/types/InspectionItem";
 import { InspectionFileCard } from "./InspectionFileCard";
@@ -21,35 +12,71 @@ import ImageGallery from "~/view/assets/icons/gallery.svg";
 import { colors } from "~/view/theme";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { check, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { getInspectionDate } from "~/utils/visibleDate";
-import DocumentPicker, { DocumentPickerOptions } from "react-native-document-picker";
+import DocumentPicker, {
+  DocumentPickerOptions,
+  DocumentPickerResponse,
+} from "react-native-document-picker";
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes";
+import { generateUniqueId } from "~/utils/genereteUniqueId";
 
-const mocksFiles = [
+export interface File {
+  id: string;
+  name: string;
+  uploadTime: string;
+  docFormat: string;
+}
+
+const mocksFiles: File[] = [
   {
+    id: generateUniqueId(),
     name: "Roof Warranty.pdf",
     uploadTime: "May 30, 2022 at 3:00pm",
     docFormat: "pdf",
   },
   {
+    id: generateUniqueId(),
     name: "Some Document.docx",
     uploadTime: "May 25, 2022 at 3:00pm",
     docFormat: "doc",
   },
   {
+    id: generateUniqueId(),
     name: "Some Document.csv",
     uploadTime: "May 24, 2021 at 3:00pm",
     docFormat: "csv",
   },
   {
+    id: generateUniqueId(),
     name: "Some Image.jpg",
     uploadTime: "May 22, 2021 at 3:00pm",
     docFormat: "jpg",
   },
   {
+    id: generateUniqueId(),
     name: "Some Image.png",
     uploadTime: "May 20, 2021 at 3:00pm",
+    docFormat: "png",
+  },
+];
+
+const mocksSignatures = [
+  {
+    id: generateUniqueId(),
+    name: "Inspector.png",
+    uploadTime: "May 30, 2023 at 3:00pm",
+    docFormat: "png",
+  },
+  {
+    id: generateUniqueId(),
+    name: "Landlord.png",
+    uploadTime: "May 25, 2023 at 3:00pm",
+    docFormat: "png",
+  },
+  {
+    id: generateUniqueId(),
+    name: "Tenant.png",
+    uploadTime: "May 24, 2023 at 3:00pm",
     docFormat: "png",
   },
 ];
@@ -62,13 +89,11 @@ interface Props {
 export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
 
-  // const addNewCategory = (newCategory: Category) => dispatch(actionsInspectionItem.addCategory(newCategory));
-  const { categories } = useAppSelector((state) => state.inspectionItem);
-
   const [query, setQuery] = useState("");
   const [visibleFiles, setVisibleFiles] = useState(mocksFiles);
   const [showModalAddFile, setShowModalAddFile] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
+  const [newFile, setNewFile] = useState<DocumentPickerResponse | null>(null);
 
   useEffect(() => {
     setVisibleFiles(
@@ -98,6 +123,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         setVisibleFiles((prev) => [
           ...prev,
           {
+            id: generateUniqueId(),
             name: asset.fileName || "",
             docFormat: asset.fileName?.split(".")[1] || "",
             uploadTime: getInspectionDate(new Date(), true) || "",
@@ -129,6 +155,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         setVisibleFiles((prev) => [
           ...prev,
           {
+            id: generateUniqueId(),
             name: asset.fileName || "",
             docFormat: asset.fileName?.split(".")[1] || "",
             uploadTime: getInspectionDate(new Date(), true) || "",
@@ -145,20 +172,48 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const handleSelectFile = async () => {
     try {
       const optionsDocumentPicker: DocumentPickerOptions<SupportedPlatforms> = {
-        type: [
-          "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "text/csv",
-        ],
+        type:
+          Platform.OS === "android"
+            ? [
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "text/csv",
+              ]
+            : ["UTTypePDF", "UTTypeRTFD", "UTTypeFlatRTFD"],
       };
 
-      const chosenFile = await DocumentPicker.pick(optionsDocumentPicker);
+      const arrayOfSelectedFile = await DocumentPicker.pick(optionsDocumentPicker);
 
-      console.log("chosenFile", chosenFile);
+      if (
+        arrayOfSelectedFile &&
+        Array.isArray(arrayOfSelectedFile) &&
+        arrayOfSelectedFile[0].hasOwnProperty("uri")
+      ) {
+        handleCloseModalAddFile();
+        const selectedFile = arrayOfSelectedFile[0];
+
+        setNewFile(selectedFile);
+
+        setVisibleFiles((prev) => [
+          ...prev,
+          {
+            id: generateUniqueId(),
+            name: selectedFile.name || "",
+            docFormat: selectedFile.type?.split("/")[1] || "",
+            uploadTime: getInspectionDate(new Date(), true) || "",
+          },
+        ]);
+      }
+
+      console.log("chosenFile", arrayOfSelectedFile);
     } catch (e) {
       console.log("DocumentPickerError", e);
     }
+  };
+
+  const handleDeleteFile = (fileToDelete: File) => {
+    setVisibleFiles((prev) => prev.filter((file) => file.id !== fileToDelete.id));
   };
 
   // console.log("PERMISSIONS", check(PERMISSIONS.ANDROID.CAMERA)
@@ -192,70 +247,45 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         <InspectionFilesAddButton />
       </TouchableOpacity>
       <View style={{ height: 15 }} />
-      {Platform.OS === "ios" ? (
-        <View style={[styles.filesContainer, styles.shadowProp]}>
+      <View style={[styles.filesContainer, styles.shadowProp]}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {visibleFiles.length > 0 ? (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <>
               <Text style={styles.fileTitle}>Files</Text>
-              {visibleFiles.map((file, index) => (
-                <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>
-                  <InspectionFileCard file={file} />
+              {visibleFiles.map((file) => (
+                <TouchableOpacity key={file.id} style={{ marginBottom: "4%" }}>
+                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} displayDeleteIcon />
                 </TouchableOpacity>
               ))}
-              <Image
-                source={{
-                  uri: newPhoto?.uri,
-                }}
-                style={{ height: 200, width: 200, resizeMode: "cover" }}
-              />
-              <View style={{ height: "5%" }} />
-            </ScrollView>
+            </>
           ) : (
             <View style={styles.noFilesFindContainer}>
               <FileIcon
                 color={"rgba(142, 142, 142, 0.33)"}
-                width={"40%"}
-                height={"50%"}
+                width={100}
+                height={100}
                 style={{ alignSelf: "center" }}
               />
               <Text style={styles.noFilesFindText}>No files find</Text>
             </View>
           )}
-        </View>
-      ) : (
-        <>
-          {visibleFiles.length > 0 ? (
-            <ScrollView
-              style={[styles.filesContainer, styles.shadowProp]}
-              showsVerticalScrollIndicator={false}
-            >
-              <Text style={styles.fileTitle}>Files</Text>
-              {visibleFiles.map((file, index) => (
+          <View style={styles.separator} />
+          <Text style={styles.fileTitle}>Signatures</Text>
+          {mocksSignatures.length < 0 ? (
+            <>
+              {mocksSignatures.map((file, index) => (
                 <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>
-                  <InspectionFileCard file={file} />
+                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} />
                 </TouchableOpacity>
               ))}
-              <Image
-                source={{
-                  uri: newPhoto?.uri,
-                }}
-                style={{ height: 200, width: 200, resizeMode: "cover" }}
-              />
-              <View style={{ height: 20 }} />
-            </ScrollView>
+            </>
           ) : (
-            <View style={styles.noFilesFindContainer}>
-              <FileIcon
-                color={"rgba(142, 142, 142, 0.33)"}
-                width={"40%"}
-                height={"50%"}
-                style={{ alignSelf: "center" }}
-              />
-              <Text style={styles.noFilesFindText}>No files find</Text>
-            </View>
+            <Text style={[styles.fileTitle, styles.noSignatureFoundText]}>
+              No Signatures Found.
+            </Text>
           )}
-        </>
-      )}
+        </ScrollView>
+      </View>
       {showModalAddFile && (
         <ModalSwipeScreen
           closeModalFunction={handleCloseModalAddFile}
@@ -311,15 +341,15 @@ const styles = StyleSheet.create({
     color: "#7F888D",
     fontSize: 20,
     marginBottom: "3%",
-    fontWeight: "700",
+    fontWeight: "600",
   },
   filesContainer: {
     flex: 1,
     width: "100%",
     borderRadius: 10,
     backgroundColor: "#fff",
-    paddingLeft: "3%",
-    paddingRight: "2%",
+    paddingLeft: "4%",
+    paddingRight: "1%",
     paddingVertical: "4%",
     marginBottom: "5%",
   },
@@ -340,6 +370,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: "10%"
   },
   modalContainer: {
     alignItems: "stretch",
@@ -376,5 +407,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginTop: "20%",
+  },
+  separator: {
+    height: 1,
+    borderWidth: 1,
+    borderColor: "#BDBDBD",
+    width: "95%",
+    alignSelf: "center",
+    marginVertical: "3%",
+  },
+  noSignatureFoundText: {
+    marginTop: "6%",
+    marginBottom: "10%",
+    alignSelf: "center",
+    fontSize: 18,
   },
 });

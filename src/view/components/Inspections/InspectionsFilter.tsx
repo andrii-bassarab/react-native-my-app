@@ -63,8 +63,7 @@ export const InspectionsFilter = () => {
   const [selectedDayByChange, setSelectedDayByChange] = useState(selectedDayBy);
   const [showCalendarChange, setShowCalendarChange] = useState(false);
 
-  const closeInspectionFilterWindow = () =>
-    dispatch(actionsShowWindow.setShowInspectionsFilter(false));
+  const closeInspectionFilterWindow = () => dispatch(actionsShowWindow.setShowInspectionsFilter(false));
 
   const applyChangesFilter = () => {
     dispatch(setStatusNewUnscheduled(statusNewUnscheduledChange));

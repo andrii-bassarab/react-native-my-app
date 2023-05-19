@@ -69,7 +69,6 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const makeRequest = () => {
-    console.log("Making request...", query);
     setVisibleInspections((prev) =>
       prev.filter((item) =>
         item.unit.streetAddress.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
@@ -127,12 +126,13 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
     }
 
     if (arrOFSelectedDates.length > 0) {
+      console.log("Making request...", arrOFSelectedDates.includes("2023-05-18"));
+    
       setVisibleInspections((prev) =>
-        prev.filter((item) =>
-          arrOFSelectedDates.includes(
+        prev.filter((item) => arrOFSelectedDates.includes(
             item.scheduledOn
-              ? getCalendarVisibleDate(new Date(item.scheduledOn))
-              : getCalendarVisibleDate(new Date(item.createdOn))
+              ? getCalendarVisibleDate(new Date(item.scheduledOn)).trim()
+              : getCalendarVisibleDate(new Date(item.createdOn)).trim()
           )
         )
       );

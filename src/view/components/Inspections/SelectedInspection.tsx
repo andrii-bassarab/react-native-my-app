@@ -12,6 +12,7 @@ import { SelectedCategory } from "../InspectionItem/InspectionInspect/SelectedCa
 import { InspectionItem } from "~/types/InspectionItem";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
 
 interface Props {
   item: InspectionItem;
@@ -34,68 +35,78 @@ export const SelectedInspection: React.FC<Props> = ({
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   return (
-    <View style={[styles.card, styles.shadowProp]}>
-      <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
-        <LeftErrow color={colors.primary} height={20} width={20} />
-      </TouchableOpacity>
-      <View
-        style={{
-          ...styles.mainInfo,
-          borderColor: itemColor,
-          borderLeftWidth: includeCategory ? 0 : 3,
-          paddingLeft: includeCategory ? 0 : 10,
-        }}
-      >
-        <View style={styles.content}>
-          <Text style={{ ...styles.cardTitle, color: itemColor }}>
-            {`Inspect ${item.unit?.streetAddress}`}
-          </Text>
-        </View>
-        <View style={styles.dateLabel}>
-          <CalendarIcon height={10} width={10} color={colors.primary} style={{ marginRight: 5 }} />
-          <Text style={styles.textInfo}>
-            {item.scheduledOn
-              ? `Scheduled ${getInspectionDate(new Date(item.scheduledOn))} ${
-                  item.visitationRange ? `from ${item.visitationRange}` : ""
-                }`
-              : `Created on ${getInspectionDate(new Date(item.createdOn))}`}
-          </Text>
-        </View>
-        {(item.visibleStatus === InspectionStatus.NEW ||
-          item.visibleStatus === InspectionStatus.SCHEDULED) && !includeCategory && (
-          <TouchableOpacity style={styles.startInspectionButton}>
-            <Text style={styles.startInspectionText}>Start Inspection</Text>
-          </TouchableOpacity>
-        )}
-        {!startSignature && item.visibleStatus === InspectionStatus.INPROGRESS && !includeCategory && (
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity
-              style={[styles.startInspectionButton, styles.saveButton]}
-              onPress={() => showToast("Success! Inspection saved.")}
-            >
-              <Text style={{ ...styles.startInspectionText, color: colors.blue }}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ ...styles.startInspectionButton, width: "48%" }}
-              onPress={startSignatureScreen}
-            >
-              <Text style={styles.startInspectionText}>Submit</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        {startSignature && (
-          <TouchableOpacity
-            style={[styles.startInspectionButton, styles.startSignatureButton]}
-            disabled={signatureCount !== 3}
-          >
-            <Text style={{ ...styles.startInspectionText, color: "#fff" }}>
-              {signatureCount === 3 ? "Complete" : "Pass Remaining and Submit"}
+    // <KeyboardAvoidingDisplayComponent>
+      <View style={[styles.card, styles.shadowProp]}>
+        <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
+          <LeftErrow color={colors.primary} height={20} width={20} />
+        </TouchableOpacity>
+        <View
+          style={{
+            ...styles.mainInfo,
+            borderColor: itemColor,
+            borderLeftWidth: includeCategory ? 0 : 3,
+            paddingLeft: includeCategory ? 0 : 10,
+          }}
+        >
+          <View style={styles.content}>
+            <Text style={{ ...styles.cardTitle, color: itemColor }}>
+              {`Inspect ${item.unit?.streetAddress}`}
             </Text>
-          </TouchableOpacity>
-        )}
-        {includeCategory && category && <SelectedCategory category={category} />}
+          </View>
+          <View style={styles.dateLabel}>
+            <CalendarIcon
+              height={10}
+              width={10}
+              color={colors.primary}
+              style={{ marginRight: 5 }}
+            />
+            <Text style={styles.textInfo}>
+              {item.scheduledOn
+                ? `Scheduled ${getInspectionDate(new Date(item.scheduledOn))} ${
+                    item.visitationRange ? `from ${item.visitationRange}` : ""
+                  }`
+                : `Created on ${getInspectionDate(new Date(item.createdOn))}`}
+            </Text>
+          </View>
+          {(item.visibleStatus === InspectionStatus.NEW ||
+            item.visibleStatus === InspectionStatus.SCHEDULED) &&
+            !includeCategory && (
+              <TouchableOpacity style={styles.startInspectionButton}>
+                <Text style={styles.startInspectionText}>Start Inspection</Text>
+              </TouchableOpacity>
+            )}
+          {!startSignature &&
+            item.visibleStatus === InspectionStatus.INPROGRESS &&
+            !includeCategory && (
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <TouchableOpacity
+                  style={[styles.startInspectionButton, styles.saveButton]}
+                  onPress={() => showToast("Success! Inspection saved.")}
+                >
+                  <Text style={{ ...styles.startInspectionText, color: colors.blue }}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ ...styles.startInspectionButton, width: "48%" }}
+                  onPress={startSignatureScreen}
+                >
+                  <Text style={styles.startInspectionText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          {startSignature && (
+            <TouchableOpacity
+              style={[styles.startInspectionButton, styles.startSignatureButton]}
+              disabled={signatureCount !== 3}
+            >
+              <Text style={{ ...styles.startInspectionText, color: "#fff" }}>
+                {signatureCount === 3 ? "Complete" : "Pass Remaining and Submit"}
+              </Text>
+            </TouchableOpacity>
+          )}
+          {includeCategory && category && <SelectedCategory category={category} />}
+        </View>
       </View>
-    </View>
+    // </KeyboardAvoidingDisplayComponent>
   );
 };
 

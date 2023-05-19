@@ -77,8 +77,6 @@ export const СharacterCard: React.FC<Props> = ({
 
         setImages((prev) => [...prev, asset]);
       }
-
-      console.log("TakenPhoto:", takenPhoto);
     } catch (e) {
       console.log("TakenPhotoError:", e);
     }
@@ -100,8 +98,6 @@ export const СharacterCard: React.FC<Props> = ({
 
         setImages((prev) => [...prev, asset]);
       }
-
-      console.log("ImageLibraryPhoto", chosenImageFromGallery);
     } catch (e) {
       console.log("ImageLibraryPhotoError", e);
     }

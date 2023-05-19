@@ -7,6 +7,7 @@ import CommentIcon from "~/view/assets/icons/comment.svg";
 import { AddCommentBox } from "./AddCommentBox";
 import { CommentItem } from "./CommentItem";
 import { Comment } from "~/types/Comment";
+import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -21,11 +22,7 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
   const handleAddNewComment = (newComment: Comment) => setComments((prev) => [newComment, ...prev]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <KeyboardAvoidingDisplayComponent>
         <View style={styles.content}>
           <View style={[styles.container, styles.shadowProp]}>
             {comments.length > 0 ? (
@@ -55,8 +52,7 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
             <AddCommentBox input={input} setInput={setInput} addNewComment={handleAddNewComment} />
           </View>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingDisplayComponent>
   );
 };
 

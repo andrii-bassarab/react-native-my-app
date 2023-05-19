@@ -60,7 +60,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
             result="Yes"
             categoryApplyToInspection={foundCategory?.categoryApplyToInspection}
           />
-          <TouchableOpacity style={styles.saveButton}>
+          <TouchableOpacity style={styles.saveButton} onPress={goBack}>
             <Text style={styles.saveButtonText}>Save and Go Back</Text>
           </TouchableOpacity>
         </ScrollView>
