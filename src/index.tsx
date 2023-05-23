@@ -1,13 +1,10 @@
 import "react-native-gesture-handler";
-import React from "react";
+import React, { useEffect } from "react";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-
 import { persistor, store } from "~/store";
 import { App } from "~/view/components/App";
-
-import { AppRegistry } from "react-native";
 import {
   ApolloClient,
   InMemoryCache,
@@ -55,11 +52,9 @@ const httpLink = split(
 );
 
 const client = new ApolloClient({
-  link: ApolloLink.from([authLink, httpLink]), // authLink.concat(directionalLink),  //ApolloLink.from([authLink, directionalLink]), //link: ApolloLink.from([authLink, httpLink]), //authLink.concat(httpLink)
+  link: authLink.concat(maintenanceHttpLink), // authLink.concat(directionalLink),  //ApolloLink.from([authLink, directionalLink]), //link: ApolloLink.from([authLink, httpLink]), //authLink.concat(httpLink)
   cache: new InMemoryCache(),
 });
-
-// AppRegistry.registerComponent('Kanso', () => App);
 
 const RootApp: React.FC = () => (
   <Provider store={store}>

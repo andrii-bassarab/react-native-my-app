@@ -1,12 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, View, Text, TouchableOpacity, StyleSheet, Platform, Easing } from "react-native";
 import NotificationIcon from "../../assets/icons/notification.svg";
 import SyncIcon from "~/view/assets/icons/sync.svg";
+import NoInternetIcon from "~/view/assets/icons/noInternetConnection.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ParamListBase } from "@react-navigation/native";
 import { colors } from "~/view/theme";
+import NetInfo from "@react-native-community/netinfo";
+
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;
@@ -18,12 +21,24 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
   const { visibleLoader } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
   const { unreadMessage } = useAppSelector((state) => state.notifications);
+  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
 
   const toggleNotifications = () => {
     navigationProps.navigate("HomeScreen");
     dispatch(actionsShowWindow.setShowSwitchSite(false));
     dispatch(actionsShowWindow.setShowNotification(!showWindow.showNotification));
   };
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      console.log(state)
+      setIsInternetConnection(state.isConnected)
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [NetInfo]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const spinValue = new Animated.Value(0);
@@ -57,7 +72,7 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        {visibleLoader && (
+        {isInternetConnection && visibleLoader && (
           <Animated.View
             style={{
               ...styles.syncContent,
@@ -69,6 +84,14 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
             </Animated.View>
             <Text style={{ color: colors.blue, fontWeight: "600" }}>Syncing In Progress</Text>
           </Animated.View>
+        )}
+        {!isInternetConnection && (
+          <View style={styles.syncContent}>
+            <View>
+              <NoInternetIcon color={colors.darkGrey} height={20} width={20} />
+            </View>
+            <Text style={styles.noInternetText}>No Network Connectivity</Text>
+          </View>
         )}
         <TouchableOpacity onPress={toggleNotifications}>
           <NotificationIcon color="#fff" height="30" />
@@ -115,5 +138,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
+  },
+  noInternetText: {
+    color: colors.darkGrey,
+    fontWeight: "600",
+    fontSize: 12,
+    marginLeft: "2%"
   },
 });

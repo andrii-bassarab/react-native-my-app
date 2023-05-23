@@ -21,6 +21,7 @@ export interface InspectionItem {
   visibleHouseholdName: string;
   visibleInspectionForm: string;
   inspectionComments: Comment[];
+  isReinspection: boolean;
   unit: {
     id: string;
     streetAddress: string;

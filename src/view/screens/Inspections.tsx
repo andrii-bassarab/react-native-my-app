@@ -13,6 +13,7 @@ import { Screen } from "../components/Screen/Screen";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { getCalendarVisibleDate } from "~/utils/visibleDate";
+import { InspectionItem } from "~/types/InspectionItem";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
@@ -59,7 +60,9 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
       setVisibleInspections((prev) => {
         const newInspections = prev.filter((item) => item.visibleStatus === InspectionStatus.NEW);
         const scheduled = prev.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED);
-        const inProgress = prev.filter((item) => item.visibleStatus === InspectionStatus.INPROGRESS);
+        const inProgress = prev.filter(
+          (item) => item.visibleStatus === InspectionStatus.INPROGRESS
+        );
         const failed = prev.filter((item) => item.visibleStatus === InspectionStatus.FAILED);
         const passed = prev.filter((item) => item.visibleStatus === InspectionStatus.PASSED);
 
@@ -77,66 +80,157 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const getFilteredInspections = useCallback(() => {
-    statusNewUnscheduled
-      ? setVisibleInspections((prev) => [
-          ...inspections.filter(
-            (item) =>
-              item.visibleStatus === InspectionStatus.UNSCHEDULED ||
-              item.visibleStatus === InspectionStatus.NEW
-          ),
-        ])
-      : setVisibleInspections([]);
+    // statusNewUnscheduled
+    //   ? setVisibleInspections((prev) => [
+    //       ...inspections.filter(
+    //         (item) =>
+    //           item.visibleStatus === InspectionStatus.UNSCHEDULED ||
+    //           item.visibleStatus === InspectionStatus.NEW
+    //       ),
+    //     ])
+    //   : setVisibleInspections([]);
 
-    statusScheduled &&
-      setVisibleInspections((prev) => [
-        ...prev,
-        ...inspections.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED),
-      ]);
+    // statusScheduled &&
+    //   setVisibleInspections((prev) => [
+    //     ...prev,
+    //     ...inspections.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED),
+    //   ]);
 
-    statusIncomplete &&
-      setVisibleInspections((prev) => [
-        ...prev,
-        ...inspections.filter((item) => item.visibleStatus === InspectionStatus.INPROGRESS),
-      ]);
+    // statusIncomplete &&
+    //   setVisibleInspections((prev) => [
+    //     ...prev,
+    //     ...inspections.filter((item) => item.visibleStatus === InspectionStatus.INPROGRESS),
+    //   ]);
 
-    statusCompleted &&
-      setVisibleInspections((prev) => [
-        ...prev,
-        ...inspections.filter(
-          (item) =>
-            item.visibleStatus === InspectionStatus.PASSED ||
-            item.visibleStatus === InspectionStatus.FAILED
-        ),
-      ]);
+    // statusCompleted &&
+    //   setVisibleInspections((prev) => [
+    //     ...prev,
+    //     ...inspections.filter(
+    //       (item) =>
+    //         item.visibleStatus === InspectionStatus.PASSED ||
+    //         item.visibleStatus === InspectionStatus.FAILED
+    //     ),
+    //   ]);
+
+    // if (assignedToMe && !unassigned) {
+    //   setVisibleInspections((prev) =>
+    //     prev.filter((item) => item.assignedTo === "5e94b7f0fa86cf0016c4d92c")
+    //   );
+    // }
+
+    // if (!assignedToMe && unassigned) {
+    //   setVisibleInspections((prev) =>
+    //     prev.filter((item) => item.assignedTo !== "5e94b7f0fa86cf0016c4d92c")
+    //   );
+    // }
+
+    // if (!assignedToMe && !unassigned) {
+    //   setVisibleInspections([]);
+    // }
+
+    setVisibleInspections(inspections);
+
+    const newUnscheduledInspections = inspections.filter(
+      (item) =>
+        item.visibleStatus === InspectionStatus.UNSCHEDULED ||
+        item.visibleStatus === InspectionStatus.NEW
+    );
+
+    const scheduledInspections = inspections.filter(
+      (item) => item.visibleStatus === InspectionStatus.SCHEDULED
+    );
+
+    const incompleteInspections = inspections.filter(
+      (item) => item.visibleStatus === InspectionStatus.INPROGRESS
+    );
+
+    const completeInspections = inspections.filter(
+      (item) =>
+        item.visibleStatus === InspectionStatus.PASSED ||
+        item.visibleStatus === InspectionStatus.FAILED
+    );
+
+    let filteredInspections: InspectionItem[] = [];
+
+    if (statusNewUnscheduled) {
+      filteredInspections.push(...newUnscheduledInspections);
+    }
+
+    if (statusScheduled) {
+      filteredInspections.push(...scheduledInspections);
+    }
+
+    if (statusIncomplete) {
+      filteredInspections.push(...incompleteInspections);
+    }
+
+    if (statusCompleted) {
+      filteredInspections.push(...completeInspections);
+    }
 
     if (assignedToMe && !unassigned) {
-      setVisibleInspections((prev) =>
-        prev.filter((item) => item.assignedTo === "5e94b7f0fa86cf0016c4d92c")
+      filteredInspections = filteredInspections.filter(
+        (item) => item.assignedTo === "5e94b7f0fa86cf0016c4d92c"
       );
     }
 
     if (!assignedToMe && unassigned) {
-      setVisibleInspections((prev) =>
-        prev.filter((item) => item.assignedTo !== "5e94b7f0fa86cf0016c4d92c")
+      filteredInspections = filteredInspections.filter(
+        (item) => item.assignedTo !== "5e94b7f0fa86cf0016c4d92c"
       );
     }
 
     if (!assignedToMe && !unassigned) {
-      setVisibleInspections([]);
+      filteredInspections = [];
     }
 
     if (arrOFSelectedDates.length > 0) {
-      console.log("Making request...", arrOFSelectedDates.includes("2023-05-18"));
-    
-      setVisibleInspections((prev) =>
-        prev.filter((item) => arrOFSelectedDates.includes(
+      filteredInspections = filteredInspections.filter((item) =>
+          arrOFSelectedDates.includes(
             item.scheduledOn
               ? getCalendarVisibleDate(new Date(item.scheduledOn)).trim()
               : getCalendarVisibleDate(new Date(item.createdOn)).trim()
           )
-        )
-      );
+        );
     }
+
+    // const arrayCheckbox = [
+    //   statusNewUnscheduled,
+    //   statusScheduled,
+    //   statusIncomplete,
+    //   statusCompleted,
+    // ];
+
+    // const arrayString = [
+    //   [InspectionStatus.NEW, InspectionStatus.UNSCHEDULED],
+    //   InspectionStatus.SCHEDULED,
+    //   InspectionStatus.INPROGRESS,
+    //   [InspectionStatus.PASSED, InspectionStatus.FAILED],
+    // ];
+
+    // let filteredInspections = arrayCheckbox.reduce((acum, current, index) => {
+    //   if (current && Array.isArray(arrayString[index]))  {
+    //     acum.push(...inspections.filter(inspector => arrayString[index].includes(inspector.visibleStatus)));
+    //   } else if (current && !Array.isArray(arrayString[index])) {
+    //     acum.push(...inspections.filter(inspector => inspector.visibleStatus === arrayString[index]));
+    //   }
+    //   return acum;
+    //   // inspections.filter((item) => item.visibleStatus);
+    // }, [] as InspectionItem[]);
+
+    setVisibleInspections(filteredInspections);
+
+    // if (arrOFSelectedDates.length > 0) {
+    //   setVisibleInspections((prev) =>
+    //   filteredInspections.filter((item) =>
+    //       arrOFSelectedDates.includes(
+    //         item.scheduledOn
+    //           ? getCalendarVisibleDate(new Date(item.scheduledOn)).trim()
+    //           : getCalendarVisibleDate(new Date(item.createdOn)).trim()
+    //       )
+    //     )
+    //   );
+    // }
   }, [
     statusNewUnscheduled,
     statusScheduled,
@@ -147,6 +241,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
     query,
     selectedDayStartFrom,
     selectedDayBy,
+    inspections
   ]);
 
   const getDatesInRange = (startDate: string, endDate: string) => {
@@ -183,38 +278,39 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
     query,
     selectedDayStartFrom,
     selectedDayBy,
+    inspections
   ]);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
-        <View style={styles.content}>
-          <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
-          <Text style={styles.title}>Inspections</Text>
-          <SearchForm query={query} setQuery={setQuery} showFilterButton={true} />
-          {visibleInspections.length > 0 ? (
-            <View style={{ marginBottom: "45%", marginTop: 10 }}>
-              <FlatList
-                data={visibleInspections}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <InspectionCard
-                    inspection={item}
-                    onPress={() => navigation.navigate("InspectionItem", item)}
-                  />
-                )}
-                ListFooterComponent={() => <View style={{ height: 20 }} />}
-                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                showsVerticalScrollIndicator={false}
-              />
-            </View>
-          ) : (
-            <View style={styles.noResultContainer}>
-              <SearchIcon width="30%" height="30%" color="#C9D4DA" />
-              <Text style={styles.noResultText}>No search results found.</Text>
-            </View>
-          )}
-        </View>
-        {showWindow.showInspectionsFilter && <InspectionsFilter />}
+      <View style={styles.content}>
+        <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
+        <Text style={styles.title}>Inspections</Text>
+        <SearchForm query={query} setQuery={setQuery} showFilterButton={true} />
+        {visibleInspections.length > 0 ? (
+          <View style={{ marginBottom: "45%", marginTop: 10 }}>
+            <FlatList
+              data={visibleInspections}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <InspectionCard
+                  inspection={item}
+                  onPress={() => navigation.navigate("InspectionItem", item)}
+                />
+              )}
+              ListFooterComponent={() => <View style={{ height: 20 }} />}
+              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        ) : (
+          <View style={styles.noResultContainer}>
+            <SearchIcon width="30%" height="30%" color="#C9D4DA" />
+            <Text style={styles.noResultText}>No search results found.</Text>
+          </View>
+        )}
+      </View>
+      {showWindow.showInspectionsFilter && <InspectionsFilter />}
       {/* // {loader && <ModalLoader />} */}
     </Screen>
   );

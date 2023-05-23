@@ -3,17 +3,10 @@ import { useReduxDevToolsExtension } from "@react-navigation/devtools";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthNavigator } from "./AuthNavigator";
 import { HomeNavigation } from "./HomeNavigation";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { SplashScreen } from "../screens/Splash";
-import {
-  setProfileStatus,
-  setFirstInit,
-  setCameraPermission,
-  setNotificationPermission,
-} from "~/modules/user/actions";
 import { Toast } from "../components/Custom/Toast";
 
 const screenOptions = {

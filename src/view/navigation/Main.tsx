@@ -14,6 +14,7 @@ import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { colors } from "../theme";
+import NetInfo from "@react-native-community/netinfo";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -27,6 +28,7 @@ export const MainStack: React.FC = () => {
   const dispatch = useAppDispatch();
   const { inspections, visibleLoader } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
+  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
 
   const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Sync is complete."));
 
@@ -37,7 +39,7 @@ export const MainStack: React.FC = () => {
 
   const newPendingNotification: NotificationItem = useMemo(
     () => ({
-      title: `${inspections.length} inspections pending to be synced`,
+      title: `${inspections.length || ""} inspections pending to be synced`,
       detail: inspections.map((inspection) => `Inspect ${inspection.unit.streetAddress}`),
       date: new Date().toJSON(),
       type: "Pending",
@@ -55,7 +57,7 @@ export const MainStack: React.FC = () => {
   );
 
   const newSuccessfullyNotification: NotificationItem = {
-    title: `${inspections.length} inspections synced successfully`,
+    title: `${inspections.length || ""} inspections synced successfully`,
     date: new Date().toJSON(),
     type: "InProgress",
   };
@@ -74,6 +76,16 @@ export const MainStack: React.FC = () => {
   //   }
   //   console.log("Total size of storage:", size, "bytes");
   // }
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsInternetConnection(state.isConnected)
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const filterLastFifteenDays = (items: NotificationItem[]) => {
     const today = new Date();
@@ -130,7 +142,9 @@ export const MainStack: React.FC = () => {
       dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
       dispatch(actionsNotifications.addNotification(newSuccessfullyNotification));
       dispatch(actionsNotifications.addUnreadMessage(2));
-      showToastNotification();
+      if (isInternetConnection) {
+        showToastNotification();
+      }
     }
   }, [visibleLoader, prevSyncStatus, data]);
 
@@ -139,7 +153,7 @@ export const MainStack: React.FC = () => {
       screenOptions={screenOptions}
       initialRouteName="HomeScreen"
       tabBar={(props) => <BottomTabBar {...props} />}
-      sceneContainerStyle={{backgroundColor: colors.layout}}
+      sceneContainerStyle={{ backgroundColor: colors.layout }}
     >
       <BottomTabs.Screen
         name="HomeScreen"

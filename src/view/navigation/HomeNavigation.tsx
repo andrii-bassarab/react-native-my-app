@@ -3,7 +3,7 @@ import {
   DrawerNavigationProp,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
@@ -18,6 +18,8 @@ import { GET_INSPECTION_TEMPLATES } from "~/services/api/InspectionTemplates";
 import { useQuery } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import NetInfo from "@react-native-community/netinfo";
+
 
 const Drawer = createDrawerNavigator();
 
@@ -26,45 +28,66 @@ export const HomeNavigation: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const { inspectionsSync } = useAppSelector((state) => state.inspections);
+  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
   const { data: inspectionTemplateInfo } = useQuery(GET_INSPECTION_TEMPLATES);
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsInternetConnection(state.isConnected)
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [NetInfo]);
+
   const getArrayOfInspections = async () => {
+    if (!isInternetConnection) {
+      dispatch(actionsInspections.setLoading(false));
+      dispatch(actionsInspections.setVisibleLoading(false));
+      return;
+    }
+  
     const arrayOfDataInspections = data.inspections.edges;
     const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
 
-    const responceOfHouseHoldName = await Promise.all(
-      arrayOfDataInspections.map(({ node }: any) =>
-        getHouseHoldNameById(node.household?.headOfHouseholdId)
-      )
-    );
+    try {
+      const responceOfHouseHoldName = await Promise.all(
+        arrayOfDataInspections.map(({ node }: any) =>
+          getHouseHoldNameById(node.household?.headOfHouseholdId)
+        )
+      );
+  
+      const arrayOfHouseHoldName = responceOfHouseHoldName.map(
+        (item) => item.data?.householdMembers?.edges[0]?.node
+      );
+  
+      const getVisibleHouseHoldName = (index: number) => {
+        const nameResponse = arrayOfHouseHoldName[index];
+  
+        return nameResponse ? `${nameResponse.firstName}${
+          nameResponse.middleName ? " " + nameResponse.middleName : ""
+        } ${nameResponse.lastName}` : "";
+      };
+  
+      const inspectionsFromServer = arrayOfDataInspections.map((item: any, index: number) => ({
+        ...item.node,
+        visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
+        visibleInspectionForm:
+          arrayOfInspectionTemplates.find((template) => template.node.id === item.node.templateId)
+            ?.node?.name || "",
+        visibleHouseholdName: getVisibleHouseHoldName(index),
+      })) as InspectionItem[];
 
-    const arrayOfHouseHoldName = responceOfHouseHoldName.map(
-      (item) => item.data?.householdMembers?.edges[0]?.node
-    );
-
-    const getVisibleHouseHoldName = (index: number) => {
-      const nameResponse = arrayOfHouseHoldName[index];
-
-      return nameResponse ? `${nameResponse.firstName}${
-        nameResponse.middleName ? " " + nameResponse.middleName : ""
-      } ${nameResponse.lastName}` : "";
-    };
-
-    const inspectionsFromServer = arrayOfDataInspections.map((item: any, index: number) => ({
-      ...item.node,
-      visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
-      visibleInspectionForm:
-        arrayOfInspectionTemplates.find((template) => template.node.id === item.node.templateId)
-          ?.node?.name || "",
-      visibleHouseholdName: getVisibleHouseHoldName(index),
-    })) as InspectionItem[];
-
-    dispatch(actionsInspections.setLoading(false));
-    dispatch(actionsInspections.setVisibleLoading(false));
-
-    dispatch(actionsInspections.setInspections(inspectionsFromServer));
+      dispatch(actionsInspections.setInspections(inspectionsFromServer));
+    } catch (e) {
+      console.log(e)
+    } finally {
+      dispatch(actionsInspections.setLoading(false));
+      dispatch(actionsInspections.setVisibleLoading(false));
+    }
   };
 
   useEffect(() => {

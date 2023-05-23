@@ -19,6 +19,8 @@ export const GET_ALL_INSPECTIONS = gql`
         completedOn
         completedBy
         householdPhone
+        hasPermissionToEnter
+        isReinspection
         inspectionComments {
           createdBy
           createdOn
@@ -56,3 +58,21 @@ export const GET_ALL_INSPECTIONS = gql`
     }
   }
 `;
+
+export const UPDATE_INSPECTION = gql`
+  mutation updateInspectionMutation($command: UpdateInspectionCommandInput!){
+    updateInspection(command: $command){
+      commandName
+      status
+      issuedOn
+      acceptedOn
+      succeededOn
+      failedOn
+      failureReason
+      affectedEntity{
+        id            
+        modifiedBy
+      }
+    }
+  }
+`

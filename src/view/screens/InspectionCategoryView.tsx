@@ -1,6 +1,6 @@
 import React from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
-import { View, Text, StyleSheet, ScrollView, Animated, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";

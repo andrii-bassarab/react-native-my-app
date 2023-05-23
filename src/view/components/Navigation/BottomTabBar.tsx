@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { colors } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,6 +13,7 @@ import { CustomerSite } from "../Screen/CustomerSite";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { actionsInspections } from "~/modules/inspections";
+import NetInfo from "@react-native-community/netinfo";
 
 interface Props extends BottomTabBarProps {}
 
@@ -20,12 +21,27 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
   const insets = useSafeAreaInsets();
   const showWindow = useAppSelector((state) => state.showWindow);
   const dispatch = useAppDispatch();
+  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsInternetConnection(state.isConnected)
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [NetInfo]);
 
   const { refetch, loading } = useQuery(GET_ALL_INSPECTIONS, {
     notifyOnNetworkStatusChange: true,
   });
 
   useEffect(() => {
+    if (!isInternetConnection) {
+      return;
+    }
+  
     dispatch(actionsInspections.setLoading(loading));
 
     if (loading) {
