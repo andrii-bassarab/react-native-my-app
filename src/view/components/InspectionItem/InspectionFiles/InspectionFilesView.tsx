@@ -19,42 +19,44 @@ import DocumentPicker, {
 } from "react-native-document-picker";
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes";
 import { generateUniqueId } from "~/utils/genereteUniqueId";
+import { ModalViewImage } from "../../CategoryView/ModalViewImage";
 
 export interface File {
   id: string;
-  name: string;
+  fileName: string;
   uploadTime: string;
   docFormat: string;
+  uri?: string;
 }
 
 const mocksFiles: File[] = [
   {
     id: generateUniqueId(),
-    name: "Roof Warranty.pdf",
+    fileName: "Roof Warranty.pdf",
     uploadTime: "May 30, 2022 at 3:00pm",
     docFormat: "pdf",
   },
   {
     id: generateUniqueId(),
-    name: "Some Document.docx",
+    fileName: "Some Document.docx",
     uploadTime: "May 25, 2022 at 3:00pm",
     docFormat: "doc",
   },
   {
     id: generateUniqueId(),
-    name: "Some Document.csv",
+    fileName: "Some Document.csv",
     uploadTime: "May 24, 2021 at 3:00pm",
     docFormat: "csv",
   },
   {
     id: generateUniqueId(),
-    name: "Some Image.jpg",
+    fileName: "Some Image.jpg",
     uploadTime: "May 22, 2021 at 3:00pm",
     docFormat: "jpg",
   },
   {
     id: generateUniqueId(),
-    name: "Some Image.png",
+    fileName: "Some Image.png",
     uploadTime: "May 20, 2021 at 3:00pm",
     docFormat: "png",
   },
@@ -63,19 +65,19 @@ const mocksFiles: File[] = [
 const mocksSignatures = [
   {
     id: generateUniqueId(),
-    name: "Inspector.png",
+    fileName: "Inspector.png",
     uploadTime: "May 30, 2023 at 3:00pm",
     docFormat: "png",
   },
   {
     id: generateUniqueId(),
-    name: "Landlord.png",
+    fileName: "Landlord.png",
     uploadTime: "May 25, 2023 at 3:00pm",
     docFormat: "png",
   },
   {
     id: generateUniqueId(),
-    name: "Tenant.png",
+    fileName: "Tenant.png",
     uploadTime: "May 24, 2023 at 3:00pm",
     docFormat: "png",
   },
@@ -94,11 +96,12 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const [showModalAddFile, setShowModalAddFile] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [newFile, setNewFile] = useState<DocumentPickerResponse | null>(null);
+  const [showModalImage, setShowModalImage] = useState(false);
 
   useEffect(() => {
     setVisibleFiles(
       mocksFiles.filter((file) =>
-        file.name.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
+        file.fileName.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
       )
     );
   }, [query, mocksFiles]);
@@ -124,9 +127,10 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           ...prev,
           {
             id: generateUniqueId(),
-            name: asset.fileName || "",
+            fileName: asset.fileName || "",
             docFormat: asset.fileName?.split(".")[1] || "",
             uploadTime: getInspectionDate(new Date(), true) || "",
+            uri: asset.uri,
           },
         ]);
       }
@@ -156,9 +160,10 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           ...prev,
           {
             id: generateUniqueId(),
-            name: asset.fileName || "",
+            fileName: asset.fileName || "",
             docFormat: asset.fileName?.split(".")[1] || "",
             uploadTime: getInspectionDate(new Date(), true) || "",
+            uri: asset.uri,
           },
         ]);
       }
@@ -199,7 +204,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           ...prev,
           {
             id: generateUniqueId(),
-            name: selectedFile.name || "",
+            fileName: selectedFile.name || "",
             docFormat: selectedFile.type?.split("/")[1] || "",
             uploadTime: getInspectionDate(new Date(), true) || "",
           },
@@ -216,26 +221,14 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
     setVisibleFiles((prev) => prev.filter((file) => file.id !== fileToDelete.id));
   };
 
-  // console.log("PERMISSIONS", check(PERMISSIONS.ANDROID.CAMERA)
-  // .then((result) => {
-  //   switch (result) {
-  //     case RESULTS.UNAVAILABLE:
-  //       console.log('This feature is not available (on this device / in this context)');
-  //       break;
-  //     case RESULTS.DENIED:
-  //       console.log('The permission has not been requested / is denied but requestable');
-  //       break;
-  //     case RESULTS.LIMITED:
-  //       console.log('The permission is limited: some actions are possible');
-  //       break;
-  //     case RESULTS.GRANTED:
-  //       console.log('The permission is granted');
-  //       break;
-  //     case RESULTS.BLOCKED:
-  //       console.log('The permission is denied and not requestable anymore');
-  //       break;
-  //   }
-  // }))
+  const handleOpenModalImage = (fileToOpen: File) => {
+    switch (fileToOpen.docFormat) {
+      case 'png':
+      case 'jpg':
+        setNewPhoto(fileToOpen);
+        setShowModalImage(true);
+    }
+  }
 
   return (
     <View style={styles.content}>
@@ -253,7 +246,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             <>
               <Text style={styles.fileTitle}>Files</Text>
               {visibleFiles.map((file) => (
-                <TouchableOpacity key={file.id} style={{ marginBottom: "4%" }}>
+                <TouchableOpacity key={file.id} style={{ marginBottom: "4%" }} onPress={() => handleOpenModalImage(file)}>
                   <InspectionFileCard file={file} deleteFile={handleDeleteFile} displayDeleteIcon />
                 </TouchableOpacity>
               ))}
@@ -326,6 +319,9 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           </View>
         </ModalSwipeScreen>
       )}
+      {showModalImage && (
+        <ModalViewImage closeModalFunction={() => setShowModalImage(false)} image={newPhoto} />
+      )}
     </View>
   );
 };
@@ -370,7 +366,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: "10%"
+    paddingVertical: "10%",
   },
   modalContainer: {
     alignItems: "stretch",

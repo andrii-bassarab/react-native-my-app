@@ -55,13 +55,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   // console.log("inspection", inspection);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
-      {/* <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
       <KeyboardAvoidingDisplayComponent>
+    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
         <View style={styles.content}>
           <View style={{ paddingHorizontal: 25 }}>
             <SelectedInspection item={inspection} goBack={() => goBack()} />
@@ -103,10 +98,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
           )}
           {startSignature && <SignatureView inspection={inspection} />}
         </View>
-        {/* </TouchableWithoutFeedback>
-      </KeyboardAvoidingView> */}
-      </KeyboardAvoidingDisplayComponent>
     </Screen>
+      </KeyboardAvoidingDisplayComponent>
   );
 };
 

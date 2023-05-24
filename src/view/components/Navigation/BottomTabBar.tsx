@@ -13,41 +13,51 @@ import { CustomerSite } from "../Screen/CustomerSite";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { actionsInspections } from "~/modules/inspections";
-import NetInfo from "@react-native-community/netinfo";
+import { getPreviousValue } from "~/utils/getPreviousValue";
 
 interface Props extends BottomTabBarProps {}
 
 export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets();
   const showWindow = useAppSelector((state) => state.showWindow);
+  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
   const dispatch = useAppDispatch();
-  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsInternetConnection(state.isConnected)
-    });
+  const prevNetworkStatus = getPreviousValue(networkConnectivity);
 
-    return () => {
-      unsubscribe();
-    };
-  }, [NetInfo]);
-
-  const { refetch, loading } = useQuery(GET_ALL_INSPECTIONS, {
+  const { refetch, loading, error } = useQuery(GET_ALL_INSPECTIONS, {
     notifyOnNetworkStatusChange: true,
   });
 
-  useEffect(() => {
-    if (!isInternetConnection) {
+  const handleRefetchQuery = () => {
+    if (!networkConnectivity) {
       return;
     }
-  
+
+    refetch();
+  };
+
+  useEffect(() => {
+    if (networkConnectivity && !prevNetworkStatus) {
+      refetch();
+    }
+  }, [networkConnectivity]);
+
+  useEffect(() => {
+    if (!networkConnectivity) {
+      return;
+    }
+
     dispatch(actionsInspections.setLoading(loading));
 
     if (loading) {
       dispatch(actionsInspections.setVisibleLoading(true));
     }
-  }, [loading]);
+  }, [loading, networkConnectivity]);
+
+  useEffect(() => {
+    dispatch(actionsInspections.setSyncError(Boolean(error)));
+  }, [error]);
 
   const detectIconByName = (label: string, color: string) => {
     switch (label) {
@@ -127,7 +137,7 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
           </TouchableOpacity>
         );
       })}
-      <TouchableOpacity style={styles.item} onPress={() => refetch({})}>
+      <TouchableOpacity style={styles.item} onPress={handleRefetchQuery}>
         <SyncIcon height="35%" color={colors.primary} />
         <Text style={{ color: colors.primary, fontWeight: "500" }}>Sync</Text>
       </TouchableOpacity>

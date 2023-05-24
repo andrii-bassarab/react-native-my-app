@@ -14,7 +14,6 @@ import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { colors } from "../theme";
-import NetInfo from "@react-native-community/netinfo";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -26,9 +25,8 @@ const BottomTabs = createBottomTabNavigator();
 
 export const MainStack: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { inspections, visibleLoader } = useAppSelector((state) => state.inspections);
+  const { inspections, visibleLoader, inspectionsSync, syncError } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
-  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
 
   const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Sync is complete."));
 
@@ -59,7 +57,7 @@ export const MainStack: React.FC = () => {
   const newSuccessfullyNotification: NotificationItem = {
     title: `${inspections.length || ""} inspections synced successfully`,
     date: new Date().toJSON(),
-    type: "InProgress",
+    type: "Successfully",
   };
 
   // async function getStorageSize() {
@@ -77,24 +75,14 @@ export const MainStack: React.FC = () => {
   //   console.log("Total size of storage:", size, "bytes");
   // }
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsInternetConnection(state.isConnected)
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
   const filterLastFifteenDays = (items: NotificationItem[]) => {
     const today = new Date();
     const fifteenDaysAgo = new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000);
     const lastFifteenDaysItems = items?.filter((item) => {
       const itemDate = new Date(item?.date);
-      return itemDate >= fifteenDaysAgo;
+      return itemDate >= fifteenDaysAgo && item.type !== 'InProgress';
     });
-
+  
     return lastFifteenDaysItems?.slice(0, 100);
   };
 
@@ -117,14 +105,16 @@ export const MainStack: React.FC = () => {
   }, [visibleLoader]);
 
   useEffect(() => {
-    // console.log("data", data);
-    // console.log("inspectionsSync", inspectionsSync);
-    // console.log("prevSyncStatus", prevSyncStatus);
-    // console.log("networkStatus", networkStatus);
+    if (visibleLoader && !inspectionsSync && !syncError) {
+      dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
+      dispatch(actionsNotifications.addUnreadMessage(1));
+    }
+  }, [inspectionsSync, syncError, visibleLoader])
 
+  useEffect(() => {
     if (
-      (data && prevSyncStatus && visibleLoader !== prevSyncStatus && !visibleLoader) ||
-      (data &&
+      (data && !syncError && prevSyncStatus && visibleLoader !== prevSyncStatus && !visibleLoader) ||
+      (data && !syncError &&
         prevSyncStatus === false &&
         visibleLoader === false &&
         networkStatus === 7 &&
@@ -139,14 +129,10 @@ export const MainStack: React.FC = () => {
           }))
         )
       );
-      dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
       dispatch(actionsNotifications.addNotification(newSuccessfullyNotification));
-      dispatch(actionsNotifications.addUnreadMessage(2));
-      if (isInternetConnection) {
-        showToastNotification();
-      }
+      showToastNotification();
     }
-  }, [visibleLoader, prevSyncStatus, data]);
+  }, [visibleLoader, prevSyncStatus, data, syncError]);
 
   return (
     <BottomTabs.Navigator

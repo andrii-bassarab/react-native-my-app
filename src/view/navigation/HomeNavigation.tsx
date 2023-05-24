@@ -1,8 +1,5 @@
 import "react-native-gesture-handler";
-import {
-  DrawerNavigationProp,
-  createDrawerNavigator,
-} from "@react-navigation/drawer";
+import { DrawerNavigationProp, createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
@@ -18,8 +15,6 @@ import { GET_INSPECTION_TEMPLATES } from "~/services/api/InspectionTemplates";
 import { useQuery } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
-import NetInfo from "@react-native-community/netinfo";
-
 
 const Drawer = createDrawerNavigator();
 
@@ -27,29 +22,19 @@ export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
 
   const dispatch = useAppDispatch();
-  const { inspectionsSync } = useAppSelector((state) => state.inspections);
-  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
+  const { inspectionsSync, syncError } = useAppSelector((state) => state.inspections);
+  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
   const { data: inspectionTemplateInfo } = useQuery(GET_INSPECTION_TEMPLATES);
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsInternetConnection(state.isConnected)
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [NetInfo]);
-
   const getArrayOfInspections = async () => {
-    if (!isInternetConnection) {
+    if (!networkConnectivity) {
       dispatch(actionsInspections.setLoading(false));
       dispatch(actionsInspections.setVisibleLoading(false));
       return;
     }
-  
+
     const arrayOfDataInspections = data.inspections.edges;
     const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
 
@@ -59,19 +44,21 @@ export const HomeNavigation: React.FC = () => {
           getHouseHoldNameById(node.household?.headOfHouseholdId)
         )
       );
-  
+
       const arrayOfHouseHoldName = responceOfHouseHoldName.map(
         (item) => item.data?.householdMembers?.edges[0]?.node
       );
-  
+
       const getVisibleHouseHoldName = (index: number) => {
         const nameResponse = arrayOfHouseHoldName[index];
-  
-        return nameResponse ? `${nameResponse.firstName}${
-          nameResponse.middleName ? " " + nameResponse.middleName : ""
-        } ${nameResponse.lastName}` : "";
+
+        return nameResponse
+          ? `${nameResponse.firstName}${
+              nameResponse.middleName ? " " + nameResponse.middleName : ""
+            } ${nameResponse.lastName}`
+          : "";
       };
-  
+
       const inspectionsFromServer = arrayOfDataInspections.map((item: any, index: number) => ({
         ...item.node,
         visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
@@ -83,7 +70,7 @@ export const HomeNavigation: React.FC = () => {
 
       dispatch(actionsInspections.setInspections(inspectionsFromServer));
     } catch (e) {
-      console.log(e)
+      console.log(e);
     } finally {
       dispatch(actionsInspections.setLoading(false));
       dispatch(actionsInspections.setVisibleLoading(false));
@@ -94,6 +81,7 @@ export const HomeNavigation: React.FC = () => {
     if (
       !inspectionsSync &&
       data &&
+      !syncError &&
       inspectionTemplateInfo &&
       data.inspections?.edges &&
       Array.isArray(data.inspections?.edges) &&
@@ -104,18 +92,21 @@ export const HomeNavigation: React.FC = () => {
     ) {
       getArrayOfInspections();
     }
-  }, [data, inspectionTemplateInfo, inspectionsSync]);
+  }, [data, inspectionTemplateInfo, inspectionsSync, syncError]);
+
+  useEffect(() => {
+    if (syncError) {
+      dispatch(actionsInspections.setLoading(false));
+      dispatch(actionsInspections.setVisibleLoading(false));
+    }
+  }, [syncError]);
 
   const screenOptions = {
     headerStyle: {
       backgroundColor: colors.layout,
     },
-    headerLeft: () => (
-      <NavigationDrawerStructure navigationProps={navigation} />
-    ),
-    headerRight: () => (
-      <NavigationNotificationStructure navigationProps={navigation} />
-    ),
+    headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
+    headerRight: () => <NavigationNotificationStructure navigationProps={navigation} />,
     headerTitle: () => null,
     headerShadowVisible: false,
     drawerType: "front",
@@ -124,7 +115,11 @@ export const HomeNavigation: React.FC = () => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <Settings {...props} />}
-      screenOptions={{ ...screenOptions, drawerType: "front", sceneContainerStyle: {backgroundColor: colors.layout} }}
+      screenOptions={{
+        ...screenOptions,
+        drawerType: "front",
+        sceneContainerStyle: { backgroundColor: colors.layout },
+      }}
     >
       <Drawer.Screen name="MainStack" component={MainStack} />
     </Drawer.Navigator>

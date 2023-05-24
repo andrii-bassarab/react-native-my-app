@@ -9,6 +9,7 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ParamListBase } from "@react-navigation/native";
 import { colors } from "~/view/theme";
 import NetInfo from "@react-native-community/netinfo";
+import { actionsNetworkConnectivity } from "~/modules/networkConnectivity";
 
 
 interface Props {
@@ -21,7 +22,7 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
   const { visibleLoader } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
   const { unreadMessage } = useAppSelector((state) => state.notifications);
-  const [isInternetConnection, setIsInternetConnection] = useState<boolean | null>(true);
+  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
 
   const toggleNotifications = () => {
     navigationProps.navigate("HomeScreen");
@@ -31,8 +32,9 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log(state)
-      setIsInternetConnection(state.isConnected)
+      if (typeof state.isConnected === 'boolean') {
+        dispatch(actionsNetworkConnectivity.setNetworkStatus(state.isConnected))
+      }
     });
 
     return () => {
@@ -72,7 +74,7 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        {isInternetConnection && visibleLoader && (
+        {networkConnectivity && visibleLoader && (
           <Animated.View
             style={{
               ...styles.syncContent,
@@ -85,7 +87,7 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
             <Text style={{ color: colors.blue, fontWeight: "600" }}>Syncing In Progress</Text>
           </Animated.View>
         )}
-        {!isInternetConnection && (
+        {!networkConnectivity && (
           <View style={styles.syncContent}>
             <View>
               <NoInternetIcon color={colors.darkGrey} height={20} width={20} />

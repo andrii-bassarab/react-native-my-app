@@ -48,7 +48,7 @@ export const InspectionFileCard: React.FC<Props> = ({
         >
           <Text style={styles.docIconText}>{file.docFormat}</Text>
         </View>
-        <Text style={[styles.fileInfoText, styles.fileNameText]}>{file.name}</Text>
+        <Text style={[styles.fileInfoText, styles.fileNameText]}>{file.fileName}</Text>
       </View>
       <View style={{ ...styles.label, width: "52%", justifyContent: "space-between" }}>
         <Text style={styles.fileInfoText}>{file.uploadTime}</Text>
@@ -69,7 +69,7 @@ export const InspectionFileCard: React.FC<Props> = ({
       </View>
       {showDeleteModalWindow && (
         <ModalDeleteItem
-          title={`Are you sure you want to delete “${file.name}?”`}
+          title={`Are you sure you want to delete “${file.fileName}?”`}
           Icon={DeleteModalIcon}
           onContinue={handleDeleteFile}
           onCancel={handleCancelDeleteFile}

@@ -5,6 +5,7 @@ const initialState = {
   inspections: [] as InspectionItem[],
   inspectionsSync: false,
   visibleLoader: false,
+  syncError: false,
 };
 
 const inspectionsSlice = createSlice({
@@ -26,12 +27,8 @@ const inspectionsSlice = createSlice({
     setVisibleLoading: (state, action: PayloadAction<boolean>) => {
       state.visibleLoader = action.payload
     },
-    setVisibleHouseholdName: (state, action: PayloadAction<[string, string]>) => {
-      const selectedInspection = state.inspections.find(inspection => inspection.id === action.payload[0]);
-
-      if (selectedInspection) {
-        selectedInspection.visibleHouseholdName = action.payload[1];
-      }
+    setSyncError: (state, action: PayloadAction<boolean>) => {
+      state.syncError = action.payload
     },
   },
 })

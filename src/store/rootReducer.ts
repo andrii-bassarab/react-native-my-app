@@ -11,6 +11,7 @@ import inspectionsReducer from '~/modules/inspections';
 import inspectionItemReducer from '~/modules/inspectionItem';
 import toastNotificationReducer from '~/modules/toastNotification';
 import showWindowReducer from '~/modules/showWindow';
+import networkConnectivityReducer from '~/modules/networkConnectivity';
 
 const transforms = [
   createTransform(
@@ -40,6 +41,7 @@ const appReducer = combineReducers({
   toastNotification: toastNotificationReducer,
   inspectionItem: inspectionItemReducer,
   showWindow: showWindowReducer,
+  networkConnectivity: networkConnectivityReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

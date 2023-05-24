@@ -1,7 +1,6 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { StatusBox } from "./StatusBox";
-import { colors } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
 import { InspectionItem } from "~/types/InspectionItem";
 import { AssignedBox } from "./AssignedBox";
@@ -32,6 +31,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     paddingTop: 5,
-    paddingHorizontal: 25
+    paddingHorizontal: 25,
   },
 });

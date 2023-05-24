@@ -12,6 +12,7 @@ export const KeyboardAvoidingDisplayComponent: React.FC<Props> = ({ children }) 
       style={{ flex: 1 }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
         {children}
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

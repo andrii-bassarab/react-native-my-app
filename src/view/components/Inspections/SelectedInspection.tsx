@@ -108,7 +108,7 @@ export const SelectedInspection: React.FC<Props> = ({
   console.log("--------------")
   console.log("data", !!data);
   console.log("loading", loading);
-  console.log("--------------")
+  console.log("--------------");
   // console.log("error", error);
 
   return (
