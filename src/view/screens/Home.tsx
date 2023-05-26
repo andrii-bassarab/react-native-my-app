@@ -61,7 +61,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.content}>
           <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
           <View style={styles.activityBox}>
-            <View style={{ paddingBottom: "20%" }}>
+            <View>
               <FlatList
                 data={inspections}
                 keyExtractor={(item, index) => `key-${item.id}`}
@@ -79,7 +79,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 ListHeaderComponent={() => (
                   <Text style={styles.activityTitle}>Recent Activity</Text>
                 )}
-                ListFooterComponent={() => <View style={{ height: 10 }} />}
+                ListFooterComponent={() => <View style={{ height: 80 }} />}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 showsVerticalScrollIndicator={false}
               />

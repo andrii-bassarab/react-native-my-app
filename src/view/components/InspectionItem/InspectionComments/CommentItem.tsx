@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useMemo, useState } from "react";
+import { View, StyleSheet, Text, Touchable } from "react-native";
 import { Comment } from "~/types/Comment";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { colors } from "~/view/theme";
@@ -11,6 +11,10 @@ interface Props {
 }
 
 export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) => {
+  const visibleCreatedBy = useMemo(() =>
+      comment.createdBy === "nazar.kubyk@appitventures.com" ? "Me -" : `${comment.createdBy} -`,
+    [comment]);
+
   return (
     <View>
       <View style={styles.timePoint} />
@@ -22,7 +26,7 @@ export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) =>
       >
         <View style={{ flex: 1 }}>
           <View style={styles.header}>
-            <Text style={styles.author}>{comment.createdBy + " -"}</Text>
+            <Text style={styles.author}>{visibleCreatedBy}</Text>
             <Text style={styles.date}>
               {Date.parse(comment.createdOn) >= Date.now() - 5 * 60 * 1000
                 ? "Now"
@@ -39,7 +43,7 @@ export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) =>
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    flexWrap: 'wrap'
+    flexWrap: "wrap",
   },
   card: {
     paddingBottom: "8%",
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
     color: "#8E8E8E",
     fontWeight: "500",
-    fontSize: 13
+    fontSize: 13,
   },
   comment: {
     color: "#8E8E8E",

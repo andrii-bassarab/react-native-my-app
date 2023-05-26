@@ -76,3 +76,21 @@ export const UPDATE_INSPECTION = gql`
     }
   }
 `
+
+export const CREATE_INSPECTION_COMMENT = gql`
+  mutation createInspectionCommentMutation($command: CreateInspectionCommentCommandInput!){
+    createInspectionComment(command: $command){
+        commandName
+        status
+        issuedOn
+        acceptedOn
+        succeededOn
+        failedOn
+        failureReason
+        affectedEntity {
+            id            
+            createdBy
+        }
+    }
+  }
+`

@@ -72,14 +72,15 @@ export const SelectedInspection: React.FC<Props> = ({
           query: GET_ALL_INSPECTIONS,
           data: { inspections },
         });
-        setDynamicStatus(InspectionStatus.INPROGRESS)
+        setDynamicStatus(InspectionStatus.INPROGRESS);
       }
     };
   };
 
-  useEffect(() => {
-
-  }, []);
+  // console.log(
+  //   "inspeciotn",
+  //   inspections.map((item) => item.household?.headOfHouseholdId)
+  // );
 
   const handleChangeInspectionStatus = (status: string) => {
     updateInspection({
@@ -91,7 +92,7 @@ export const SelectedInspection: React.FC<Props> = ({
           templateId: item.templateId,
           unitId: item.unit?.id,
           assignedTo: item.assignedTo || "5e94b7f0fa86cf0016c4d92c",
-          houseHoldId: "5f6e70c53ddf6a0016378dbf",
+          houseHoldId: item.household?.headOfHouseholdId || "5f6e70c53ddf6a0016378dbf",
           status,
           hasPassed: false,
           hasPermissionToEnter: item.hasPermissionToEnter,
@@ -105,11 +106,13 @@ export const SelectedInspection: React.FC<Props> = ({
     });
   };
 
-  console.log("--------------")
-  console.log("data", !!data);
-  console.log("loading", loading);
-  console.log("--------------");
-  // console.log("error", error);
+  useEffect(() => {
+    console.log("--------------");
+    console.log("data", data);
+    console.log("loading", loading);
+    console.log("error", error);
+    console.log("--------------");
+  }, [data, error]);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -134,17 +137,12 @@ export const SelectedInspection: React.FC<Props> = ({
           <Text style={styles.textInfo}>
             {item?.scheduledOn
               ? `Scheduled ${getInspectionDate(new Date(item?.scheduledOn))} ${
-                  item?.visitationRange
-                    ? `from ${item?.visitationRange}`
-                    : ""
+                  item?.visitationRange ? `from ${item?.visitationRange}` : ""
                 }`
-              : `Created on ${getInspectionDate(
-                  new Date(item?.createdOn || item.createdOn)
-                )}`}
+              : `Created on ${getInspectionDate(new Date(item?.createdOn || item.createdOn))}`}
           </Text>
         </View>
-        {(dynamicStatus === InspectionStatus.NEW ||
-          dynamicStatus === InspectionStatus.SCHEDULED) &&
+        {(dynamicStatus === InspectionStatus.NEW || dynamicStatus === InspectionStatus.SCHEDULED) &&
           !includeCategory && (
             <TouchableOpacity
               style={styles.startInspectionButton}
@@ -153,24 +151,22 @@ export const SelectedInspection: React.FC<Props> = ({
               <Text style={styles.startInspectionText}>Start Inspection</Text>
             </TouchableOpacity>
           )}
-        {!startSignature &&
-          dynamicStatus === InspectionStatus.INPROGRESS &&
-          !includeCategory && (
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <TouchableOpacity
-                style={[styles.startInspectionButton, styles.saveButton]}
-                onPress={() => handleChangeInspectionStatus("scheduled")}
-              >
-                <Text style={{ ...styles.startInspectionText, color: colors.blue }}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ ...styles.startInspectionButton, width: "48%" }}
-                onPress={startSignatureScreen}
-              >
-                <Text style={styles.startInspectionText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+        {!startSignature && dynamicStatus === InspectionStatus.INPROGRESS && !includeCategory && (
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <TouchableOpacity
+              style={[styles.startInspectionButton, styles.saveButton]}
+              onPress={() => handleChangeInspectionStatus("scheduled")}
+            >
+              <Text style={{ ...styles.startInspectionText, color: colors.blue }}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ ...styles.startInspectionButton, width: "48%" }}
+              onPress={startSignatureScreen}
+            >
+              <Text style={styles.startInspectionText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {startSignature && (
           <TouchableOpacity
             style={[styles.startInspectionButton, styles.startSignatureButton]}

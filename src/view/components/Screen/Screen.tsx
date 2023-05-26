@@ -14,24 +14,24 @@ export const Screen: React.FC<Props> = ({ children, backgroundColor, paddingTop,
   const dim = Dimensions.get("screen");
 
 
-  if (dim.width >= dim.height) {
-    return (
-      <ScrollView
-        style={{
-          paddingTop: paddingTop ?? insets.top,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
-          paddingBottom: insets.bottom,
-          backgroundColor,
-          flex: 1,
-          borderTopRightRadius: borderRadius,
-          borderTopLeftRadius: borderRadius,
-        }}
-      >
-        {children}
-      </ScrollView>
-    );
-  }
+  // if (dim.width >= dim.height) {
+  //   return (
+  //     <ScrollView
+  //       style={{
+  //         paddingTop: paddingTop ?? insets.top,
+  //         paddingLeft: insets.left,
+  //         paddingRight: insets.right,
+  //         paddingBottom: insets.bottom,
+  //         backgroundColor,
+  //         flex: 1,
+  //         borderTopRightRadius: borderRadius,
+  //         borderTopLeftRadius: borderRadius,
+  //       }}
+  //     >
+  //       {children}
+  //     </ScrollView>
+  //   );
+  // }
 
   return (
     <View

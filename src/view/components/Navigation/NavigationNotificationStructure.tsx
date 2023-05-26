@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginRight: 15,
+    marginRight: 10,
     paddingVertical: 5,
   },
   syncContent: {

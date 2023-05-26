@@ -1,13 +1,9 @@
-import React, { useState, useId } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
   Text,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
 } from "react-native";
 import { colors } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
@@ -22,10 +18,16 @@ interface Props {
 }
 
 export const InspectionComments: React.FC<Props> = ({ route }) => {
-  const { inspectionComments } = route.params;
+  const { inspectionComments, id: inspectionId } = route.params;
 
   const [input, setInput] = useState("");
-  const [comments, setComments] = useState(inspectionComments);
+  const [comments, setComments] = useState(
+    [...inspectionComments].sort((a, b) => {
+      const dateA = new Date(a.createdOn);
+      const dateB = new Date(b.createdOn);
+      return dateB.getTime() - dateA.getTime();
+    })
+  );
 
   const handleAddNewComment = (newComment: Comment) => setComments((prev) => [newComment, ...prev]);
 
@@ -56,7 +58,12 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
             <Text style={styles.noCommentText}>No comments</Text>
           </View>
         )}
-        <AddCommentBox input={input} setInput={setInput} addNewComment={handleAddNewComment} />
+        <AddCommentBox
+          inspectionId={inspectionId}
+          input={input}
+          setInput={setInput}
+          addNewComment={handleAddNewComment}
+        />
       </View>
     </View>
   );

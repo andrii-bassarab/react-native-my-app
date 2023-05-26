@@ -53,9 +53,7 @@ export const HomeNavigation: React.FC = () => {
         const nameResponse = arrayOfHouseHoldName[index];
 
         return nameResponse
-          ? `${nameResponse.firstName}${
-              nameResponse.middleName ? " " + nameResponse.middleName : ""
-            } ${nameResponse.lastName}`
+          ? `${nameResponse.firstName} ${nameResponse.middleName ?? ""} ${nameResponse.lastName}`
           : "";
       };
 
