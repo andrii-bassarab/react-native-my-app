@@ -8,6 +8,8 @@ import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
+
 
 interface Props {
   inspection: InspectionItem;
@@ -54,6 +56,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   };
 
   return (
+    <KeyboardAvoidingDisplayComponent>
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
         <Text style={styles.labelText}>Address:</Text>
@@ -118,9 +121,9 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       {showModalPhoneNumber && (
         <ModalSwipeScreen
-          closeModalFunction={handleCloseModalPhone}
-          height={"40%"}
-          percentSwipeToClose={0.2}
+        closeModalFunction={handleCloseModalPhone}
+        height={"40%"}
+        percentSwipeToClose={0.2}
         >
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Edit Phone Number</Text>
@@ -129,7 +132,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
                 <Image
                   source={require("~/view/assets/images/flagUSA.png")}
                   style={styles.modalFlag}
-                />
+                  />
               </View>
               <TextInput
                 value={phoneNumber}
@@ -137,7 +140,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
                 style={styles.modalPhoneNumber}
                 placeholder="(123) 123-1234"
                 keyboardType="phone-pad"
-              />
+                />
             </View>
             <TouchableOpacity style={styles.modalSaveButton} onPress={handleSavePhoneNumber}>
               <Text style={styles.modalSaveButtonText}>Save</Text>
@@ -146,6 +149,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
         </ModalSwipeScreen>
       )}
     </View>
+</KeyboardAvoidingDisplayComponent>
   );
 };
 
