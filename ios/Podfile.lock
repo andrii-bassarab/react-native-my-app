@@ -76,6 +76,12 @@ PODS:
   - hermes-engine (0.70.6)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
+  - Permission-LocationAlways (3.8.0):
+    - RNPermissions
+  - Permission-LocationWhenInUse (3.8.0):
+    - RNPermissions
+  - Permission-Notifications (3.8.0):
+    - RNPermissions
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -459,6 +465,9 @@ DEPENDENCIES:
   - hermes-engine (from `../node_modules/react-native/sdks/hermes/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
+  - Permission-LocationAlways (from `../node_modules/react-native-permissions/ios/LocationAlways/Permission-LocationAlways.podspec`)
+  - Permission-LocationWhenInUse (from `../node_modules/react-native-permissions/ios/LocationWhenInUse/Permission-LocationWhenInUse.podspec`)
+  - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications/Permission-Notifications.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -533,6 +542,12 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes/hermes-engine.podspec"
+  Permission-LocationAlways:
+    :path: "../node_modules/react-native-permissions/ios/LocationAlways/Permission-LocationAlways.podspec"
+  Permission-LocationWhenInUse:
+    :path: "../node_modules/react-native-permissions/ios/LocationWhenInUse/Permission-LocationWhenInUse.podspec"
+  Permission-Notifications:
+    :path: "../node_modules/react-native-permissions/ios/Notifications/Permission-Notifications.podspec"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -636,6 +651,9 @@ SPEC CHECKSUMS:
   hermes-engine: 2af7b7a59128f250adfd86f15aa1d5a2ecd39995
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
+  Permission-LocationAlways: 4fde3fdfcf79e085ad0bef4b87e0d245d11db397
+  Permission-LocationWhenInUse: de86d090048cfc4234078eabb381529724d847dd
+  Permission-Notifications: 5d3a6e3c88bf8ce331cdb1bcfd4f8fad79089c29
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: e1866f61af7049eb3d8e08e8b133abd38bc1ca7a
   RCTTypeSafety: 27c2ac1b00609a432ced1ae701247593f07f901e
@@ -651,12 +669,12 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b4a65947391c658450151275aa406f2b8263178f
   React-jsinspector: 60769e5a0a6d4b32294a2456077f59d0266f9a8b
   React-logger: 1623c216abaa88974afce404dc8f479406bbc3a0
-  react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
-  react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
-  react-native-netinfo: ccbe1085dffd16592791d550189772e13bf479e2
-  react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
-  react-native-safe-area-context: ebf8c413eb8b5f7c392a036a315eb7b46b96845f
-  react-native-signature-capture: 416a3947684e049a5b012cdd6496f878dc797f16
+  react-native-document-picker: eee81762dd3ace2e4f19608ba28058d6388b00e3
+  react-native-image-picker: 8b50ccf8a52a1dba7711f0b73fbd18ed689d3445
+  react-native-netinfo: 7ccdff35eeb299a711bad0a34f487c776eeb7570
+  react-native-pager-view: 64a540ca9d09bca730626c4714e56a303620c25f
+  react-native-safe-area-context: 923e8a02d3bd88ca7a6b6c9b3db1b94591044b0c
+  react-native-signature-capture: 73f2077f43a3fae9979b76e8cbf703c735bf44f4
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
@@ -669,10 +687,10 @@ SPEC CHECKSUMS:
   React-RCTVibration: c75ceef7aa60a33b2d5731ebe5800ddde40cefc4
   React-runtimeexecutor: 15437b576139df27635400de0599d9844f1ab817
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
-  RNBootSplash: 91e7a24d6b64bd9dacfffec76895ece5a1b4e5ef
-  RNCAsyncStorage: 09fc8595e6d6f6d5abf16b23a56b257d9c6b7c5b
+  RNBootSplash: 28372f89e10b19ff88a3b4c01cb2a92210d65293
+  RNCAsyncStorage: 346dae3af5236aedf6535daef9a6ef18b46b51f9
   RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
-  RNPermissions: b0e38eca4ce809f39a1655c7dfb8fe957b844cfc
+  RNPermissions: 320825772cceb2fba9ae9dfa3e010c7fea15f3ca
   RNReanimated: 716842722e1c5b0b7c56cf718e586b7f6a712879
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
@@ -680,6 +698,6 @@ SPEC CHECKSUMS:
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 0a6be10a39ceca60e9040f13acf2632015ced981
+PODFILE CHECKSUM: 63deed1dc0ac1f95ec64dc1f8453da09d96f7d5d
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1
