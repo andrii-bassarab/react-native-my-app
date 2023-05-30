@@ -6,7 +6,6 @@ import { SearchForm } from "../components/Inspections/SearchForm";
 import { useAppSelector } from "~/store/hooks";
 import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
 import { useMemo } from "react";
-import { ModalLoader } from "../components/Custom/ModalLoader";
 import SearchIcon from "../assets/icons/search.svg";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Screen } from "../components/Screen/Screen";
@@ -25,7 +24,6 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
 
   const [query, setQuery] = useState("");
   const [visibleInspections, setVisibleInspections] = useState(inspections);
-  const [loader, setLoader] = useState(false);
 
   const showWindow = useAppSelector((state) => state.showWindow);
 
@@ -80,54 +78,6 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const getFilteredInspections = useCallback(() => {
-    // statusNewUnscheduled
-    //   ? setVisibleInspections((prev) => [
-    //       ...inspections.filter(
-    //         (item) =>
-    //           item.visibleStatus === InspectionStatus.UNSCHEDULED ||
-    //           item.visibleStatus === InspectionStatus.NEW
-    //       ),
-    //     ])
-    //   : setVisibleInspections([]);
-
-    // statusScheduled &&
-    //   setVisibleInspections((prev) => [
-    //     ...prev,
-    //     ...inspections.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED),
-    //   ]);
-
-    // statusIncomplete &&
-    //   setVisibleInspections((prev) => [
-    //     ...prev,
-    //     ...inspections.filter((item) => item.visibleStatus === InspectionStatus.INPROGRESS),
-    //   ]);
-
-    // statusCompleted &&
-    //   setVisibleInspections((prev) => [
-    //     ...prev,
-    //     ...inspections.filter(
-    //       (item) =>
-    //         item.visibleStatus === InspectionStatus.PASSED ||
-    //         item.visibleStatus === InspectionStatus.FAILED
-    //     ),
-    //   ]);
-
-    // if (assignedToMe && !unassigned) {
-    //   setVisibleInspections((prev) =>
-    //     prev.filter((item) => item.assignedTo === "5e94b7f0fa86cf0016c4d92c")
-    //   );
-    // }
-
-    // if (!assignedToMe && unassigned) {
-    //   setVisibleInspections((prev) =>
-    //     prev.filter((item) => item.assignedTo !== "5e94b7f0fa86cf0016c4d92c")
-    //   );
-    // }
-
-    // if (!assignedToMe && !unassigned) {
-    //   setVisibleInspections([]);
-    // }
-
     setVisibleInspections(inspections);
 
     const newUnscheduledInspections = inspections.filter(
@@ -262,11 +212,9 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   );
 
   useEffect(() => {
-    setLoader(true);
     getFilteredInspections();
     getSortedInspections();
     makeRequest();
-    setLoader(false);
   }, [
     statusNewUnscheduled,
     statusScheduled,
@@ -311,7 +259,6 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
         )}
       </View>
       {showWindow.showInspectionsFilter && <InspectionsFilter />}
-      {/* // {loader && <ModalLoader />} */}
     </Screen>
   );
 };
@@ -339,7 +286,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: "700",
     fontSize: 16,
-    marginTop: "5%",
+    marginTop: "3%",
     marginBottom: "3%",
   },
   noResultContainer: {

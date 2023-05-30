@@ -29,7 +29,7 @@ const Tab = createMaterialTopTabNavigator();
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const { startSignature } = useAppSelector((state) => state.inspectionItem);
+  const { startSignature, visibleAssignedTo, visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
   // const [startSignature, setStartSignature] = useState(false);
@@ -37,6 +37,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const currentInspection = useAppSelector((state) => state?.inspectionItem);
 
   const goBack = () => navigation.navigate("Inspections");
+
+  const stringAssigned = inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
 
   const inspectOptions = {
     tabBarLabel:
@@ -47,10 +49,38 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    setHasUnsavedChanges(false);
+    console.log("render")
+    dispatch(
+      actionsInspectionItem.setVisibleAssignedTo(
+        inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"
+      )
+    );
+    dispatch(
+      actionsInspectionItem.setVisiblePhoneNumber(inspection.unit.landlord?.phoneNumber || "")
+    );
+
     return () => {
-      dispatch(actionsInspectionItem.setStartSignature(false));
+      dispatch(actionsInspectionItem.clearInspectionItem());
     };
   }, []);
+
+  useEffect(() => {
+    if (visibleAssignedTo !== stringAssigned || visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || "")) {
+      console.log("visibleAssignedTo", visibleAssignedTo)
+      console.log(visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || ""))
+      setHasUnsavedChanges(true);
+    }
+  }, [visibleAssignedTo, visiblePhoneNumber])
+
+  const handleGoBack = () => {
+    if (visibleAssignedTo !== stringAssigned || visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || "")) {
+      setShowModalUnsavedChanges(true);
+      return;
+    }
+
+    goBack();
+  }
 
   // console.log("inspection", inspection);
 
@@ -59,7 +89,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
       <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
         <View style={styles.content}>
           <View style={{ paddingHorizontal: 25 }}>
-            <SelectedInspection item={inspection} goBack={() => goBack()} />
+            <SelectedInspection item={inspection} goBack={handleGoBack} />
           </View>
           {showModalUnsavedChanges && (
             <ModalDeleteItem

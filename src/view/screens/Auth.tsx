@@ -1,15 +1,11 @@
 import "react-native-gesture-handler";
 import { NavigationProp, ParamListBase, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
   Image,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   Platform,
-  Keyboard,
-  Alert,
 } from "react-native";
 import { actions as actionsEvents } from "../../modules/events";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -17,8 +13,6 @@ import { Screen } from "../components/Screen/Screen";
 import {
   setAuth,
   setFirstInit,
-  setCameraPermission,
-  setNotificationPermission,
   setProfileStatus,
   setUser,
   setAvailableSites,
@@ -28,7 +22,7 @@ import { ModalLoader } from "../components/Custom/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
 import { actionsShowWindow } from "~/modules/showWindow";
-import { PERMISSIONS, RESULTS, request, requestNotifications } from "react-native-permissions";
+import { PERMISSIONS, request, requestNotifications } from "react-native-permissions";
 
 const mocksSites = [
   { name: "Kanso Industries", code: "Kanso Industries" },
@@ -48,7 +42,6 @@ export const AuthScreen: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const setTodos = () => dispatch(actionsEvents.setEvents("event"));
   const currentUser = useAppSelector((state) => state.user);
 
   const handleRequestPermissions = async () => {
@@ -68,7 +61,7 @@ export const AuthScreen: React.FC = () => {
         await handleRequestPermissions();
       }
 
-      dispatch(setUser({ id: 1, email: "Nazar Kubyk" }));
+      dispatch(setUser({ id: 1, email: userName.toLocaleLowerCase().replace(' ', ''), userName: userName}));
       dispatch(setProfileStatus(AsyncStatus.SUCCESS));
       dispatch(setAuth({ access: "string", refresh: "string" }));
       dispatch(setFirstInit(false));
@@ -88,7 +81,7 @@ export const AuthScreen: React.FC = () => {
 
   // console.log("loader", loader);
 
-  console.log("user", currentUser);
+  // console.log("user", currentUser);
   // console.log("events", events);
 
   return (

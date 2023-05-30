@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 import { colors } from "../../theme";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   backgroundColor: string;
@@ -16,32 +17,34 @@ export const WelcomeBox: React.FC<Props> = ({
   textColor,
   padding,
   iconSize,
-}) => (
-  <View
-    style={{
-      ...styles.headerContainer,
-      backgroundColor,
-      height: height ? height : "auto",
-      padding: padding ?? 0,
-    }}
-  >
-    <View style={styles.settingsIconBox}>
-      <Image
-        source={require("~/view/assets/images/settings.png")}
-        style={{
-          ...styles.settingsIcon,
-          height: iconSize === "large" ? 80 : 50,
-          width: iconSize === "large" ? 80 : 50,
-          marginBottom: iconSize === "large" ? 10 : 0,
-        }}
-      />
-      <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
-      <Text style={{ ...styles.welcomeText, fontSize: 20, color: textColor }}>
-        Nazar Kubyk
-      </Text>
+}) => {
+  const { profile } = useAppSelector((state) => state.user);
+
+  return (
+    <View
+      style={{
+        ...styles.headerContainer,
+        backgroundColor,
+        height: height ? height : "auto",
+        padding: padding ?? 0,
+      }}
+    >
+      <View style={styles.settingsIconBox}>
+        <Image
+          source={require("~/view/assets/images/settings.png")}
+          style={{
+            ...styles.settingsIcon,
+            height: iconSize === "large" ? 80 : 50,
+            width: iconSize === "large" ? 80 : 50,
+            marginBottom: iconSize === "large" ? 10 : 0,
+          }}
+        />
+        <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
+        <Text style={{ ...styles.welcomeText, fontSize: 20, color: textColor }}>{"Nazar Kubyk"}</Text>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   headerContainer: {

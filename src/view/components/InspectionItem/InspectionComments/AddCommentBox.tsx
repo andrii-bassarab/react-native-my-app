@@ -1,9 +1,9 @@
 import { ApolloCache, useMutation } from "@apollo/client";
-import React, { useEffect } from "react";
+import React from "react";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/inspections";
-import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { useAppDispatch } from "~/store/hooks";
 import { Comment } from "~/types/Comment";
 import { colors } from "~/view/theme";
 import { ModalLoader } from "../../Custom/ModalLoader";
@@ -22,7 +22,6 @@ export const AddCommentBox: React.FC<Props> = ({
   inspectionId,
 }) => {
   const dispatch = useAppDispatch();
-  const { inspections } = useAppSelector((state) => state.inspections);
   const showToastNotification = () =>
     dispatch(actionsToastNotification.showToastMessage("Success! Comment added."));
 

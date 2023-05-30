@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
   },
   toast: {
     backgroundColor: colors.green,
-    borderRadius: 5,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
     paddingBottom: 10,
     width: "100%",
     alignItems: "center",

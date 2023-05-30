@@ -5,25 +5,19 @@ import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
+import { getInspectionDate } from "~/utils/visibleDate";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   inspection: InspectionItem;
 }
 
-const mocksDetails = [
-  { name: "Bedrooms:", count: "2" },
-  { name: "Bathrooms:", count: "2" },
-  { name: "Sq. ft:", count: "--" },
-  { name: "Handicap:", count: "No" },
-  { name: "Year Built:", count: "--" },
-];
-
 export const AdressBox: React.FC<Props> = ({ inspection }) => {
+  const dispatch = useAppDispatch();
   const [showModalPhoneNumber, setShowModalPhoneNumber] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [visiblePhoneNumber, setVisiblePhoneNumber] = useState(
-    inspection.unit.landlord?.phoneNumber
-  );
+  const { visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
 
   const formatPhoneNumber = (input: string) => {
     let phoneNumber = input.replace(/\D/g, "");
@@ -32,9 +26,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
 
     const phoneNumberLength = phoneNumber.length;
     if (phoneNumberLength > 6) {
-      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(
-        6
-      )}`;
+      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
     } else if (phoneNumberLength > 3) {
       phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
     } else {
@@ -50,7 +42,9 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   };
 
   const handleSavePhoneNumber = () => {
-    setVisiblePhoneNumber(phoneNumber);
+    dispatch(
+      actionsInspectionItem.setVisiblePhoneNumber(phoneNumber)
+    );
     setShowModalPhoneNumber(false);
   };
 
@@ -81,7 +75,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Last Inspection Date:</Text>
-        <Text style={styles.text}>April 20, 2022</Text>
+        <Text style={styles.text}>{inspection.completedOn ? `${getInspectionDate(new Date(inspection.completedOn))}` : "--"}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Permission to Enter:</Text>

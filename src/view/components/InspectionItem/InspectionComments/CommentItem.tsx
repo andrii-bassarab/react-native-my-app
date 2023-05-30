@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { View, StyleSheet, Text, Touchable } from "react-native";
+import React, { useMemo } from "react";
+import { View, StyleSheet, Text } from "react-native";
 import { Comment } from "~/types/Comment";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { colors } from "~/view/theme";

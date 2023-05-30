@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { DrawerNavigationProp, createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";

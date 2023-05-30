@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   activityBox: {
-    marginTop: 15,
+    marginTop: "2%",
   },
   activityTitle: {
     fontSize: 16,

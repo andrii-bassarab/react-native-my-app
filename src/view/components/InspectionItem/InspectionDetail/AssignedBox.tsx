@@ -7,27 +7,32 @@ import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { CustomSelect } from "../../Custom/CustomSelect";
 import { getInspectionDate } from "~/utils/visibleDate";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   inspection: InspectionItem;
 }
 
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
+  const dispatch = useAppDispatch();
   const [showModalAssigned, setShowModalAssigned] = useState(false);
   const [assignedTo, setAssignedTo] = useState(
-    inspection.scheduledOn ? "Me" : "Unassigned"
+    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"
   );
   const assignedOptions = ["Me", "Unassigned"];
-  const [visibleAssignedTo, setVisibleAssignedTo] = useState(assignedTo);
+  const { visibleAssignedTo } = useAppSelector((state) => state.inspectionItem);
 
   const closeModalAssigned = () => {
     setShowModalAssigned(false);
-    setAssignedTo(visibleAssignedTo);
+    setAssignedTo(visibleAssignedTo || "");
   };
 
   const saveAssignedTo = () => {
     setShowModalAssigned(false);
-    setVisibleAssignedTo(assignedTo);
+    dispatch(
+      actionsInspectionItem.setVisibleAssignedTo(assignedTo)
+    );
   };
 
   return (

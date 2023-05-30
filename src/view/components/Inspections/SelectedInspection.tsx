@@ -32,7 +32,6 @@ export const SelectedInspection: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const startSignatureScreen = () => dispatch(actionsInspectionItem.setStartSignature(true));
   const { startSignature, signatureCount } = useAppSelector((state) => state.inspectionItem);
-  const { inspections } = useAppSelector((state) => state.inspections);
   const [dynamicStatus, setDynamicStatus] = useState(item.visibleStatus);
 
   const showToast = (message: string) =>

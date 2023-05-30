@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform } from "react-native";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { SearchForm } from "../../Inspections/SearchForm";
-import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { useAppDispatch } from "~/store/hooks";
 import { InspectionFilesAddButton } from "./InspectionFilesAddButton";
 import { InspectionItem } from "~/types/InspectionItem";
 import { InspectionFileCard } from "./InspectionFileCard";
@@ -228,7 +228,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         setNewPhoto(fileToOpen);
         setShowModalImage(true);
     }
-  }
+  };
 
   return (
     <View style={styles.content}>
