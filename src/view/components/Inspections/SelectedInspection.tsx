@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
@@ -34,11 +34,10 @@ export const SelectedInspection: React.FC<Props> = ({
   const { startSignature, signatureCount } = useAppSelector((state) => state.inspectionItem);
   const [dynamicStatus, setDynamicStatus] = useState(item.visibleStatus);
 
-  const showToast = (message: string) =>
-    dispatch(actionsToastNotification.showToastMessage(message));
+  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
-  const [updateInspection, { data, loading, error }] = useMutation(UPDATE_INSPECTION);
+  const [updateInspection, { loading }] = useMutation(UPDATE_INSPECTION);
 
   const updateCache = (status: string) => {
     return (cache: ApolloCache<any>, { data }: any) => {
@@ -76,11 +75,6 @@ export const SelectedInspection: React.FC<Props> = ({
     };
   };
 
-  // console.log(
-  //   "inspeciotn",
-  //   inspections.map((item) => item.household?.headOfHouseholdId)
-  // );
-
   const handleChangeInspectionStatus = (status: string) => {
     updateInspection({
       variables: {
@@ -104,14 +98,6 @@ export const SelectedInspection: React.FC<Props> = ({
       update: updateCache(status),
     });
   };
-
-  useEffect(() => {
-    console.log("--------------");
-    console.log("data", data);
-    console.log("loading", loading);
-    console.log("error", error);
-    console.log("--------------");
-  }, [data, error]);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>

@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet, TextInput } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 import EyeIcon from "~/view/assets/icons/eyeslash.svg";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface Props {
   goToHome: () => void;
@@ -14,7 +19,15 @@ interface Props {
   errorLogin: boolean;
 }
 
-export const LoginForm: React.FC<Props> = ({ goToHome, navigation, setPassword, password, setUserName, userName, errorLogin }) => {
+export const LoginForm: React.FC<Props> = ({
+  goToHome,
+  navigation,
+  setPassword,
+  password,
+  setUserName,
+  userName,
+  errorLogin,
+}) => {
   const [hidePassword, setHidePassword] = useState(true);
 
   const handleSubmit = () => {
@@ -26,8 +39,8 @@ export const LoginForm: React.FC<Props> = ({ goToHome, navigation, setPassword, 
   };
 
   const handleForgotPassword = () => {
-    navigation.navigate('ForgotPassword')
-  }
+    navigation.navigate("ForgotPassword");
+  };
 
   return (
     <View style={styles.formContainer}>
@@ -89,7 +102,10 @@ export const LoginForm: React.FC<Props> = ({ goToHome, navigation, setPassword, 
           </Text>
         )}
       </View>
-      <TouchableOpacity style={styles.forgotPasswordButton} onPress={handleForgotPassword}>
+      <TouchableOpacity
+        style={styles.forgotPasswordButton}
+        onPress={handleForgotPassword}
+      >
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
       <TouchableOpacity

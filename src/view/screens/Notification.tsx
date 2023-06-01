@@ -23,6 +23,11 @@ export const Notifications: React.FC = () => {
   const { notifications, unreadMessage } = useAppSelector((state) => state.notifications);
   const position = useMemo(() => new Animated.ValueXY({ x: 0, y: windowHeight * 0.4 }), []);
   const pan = useRef(new Animated.ValueXY()).current;
+  const opacity = pan.y.interpolate({
+    inputRange: [windowHeight * 0.2, windowHeight * 0.4],
+    outputRange: [1, 0.5],
+    extrapolate: 'clamp',
+  });
 
   useEffect(() => {
     dispatch(actionsNotifications.resetUnreadMessage());
@@ -67,7 +72,7 @@ export const Notifications: React.FC = () => {
         styles.shadowProp,
         styles.content,
         position.getLayout(),
-        { transform: [{ translateY: pan.y }] },
+        { transform: [{ translateY: pan.y }], opacity },
       ]}
     >
       <Animated.View {...panResponder.panHandlers}>

@@ -86,6 +86,11 @@ export const InspectionsFilter = () => {
 
   const position = useMemo(() => new Animated.ValueXY({ x: 0, y: windowHeight * 0.25 }), []);
   const pan = useRef(new Animated.ValueXY()).current;
+  const opacity = pan.y.interpolate({
+    inputRange: [windowHeight * 0.2, windowHeight * 0.4],
+    outputRange: [1, 0.5],
+    extrapolate: 'clamp',
+  });
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
@@ -157,7 +162,7 @@ export const InspectionsFilter = () => {
             styles.content,
             styles.shadowProp,
             position.getLayout(),
-            { transform: [{ translateY: pan.y }] },
+            { transform: [{ translateY: pan.y }], opacity },
           ]}
         >
           <Pressable onPress={handleHideCalendar}>

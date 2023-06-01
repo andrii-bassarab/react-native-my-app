@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 import { colors } from "../../theme";
 import { useAppSelector } from "~/store/hooks";
@@ -40,7 +40,7 @@ export const WelcomeBox: React.FC<Props> = ({
           }}
         />
         <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
-        <Text style={{ ...styles.welcomeText, fontSize: 20, color: textColor }}>{"Nazar Kubyk"}</Text>
+        <Text style={{ ...styles.welcomeText, fontSize: 20, color: textColor }}>{profile?.userName}</Text>
       </View>
     </View>
   );

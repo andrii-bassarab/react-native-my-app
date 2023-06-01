@@ -5,7 +5,6 @@ import { colors } from "~/view/theme";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { InspectionItem } from "~/types/InspectionItem";
-import { HouseHoldName } from "./HouseHoldName";
 
 interface Props {
   inspection: InspectionItem;

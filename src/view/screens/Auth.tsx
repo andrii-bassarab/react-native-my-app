@@ -7,7 +7,6 @@ import {
   Image,
   Platform,
 } from "react-native";
-import { actions as actionsEvents } from "../../modules/events";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";
 import {
@@ -61,7 +60,7 @@ export const AuthScreen: React.FC = () => {
         await handleRequestPermissions();
       }
 
-      dispatch(setUser({ id: 1, email: userName.toLocaleLowerCase().replace(' ', ''), userName: userName}));
+      dispatch(setUser({ id: 1, email: userName.toLocaleLowerCase().replace(/ /g, ''), userName: userName}));
       dispatch(setProfileStatus(AsyncStatus.SUCCESS));
       dispatch(setAuth({ access: "string", refresh: "string" }));
       dispatch(setFirstInit(false));
@@ -77,10 +76,9 @@ export const AuthScreen: React.FC = () => {
       console.error("Error:", error);
       setLoader(false);
     }
-  }, [currentUser]);
+  }, [currentUser, userName, password]);
 
   // console.log("loader", loader);
-
   // console.log("user", currentUser);
   // console.log("events", events);
 

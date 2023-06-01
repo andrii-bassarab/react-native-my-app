@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Text, StyleSheet, View, FlatList } from "react-native";
 import { colors } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
 import { useAppSelector } from "~/store/hooks";
 import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
-import { useMemo } from "react";
 import SearchIcon from "../assets/icons/search.svg";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Screen } from "../components/Screen/Screen";
@@ -144,43 +143,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
         );
     }
 
-    // const arrayCheckbox = [
-    //   statusNewUnscheduled,
-    //   statusScheduled,
-    //   statusIncomplete,
-    //   statusCompleted,
-    // ];
-
-    // const arrayString = [
-    //   [InspectionStatus.NEW, InspectionStatus.UNSCHEDULED],
-    //   InspectionStatus.SCHEDULED,
-    //   InspectionStatus.INPROGRESS,
-    //   [InspectionStatus.PASSED, InspectionStatus.FAILED],
-    // ];
-
-    // let filteredInspections = arrayCheckbox.reduce((acum, current, index) => {
-    //   if (current && Array.isArray(arrayString[index]))  {
-    //     acum.push(...inspections.filter(inspector => arrayString[index].includes(inspector.visibleStatus)));
-    //   } else if (current && !Array.isArray(arrayString[index])) {
-    //     acum.push(...inspections.filter(inspector => inspector.visibleStatus === arrayString[index]));
-    //   }
-    //   return acum;
-    //   // inspections.filter((item) => item.visibleStatus);
-    // }, [] as InspectionItem[]);
-
     setVisibleInspections(filteredInspections);
-
-    // if (arrOFSelectedDates.length > 0) {
-    //   setVisibleInspections((prev) =>
-    //   filteredInspections.filter((item) =>
-    //       arrOFSelectedDates.includes(
-    //         item.scheduledOn
-    //           ? getCalendarVisibleDate(new Date(item.scheduledOn)).trim()
-    //           : getCalendarVisibleDate(new Date(item.createdOn)).trim()
-    //       )
-    //     )
-    //   );
-    // }
   }, [
     statusNewUnscheduled,
     statusScheduled,

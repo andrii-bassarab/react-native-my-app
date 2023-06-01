@@ -24,8 +24,6 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
   const [startSignatureDraw, setStartSignatureDraw] = useState(false);
   const [showViewSignature, setShowViewSignature] = useState(false);
 
-  // console.log("/Users/admin/Library/Developer/CoreSimulator/Devices/7D53D6A0-D122-4176-8AE8-9FB9AB4E6A31/data/Containers/Data/Application/03278D27-F9E7-4F4E-83C1-3CA22F24C84F/Documents/signature.png")
-
   // console.log("pathSignInspector",pathSignInspector)
 
   const onSaveEvent = (result: SaveEventParams) => {
@@ -38,16 +36,13 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
 
     switch (currentPathNumber) {
       case 0:
-        console.log("render 1");
-        setPathSignInspector(result.pathName)
+        setPathSignInspector(Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`)
         return;
       case 1:
-        console.log("render 2");
-        setPathSignLandlord(result.pathName);
+        setPathSignLandlord(Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`);
         return;
       case 2:
-        console.log("render 3");
-        setPathSignTenant(result.pathName);
+        setPathSignTenant(Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`);
         return;
     }
   };
@@ -90,7 +85,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
 
     return (
       <Image
-        source={{ uri: true ? pathSignInspector : `data:image/png;base64,${pathSignInspector}` }}
+        source={{ uri: pathSignInspector }}
         style={[styles.imageviewSignature, { display: currentPathNumber === 0 ? "flex" : "none" }]}
       />
     );
@@ -137,19 +132,19 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
       />
       <SignatureCard
         position={"Tenant"}
-        name={"Norbert Sanders"}
+        name={inspection.visibleHouseholdName}
         openSignScreen={() => handleOpenSignatureCapture(2)}
         signaturePath={pathSignTenant}
         openShowViewSignature={() => setShowViewSignature(true)}
       />
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        {/* {pathSignInspector && (
+      {/* <View style={{ flex: 1, flexDirection: "row" }}>
+        {pathSignInspector && (
           <Image
             source={{ uri: pathSignInspector }}
             style={{ width: 100, height: 100, backgroundColor: "red" }}
           />
-        )} */}
-        { /* {pathSignLandlord && (
+        )}
+        {pathSignLandlord && (
           <Image
             source={{ uri: pathSignLandlord }}
             style={{ width: 100, height: 100, backgroundColor: "green" }}
@@ -160,8 +155,8 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
             source={{ uri: pathSignTenant }}
             style={{ width: 100, height: 100, backgroundColor: "blue" }}
           />
-        )} */}
-      </View>
+        )}
+      </View> */}
       {showSignModalScreen && (
         <ModalSwipeScreen
           closeModalFunction={() => setShowSignModalScreen(false)}

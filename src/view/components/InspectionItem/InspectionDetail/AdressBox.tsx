@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Image,
+} from "react-native";
 import { colors } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
@@ -9,7 +16,6 @@ import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
-
 
 interface Props {
   inspection: InspectionItem;
@@ -24,7 +30,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const formatPhoneNumber = (input: string) => {
     let phoneNumber = input.replace(/\D/g, "");
 
-    phoneNumber = phoneNumber.substring(0, 10);
+    phoneNumber = phoneNumber.slice(0, 10);
 
     const phoneNumberLength = phoneNumber.length;
     if (phoneNumberLength > 6) {
@@ -44,9 +50,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   };
 
   const handleSavePhoneNumber = () => {
-    dispatch(
-      actionsInspectionItem.setVisiblePhoneNumber(phoneNumber)
-    );
+    dispatch(actionsInspectionItem.setVisiblePhoneNumber(phoneNumber));
     setShowModalPhoneNumber(false);
   };
 
@@ -57,99 +61,124 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
 
   return (
     <KeyboardAvoidingDisplayComponent>
-    <View style={[styles.card, styles.shadowProp]}>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Address:</Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+      <View style={[styles.card, styles.shadowProp]}>
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Address:</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              flex: 1,
+            }}
+          >
+            <Text style={styles.text}>
+              {`${inspection.unit.streetAddress} ${inspection.unit.city}, ${inspection.unit.state} ${inspection.unit.postalCode}`}
+            </Text>
+            {inspection.status !== InspectionStatus.FAILED &&
+              inspection.status !== InspectionStatus.PASSED && (
+                <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
+                  <EditIcon color={colors.blue} height={15} width={15} />
+                </TouchableOpacity>
+              )}
+          </View>
+        </View>
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Tenant:</Text>
+          <Text style={styles.text}>{inspection.visibleHouseholdName}</Text>
+        </View>
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Last Inspection Date:</Text>
           <Text style={styles.text}>
-            {`${inspection.unit.streetAddress} ${inspection.unit.city}, ${inspection.unit.state} ${inspection.unit.postalCode}`}
+            {inspection.completedOn
+              ? `${getInspectionDate(new Date(inspection.completedOn))}`
+              : "--"}
           </Text>
-          {inspection.status !== InspectionStatus.FAILED &&
-            inspection.status !== InspectionStatus.PASSED && (
-              <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
-                <EditIcon color={colors.blue} height={15} width={15} />
-              </TouchableOpacity>
-            )}
         </View>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Tenant:</Text>
-        <Text style={styles.text}>{inspection.visibleHouseholdName}</Text>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Last Inspection Date:</Text>
-        <Text style={styles.text}>{inspection.completedOn ? `${getInspectionDate(new Date(inspection.completedOn))}` : "--"}</Text>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Permission to Enter:</Text>
-        <Text style={styles.text}>{inspection.hasPermissionToEnter ? "Yes" : "No"}</Text>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Details:</Text>
-        <View style={{ flex: 1 }}>
-          <View style={styles.detailBox}>
-            <Text style={styles.text}>Bedrooms:</Text>
-            <Text style={styles.text}>{inspection.unit.numberOfBedrooms}</Text>
-          </View>
-          <View style={styles.detailBox}>
-            <Text style={styles.text}>Bathroom:</Text>
-            <Text style={styles.text}>{inspection.unit.numberOfBathrooms}</Text>
-          </View>
-          <View style={styles.detailBox}>
-            <Text style={styles.text}>Sq. ft:</Text>
-            <Text style={styles.text}>{inspection.unit.squareFootage || "--"}</Text>
-          </View>
-          <View style={styles.detailBox}>
-            <Text style={styles.text}>Handicap:</Text>
-            <Text style={styles.text}>{inspection.unit.isHandicapAccessible ? "Yes" : "No"}</Text>
-          </View>
-          <View style={styles.detailBox}>
-            <Text style={styles.text}>Year Built:</Text>
-            <Text style={styles.text}>{inspection.unit.yearConstructed || "--"}</Text>
-          </View>
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Permission to Enter:</Text>
+          <Text style={styles.text}>
+            {inspection.hasPermissionToEnter ? "Yes" : "No"}
+          </Text>
         </View>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Landlord:</Text>
-        <Text style={styles.text}>{`${inspection.unit.landlord?.firstName || ""} ${
-          inspection.unit.landlord?.lastName || ""
-        }`}</Text>
-      </View>
-      <View style={styles.label}>
-        <Text style={styles.labelText}>Phone:</Text>
-        <Text style={styles.text}>{visiblePhoneNumber || null}</Text>
-      </View>
-      {showModalPhoneNumber && (
-        <ModalSwipeScreen
-        closeModalFunction={handleCloseModalPhone}
-        height={"40%"}
-        percentSwipeToClose={0.2}
-        >
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Edit Phone Number</Text>
-            <View style={[styles.phoneLabel, styles.shadowProp]}>
-              <View style={{ paddingHorizontal: 20 }}>
-                <Image
-                  source={require("~/view/assets/images/flagUSA.png")}
-                  style={styles.modalFlag}
-                  />
-              </View>
-              <TextInput
-                value={phoneNumber}
-                onChangeText={handleChangeText}
-                style={styles.modalPhoneNumber}
-                placeholder="(123) 123-1234"
-                keyboardType="phone-pad"
-                />
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Details:</Text>
+          <View style={{ flex: 1 }}>
+            <View style={styles.detailBox}>
+              <Text style={styles.text}>Bedrooms:</Text>
+              <Text style={styles.text}>
+                {inspection.unit.numberOfBedrooms}
+              </Text>
             </View>
-            <TouchableOpacity style={styles.modalSaveButton} onPress={handleSavePhoneNumber}>
-              <Text style={styles.modalSaveButtonText}>Save</Text>
-            </TouchableOpacity>
+            <View style={styles.detailBox}>
+              <Text style={styles.text}>Bathroom:</Text>
+              <Text style={styles.text}>
+                {inspection.unit.numberOfBathrooms}
+              </Text>
+            </View>
+            <View style={styles.detailBox}>
+              <Text style={styles.text}>Sq. ft:</Text>
+              <Text style={styles.text}>
+                {inspection.unit.squareFootage || "--"}
+              </Text>
+            </View>
+            <View style={styles.detailBox}>
+              <Text style={styles.text}>Handicap:</Text>
+              <Text style={styles.text}>
+                {inspection.unit.isHandicapAccessible ? "Yes" : "No"}
+              </Text>
+            </View>
+            <View style={styles.detailBox}>
+              <Text style={styles.text}>Year Built:</Text>
+              <Text style={styles.text}>
+                {inspection.unit.yearConstructed || "--"}
+              </Text>
+            </View>
           </View>
-        </ModalSwipeScreen>
-      )}
-    </View>
-</KeyboardAvoidingDisplayComponent>
+        </View>
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Landlord:</Text>
+          <Text style={styles.text}>{`${
+            inspection.unit.landlord?.firstName || ""
+          } ${inspection.unit.landlord?.lastName || ""}`}</Text>
+        </View>
+        <View style={styles.label}>
+          <Text style={styles.labelText}>Phone:</Text>
+          <Text style={styles.text}>{visiblePhoneNumber || null}</Text>
+        </View>
+        {showModalPhoneNumber && (
+          <ModalSwipeScreen
+            closeModalFunction={handleCloseModalPhone}
+            height={"40%"}
+            percentSwipeToClose={0.2}
+          >
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Edit Phone Number</Text>
+              <View style={[styles.phoneLabel, styles.shadowProp]}>
+                <View style={{ paddingHorizontal: 20 }}>
+                  <Image
+                    source={require("~/view/assets/images/flagUSA.png")}
+                    style={styles.modalFlag}
+                  />
+                </View>
+                <TextInput
+                  value={phoneNumber}
+                  onChangeText={handleChangeText}
+                  style={styles.modalPhoneNumber}
+                  placeholder="(123) 123-1234"
+                  keyboardType="phone-pad"
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.modalSaveButton}
+                onPress={handleSavePhoneNumber}
+              >
+                <Text style={styles.modalSaveButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </ModalSwipeScreen>
+        )}
+      </View>
+    </KeyboardAvoidingDisplayComponent>
   );
 };
 

@@ -23,6 +23,11 @@ export const ModalSwipeScreen: React.FC<Props> = ({ closeModalFunction, children
   const insets = useSafeAreaInsets();
 
   const pan = useRef(new Animated.ValueXY()).current;
+  const opacity = pan.y.interpolate({
+    inputRange: [50, windowHeight * percentSwipeToClose],
+    outputRange: [1, 0.3],
+    extrapolate: 'clamp',
+  });
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
@@ -64,7 +69,7 @@ export const ModalSwipeScreen: React.FC<Props> = ({ closeModalFunction, children
           style={[
             styles.content,
             styles.shadowProp,
-            { transform: [{ translateY: pan.y }], height, paddingBottom: insets.bottom },
+            { transform: [{ translateY: pan.y }], height, paddingBottom: insets.bottom, opacity },
           ]}
           onStartShouldSetResponder={() => true}
           onTouchEnd={(event) => {

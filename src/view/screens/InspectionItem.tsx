@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+} from "@react-navigation/native";
 import { View, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
@@ -29,16 +33,16 @@ const Tab = createMaterialTopTabNavigator();
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const { startSignature, visibleAssignedTo, visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
+  const { startSignature, visibleAssignedTo, visiblePhoneNumber } =
+    useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
-  // const [startSignature, setStartSignature] = useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const currentInspection = useAppSelector((state) => state?.inspectionItem);
 
   const goBack = () => navigation.navigate("Inspections");
 
-  const stringAssigned = inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
+  const stringAssigned =
+    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
 
   const inspectOptions = {
     tabBarLabel:
@@ -48,16 +52,25 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
         : "Inspect",
   };
 
+  const hasUnsavedChanges = useMemo(
+    () =>
+      visibleAssignedTo !== stringAssigned ||
+      visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || ""),
+    [visibleAssignedTo, visiblePhoneNumber]
+  );
+
   useEffect(() => {
-    setHasUnsavedChanges(false);
-    console.log("render")
     dispatch(
       actionsInspectionItem.setVisibleAssignedTo(
-        inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"
+        inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c"
+          ? "Me"
+          : "Unassigned"
       )
     );
     dispatch(
-      actionsInspectionItem.setVisiblePhoneNumber(inspection.unit.landlord?.phoneNumber || "")
+      actionsInspectionItem.setVisiblePhoneNumber(
+        inspection.unit.landlord?.phoneNumber || ""
+      )
     );
 
     return () => {
@@ -65,24 +78,14 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (visibleAssignedTo !== stringAssigned || visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || "")) {
-      console.log("visibleAssignedTo", visibleAssignedTo)
-      console.log(visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || ""))
-      setHasUnsavedChanges(true);
-    }
-  }, [visibleAssignedTo, visiblePhoneNumber])
-
   const handleGoBack = () => {
-    if (visibleAssignedTo !== stringAssigned || visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || "")) {
+    if (hasUnsavedChanges) {
       setShowModalUnsavedChanges(true);
       return;
     }
 
     goBack();
-  }
-
-  // console.log("inspection", inspection);
+  };
 
   return (
     <KeyboardAvoidingDisplayComponent>
@@ -117,13 +120,21 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
                     initialParams={inspection}
                   />
                 )}
-              <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
+              <Tab.Screen
+                name="Details"
+                component={InspectionDetails}
+                initialParams={inspection}
+              />
               <Tab.Screen
                 name="Comments"
                 component={InspectionComments}
                 initialParams={inspection}
               />
-              <Tab.Screen name="Files" component={InspectionFilesView} initialParams={inspection} />
+              <Tab.Screen
+                name="Files"
+                component={InspectionFilesView}
+                initialParams={inspection}
+              />
             </Tab.Navigator>
           )}
           {startSignature && <SignatureView inspection={inspection} />}
@@ -139,7 +150,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    // paddingHorizontal: 25,
     paddingTop: 25,
     paddingBottom: 0,
   },

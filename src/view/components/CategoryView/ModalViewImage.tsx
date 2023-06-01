@@ -1,19 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
   Image,
   Modal,
   Pressable,
-  Animated,
 } from "react-native";
 import { Asset } from "react-native-image-picker";
 import CloseIcon from "~/view/assets/icons/failed.svg";
