@@ -41,8 +41,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.labelText}>Assigned:</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
           <Text style={styles.text}>{visibleAssignedTo}</Text>
-          {inspection.status !== InspectionStatus.FAILED &&
-            inspection.status !== InspectionStatus.PASSED && (
+          {inspection.status !== "complete" && (
               <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
                 <EditIcon color={colors.blue} height={15} width={15} />
               </TouchableOpacity>

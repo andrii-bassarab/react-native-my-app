@@ -60,20 +60,20 @@ export const MainStack: React.FC = () => {
     type: "Successfully",
   };
 
-  // async function getStorageSize() {
-  //   let keys = [];
-  //   let size = 0;
-  //   try {
-  //     keys = await AsyncStorage.getAllKeys();
-  //     const result = await AsyncStorage.multiGet(keys);
-  //     result.forEach((item) => {
-  //       size += item[0].length + item[1].length;
-  //     });
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  //   console.log("Total size of storage:", size, "bytes");
-  // }
+  async function getStorageSize() {
+    let keys = [];
+    let size = 0;
+    try {
+      keys = await AsyncStorage.getAllKeys();
+      const result = await AsyncStorage.multiGet(keys);
+      result.forEach((item) => {
+        size += item[0].length + item[1].length;
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+    console.log("Total size of storage:", size, "bytes");
+  }
 
   const filterLastFifteenDays = (items: NotificationItem[]) => {
     const today = new Date();
@@ -87,7 +87,7 @@ export const MainStack: React.FC = () => {
   };
 
   useEffect(() => {
-    // getStorageSize();
+    getStorageSize();
 
     if (visibleLoader) {
       dispatch(

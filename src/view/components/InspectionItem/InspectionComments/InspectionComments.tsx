@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const InspectionComments: React.FC<Props> = ({ route }) => {
-  const { inspectionComments, id: inspectionId } = route.params;
+  const { inspectionComments, id: inspectionId, status } = route.params;
 
   const [input, setInput] = useState("");
   const [comments, setComments] = useState(
@@ -58,12 +58,12 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
             <Text style={styles.noCommentText}>No comments</Text>
           </View>
         )}
-        <AddCommentBox
+        {status !== "complete" && <AddCommentBox
           inspectionId={inspectionId}
           input={input}
           setInput={setInput}
           addNewComment={handleAddNewComment}
-        />
+        />}
       </View>
     </View>
   );

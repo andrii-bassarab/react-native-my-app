@@ -17,7 +17,7 @@ import {
   setAvailableSites,
 } from "~/modules/user/actions";
 import { LoginForm } from "../components/Auth/LoginForm";
-import { ModalLoader } from "../components/Custom/ModalLoader";
+import { ModalLoader } from "../components/Loader/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
 import { actionsShowWindow } from "~/modules/showWindow";

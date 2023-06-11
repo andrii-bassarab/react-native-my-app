@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
@@ -14,7 +14,7 @@ import { getInspectionDate } from "~/utils/visibleDate";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { ApolloCache, useMutation } from "@apollo/client";
 import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections";
-import { ModalLoader } from "../Custom/ModalLoader";
+import { ModalLoader } from "../Loader/ModalLoader";
 
 interface Props {
   item: InspectionItem;

@@ -12,11 +12,13 @@ const node = {
     createdBy: "heather@hdslabs.com",
     completedOn: "",
     hasPermissionToEnter: true, //permission to enter
-    inspectionComments: [{
-      createdBy: "string",
-      createdOn: "string",
-      commentBody: "string",
-    }],
+    inspectionComments: [
+      {
+        createdBy: "string",
+        createdOn: "string",
+        commentBody: "string",
+      },
+    ],
     unit: {
       id: "5dec0c8accba88001629756a",
       streetAddress: "2889 Bagshot Row",
@@ -28,10 +30,11 @@ const node = {
       squareFootage: 1 || null,
       isHandicapAccessible: false,
       yearConstructed: 1 | null,
-      landlord: {
+      landlord:
+        {
           firstName: "string",
           lastName: "string",
-      } || null,
+        } || null,
     },
     inspectionComments: {
       commentBody: "Please knock, if no response, then you can enter.",
@@ -99,4 +102,20 @@ const comment = {
       },
     },
   },
+};
+
+const inspectionCategory = {
+  id: "57e58f5899760c2500c4787c",
+  inspectionTemplateId: "57e58f5899760c2500c4787b",
+  name: "General Health and Safety",
+  isRequired: true,
+  importKey: null,
+  amenities: [],
+  items: [],
+  createdOn: "2016-09-23T20:23:52.155Z",
+  createdBy: "SYSTEM",
+  modifiedOn: "2016-09-27T00:51:35.547Z",
+  modifiedBy: "admin@hdslabs.com",
+  deletedOn: null,
+  deletedBy: null,
 };

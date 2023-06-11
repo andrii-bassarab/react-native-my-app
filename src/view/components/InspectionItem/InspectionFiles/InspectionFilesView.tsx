@@ -235,10 +235,10 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       <View style={{ padding: 2 }}>
         <SearchForm query={query} setQuery={setQuery} placeholder="Search File" />
       </View>
-      <View style={{ height: 15 }} />
-      <TouchableOpacity onPress={() => setShowModalAddFile(true)}>
+      <View style={{ height: "2%" }} />
+      {route.params.status !== "complete" && (<TouchableOpacity onPress={() => setShowModalAddFile(true)}>
         <InspectionFilesAddButton />
-      </TouchableOpacity>
+      </TouchableOpacity>)}
       <View style={{ height: 15 }} />
       <View style={[styles.filesContainer, styles.shadowProp]}>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -247,7 +247,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
               <Text style={styles.fileTitle}>Files</Text>
               {visibleFiles.map((file) => (
                 <TouchableOpacity key={file.id} style={{ marginBottom: "4%" }} onPress={() => handleOpenModalImage(file)}>
-                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} displayDeleteIcon />
+                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} displayDeleteIcon={route.params.status !== "complete"} />
                 </TouchableOpacity>
               ))}
             </>
@@ -264,7 +264,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           )}
           <View style={styles.separator} />
           <Text style={styles.fileTitle}>Signatures</Text>
-          {mocksSignatures.length < 0 ? (
+          {mocksSignatures.length > 0 ? (
             <>
               {mocksSignatures.map((file, index) => (
                 <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>

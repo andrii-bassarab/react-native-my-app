@@ -10,7 +10,7 @@ import {
   StyleSheet,
   Animated,
 } from "react-native";
-import { ModalLoader } from "../components/Custom/ModalLoader";
+import { ModalLoader } from "../components/Loader/ModalLoader";
 
 interface Props {
   children?: React.ReactNode;

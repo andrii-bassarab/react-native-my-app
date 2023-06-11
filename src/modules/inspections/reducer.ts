@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
 
 const initialState = {
@@ -30,6 +31,14 @@ const inspectionsSlice = createSlice({
     setSyncError: (state, action: PayloadAction<boolean>) => {
       state.syncError = action.payload
     },
+    setInspectionCategories: (state, action: PayloadAction<{
+      templateId: string,
+      cagegoriesToAdd: CategoryType[]
+    }>) => {
+      const inspectionsRelatedToTemplate = state.inspections.filter(inspection => inspection.templateId === action.payload.templateId);
+
+      inspectionsRelatedToTemplate.forEach(inspection => inspection.visibleCategory = action.payload.cagegoriesToAdd)
+    }
   },
 })
 

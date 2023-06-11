@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const GET_INSPECTION_TEMPLATES = gql`
   query GetInspectionTemplates {
-    inspectionTemplates {
+    inspectionTemplates (first: 50) {
       edges {
         node {
           id

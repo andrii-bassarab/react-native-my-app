@@ -74,8 +74,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
             <Text style={styles.text}>
               {`${inspection.unit.streetAddress} ${inspection.unit.city}, ${inspection.unit.state} ${inspection.unit.postalCode}`}
             </Text>
-            {inspection.status !== InspectionStatus.FAILED &&
-              inspection.status !== InspectionStatus.PASSED && (
+            {inspection.status !== "complete" && (
                 <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
                   <EditIcon color={colors.blue} height={15} width={15} />
                 </TouchableOpacity>

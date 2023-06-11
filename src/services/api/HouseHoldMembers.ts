@@ -27,7 +27,7 @@ export const GET_HOUSEHOLD_NAME = gql`
   }
 `
 
-export const getHouseHoldNameById = (id: string) => makeRequest("occupancy", `
+export const getHouseHoldNameById = (id: string) => makeRequest("occupancy/graphql/", `
   query {
     householdMembers(
       first: 10

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, View, Text, TouchableOpacity, StyleSheet, Platform, Easing } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, View, Text, TouchableOpacity, StyleSheet, Easing } from "react-native";
 import NotificationIcon from "../../assets/icons/notification.svg";
 import SyncIcon from "~/view/assets/icons/sync.svg";
 import NoInternetIcon from "~/view/assets/icons/noInternetConnection.svg";
@@ -10,7 +10,6 @@ import { ParamListBase } from "@react-navigation/native";
 import { colors } from "~/view/theme";
 import NetInfo from "@react-native-community/netinfo";
 import { actionsNetworkConnectivity } from "~/modules/networkConnectivity";
-
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;

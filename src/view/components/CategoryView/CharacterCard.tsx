@@ -35,19 +35,9 @@ const mocksComments = [
     createdOn: "2020-04-13T19:19:31.460Z",
     commentBody: "Please knock, if no response, then you can enter.",
   },
-  {
-    createdBy: "dgsdgs@hdslabs.com",
-    createdOn: "2022-06-25T19:19:31.460Z",
-    commentBody: "Second knock, if no response, then you can enter.",
-  },
-  {
-    createdBy: "fhdhdfhd@hdslabs.com",
-    createdOn: "2023-09-10T19:19:31.460Z",
-    commentBody: "Third knock, if no response, then you can enter.",
-  },
 ];
 
-export const СharacterCard: React.FC<Props> = ({
+export const CharacterCard: React.FC<Props> = ({
   title,
   message,
   result,
@@ -78,7 +68,7 @@ export const СharacterCard: React.FC<Props> = ({
         setImages((prev) => [...prev, asset]);
       }
     } catch (e) {
-      console.log("TakenPhotoError:", e);
+      console.log("TakenPhotoError: ", e);
     }
   };
 
@@ -99,7 +89,7 @@ export const СharacterCard: React.FC<Props> = ({
         setImages((prev) => [...prev, asset]);
       }
     } catch (e) {
-      console.log("ImageLibraryPhotoError", e);
+      console.log("ImageLibraryPhotoError: ", e);
     }
   };
 
@@ -168,17 +158,18 @@ export const СharacterCard: React.FC<Props> = ({
                           comment={comment}
                           index={index}
                           arrayLength={array.length}
+                          showEditComment
                         />
                       ))}
                     </ScrollView>
-                    <TextInput
+                    {/* <TextInput
                       value={comment}
                       onChangeText={setComment}
                       placeholder="Write a comment..."
                       style={styles.commentInput}
                       textAlignVertical="top"
                       multiline={true}
-                    />
+                    /> */}
                   </>
                 ) : (
                   <Text style={styles.noResultText}>N/A</Text>

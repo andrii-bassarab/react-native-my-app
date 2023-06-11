@@ -33,16 +33,14 @@ const Tab = createMaterialTopTabNavigator();
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const { startSignature, visibleAssignedTo, visiblePhoneNumber } =
-    useAppSelector((state) => state.inspectionItem);
+  const { startSignature, visibleAssignedTo, visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
   const currentInspection = useAppSelector((state) => state?.inspectionItem);
 
   const goBack = () => navigation.navigate("Inspections");
 
-  const stringAssigned =
-    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
+  const stringAssigned = inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
 
   const inspectOptions = {
     tabBarLabel:

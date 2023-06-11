@@ -6,7 +6,7 @@ import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/i
 import { useAppDispatch } from "~/store/hooks";
 import { Comment } from "~/types/Comment";
 import { colors } from "~/view/theme";
-import { ModalLoader } from "../../Custom/ModalLoader";
+import { ModalLoader } from "../../Loader/ModalLoader";
 
 interface Props {
   input: string;

@@ -150,11 +150,10 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   notificationsLabelBox: {
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   notificationsTitle: {
     alignSelf: "flex-start",
-    marginTop: 10,
     fontSize: 22,
     fontWeight: "600",
     color: colors.darkGrey,

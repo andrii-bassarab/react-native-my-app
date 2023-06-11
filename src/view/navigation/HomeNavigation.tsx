@@ -1,5 +1,8 @@
 import "react-native-gesture-handler";
-import { DrawerNavigationProp, createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  DrawerNavigationProp,
+  createDrawerNavigator,
+} from "@react-navigation/drawer";
 import React, { useEffect } from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
@@ -15,6 +18,8 @@ import { GET_INSPECTION_TEMPLATES } from "~/services/api/InspectionTemplates";
 import { useQuery } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import { getUserNameById } from "~/services/api/GetUserById";
+import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
 
 const Drawer = createDrawerNavigator();
 
@@ -22,8 +27,12 @@ export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
 
   const dispatch = useAppDispatch();
-  const { inspectionsSync, syncError } = useAppSelector((state) => state.inspections);
-  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
+  const { inspectionsSync, syncError, inspections } = useAppSelector(
+    (state) => state.inspections
+  );
+  const networkConnectivity = useAppSelector(
+    (state) => state.networkConnectivity
+  );
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
   const { data: inspectionTemplateInfo } = useQuery(GET_INSPECTION_TEMPLATES);
@@ -34,16 +43,43 @@ export const HomeNavigation: React.FC = () => {
       dispatch(actionsInspections.setVisibleLoading(false));
       return;
     }
-
+    
     const arrayOfDataInspections = data.inspections.edges;
     const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
 
     try {
+      // const arrayOfAssignedName = await Promise.all([getUserNameById("5b8ec7c379b0a100145a5ed0"),
+      //   ...arrayOfDataInspections.map(({ node }) => getUserNameById(node.assignedTo)
+      //   )]
+      // );
+
+      // console.log("arrayOfAssignedName", arrayOfAssignedName.map(item => item?.name));
+
+      // const objectOfProperty = {};
+
+      // for (const variable of arrayOfDataInspections) {
+      //   if (objectOfProperty[variable.node.assignedTo]) {
+      //     objectOfProperty[variable.node.assignedTo] += 1;
+      //   } else {
+      //     objectOfProperty[variable.node.assignedTo] = 1
+      //   }
+      // }
+
+      // for (const key in objectOfProperty) {
+      //   console.log("objectOfProperty", key)
+      // }
+
+      // console.log(objectOfProperty)
+
+      console.log("render before")
+
       const responceOfHouseHoldName = await Promise.all(
         arrayOfDataInspections.map(({ node }: any) =>
           getHouseHoldNameById(node.household?.headOfHouseholdId)
         )
       );
+
+      console.log("render after");
 
       const arrayOfHouseHoldName = responceOfHouseHoldName.map(
         (item) => item.data?.householdMembers?.edges[0]?.node
@@ -53,18 +89,31 @@ export const HomeNavigation: React.FC = () => {
         const nameResponse = arrayOfHouseHoldName[index];
 
         return nameResponse
-          ? `${nameResponse.firstName} ${nameResponse.middleName ?? ""} ${nameResponse.lastName}`
+          ? `${nameResponse.firstName} ${nameResponse.middleName ?? ""} ${
+              nameResponse.lastName
+            }`
           : "";
       };
 
-      const inspectionsFromServer = arrayOfDataInspections.map((item: any, index: number) => ({
-        ...item.node,
-        visibleStatus: getInspectionStatus(item.node?.status, item.node?.hasPassed),
-        visibleInspectionForm:
-          arrayOfInspectionTemplates.find((template) => template.node.id === item.node.templateId)
-            ?.node?.name || "",
-        visibleHouseholdName: getVisibleHouseHoldName(index),
-      })) as InspectionItem[];
+      const getVisibleCategories = (inspectionIdToFind: string) => {
+        return inspections.find(inspection => inspection.id === inspectionIdToFind)?.visibleCategory || []
+      }
+
+      const inspectionsFromServer = arrayOfDataInspections.map(
+        (item: any, index: number) => ({
+          ...item.node,
+          visibleStatus: getInspectionStatus(
+            item.node?.status,
+            item.node?.hasPassed
+          ),
+          visibleInspectionForm:
+            arrayOfInspectionTemplates.find(
+              (template) => template.node.id === item.node.templateId
+            )?.node?.name || "",
+          visibleHouseholdName: getVisibleHouseHoldName(index),
+          visibleCategory: getVisibleCategories(item.node.id)
+        })
+      ) as InspectionItem[];
 
       dispatch(actionsInspections.setInspections(inspectionsFromServer));
     } catch (e) {
@@ -103,8 +152,12 @@ export const HomeNavigation: React.FC = () => {
     headerStyle: {
       backgroundColor: colors.layout,
     },
-    headerLeft: () => <NavigationDrawerStructure navigationProps={navigation} />,
-    headerRight: () => <NavigationNotificationStructure navigationProps={navigation} />,
+    headerLeft: () => (
+      <NavigationDrawerStructure navigationProps={navigation} />
+    ),
+    headerRight: () => (
+      <NavigationNotificationStructure navigationProps={navigation} />
+    ),
     headerTitle: () => null,
     headerShadowVisible: false,
     drawerType: "front",

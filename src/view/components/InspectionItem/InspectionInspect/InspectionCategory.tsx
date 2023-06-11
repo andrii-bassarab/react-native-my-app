@@ -35,7 +35,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
   const handleClickOnDotsIcon = (event: GestureResponderEvent) => {
     event.stopPropagation();
     setShowDeleteLabel((prev) => !prev);
-  }
+  };
 
   return (
     <View style={[styles.card, styles.shadowProp, { borderColor: itemColor }]}>
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     height: 100,
     borderWidth: 2,
-    marginBottom: 10,
   },
   content: {
     flexDirection: "row",

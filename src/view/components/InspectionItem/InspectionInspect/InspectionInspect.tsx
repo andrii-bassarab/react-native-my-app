@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+} from "@react-navigation/native";
 import { InspectionItem } from "~/types/InspectionItem";
 import { SearchForm } from "../../Inspections/SearchForm";
-import { InspectionCategory } from "./InspectionCategory";
 import { InspecitonAddCategory } from "./InspectionAddCategory";
 import { ModalAddCategory } from "./ModalAddCategory";
-import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { useAppDispatch } from "~/store/hooks";
+import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
+import { useQuery } from "@apollo/client";
+import { actionsInspections } from "~/modules/inspections";
+import { ContentLoader } from "../../Loader/Loader";
+import { CategoryList } from "./CategoryList";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -15,43 +23,83 @@ interface Props {
 
 export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
+  const inspection = route.params;
 
-  // const addNewCategory = (newCategory: Category) => dispatch(actionsInspectionItem.addCategory(newCategory));
-  const { categories } = useAppSelector((state) => state.inspectionItem);
+  const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+    variables: {
+      ids: [route.params.templateId],
+    },
+  });
 
   const [query, setQuery] = useState("");
-  const [visibleCategory, setVisibleCategory] = useState(categories);
+  const [inspectionCategories, setInspectionCategories] = useState(
+    inspection.visibleCategory
+  );
+  const [visibleCategory, setVisibleCategory] = useState(inspectionCategories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
   useEffect(() => {
     setVisibleCategory(
-      categories.filter((category) =>
-        category.title.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
+      inspectionCategories.filter((category) =>
+        category.name
+          .toLocaleLowerCase()
+          .includes(query.toLocaleLowerCase().trim())
       )
     );
-  }, [query, categories]);
+  }, [query, inspectionCategories]);
+
+  useEffect(() => {
+    if (
+      data &&
+      data.inspectionCategories?.edges &&
+      Array.isArray(data.inspectionCategories?.edges) &&
+      data.inspectionCategories?.edges.every(
+        (edge: any) =>
+          typeof edge === "object" && edge.node && typeof edge.node === "object"
+      )
+    ) {
+      const responseCategories = data.inspectionCategories.edges.map(
+        (edge: any) => edge.node
+      );
+      setInspectionCategories(responseCategories);
+      dispatch(
+        actionsInspections.setInspectionCategories({
+          templateId: inspection.templateId || "",
+          cagegoriesToAdd: responseCategories,
+        })
+      );
+    }
+  }, [data]);
 
   return (
     <View style={styles.content}>
       <View style={{ padding: 2 }}>
-        <SearchForm query={query} setQuery={setQuery} placeholder="Search Category" />
+        <SearchForm
+          query={query}
+          setQuery={setQuery}
+          placeholder="Search Category"
+        />
       </View>
       <View style={{ height: 15 }} />
-      <TouchableOpacity onPress={() => setShowModalAddCategory(true)}>
-        <InspecitonAddCategory />
-      </TouchableOpacity>
+      {inspection.status !== "complete" && (
+        <TouchableOpacity onPress={() => setShowModalAddCategory(true)}>
+          <InspecitonAddCategory />
+        </TouchableOpacity>
+      )}
       <View style={{ height: 15 }} />
-      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        {visibleCategory.map((category, index) => (
-          <TouchableOpacity key={index} onPress={() => navigation.navigate('InspectionCategory', {inspection: route.params, category})}>
-            <InspectionCategory category={category} />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      {showModalAddCategory && (
-        <ModalAddCategory
-          closeModal={() => setShowModalAddCategory(false)}
+      {loading && inspectionCategories.length === 0 && !data ? (
+        <View style={styles.loaderBox}>
+          <ContentLoader />
+        </View>
+      ) : (
+        <CategoryList
+          visibleCategory={visibleCategory}
+          inspection={inspection}
+          navigation={navigation}
         />
+      )}
+      {showModalAddCategory && (
+        <ModalAddCategory closeModal={() => setShowModalAddCategory(false)} />
       )}
     </View>
   );
@@ -62,6 +110,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     paddingTop: 5,
-    paddingHorizontal: 25
+    paddingHorizontal: 25,
+  },
+  loaderBox: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

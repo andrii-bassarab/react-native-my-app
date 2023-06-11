@@ -1,19 +1,34 @@
-import React, { useMemo } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useMemo, useState } from "react";
+import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { Comment } from "~/types/Comment";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { colors } from "~/view/theme";
+import EditIcon from "~/view/assets/icons/edit.svg";
 
 interface Props {
   comment: Comment;
   index: number;
   arrayLength: number;
+  showEditComment?: boolean;
 }
 
-export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) => {
-  const visibleCreatedBy = useMemo(() =>
-      comment.createdBy === "nazar.kubyk@appitventures.com" ? "Me -" : `${comment.createdBy} -`,
-    [comment]);
+export const CommentItem: React.FC<Props> = ({
+  comment,
+  index,
+  arrayLength,
+  showEditComment = false,
+}) => {
+  const visibleCreatedBy = useMemo(
+    () =>
+      comment.createdBy === "nazar.kubyk@appitventures.com"
+        ? "Me -"
+        : `${comment.createdBy} -`,
+    [comment]
+  );
+
+  const [editedComment, setEditedComment] = useState(comment.commentBody);
+
+  const showEditInput = false;
 
   return (
     <View>
@@ -21,7 +36,10 @@ export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) =>
       <View
         style={[
           styles.card,
-          index === arrayLength - 1 && { borderLeftWidth: 0, borderColor: "#fff" },
+          index === arrayLength - 1 && {
+            borderLeftWidth: 0,
+            borderColor: "#fff",
+          },
         ]}
       >
         <View style={{ flex: 1 }}>
@@ -33,7 +51,25 @@ export const CommentItem: React.FC<Props> = ({ comment, index, arrayLength }) =>
                 : getVisibleDate(new Date(comment.createdOn))}
             </Text>
           </View>
-          <Text style={styles.comment}>{comment.commentBody}</Text>
+          <View style={styles.comentLabel}>
+            {showEditInput ? (
+              <TextInput
+                value={editedComment}
+                onChangeText={setEditedComment}
+                multiline
+                style={[styles.comment, showEditComment && { flex: 0.9, color: '#000', borderRadius: 5, borderWidth: 1, padding: 5 }]}
+              />
+            ) : (
+            <Text style={[styles.comment, showEditComment && { flex: 0.9 }]}>
+              {comment.commentBody}
+            </Text>
+            )}
+            {showEditComment && (
+              <TouchableOpacity>
+                <EditIcon width={15} height={15} color={colors.blue} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
     </View>
@@ -68,7 +104,14 @@ const styles = StyleSheet.create({
   },
   comment: {
     color: "#8E8E8E",
-    paddingTop: "1%",
+    flex: 1,
+  },
+  comentLabel: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "stretch",
+    width: "100%",
+    paddingTop: "1%"
   },
   timePoint: {
     width: 15,

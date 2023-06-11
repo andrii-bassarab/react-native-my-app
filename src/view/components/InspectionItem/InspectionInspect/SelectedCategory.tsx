@@ -12,16 +12,16 @@ interface Props {
 
 export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
-  const [categoryIncludeInspection, setCategoryIncludeInspection] = useState(true);
-  const { status, result, items, photos } = category;
+  const [categoryIncludeInspection, setCategoryIncludeInspection] =
+    useState(true);
+  const { status, result, items, photos, categoryApplyToInspection } = category;
   const { categories } = useAppSelector((state) => state.inspectionItem);
 
   // const [toggleCategoryApplyToInspection, setToggleCategoryApplyToInspection] = useState(categoryApplyToInspection);
-
-  const foundCategory = categories.find((item) => item.title === category.title);
-
   const changeApplyCategoryValue = () => {
-    dispatch(actionsInspectionItem.setToggleCategoryApplyToInspection(category));
+    dispatch(
+      actionsInspectionItem.setToggleCategoryApplyToInspection(category)
+    );
   };
 
   return (
@@ -52,13 +52,13 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
         </View>
       </View>
       <View style={styles.applyCategoryBox}>
-        <Text style={styles.categoryApplyText}>Does this category apply to the inspection?</Text>
-        {foundCategory && (
-          <CustomToggleInput
-            value={foundCategory?.categoryApplyToInspection}
-            onValueChange={changeApplyCategoryValue}
-          />
-        )}
+        <Text style={styles.categoryApplyText}>
+          Does this category apply to the inspection?
+        </Text>
+        <CustomToggleInput
+          value={categoryApplyToInspection}
+          onValueChange={changeApplyCategoryValue}
+        />
       </View>
     </View>
   );
