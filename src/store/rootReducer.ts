@@ -12,6 +12,7 @@ import inspectionItemReducer from '~/modules/inspectionItem';
 import toastNotificationReducer from '~/modules/toastNotification';
 import showWindowReducer from '~/modules/showWindow';
 import networkConnectivityReducer from '~/modules/networkConnectivity';
+import categoryTemplateReducer from '~/modules/categoriesTemplates';
 
 const transforms = [
   createTransform(
@@ -28,7 +29,7 @@ const transforms = [
 const rootPersistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user', 'notifications', 'inspections'],
+  whitelist: ['user', 'notifications', 'inspections', 'categoriesTemplates'],
   transforms,
 };
 
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
   inspectionItem: inspectionItemReducer,
   showWindow: showWindowReducer,
   networkConnectivity: networkConnectivityReducer,
+  categoriesTemplates: categoryTemplateReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

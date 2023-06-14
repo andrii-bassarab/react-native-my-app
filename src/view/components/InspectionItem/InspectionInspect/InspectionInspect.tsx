@@ -9,12 +9,14 @@ import { InspectionItem } from "~/types/InspectionItem";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { InspecitonAddCategory } from "./InspectionAddCategory";
 import { ModalAddCategory } from "./ModalAddCategory";
-import { useAppDispatch } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
 import { useQuery } from "@apollo/client";
 import { actionsInspections } from "~/modules/inspections";
 import { ContentLoader } from "../../Loader/Loader";
 import { CategoryList } from "./CategoryList";
+import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -25,6 +27,10 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const inspection = route.params;
 
+  const inspectionItem = useAppSelector(state => state.inspectionItem);
+  const categoriesTemplates = useAppSelector(state => state.categoriesTemplates);
+
+
   const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
       ids: [route.params.templateId],
@@ -32,21 +38,18 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   });
 
   const [query, setQuery] = useState("");
-  const [inspectionCategories, setInspectionCategories] = useState(
-    inspection.visibleCategory
-  );
-  const [visibleCategory, setVisibleCategory] = useState(inspectionCategories);
+  const [visibleCategory, setVisibleCategory] = useState(inspectionItem.categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
   useEffect(() => {
     setVisibleCategory(
-      inspectionCategories.filter((category) =>
+      inspectionItem.categories.filter((category) =>
         category.name
           .toLocaleLowerCase()
           .includes(query.toLocaleLowerCase().trim())
       )
     );
-  }, [query, inspectionCategories]);
+  }, [query, inspectionItem]);
 
   useEffect(() => {
     if (
@@ -61,15 +64,20 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
       const responseCategories = data.inspectionCategories.edges.map(
         (edge: any) => edge.node
       );
-      setInspectionCategories(responseCategories);
-      dispatch(
-        actionsInspections.setInspectionCategories({
-          templateId: inspection.templateId || "",
-          cagegoriesToAdd: responseCategories,
-        })
-      );
+
+      console.log("date was updated")
+
+      dispatch(actionsCategoryTemplate.addCategoryTemplate({
+        templateIdToAdd: route.params.templateId,
+        categories: responseCategories,
+      }));
     }
   }, [data]);
+
+  useEffect(() => {
+    console.log("changed selectedCategories")
+    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []))
+  }, [categoriesTemplates[inspection.templateId]]);
 
   return (
     <View style={styles.content}>
@@ -87,13 +95,13 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
       <View style={{ height: 15 }} />
-      {loading && inspectionCategories.length === 0 && !data ? (
+      {loading && inspectionItem.categories.length === 0 && !data ? (
         <View style={styles.loaderBox}>
           <ContentLoader />
         </View>
       ) : (
         <CategoryList
-          visibleCategory={visibleCategory}
+          visibleCategory={visibleCategory || []}
           inspection={inspection}
           navigation={navigation}
         />

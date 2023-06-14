@@ -4,7 +4,6 @@ import { colors } from "~/view/theme";
 import { CustomToggleInput } from "../../Custom/CustomToggleInput";
 import { Category } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   category: Category;
@@ -12,17 +11,11 @@ interface Props {
 
 export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
-  const [categoryIncludeInspection, setCategoryIncludeInspection] =
-    useState(true);
+  const [categoryIncludeInspection, setCategoryIncludeInspection] = useState(true);
   const { status, result, items, photos, categoryApplyToInspection } = category;
   const { categories } = useAppSelector((state) => state.inspectionItem);
 
   // const [toggleCategoryApplyToInspection, setToggleCategoryApplyToInspection] = useState(categoryApplyToInspection);
-  const changeApplyCategoryValue = () => {
-    dispatch(
-      actionsInspectionItem.setToggleCategoryApplyToInspection(category)
-    );
-  };
 
   return (
     <View style={styles.categoryBox}>
@@ -57,7 +50,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
         </Text>
         <CustomToggleInput
           value={categoryApplyToInspection}
-          onValueChange={changeApplyCategoryValue}
+          onValueChange={() => null}
         />
       </View>
     </View>

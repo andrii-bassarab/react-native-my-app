@@ -10,6 +10,7 @@ export interface UserState {
   permissions: Permissions;
   selectedSite: Nullable<{ name: string, code: string }>;
   availableSites: { name: string, code: string }[];
+  availableUsers: AvailableUser[]
 }
 
 export interface UserAuth {
@@ -20,4 +21,10 @@ export interface UserAuth {
 export type Permissions = {
   camera: boolean;
   notification: boolean;
+}
+
+export interface AvailableUser {
+  _id: string;
+  email: string;
+  fullName: string;
 }

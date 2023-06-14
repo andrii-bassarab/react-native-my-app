@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Modal, View, Pressable, StyleSheet, Text, TouchableOpacity, TextInput } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  Modal,
+  View,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { colors } from "~/view/theme";
 import { CustomSelect } from "../../Custom/CustomSelect";
-import { Category } from "~/types/Category";
-import { useAppDispatch } from "~/store/hooks";
-import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { useMutation } from "@apollo/client";
+import {
+  ADD_INSPECTION_CATEGORY,
+  GET_ALL_INSPECTIONS_CATEGORY,
+} from "~/services/api/GetInspectionCategory";
+import { ModalLoader } from "../../Loader/ModalLoader";
+import { actionsToastNotification } from "~/modules/toastNotification";
 
 interface Props {
   closeModal: () => void;
 }
 
 export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
-  const insets = useSafeAreaInsets();
-
   const dispatch = useAppDispatch();
+  const { inspectionItem } = useAppSelector(state => state.inspectionItem)
 
-  const addNewCategory = (newCategory: Category) => dispatch(actionsInspectionItem.addCategory(newCategory));
+  const [addCategory, {loading}] = useMutation(ADD_INSPECTION_CATEGORY);
 
   const [selectedCategory, setSelectedCategory] = useState("Select Inspection Category");
   const [categoryError, setCategoryError] = useState("");
@@ -36,32 +47,29 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
   ];
 
   const newCategory = {
-    title: displayName,
-    status: "Incomplete",
-    result: "No results yet",
-    items: 0,
-    photos: "No",
-    categoryAdded: true,
+    customerId: "pfdylv",
+    siteId: "pfdylv",
+    inspectionTemplateId: inspectionItem?.templateId,
+    name: displayName,
+    isRequired: true,
+    createdBy: "nazar.kubyk@appitventures.com",
   };
 
-  const handleAddNewCategory = () => {
-    if (selectedCategory === "Select Inspection Category") {
-      setCategoryError("Inspection category required.");
-    }
+  const handleAddNewCategory = async () => {
+    await addCategory({
+      variables: {
+        command: newCategory,
+      },
+      refetchQueries: [{
+        query: GET_ALL_INSPECTIONS_CATEGORY,
+        variables: {
+          ids: [inspectionItem?.templateId],
+        },
+      }],
+      awaitRefetchQueries: true,
+    });
 
-    if (!displayName || !displayName.trim()) {
-      setDisplayNameError("Display Name required.");
-    }
-
-    if (
-      selectedCategory === "Select Inspection Category" ||
-      !displayName ||
-      !displayName.trim()
-    ) {
-      return;
-    }
-
-    addNewCategory(newCategory);
+    dispatch(actionsToastNotification.showToastMessage("Success! Category added."));
     closeModal();
   };
 
@@ -107,7 +115,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
             </View>
           </View>
           {showDisplayNameInput && (
-            <View style={{marginBottom: 40, zIndex: -1}}>
+            <View style={{ marginBottom: 40, zIndex: -1 }}>
               <Text style={styles.title}>Display name</Text>
               <TextInput
                 style={{
@@ -117,7 +125,9 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
                 onChangeText={setDisplayName}
                 value={displayName}
               />
-              {displayNameError && <Text style={styles.errorText}>{displayNameError}</Text>}
+              {displayNameError && (
+                <Text style={styles.errorText}>{displayNameError}</Text>
+              )}
             </View>
           )}
           <View style={styles.buttonsContainer}>
@@ -135,6 +145,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
             </TouchableOpacity>
           </View>
         </View>
+        {loading && <ModalLoader/>}
       </Pressable>
     </Modal>
   );
@@ -178,8 +189,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 5,
     width: "48%",
-    textAlign: 'center',
-    alignItems: 'center'
+    textAlign: "center",
+    alignItems: "center",
   },
   addButton: {
     backgroundColor: colors.layout,

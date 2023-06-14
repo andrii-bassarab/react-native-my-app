@@ -9,7 +9,8 @@ import {
   setUser, signOut, 
   setNotificationPermission,
   setSelectedSite, 
-  setAvailableSites, 
+  setAvailableSites,
+  setAvailableUsers, 
 } from './actions';
 import { UserState } from './types';
 
@@ -21,6 +22,7 @@ export const initialState: UserState = {
   permissions: { camera: false, notification: false },
   selectedSite: null,
   availableSites: [],
+  availableUsers: [] 
 };
 
 export const userReducer = createReducer(initialState, builder =>
@@ -56,5 +58,8 @@ export const userReducer = createReducer(initialState, builder =>
     })
     .addCase(setAvailableSites, (state, { payload }) => {
       state.availableSites = payload;
+    })
+    .addCase(setAvailableUsers, (state, { payload }) => {
+      state.availableUsers = payload;
     })
 );

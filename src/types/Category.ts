@@ -23,8 +23,8 @@ export interface CategoryType {
   id: string;
   inspectionTemplateId: string;
   name: string;
-  isRequired: string;
-  importKey: null | string;
-  amenities: any[];
-  items: CategoryItemField[];
+  isRequired: boolean;
+  importKey?: null | string;
+  amenities?: any[];
+  items?: CategoryItemField[];
 }

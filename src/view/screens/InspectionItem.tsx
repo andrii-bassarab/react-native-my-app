@@ -36,7 +36,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const { startSignature, visibleAssignedTo, visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
-  const currentInspection = useAppSelector((state) => state?.inspectionItem);
+  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
 
   const goBack = () => navigation.navigate("Inspections");
 
@@ -58,6 +58,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   );
 
   useEffect(() => {
+    dispatch(actionsInspectionItem.setInspectionItem(inspection));
+    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []));
     dispatch(
       actionsInspectionItem.setVisibleAssignedTo(
         inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c"
@@ -70,6 +72,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
         inspection.unit.landlord?.phoneNumber || ""
       )
     );
+
+    console.log("currentInspection[inspection.templateId]", Object.keys(categoriesTemplates))
 
     return () => {
       dispatch(actionsInspectionItem.clearInspectionItem());

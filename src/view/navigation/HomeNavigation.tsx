@@ -3,7 +3,7 @@ import {
   DrawerNavigationProp,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
@@ -27,15 +27,34 @@ export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
 
   const dispatch = useAppDispatch();
-  const { inspectionsSync, syncError, inspections } = useAppSelector(
-    (state) => state.inspections
-  );
-  const networkConnectivity = useAppSelector(
-    (state) => state.networkConnectivity
-  );
+  const { inspectionsSync, syncError, inspections, visibleLoader } = useAppSelector((state) => state.inspections);
+  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
+  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
+  const ids = Object.keys(categoriesTemplates);
+
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
   const { data: inspectionTemplateInfo } = useQuery(GET_INSPECTION_TEMPLATES);
+  const { refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+    variables: {
+      ids: [] as string[],
+    },
+  });
+
+  const handleRefetchQueries = async () => {
+    const promises = ids.map((id) => {
+      return refetch({
+        ids: [id],
+      });
+    });
+  
+    try {
+      await Promise.all(promises);
+      console.log('Refetch queries completed');
+    } catch (error) {
+      console.error('Error while refetching queries', error);
+    }
+  };
 
   const getArrayOfInspections = async () => {
     if (!networkConnectivity) {
@@ -43,9 +62,30 @@ export const HomeNavigation: React.FC = () => {
       dispatch(actionsInspections.setVisibleLoading(false));
       return;
     }
-    
+
     const arrayOfDataInspections = data.inspections.edges;
     const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
+
+    if (!visibleLoader) {
+      const inspectionsFromServer = arrayOfDataInspections.map(
+        (item: any, index: number) => ({
+          ...item.node,
+          visibleStatus: getInspectionStatus(
+            item.node?.status,
+            item.node?.hasPassed
+          ),
+          visibleInspectionForm:
+            arrayOfInspectionTemplates.find(
+              (template) => template.node.id === item.node.templateId
+            )?.node?.name || "",
+          visibleHouseholdName: inspections[index].visibleHouseholdName,
+        })
+      ) as InspectionItem[];
+
+      dispatch(actionsInspections.setInspections(inspectionsFromServer));
+
+      return;
+    }
 
     try {
       // const arrayOfAssignedName = await Promise.all([getUserNameById("5b8ec7c379b0a100145a5ed0"),
@@ -81,8 +121,12 @@ export const HomeNavigation: React.FC = () => {
 
       console.log("render after");
 
+      await handleRefetchQueries();
+
+      console.log("refetched");
+
       const arrayOfHouseHoldName = responceOfHouseHoldName.map(
-        (item) => item.data?.householdMembers?.edges[0]?.node
+        (item: any) => item.data?.householdMembers?.edges[0]?.node
       );
 
       const getVisibleHouseHoldName = (index: number) => {
@@ -94,10 +138,6 @@ export const HomeNavigation: React.FC = () => {
             }`
           : "";
       };
-
-      const getVisibleCategories = (inspectionIdToFind: string) => {
-        return inspections.find(inspection => inspection.id === inspectionIdToFind)?.visibleCategory || []
-      }
 
       const inspectionsFromServer = arrayOfDataInspections.map(
         (item: any, index: number) => ({
@@ -111,7 +151,6 @@ export const HomeNavigation: React.FC = () => {
               (template) => template.node.id === item.node.templateId
             )?.node?.name || "",
           visibleHouseholdName: getVisibleHouseHoldName(index),
-          visibleCategory: getVisibleCategories(item.node.id)
         })
       ) as InspectionItem[];
 

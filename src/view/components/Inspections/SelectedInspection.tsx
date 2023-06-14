@@ -70,7 +70,7 @@ export const SelectedInspection: React.FC<Props> = ({
           query: GET_ALL_INSPECTIONS,
           data: { inspections },
         });
-        setDynamicStatus(InspectionStatus.INPROGRESS);
+        // setDynamicStatus(InspectionStatus.INPROGRESS);
       }
     };
   };

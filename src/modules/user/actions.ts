@@ -2,7 +2,6 @@ import { AsyncStatus } from '@appello/common/lib/constants';
 import { createAction } from '@reduxjs/toolkit';
 
 import { UserProfileModel } from '~/models/user';
-import { Permissions } from './types';
 
 export const setUser = createAction<Nullable<UserProfileModel>>('user/SET_USER');
 
@@ -21,3 +20,5 @@ export const setNotificationPermission = createAction<boolean>('user/SET_NOTIFIC
 export const setSelectedSite = createAction<Nullable<{ name: string, code: string }>>('user/SET_SELECTED_SITE');
 
 export const setAvailableSites = createAction<{ name: string, code: string }[]>('user/SET_AVAILABLE_SITES');
+
+export const setAvailableUsers = createAction<{ _id: string; email: string; fullName: string }[]>("user/SET_AVAILABLE_USERS");

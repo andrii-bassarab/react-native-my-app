@@ -3,7 +3,6 @@ import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { colors } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
-import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { CustomSelect } from "../../Custom/CustomSelect";
 import { getInspectionDate } from "~/utils/visibleDate";
@@ -17,11 +16,14 @@ interface Props {
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
   const dispatch = useAppDispatch();
   const [showModalAssigned, setShowModalAssigned] = useState(false);
-  const [assignedTo, setAssignedTo] = useState(
-    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned"
-  );
-  const assignedOptions = ["Me", "Unassigned"];
+  const [assignedTo, setAssignedTo] = useState(inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned");
   const { visibleAssignedTo } = useAppSelector((state) => state.inspectionItem);
+  const { availableUsers } = useAppSelector((state) => state.user);
+
+  const assignedOptions = availableUsers.map(user => ({
+    code: user._id,
+    name: user.fullName,
+  }));
 
   const closeModalAssigned = () => {
     setShowModalAssigned(false);

@@ -41,3 +41,21 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
     }
   }
 `
+
+export const ADD_INSPECTION_CATEGORY = gql`
+  mutation createInspectionCategoryMutation($command: CreateInspectionCategoryCommandInput!){
+    createInspectionCategory(command: $command){
+        commandName
+        status
+        issuedOn
+        acceptedOn
+        succeededOn
+        failedOn
+        failureReason
+        affectedEntity {
+            id            
+            createdBy
+        }
+    }
+  }
+`

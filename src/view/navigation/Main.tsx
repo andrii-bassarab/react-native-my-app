@@ -14,6 +14,8 @@ import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { colors } from "../theme";
+import { getAvailableUsers } from "~/services/api/GetUserById";
+import { setAvailableUsers } from "~/modules/user/actions";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -28,7 +30,10 @@ export const MainStack: React.FC = () => {
   const { inspections, visibleLoader, inspectionsSync, syncError } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
 
-  const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Sync is complete."));
+  const showToastNotification = () =>
+    dispatch(
+      actionsToastNotification.showToastMessage("Success! Sync is complete.")
+    );
 
   const { data, networkStatus } = useQuery(GET_ALL_INSPECTIONS);
 
@@ -38,7 +43,9 @@ export const MainStack: React.FC = () => {
   const newPendingNotification: NotificationItem = useMemo(
     () => ({
       title: `${inspections.length || ""} inspections pending to be synced`,
-      detail: inspections.map((inspection) => `Inspect ${inspection.unit.streetAddress}`),
+      detail: inspections.map(
+        (inspection) => `Inspect ${inspection.unit.streetAddress}`
+      ),
       date: new Date().toJSON(),
       type: "Pending",
     }),
@@ -80,9 +87,9 @@ export const MainStack: React.FC = () => {
     const fifteenDaysAgo = new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000);
     const lastFifteenDaysItems = items?.filter((item) => {
       const itemDate = new Date(item?.date);
-      return itemDate >= fifteenDaysAgo && item.type !== 'InProgress';
+      return itemDate >= fifteenDaysAgo && item.type !== "InProgress";
     });
-  
+
     return lastFifteenDaysItems?.slice(0, 100);
   };
 
@@ -106,15 +113,22 @@ export const MainStack: React.FC = () => {
 
   useEffect(() => {
     if (visibleLoader && !inspectionsSync && !syncError) {
-      dispatch(actionsNotifications.addNotification(newSyncInProgressNotification));
+      dispatch(
+        actionsNotifications.addNotification(newSyncInProgressNotification)
+      );
       dispatch(actionsNotifications.addUnreadMessage(1));
     }
-  }, [inspectionsSync, syncError, visibleLoader])
+  }, [inspectionsSync, syncError, visibleLoader]);
 
   useEffect(() => {
     if (
-      (data && !syncError && prevSyncStatus && visibleLoader !== prevSyncStatus && !visibleLoader) ||
-      (data && !syncError &&
+      (data &&
+        !syncError &&
+        prevSyncStatus &&
+        visibleLoader !== prevSyncStatus &&
+        !visibleLoader) ||
+      (data &&
+        !syncError &&
         prevSyncStatus === false &&
         visibleLoader === false &&
         networkStatus === 7 &&
@@ -129,10 +143,20 @@ export const MainStack: React.FC = () => {
           }))
         )
       );
-      dispatch(actionsNotifications.addNotification(newSuccessfullyNotification));
+      dispatch(
+        actionsNotifications.addNotification(newSuccessfullyNotification)
+      );
       showToastNotification();
     }
   }, [visibleLoader, prevSyncStatus, data, syncError]);
+
+  useEffect(() => {
+    getAvailableUsers().then((usersResponse) => {
+      const availableUsers = usersResponse.map((user: any) => ({ _id: user._id, email: user.email, fullName: `${user.firstName} ${user.lastName}` }))
+
+      dispatch(setAvailableUsers(availableUsers));
+    });
+  }, []);
 
   return (
     <BottomTabs.Navigator

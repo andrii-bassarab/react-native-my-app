@@ -1,54 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Category } from "~/types/Category";
+import { Category, CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
-
-const mocksCategories = [
-  {
-    title: "Living Room",
-    status: "--",
-    result: "--",
-    items: 0,
-    photos: "No",
-    categoryApplyToInspection: true,
-  },
-  {
-    title: "Kitchen",
-    status: "Complete",
-    result: "Failed",
-    items: 2,
-    photos: "Yes",
-    categoryApplyToInspection: false,
-  },
-  {
-    title: "Bathroom",
-    status: "Complete",
-    result: "Passed",
-    items: 7,
-    photos: "Yes",
-    categoryApplyToInspection: true,
-  },
-  {
-    title: "Bedroom",
-    status: "Complete",
-    result: "Failed",
-    items: 0,
-    photos: "No",
-    categoryApplyToInspection: false,
-  },
-  {
-    title: "Living Room (addition)",
-    status: "Incomplete",
-    result: "No results yet",
-    items: 0,
-    photos: "No",
-    categoryAdded: true,
-    categoryApplyToInspection: true,
-  },
-] as Category[]
 
 const initialState = {
   hasUnsavedChanges: false,
-  categories: mocksCategories,
+  inspectionItem: null as null | InspectionItem,
+  categories: [] as CategoryType[],
   startSignature: false,
   signatureCount: 3,
   visibleAssignedTo: null as null | string,
@@ -59,11 +16,25 @@ const inspectionItemSlice = createSlice({
   name: "inspectionItem",
   initialState: initialState,
   reducers: {
-    addCategory: (state, action: PayloadAction<Category>) => {
-      state.categories = [action.payload, ...state.categories]
+    addCategory: (state, action: PayloadAction<CategoryType>) => {
+      state.categories.push(action.payload);
+    },
+    setCategories: (state, action: PayloadAction<CategoryType[]>) => {
+      state.categories = action.payload;
     },
     setHasUnsavedChanges: (state, action: PayloadAction<boolean>) => {
-      state.hasUnsavedChanges = action.payload
+      state.hasUnsavedChanges = action.payload;
+    },
+    setInspectionItem: (state, action: PayloadAction<InspectionItem>) => {
+      state.inspectionItem = action.payload;
+    },
+    setInspectionStatus: (
+      { inspectionItem },
+      action: PayloadAction<string>
+    ) => {
+      if (inspectionItem) {
+        inspectionItem.status = action.payload;
+      }
     },
     setStartSignature: (state, action: PayloadAction<boolean>) => {
       state.startSignature = action.payload;
@@ -76,21 +47,15 @@ const inspectionItemSlice = createSlice({
     },
     clearInspectionItem: () => ({
       hasUnsavedChanges: false,
-      categories: mocksCategories,
+      inspectionItem: null,
+      categories: [],
       startSignature: false,
       signatureCount: 3,
       visibleAssignedTo: null,
       visiblePhoneNumber: null,
     }),
-    setToggleCategoryApplyToInspection: (state, { payload }: PayloadAction<Category>) => {
-      const foundCategory = state.categories.find(category => category.title === payload.title);
-
-      if (foundCategory) {
-        foundCategory.categoryApplyToInspection = !foundCategory.categoryApplyToInspection;
-      }
-    }
   },
-})
+});
 
-export default inspectionItemSlice.reducer
-export const { actions: actionsInspectionItem } = inspectionItemSlice
+export default inspectionItemSlice.reducer;
+export const { actions: actionsInspectionItem } = inspectionItemSlice;

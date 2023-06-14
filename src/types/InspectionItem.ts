@@ -10,7 +10,7 @@ export interface InspectionItem {
   status: string;
   inspectionType: string;
   propertyType: string;
-  templateId: string | null;
+  templateId: string;
   hasPassed: boolean;
   createdOn: string;
   createdBy: string;
@@ -21,7 +21,6 @@ export interface InspectionItem {
   visibleStatus: InspectionStatus;
   visibleHouseholdName: string;
   visibleInspectionForm: string;
-  visibleCategory: CategoryType[];
   inspectionComments: Comment[];
   isReinspection: boolean;
   unit: {
