@@ -39,6 +39,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     visiblePhoneNumber,
     inspectionItem,
     assignedOption,
+    categoryApplyToInspection
   } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);

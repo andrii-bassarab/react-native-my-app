@@ -20,6 +20,7 @@ import DocumentPicker, {
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes";
 import { generateUniqueId } from "~/utils/genereteUniqueId";
 import { ModalViewImage } from "../../CategoryView/ModalViewImage";
+import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
 
 export interface File {
   id: string;
@@ -32,15 +33,9 @@ export interface File {
 const mocksFiles: File[] = [
   {
     id: generateUniqueId(),
-    fileName: "Roof Warranty.pdf",
+    fileName: "HUD-50058.pdf",
     uploadTime: "May 30, 2022 at 3:00pm",
     docFormat: "pdf",
-  },
-  {
-    id: generateUniqueId(),
-    fileName: "Some Document.docx",
-    uploadTime: "May 25, 2022 at 3:00pm",
-    docFormat: "doc",
   },
   {
     id: generateUniqueId(),
@@ -97,6 +92,8 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [newFile, setNewFile] = useState<DocumentPickerResponse | null>(null);
   const [showModalImage, setShowModalImage] = useState(false);
+  const [showModalDocument, setShowModalDocument] = useState(false);
+
 
   useEffect(() => {
     setVisibleFiles(
@@ -227,6 +224,9 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       case 'jpg':
         setNewPhoto(fileToOpen);
         setShowModalImage(true);
+      return;
+      case "pdf":
+        setShowModalDocument(true);
     }
   };
 
@@ -322,6 +322,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       {showModalImage && (
         <ModalViewImage closeModalFunction={() => setShowModalImage(false)} image={newPhoto} />
       )}
+      {showModalDocument && <InspectionFileModalDocument closeModalFunction={() => setShowModalDocument(false)} />}
     </View>
   );
 };

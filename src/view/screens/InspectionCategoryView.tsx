@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   NavigationProp,
   ParamListBase,
@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
@@ -19,6 +20,7 @@ import { Category, CategoryItemField } from "~/types/Category";
 import { CharacterCard } from "../components/CategoryView/CharacterCard";
 import { AmenitiesCard } from "../components/CategoryView/AmenitiesCard";
 import { makeRequestPDF } from "~/utils/fetch";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   route: RouteProp<
@@ -40,12 +42,13 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   route,
 }) => {
   const { inspection, category, items, amenities } = route.params;
+  const { categoryApplyToInspection } = useAppSelector(state => state.inspectionItem);
 
   const goBack = () => navigation.goBack();
 
   useEffect(() => {
-    makeRequestPDF().then(res => console.log("res res res res", res.blob()))
-  }, [])
+    makeRequestPDF().then((res) => console.log("res res res res", res.blob()));
+  }, []);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
@@ -69,7 +72,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
                   title={item.name}
                   message={item.description}
                   result={"Passed"}
-                  categoryApplyToInspection={category.categoryApplyToInspection}
+                  categoryApplyToInspection={categoryApplyToInspection}
                 />
               ))}
             </>
@@ -87,9 +90,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
                   title={amenity.name}
                   message={amenity.name}
                   result="Yes"
-                  categoryApplyToInspection={
-                    category?.categoryApplyToInspection
-                  }
+                  categoryApplyToInspection={categoryApplyToInspection}
                 />
               ))}
             </>

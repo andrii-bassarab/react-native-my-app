@@ -13,7 +13,8 @@ const initialState = {
   assignedOption: {
     name: '',
     value: ''
-  } as { name: string; value: string; }
+  } as { name: string; value: string; },
+  categoryApplyToInspection: true,
 };
 
 const inspectionItemSlice = createSlice({
@@ -25,6 +26,9 @@ const inspectionItemSlice = createSlice({
     },
     setCategories: (state, action: PayloadAction<CategoryType[]>) => {
       state.categories = action.payload;
+    },
+    setCategoryApplyToInspection: (state, action: PayloadAction<boolean>) => {
+      state.categoryApplyToInspection = action.payload;
     },
     setInspectionItem: (state, action: PayloadAction<InspectionItem>) => {
       state.inspectionItem = action.payload;
@@ -75,6 +79,7 @@ const inspectionItemSlice = createSlice({
         name: '',
         value: ''
       },
+      categoryApplyToInspection: true,
     }),
   },
 });
