@@ -31,52 +31,80 @@ export const SelectedInspection: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const startSignatureScreen = () => dispatch(actionsInspectionItem.setStartSignature(true));
-  const { startSignature, signatureCount } = useAppSelector((state) => state.inspectionItem);
-  const [dynamicStatus, setDynamicStatus] = useState(item.visibleStatus);
-
+  const { startSignature, signatureCount, inspectionItem, assignedOption } = useAppSelector((state) => state.inspectionItem);
   const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
-  const [updateInspection, { loading }] = useMutation(UPDATE_INSPECTION);
+  const [updateInspection, { loading, data, error }] = useMutation(UPDATE_INSPECTION);
 
-  const updateCache = (status: string) => {
+  useEffect(() => {
+    console.log('====================================');
+    console.log("assignedOption", assignedOption)
+    console.log("data", data)
+    console.log("error", error)
+    console.log('====================================');
+  }, [assignedOption, data, error])
+
+  const updateStatusCache = (status: string) => {
     return (cache: ApolloCache<any>, { data }: any) => {
       if (!data?.updateInspection?.affectedEntity?.id) {
         return;
       }
 
-      // Get the updated inspection item from the mutation response
       const updatedItem = data?.updateInspection;
-
-      // Read the existing inspections list from the cache
       const { inspections } = cache.readQuery({ query: GET_ALL_INSPECTIONS }) as {
         inspections: any;
       };
 
-      // Find the index of the updated item in the list
       const itemIndex = inspections.edges.findIndex(
         (edge: any) => edge.node.id === updatedItem?.affectedEntity?.id
       );
 
       if (itemIndex !== -1) {
-        // Replace the item with the updated item
         inspections.edges[itemIndex].node = {
           ...inspections.edges[itemIndex].node,
           status,
         };
 
-        // Write the modified inspections list back to the cache
         cache.writeQuery({
           query: GET_ALL_INSPECTIONS,
           data: { inspections },
         });
-        // setDynamicStatus(InspectionStatus.INPROGRESS);
       }
     };
   };
 
-  const handleChangeInspectionStatus = (status: string) => {
-    updateInspection({
+  const updatDetailCache = (assignedTo: string) => {
+    return (cache: ApolloCache<any>, { data }: any) => {
+      if (!data?.updateInspection?.affectedEntity?.id) {
+        return;
+      }
+
+      const updatedItem = data?.updateInspection;
+      const { inspections } = cache.readQuery({ query: GET_ALL_INSPECTIONS }) as {
+        inspections: any;
+      };
+
+      const itemIndex = inspections.edges.findIndex(
+        (edge: any) => edge.node.id === updatedItem?.affectedEntity?.id
+      );
+
+      if (itemIndex !== -1) {
+        inspections.edges[itemIndex].node = {
+          ...inspections.edges[itemIndex].node,
+          assignedTo,
+        };
+
+        cache.writeQuery({
+          query: GET_ALL_INSPECTIONS,
+          data: { inspections },
+        });
+      }
+    };
+  };
+
+  const handleChangeInspectionStatus = async (status: string) => {
+    await updateInspection({
       variables: {
         command: {
           id: item.id,
@@ -95,8 +123,35 @@ export const SelectedInspection: React.FC<Props> = ({
           modifiedBy: "nazar.kubyk@appitventures.com",
         },
       },
-      update: updateCache(status),
+      update: updateStatusCache(status),
     });
+    dispatch(actionsInspectionItem.setInspectionStatus(status))
+  };
+
+  const handleChangeInspectionDetail = async (assignedTo: string, ) => {
+    await updateInspection({
+      variables: {
+        command: {
+          id: item.id,
+          customerId: "pfdylv",
+          siteId: "pfdylv",
+          templateId: item.templateId,
+          unitId: item.unit?.id,
+          assignedTo,
+          houseHoldId: item.household?.headOfHouseholdId || "5f6e70c53ddf6a0016378dbf",
+          status: inspectionItem?.status,
+          hasPassed: false,
+          hasPermissionToEnter: item.hasPermissionToEnter,
+          inspectionType: item.inspectionType,
+          propertyType: item.propertyType,
+          isReInspection: item.isReinspection,
+          modifiedBy: "nazar.kubyk@appitventures.com",
+        },
+      },
+      update: updatDetailCache(assignedTo),
+    });
+    dispatch(actionsInspectionItem.setInspectionAssigned(assignedTo));
+    showToast("Success! Inspection saved.")
   };
 
   return (
@@ -127,7 +182,7 @@ export const SelectedInspection: React.FC<Props> = ({
               : `Created on ${getInspectionDate(new Date(item?.createdOn || item.createdOn))}`}
           </Text>
         </View>
-        {(dynamicStatus === InspectionStatus.NEW || dynamicStatus === InspectionStatus.SCHEDULED) &&
+        {(inspectionItem?.visibleStatus === InspectionStatus.NEW || inspectionItem?.visibleStatus === InspectionStatus.SCHEDULED) &&
           !includeCategory && (
             <TouchableOpacity
               style={styles.startInspectionButton}
@@ -136,11 +191,11 @@ export const SelectedInspection: React.FC<Props> = ({
               <Text style={styles.startInspectionText}>Start Inspection</Text>
             </TouchableOpacity>
           )}
-        {!startSignature && dynamicStatus === InspectionStatus.INPROGRESS && !includeCategory && (
+        {!startSignature && inspectionItem?.visibleStatus === InspectionStatus.INPROGRESS && !includeCategory && (
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity
               style={[styles.startInspectionButton, styles.saveButton]}
-              onPress={() => handleChangeInspectionStatus("scheduled")}
+              onPress={() => handleChangeInspectionDetail(assignedOption.value)}
             >
               <Text style={{ ...styles.startInspectionText, color: colors.blue }}>Save</Text>
             </TouchableOpacity>

@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors } from "~/view/theme";
-import { CustomSelect } from "../Custom/CustomSelect";
+import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 import PlusIcon from "~/view/assets/icons/plus.svg";
 import CameraIcon from "~/view/assets/icons/camera.svg";
 import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
@@ -44,7 +44,7 @@ export const CharacterCard: React.FC<Props> = ({
   categoryApplyToInspection = false,
 }) => {
   const resultDropdownOptions = ["Fail", "Passed"];
-  const [selectedResult, setSelectedResult] = useState<string>(result);
+  const [selectedResult, setSelectedResult] = useState<OptionItem>(result);
   const [comment, setComment] = useState("");
   const [openMainInfo, setOpenMainInfo] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);

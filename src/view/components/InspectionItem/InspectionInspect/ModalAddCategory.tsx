@@ -9,7 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import { colors } from "~/view/theme";
-import { CustomSelect } from "../../Custom/CustomSelect";
+import { CustomSelect, OptionItem } from "../../Custom/CustomSelect";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { useMutation } from "@apollo/client";
 import {
@@ -29,7 +29,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
 
   const [addCategory, {loading}] = useMutation(ADD_INSPECTION_CATEGORY);
 
-  const [selectedCategory, setSelectedCategory] = useState("Select Inspection Category");
+  const [selectedCategory, setSelectedCategory] = useState<OptionItem>("Select Inspection Category");
   const [categoryError, setCategoryError] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [displayNameError, setDisplayNameError] = useState("");

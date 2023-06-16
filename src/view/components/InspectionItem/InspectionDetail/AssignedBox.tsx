@@ -4,7 +4,7 @@ import { colors } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
-import { CustomSelect } from "../../Custom/CustomSelect";
+import { CustomSelect, OptionItem } from "../../Custom/CustomSelect";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
@@ -15,39 +15,36 @@ interface Props {
 
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {
   const dispatch = useAppDispatch();
-  const [showModalAssigned, setShowModalAssigned] = useState(false);
-  const [assignedTo, setAssignedTo] = useState(inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned");
-  const { visibleAssignedTo } = useAppSelector((state) => state.inspectionItem);
   const { availableUsers } = useAppSelector((state) => state.user);
-
-  const assignedOptions = availableUsers.map(user => ({
-    code: user._id,
+  const { inspectionItem, assignedOption } = useAppSelector((state) => state.inspectionItem);
+  const [showModalAssigned, setShowModalAssigned] = useState(false);
+  const assignedOptions = availableUsers.map((user) => ({
+    value: user._id,
     name: user.fullName,
   }));
+  const [assignedTo, setAssignedTo] = useState<OptionItem>(assignedOption);
 
   const closeModalAssigned = () => {
     setShowModalAssigned(false);
-    setAssignedTo(visibleAssignedTo || "");
+    setAssignedTo(assignedTo);
   };
 
   const saveAssignedTo = () => {
     setShowModalAssigned(false);
-    dispatch(
-      actionsInspectionItem.setVisibleAssignedTo(assignedTo)
-    );
+    typeof assignedTo !== "string" && dispatch(actionsInspectionItem.setAssignedOption(assignedTo));
   };
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
         <Text style={styles.labelText}>Assigned:</Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-          <Text style={styles.text}>{visibleAssignedTo}</Text>
+        <View style={styles.assignedBox}>
+          <Text style={styles.text}>{assignedOption.name}</Text>
           {inspection.status !== "complete" && (
-              <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
-                <EditIcon color={colors.blue} height={15} width={15} />
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
+              <EditIcon color={colors.blue} height={15} width={15} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       <View style={styles.label}>
@@ -55,7 +52,9 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.text}>
           {inspection.scheduledOn
             ? `${getInspectionDate(new Date(inspection.scheduledOn))} ${
-                inspection.visitationRange ? `from ${inspection.visitationRange}` : ""
+                inspection.visitationRange
+                  ? `from ${inspection.visitationRange}`
+                  : ""
               }`
             : "--"}
         </Text>
@@ -81,7 +80,10 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
               selectedItem={assignedTo}
               setSelectedItem={setAssignedTo}
             />
-            <TouchableOpacity style={styles.modalSaveButton} onPress={saveAssignedTo}>
+            <TouchableOpacity
+              style={styles.modalSaveButton}
+              onPress={saveAssignedTo}
+            >
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
@@ -103,6 +105,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     width: "98%",
     flexWrap: "wrap",
+    flex: 1,
+  },
+  assignedBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     flex: 1,
   },
   shadowProp: {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   NavigationProp,
   ParamListBase,
@@ -18,6 +18,7 @@ import { InspectionItem } from "~/types/InspectionItem";
 import { Category, CategoryItemField } from "~/types/Category";
 import { CharacterCard } from "../components/CategoryView/CharacterCard";
 import { AmenitiesCard } from "../components/CategoryView/AmenitiesCard";
+import { makeRequestPDF } from "~/utils/fetch";
 
 interface Props {
   route: RouteProp<
@@ -42,6 +43,10 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
 
   const goBack = () => navigation.goBack();
 
+  useEffect(() => {
+    makeRequestPDF().then(res => console.log("res res res res", res.blob()))
+  }, [])
+
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
       <View style={styles.content}>
@@ -53,29 +58,51 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
         />
         <View style={{ height: 15 }}></View>
         <ScrollView
-          style={{ paddingHorizontal: 5 }}
+          style={{ paddingHorizontal: 5, flex: 1 }}
           showsVerticalScrollIndicator={false}
         >
-          {items.map((item) => (
-            <CharacterCard
-              title={item.name}
-              message={item.description}
-              result={"Passed"}
-              categoryApplyToInspection={category.categoryApplyToInspection}
-            />
-          ))}
-          <Text style={styles.amenitiesTitle}>Amenities</Text>
-          {amenities.map((amenity) => (
-              <AmenitiesCard
-              title={amenity.name}
-              message={amenity.name}
-              result="Yes"
-              categoryApplyToInspection={category?.categoryApplyToInspection}
-              />
+          {items.length > 0 ? (
+            <>
+              {items.map((item) => (
+                <CharacterCard
+                  key={item.id}
+                  title={item.name}
+                  message={item.description}
+                  result={"Passed"}
+                  categoryApplyToInspection={category.categoryApplyToInspection}
+                />
               ))}
-          <TouchableOpacity style={styles.saveButton} onPress={goBack}>
-            <Text style={styles.saveButtonText}>Save and Go Back</Text>
-          </TouchableOpacity>
+            </>
+          ) : (
+            <View style={styles.noItemsBox}>
+              <Text style={styles.noItemsText}>No category items</Text>
+            </View>
+          )}
+          {amenities.length > 0 ? (
+            <>
+              <Text style={styles.amenitiesTitle}>Amenities</Text>
+              {amenities.map((amenity) => (
+                <AmenitiesCard
+                  key={amenity.id}
+                  title={amenity.name}
+                  message={amenity.name}
+                  result="Yes"
+                  categoryApplyToInspection={
+                    category?.categoryApplyToInspection
+                  }
+                />
+              ))}
+            </>
+          ) : (
+            <View style={styles.noItemsBox}>
+              <Text style={styles.noItemsText}>No category amenities</Text>
+            </View>
+          )}
+          {(items.length > 0 || amenities.length > 0) && (
+            <TouchableOpacity style={styles.saveButton} onPress={goBack}>
+              <Text style={styles.saveButtonText}>Save and Go Back</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       </View>
     </Screen>
@@ -129,5 +156,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  noItemsBox: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 60,
+  },
+  noItemsText: {
+    fontSize: 20,
+    color: colors.textGrey,
+    fontWeight: "700",
   },
 });

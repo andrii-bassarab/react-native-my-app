@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
+import React, { useEffect, useMemo } from "react";
 import { HomeScreen } from "../screens/Home";
 import { InspectionNavigation } from "../navigation/InspectionNavigation";
 import { BottomTabBar } from "../components/Navigation/BottomTabBar";
@@ -9,13 +8,11 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsNotifications } from "../../modules/notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NotificationItem } from "~/types/NotificationItem";
-import { useQuery, NetworkStatus } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { colors } from "../theme";
-import { getAvailableUsers } from "~/services/api/GetUserById";
-import { setAvailableUsers } from "~/modules/user/actions";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -149,14 +146,6 @@ export const MainStack: React.FC = () => {
       showToastNotification();
     }
   }, [visibleLoader, prevSyncStatus, data, syncError]);
-
-  useEffect(() => {
-    getAvailableUsers().then((usersResponse) => {
-      const availableUsers = usersResponse.map((user: any) => ({ _id: user._id, email: user.email, fullName: `${user.firstName} ${user.lastName}` }))
-
-      dispatch(setAvailableUsers(availableUsers));
-    });
-  }, []);
 
   return (
     <BottomTabs.Navigator

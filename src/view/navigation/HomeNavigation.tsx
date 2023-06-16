@@ -18,20 +18,29 @@ import { GET_INSPECTION_TEMPLATES } from "~/services/api/InspectionTemplates";
 import { useQuery } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
-import { getUserNameById } from "~/services/api/GetUserById";
+import { getAvailableUsers, getUserNameById } from "~/services/api/GetUserById";
 import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
+import { setAvailableUsers } from "~/modules/user/actions";
+import { getVisibleAssignedTo } from "~/utils/getVisibleAssigned";
 
 const Drawer = createDrawerNavigator();
 
 export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
-
   const dispatch = useAppDispatch();
   const { inspectionsSync, syncError, inspections, visibleLoader } = useAppSelector((state) => state.inspections);
   const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
   const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
+  const { availableUsers } = useAppSelector((state) => state.user);
   const ids = Object.keys(categoriesTemplates);
 
+  useEffect(() => {
+    getAvailableUsers().then((usersResponse) => {
+      const availableUsers = usersResponse.map((user: any) => ({ _id: user._id, fullName: `${user.firstName} ${user.lastName}` }))
+
+      dispatch(setAvailableUsers(availableUsers));
+    });
+  }, []);
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
   const { data: inspectionTemplateInfo } = useQuery(GET_INSPECTION_TEMPLATES);
@@ -47,12 +56,12 @@ export const HomeNavigation: React.FC = () => {
         ids: [id],
       });
     });
-  
+
     try {
       await Promise.all(promises);
-      console.log('Refetch queries completed');
+      console.log("Refetch queries completed");
     } catch (error) {
-      console.error('Error while refetching queries', error);
+      console.error("Error while refetching queries", error);
     }
   };
 
@@ -66,6 +75,14 @@ export const HomeNavigation: React.FC = () => {
     const arrayOfDataInspections = data.inspections.edges;
     const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
 
+    const getVisibleInspectionForm = (templateIdToCheck: string) => {
+      return (
+        arrayOfInspectionTemplates.find(
+          (template) => template.node.id === templateIdToCheck
+        )?.node?.name || ""
+      );
+    };
+
     if (!visibleLoader) {
       const inspectionsFromServer = arrayOfDataInspections.map(
         (item: any, index: number) => ({
@@ -74,11 +91,9 @@ export const HomeNavigation: React.FC = () => {
             item.node?.status,
             item.node?.hasPassed
           ),
-          visibleInspectionForm:
-            arrayOfInspectionTemplates.find(
-              (template) => template.node.id === item.node.templateId
-            )?.node?.name || "",
+          visibleInspectionForm: getVisibleInspectionForm(item.node.templateId),
           visibleHouseholdName: inspections[index].visibleHouseholdName,
+          visibleAssignedTo: getVisibleAssignedTo(availableUsers, item.node.assignedTo).name,
         })
       ) as InspectionItem[];
 
@@ -111,7 +126,7 @@ export const HomeNavigation: React.FC = () => {
 
       // console.log(objectOfProperty)
 
-      console.log("render before")
+      console.log("render before");
 
       const responceOfHouseHoldName = await Promise.all(
         arrayOfDataInspections.map(({ node }: any) =>
@@ -146,11 +161,9 @@ export const HomeNavigation: React.FC = () => {
             item.node?.status,
             item.node?.hasPassed
           ),
-          visibleInspectionForm:
-            arrayOfInspectionTemplates.find(
-              (template) => template.node.id === item.node.templateId
-            )?.node?.name || "",
+          visibleInspectionForm: getVisibleInspectionForm(item.node.templateId),
           visibleHouseholdName: getVisibleHouseHoldName(index),
+          visibleAssignedTo: getVisibleAssignedTo(availableUsers, item.node.assignedTo).name
         })
       ) as InspectionItem[];
 
@@ -169,11 +182,13 @@ export const HomeNavigation: React.FC = () => {
       data &&
       !syncError &&
       inspectionTemplateInfo &&
+      availableUsers &&
       data.inspections?.edges &&
       Array.isArray(data.inspections?.edges) &&
       Array.isArray(inspectionTemplateInfo?.inspectionTemplates?.edges) &&
       data.inspections?.edges.every(
-        (edge: any) => typeof edge === "object" && edge.node && typeof edge.node === "object"
+        (edge: any) =>
+          typeof edge === "object" && edge.node && typeof edge.node === "object"
       )
     ) {
       getArrayOfInspections();

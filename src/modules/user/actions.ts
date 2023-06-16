@@ -21,4 +21,4 @@ export const setSelectedSite = createAction<Nullable<{ name: string, code: strin
 
 export const setAvailableSites = createAction<{ name: string, code: string }[]>('user/SET_AVAILABLE_SITES');
 
-export const setAvailableUsers = createAction<{ _id: string; email: string; fullName: string }[]>("user/SET_AVAILABLE_USERS");
+export const setAvailableUsers = createAction<{ _id: string; fullName: string }[]>("user/SET_AVAILABLE_USERS");

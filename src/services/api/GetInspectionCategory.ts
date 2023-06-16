@@ -21,6 +21,7 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
           name
         } 
         items{
+          id
           name
           description
           options{

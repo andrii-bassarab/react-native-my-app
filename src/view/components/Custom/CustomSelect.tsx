@@ -11,10 +11,12 @@ import {
 import { colors } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 
+export type OptionItem = string | { name: string; value: string };
+
 interface Props {
-  data: (string | { name: string; code: string })[];
-  selectedItem: string;
-  setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
+  data: OptionItem[];
+  selectedItem: OptionItem;
+  setSelectedItem: React.Dispatch<React.SetStateAction<OptionItem>>;
   maxHeight?: number | string;
   selectedItemColor?: string;
   error?: string;
@@ -34,15 +36,8 @@ export const CustomSelect: React.FC<Props> = ({
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleSelectItem = (
-    item:
-      | string
-      | {
-          name: string;
-          code: string;
-        }
-  ) => {
-    setSelectedItem(typeof item === "string" ? item : item.code);
+  const handleSelectItem = (item: OptionItem) => {
+    setSelectedItem(item);
     setShowDropdown(false);
   };
 
@@ -58,7 +53,10 @@ export const CustomSelect: React.FC<Props> = ({
     >
       <TouchableOpacity
         style={[
-          { ...styles.selectedLabel, borderColor: error ? colors.red : colors.primary },
+          {
+            ...styles.selectedLabel,
+            borderColor: error ? colors.red : colors.primary,
+          },
           selectedItemStyle,
         ]}
         onPress={() => setShowDropdown((prev) => !prev)}
@@ -69,13 +67,16 @@ export const CustomSelect: React.FC<Props> = ({
             color: selectedItemColor ? selectedItemColor : colors.primary,
           }}
         >
-          {selectedItem}
+          {typeof selectedItem === "string" ? selectedItem : selectedItem.name}
         </Text>
         <SelectIcon height={10} width={20} color={colors.primary} />
       </TouchableOpacity>
       {showDropdown && (
         <ScrollView
-          style={{ ...styles.dropdownOptionsContainer, maxHeight: maxHeight ? maxHeight : 130 }}
+          style={{
+            ...styles.dropdownOptionsContainer,
+            maxHeight: maxHeight ? maxHeight : 130,
+          }}
         >
           {data.map((item, index) => (
             <TouchableOpacity
@@ -126,8 +127,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: '#fff',
-    zIndex: 3
+    backgroundColor: "#fff",
+    zIndex: 3,
   },
   selectedText: {
     fontSize: 16,

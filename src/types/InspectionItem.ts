@@ -1,6 +1,5 @@
 import { InspectionStatus } from "./inspectionStatus";
 import { Comment } from "./Comment";
-import { CategoryType } from "./Category";
 
 export interface InspectionItem {
   id: string;
@@ -21,6 +20,7 @@ export interface InspectionItem {
   visibleStatus: InspectionStatus;
   visibleHouseholdName: string;
   visibleInspectionForm: string;
+  visibleAssignedTo: string;
   inspectionComments: Comment[];
   isReinspection: boolean;
   unit: {
@@ -35,13 +35,13 @@ export interface InspectionItem {
     isHandicapAccessible: boolean;
     yearConstructed: number | null;
     landlord: {
-        firstName: string;
-        lastName: string;
-        phoneNumber: string | null;
-    } | null
+      firstName: string;
+      lastName: string;
+      phoneNumber: string | null;
+    } | null;
   };
   household: {
     lastActionName: string;
     headOfHouseholdId: string;
   };
-};
+}

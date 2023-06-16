@@ -25,6 +25,5 @@ export type Permissions = {
 
 export interface AvailableUser {
   _id: string;
-  email: string;
   fullName: string;
 }

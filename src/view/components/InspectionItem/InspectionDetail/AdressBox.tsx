@@ -25,7 +25,9 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const dispatch = useAppDispatch();
   const [showModalPhoneNumber, setShowModalPhoneNumber] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
+  const { visiblePhoneNumber } = useAppSelector(
+    (state) => state.inspectionItem
+  );
 
   const formatPhoneNumber = (input: string) => {
     let phoneNumber = input.replace(/\D/g, "");
@@ -34,7 +36,10 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
 
     const phoneNumberLength = phoneNumber.length;
     if (phoneNumberLength > 6) {
-      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
+      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+        3,
+        6
+      )}-${phoneNumber.slice(6)}`;
     } else if (phoneNumberLength > 3) {
       phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
     } else {
@@ -64,21 +69,15 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       <View style={[styles.card, styles.shadowProp]}>
         <View style={styles.label}>
           <Text style={styles.labelText}>Address:</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              flex: 1,
-            }}
-          >
+          <View style={styles.assignedContainer}>
             <Text style={styles.text}>
               {`${inspection.unit.streetAddress} ${inspection.unit.city}, ${inspection.unit.state} ${inspection.unit.postalCode}`}
             </Text>
             {inspection.status !== "complete" && (
-                <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
-                  <EditIcon color={colors.blue} height={15} width={15} />
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
+                <EditIcon color={colors.blue} height={15} width={15} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View style={styles.label}>
@@ -193,6 +192,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     width: "98%",
     flexWrap: "wrap",
+  },
+  assignedContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
   },
   shadowProp: {
     shadowColor: "#171717",

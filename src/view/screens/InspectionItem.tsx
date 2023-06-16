@@ -33,14 +33,23 @@ const Tab = createMaterialTopTabNavigator();
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const { startSignature, visibleAssignedTo, visiblePhoneNumber } = useAppSelector((state) => state.inspectionItem);
+  const {
+    startSignature,
+    visibleAssignedTo,
+    visiblePhoneNumber,
+    inspectionItem,
+    assignedOption,
+  } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
-  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
+  const categoriesTemplates = useAppSelector(
+    (state) => state.categoriesTemplates
+  );
 
   const goBack = () => navigation.navigate("Inspections");
 
-  const stringAssigned = inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
+  const stringAssigned =
+    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
 
   const inspectOptions = {
     tabBarLabel:
@@ -52,19 +61,20 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   const hasUnsavedChanges = useMemo(
     () =>
-      visibleAssignedTo !== stringAssigned ||
+      inspectionItem?.assignedTo !== assignedOption.value ||
       visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || ""),
-    [visibleAssignedTo, visiblePhoneNumber]
+    [assignedOption, visiblePhoneNumber, inspectionItem]
   );
 
   useEffect(() => {
+
+  }, [inspectionItem?.visibleAssignedTo]);
+
+  useEffect(() => {
     dispatch(actionsInspectionItem.setInspectionItem(inspection));
-    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []));
     dispatch(
-      actionsInspectionItem.setVisibleAssignedTo(
-        inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c"
-          ? "Me"
-          : "Unassigned"
+      actionsInspectionItem.setCategories(
+        categoriesTemplates[inspection.templateId] || []
       )
     );
     dispatch(
@@ -72,8 +82,6 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
         inspection.unit.landlord?.phoneNumber || ""
       )
     );
-
-    console.log("currentInspection[inspection.templateId]", Object.keys(categoriesTemplates))
 
     return () => {
       dispatch(actionsInspectionItem.clearInspectionItem());

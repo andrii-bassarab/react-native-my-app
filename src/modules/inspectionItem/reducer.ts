@@ -1,15 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Category, CategoryType } from "~/types/Category";
+import { CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
+import { getInspectionStatus } from "~/utils/getInspectionStatus";
 
 const initialState = {
-  hasUnsavedChanges: false,
   inspectionItem: null as null | InspectionItem,
   categories: [] as CategoryType[],
   startSignature: false,
   signatureCount: 3,
   visibleAssignedTo: null as null | string,
   visiblePhoneNumber: null as null | string,
+  assignedOption: {
+    name: '',
+    value: ''
+  } as { name: string; value: string; }
 };
 
 const inspectionItemSlice = createSlice({
@@ -22,37 +26,55 @@ const inspectionItemSlice = createSlice({
     setCategories: (state, action: PayloadAction<CategoryType[]>) => {
       state.categories = action.payload;
     },
-    setHasUnsavedChanges: (state, action: PayloadAction<boolean>) => {
-      state.hasUnsavedChanges = action.payload;
-    },
     setInspectionItem: (state, action: PayloadAction<InspectionItem>) => {
       state.inspectionItem = action.payload;
+      state.assignedOption = {
+        value: action.payload.assignedTo,
+        name: action.payload.visibleAssignedTo,
+      }
     },
     setInspectionStatus: (
-      { inspectionItem },
+      state,
       action: PayloadAction<string>
     ) => {
-      if (inspectionItem) {
-        inspectionItem.status = action.payload;
+      if (state.inspectionItem) {
+        state.inspectionItem.status = action.payload;
+        state.inspectionItem.visibleStatus = getInspectionStatus(
+          action.payload,
+          state.inspectionItem.hasPassed
+        )
+      }
+    },
+    setInspectionAssigned: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      if (state.inspectionItem) {
+        state.inspectionItem.assignedTo = action.payload;
       }
     },
     setStartSignature: (state, action: PayloadAction<boolean>) => {
       state.startSignature = action.payload;
     },
     setVisibleAssignedTo: (state, action: PayloadAction<string>) => {
-      state.visibleAssignedTo = action.payload;
+    },
+    setAssignedOption: (state, action: PayloadAction<{ name: string; value: string; }>) => {
+      state.assignedOption = action.payload;
     },
     setVisiblePhoneNumber: (state, action: PayloadAction<string>) => {
       state.visiblePhoneNumber = action.payload;
     },
     clearInspectionItem: () => ({
-      hasUnsavedChanges: false,
       inspectionItem: null,
       categories: [],
       startSignature: false,
       signatureCount: 3,
       visibleAssignedTo: null,
       visiblePhoneNumber: null,
+      assignedOption: {
+        name: '',
+        value: ''
+      },
     }),
   },
 });

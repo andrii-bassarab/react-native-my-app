@@ -14,6 +14,7 @@ export interface CategoryOptionField {
 }
 
 export interface CategoryItemField {
+  id: string;
   name: string;
   description: string;
   options: CategoryOptionField[];
@@ -25,6 +26,6 @@ export interface CategoryType {
   name: string;
   isRequired: boolean;
   importKey?: null | string;
-  amenities?: any[];
-  items?: CategoryItemField[];
+  amenities: any[];
+  items: CategoryItemField[];
 }
