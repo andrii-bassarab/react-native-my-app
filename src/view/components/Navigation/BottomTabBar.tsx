@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { colors } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,7 +10,7 @@ import SyncIcon from "~/view/assets/icons/sync.svg";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { CustomerSite } from "../Screen/CustomerSite";
-import { useQuery, NetworkStatus } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { actionsInspections } from "~/modules/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
@@ -25,7 +25,7 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
 
   const prevNetworkStatus = getPreviousValue(networkConnectivity);
 
-  const { refetch, loading, error, data, networkStatus } = useQuery(GET_ALL_INSPECTIONS, {
+  const { refetch, loading, error } = useQuery(GET_ALL_INSPECTIONS, {
     notifyOnNetworkStatusChange: true,
   });
 
@@ -54,6 +54,10 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
       dispatch(actionsInspections.setVisibleLoading(true));
     }
   }, [loading, networkConnectivity]);
+
+  useEffect(() => {
+      dispatch(actionsInspections.setSyncError(!!error))
+  }, [error])
 
   const detectIconByName = (label: string, color: string) => {
     switch (label) {

@@ -1,6 +1,6 @@
-const BASE_URL = "https://cloudstack-dev.doorways-services.net";
+import { API_URL, X_API_KEY, X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
-type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+type RequestMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
 export const makeRequest = (
   url: string,
@@ -11,11 +11,11 @@ export const makeRequest = (
   const options: RequestInit = {
     method,
     headers: {
-      "x-api-key": "GPK7qlm8VeZrxOQ18Gxh9VqnlHCCyUl5PBNjXZ69",
-      "x-site-id": "pfdylv",
-      "x-customer-id": "pfdylv",
+      "x-api-key": X_API_KEY,
+      "x-site-id": X_SIDE_ID,
+      "x-customer-id": X_CUSTOMER_ID,
       "Content-Type": "application/json",
-      ...headers
+      ...headers,
     },
   };
 
@@ -23,13 +23,7 @@ export const makeRequest = (
     options.body = JSON.stringify({ query });
   }
 
-  return fetch(`${BASE_URL}/${url}`, options).then(res => res.json());
+  return fetch(`${API_URL}/${url}`, options)
+    .then((res) => res.json())
+    .catch((e) => console.log("error fetch ", e));
 };
-
-export const makeRequestPDF = () => {
-  return fetch("https://xjnnqual9j.execute-api.us-west-2.amazonaws.com/dev/api/files/68", {
-    headers: {
-      "x-api-key": "msd4Bui1M479NQmooBcUL7Xq4Ds5aAtV6UFfjNQd",
-    }
-  })
-}

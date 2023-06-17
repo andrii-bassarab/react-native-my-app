@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform } from "react-native";
-import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  Platform,
+} from "react-native";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+} from "@react-navigation/native";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { useAppDispatch } from "~/store/hooks";
 import { InspectionFilesAddButton } from "./InspectionFilesAddButton";
@@ -11,7 +22,11 @@ import TakePhotoIcon from "~/view/assets/icons/takePhoto.svg";
 import ImageGallery from "~/view/assets/icons/gallery.svg";
 import { colors } from "~/view/theme";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
-import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
+import {
+  Asset,
+  launchCamera,
+  launchImageLibrary,
+} from "react-native-image-picker";
 import { getInspectionDate } from "~/utils/visibleDate";
 import DocumentPicker, {
   DocumentPickerOptions,
@@ -21,6 +36,7 @@ import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/
 import { generateUniqueId } from "~/utils/genereteUniqueId";
 import { ModalViewImage } from "../../CategoryView/ModalViewImage";
 import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
+import { BASE_DOCUMENT_API } from "~/constants/env";
 
 export interface File {
   id: string;
@@ -34,25 +50,29 @@ const mocksFiles: File[] = [
   {
     id: generateUniqueId(),
     fileName: "HUD-50058.pdf",
-    uploadTime: "May 30, 2022 at 3:00pm",
+    uri: `${BASE_DOCUMENT_API}/68`,
+    uploadTime: "May 16, 2023 at 5:00pm",
     docFormat: "pdf",
   },
   {
     id: generateUniqueId(),
-    fileName: "Some Document.csv",
-    uploadTime: "May 24, 2021 at 3:00pm",
-    docFormat: "csv",
+    fileName: "Interim Recertification-02/16/2021.pdf",
+    uri: `${BASE_DOCUMENT_API}/213`,
+    uploadTime: "May 19, 2023 at 11:00am",
+    docFormat: "pdf",
   },
   {
     id: generateUniqueId(),
-    fileName: "Some Image.jpg",
-    uploadTime: "May 22, 2021 at 3:00pm",
-    docFormat: "jpg",
+    fileName: "Assignment-01/26/2021.pdf",
+    uri: `${BASE_DOCUMENT_API}/193`,
+    uploadTime: "May 21, 2023 at 2:00pm",
+    docFormat: "pdf",
   },
   {
     id: generateUniqueId(),
+    uri: "https://reintech.io/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBa3lvIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--ce810b0818c990fa5fd92e4503e5df81c4da7be4/3h0j6dfmmzrtmzlmc3ook4m9r5by",
     fileName: "Some Image.png",
-    uploadTime: "May 20, 2021 at 3:00pm",
+    uploadTime: "May 20, 2023 at 3:00pm",
     docFormat: "png",
   },
 ];
@@ -93,12 +113,14 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const [newFile, setNewFile] = useState<DocumentPickerResponse | null>(null);
   const [showModalImage, setShowModalImage] = useState(false);
   const [showModalDocument, setShowModalDocument] = useState(false);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     setVisibleFiles(
       mocksFiles.filter((file) =>
-        file.fileName.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
+        file.fileName
+          .toLocaleLowerCase()
+          .includes(query.toLocaleLowerCase().trim())
       )
     );
   }, [query, mocksFiles]);
@@ -140,7 +162,9 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
 
   const handleChoosePhoto = async () => {
     try {
-      const chosenImageFromGallery = await launchImageLibrary({ mediaType: "photo" });
+      const chosenImageFromGallery = await launchImageLibrary({
+        mediaType: "photo",
+      });
       handleCloseModalAddFile();
 
       if (
@@ -185,7 +209,9 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             : ["UTTypePDF", "UTTypeRTFD", "UTTypeFlatRTFD"],
       };
 
-      const arrayOfSelectedFile = await DocumentPicker.pick(optionsDocumentPicker);
+      const arrayOfSelectedFile = await DocumentPicker.pick(
+        optionsDocumentPicker
+      );
 
       if (
         arrayOfSelectedFile &&
@@ -215,16 +241,18 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleDeleteFile = (fileToDelete: File) => {
-    setVisibleFiles((prev) => prev.filter((file) => file.id !== fileToDelete.id));
+    setVisibleFiles((prev) =>
+      prev.filter((file) => file.id !== fileToDelete.id)
+    );
   };
 
   const handleOpenModalImage = (fileToOpen: File) => {
     switch (fileToOpen.docFormat) {
-      case 'png':
-      case 'jpg':
+      case "png":
+      case "jpg":
         setNewPhoto(fileToOpen);
         setShowModalImage(true);
-      return;
+        return;
       case "pdf":
         setShowModalDocument(true);
     }
@@ -233,12 +261,18 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   return (
     <View style={styles.content}>
       <View style={{ padding: 2 }}>
-        <SearchForm query={query} setQuery={setQuery} placeholder="Search File" />
+        <SearchForm
+          query={query}
+          setQuery={setQuery}
+          placeholder="Search File"
+        />
       </View>
       <View style={{ height: "2%" }} />
-      {route.params.status !== "complete" && (<TouchableOpacity onPress={() => setShowModalAddFile(true)}>
-        <InspectionFilesAddButton />
-      </TouchableOpacity>)}
+      {route.params.status !== "complete" && (
+        <TouchableOpacity onPress={() => setShowModalAddFile(true)}>
+          <InspectionFilesAddButton />
+        </TouchableOpacity>
+      )}
       <View style={{ height: 15 }} />
       <View style={[styles.filesContainer, styles.shadowProp]}>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -246,8 +280,19 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             <>
               <Text style={styles.fileTitle}>Files</Text>
               {visibleFiles.map((file) => (
-                <TouchableOpacity key={file.id} style={{ marginBottom: "4%" }} onPress={() => handleOpenModalImage(file)}>
-                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} displayDeleteIcon={route.params.status !== "complete"} />
+                <TouchableOpacity
+                  key={file.id}
+                  style={{ marginBottom: "4%" }}
+                  onPress={() => {
+                    handleOpenModalImage(file);
+                    setSelectedFile(file);
+                  }}
+                >
+                  <InspectionFileCard
+                    file={file}
+                    deleteFile={handleDeleteFile}
+                    displayDeleteIcon={route.params.status !== "complete"}
+                  />
                 </TouchableOpacity>
               ))}
             </>
@@ -268,7 +313,10 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             <>
               {mocksSignatures.map((file, index) => (
                 <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>
-                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} />
+                  <InspectionFileCard
+                    file={file}
+                    deleteFile={handleDeleteFile}
+                  />
                 </TouchableOpacity>
               ))}
             </>
@@ -293,7 +341,11 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   style={[styles.fileButton, styles.shadowProp]}
                   onPress={handleTakePhoto}
                 >
-                  <TakePhotoIcon width={"60%"} height={"60%"} color={"#D7D7D7"} />
+                  <TakePhotoIcon
+                    width={"60%"}
+                    height={"60%"}
+                    color={"#D7D7D7"}
+                  />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Take photo</Text>
               </View>
@@ -302,7 +354,11 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   style={[styles.fileButton, styles.shadowProp]}
                   onPress={handleChoosePhoto}
                 >
-                  <ImageGallery width={"60%"} height={"60%"} color={"#D7D7D7"} />
+                  <ImageGallery
+                    width={"60%"}
+                    height={"60%"}
+                    color={"#D7D7D7"}
+                  />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Choose from Gallery</Text>
               </View>
@@ -313,21 +369,42 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                 >
                   <FileIcon width={"60%"} height={"60%"} color={"#D7D7D7"} />
                 </TouchableOpacity>
-                <Text style={styles.fileButtonText}>Add File From Documents</Text>
+                <Text style={styles.fileButtonText}>
+                  Add File From Documents
+                </Text>
               </View>
             </View>
           </View>
         </ModalSwipeScreen>
       )}
       {showModalImage && (
-        <ModalViewImage closeModalFunction={() => setShowModalImage(false)} image={newPhoto} />
+        <ModalViewImage
+          closeModalFunction={() => setShowModalImage(false)}
+          image={newPhoto}
+        />
       )}
-      {showModalDocument && <InspectionFileModalDocument closeModalFunction={() => setShowModalDocument(false)} />}
+      {showModalDocument && (
+        <InspectionFileModalDocument
+          uri={selectedFile?.uri || ""}
+          closeModalFunction={() => setShowModalDocument(false)}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  contentb: {
+    backgroundColor: "#fff",
+    height: "90%",
+    width: "100%",
+    opacity: 1,
+    paddingHorizontal: "2%",
+    paddingVertical: "10%",
+    paddingBottom: "11%",
+    borderRadius: 15,
+    justifyContent: "space-between",
+  },
   content: {
     backgroundColor: "#fff",
     flex: 1,

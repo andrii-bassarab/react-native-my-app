@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
 
 const initialState = {

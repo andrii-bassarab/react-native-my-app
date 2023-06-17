@@ -12,17 +12,18 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { API_URL, X_API_KEY, X_SIDE_ID } from "~/constants/env";
 
 const maintenanceHttpLink = createHttpLink({
-  uri: "https://cloudstack-dev.doorways-services.net/maintenance/graphql",
+  uri: `${API_URL}/maintenance/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      "x-api-key": "GPK7qlm8VeZrxOQ18Gxh9VqnlHCCyUl5PBNjXZ69",
-      "x-site-id": "pfdylv",
+      "x-api-key": X_API_KEY,
+      "x-site-id": X_SIDE_ID,
       "Content-Type": "application/json",
     },
   };

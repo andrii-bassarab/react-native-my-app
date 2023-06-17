@@ -4,85 +4,68 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  Dimensions
 } from "react-native";
 import CloseIcon from "~/view/assets/icons/failed.svg";
-import { colors } from "~/view/theme";
 import Pdf, { Source } from "react-native-pdf";
 import { ContentLoader } from "../../Loader/Loader";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   closeModalFunction: () => void;
+  uri: string;
 }
 
 export const InspectionFileModalDocument: React.FC<Props> = ({
   closeModalFunction,
+  uri,
 }) => {
   const [loader, setLoader] = useState(true);
+  const insets = useSafeAreaInsets();
 
   const source: Source = {
-    uri: "https://xjnnqual9j.execute-api.us-west-2.amazonaws.com/dev/api/files/68",
+    uri,
     cache: true,
     headers: {
       "x-api-key": "msd4Bui1M479NQmooBcUL7Xq4Ds5aAtV6UFfjNQd",
-    }
+    },
   };
+
+  console.log("process.env", process.env.NODE_ENV)
 
   return (
     <Modal transparent={true}>
-      <Pressable
-        style={styles.modalOverlay}
-        onPress={(event) => {
-          event.stopPropagation();
-          event.preventDefault();
-          closeModalFunction();
-        }}
-      >
-        {
-          <View
-            style={styles.content}
-            onStartShouldSetResponder={() => true}
-            onTouchEnd={(event) => {
-              event.stopPropagation();
-            }}
-          >
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              {loader && (
-                <View style={{ position: "absolute", alignSelf: "center", justifyContent: 'center' }}>
-                  <ContentLoader />
-                </View>
-              )}
-              <Pdf
-                   fitPolicy={0}
-                   horizontal={false}
-                   trustAllCerts={false}
-                   style={{ flex: 1,       width:Dimensions.get('window').width - 20,
-                  }}
-                   source={source}
-                   onPageChanged={(page, number) => {
-                     console.log("page", page)
-                     console.log("number", number)
-                     
-                    }}
-                    onLoadComplete={() => {
-                      console.log(`PDF rendered from ${source.uri}`);
-                      setLoader(false);
-                    }}
-                    onError={(error) => console.log("Cannot render PDF", error)}
-                    />
-            </View>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={closeModalFunction}
-            >
-              <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
-            </TouchableOpacity>
+      {
+        <View style={{ ...styles.content, marginTop: insets.top }}>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            {loader && (
+              <View
+                style={{
+                  position: "absolute",
+                  alignSelf: "center",
+                  zIndex: 2
+                }}
+              >
+                <ContentLoader />
+              </View>
+            )}
+            <Pdf
+              fitPolicy={0}
+              horizontal={false}
+              trustAllCerts={false}
+              style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 50 }}
+              source={source}
+              onLoadComplete={() => setLoader(false)}
+              onError={(error) => console.log("Cannot render PDF", error)}
+            />
           </View>
-        }
-      </Pressable>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={closeModalFunction}
+          >
+            <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
+          </TouchableOpacity>
+        </View>
+      }
     </Modal>
   );
 };
@@ -97,20 +80,13 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: "#fff",
-    height: "90%",
-    width: "100%",
-    opacity: 1,
-    paddingHorizontal: "2%",
-    paddingVertical: "10%",
-    paddingBottom: "11%",
-    borderRadius: 15,
-    justifyContent: "space-between",
-  },
-  image: {
     height: "100%",
     width: "100%",
-    resizeMode: "cover",
-    borderRadius: 10,
+    opacity: 1,
+    paddingHorizontal: "5%",
+    paddingVertical: "10%",
+    borderRadius: 15,
+    justifyContent: "space-between",
   },
   closeButton: {
     borderRadius: 100,
@@ -122,13 +98,5 @@ const styles = StyleSheet.create({
     top: "3%",
     justifyContent: "center",
     alignItems: "center",
-  },
-  fileNameText: {
-    width: "90%",
-    alignSelf: "center",
-    textAlign: "center",
-    marginTop: "1%",
-    color: colors.textGrey,
-    fontWeight: "600",
   },
 });

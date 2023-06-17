@@ -103,29 +103,6 @@ export const HomeNavigation: React.FC = () => {
     }
 
     try {
-      // const arrayOfAssignedName = await Promise.all([getUserNameById("5b8ec7c379b0a100145a5ed0"),
-      //   ...arrayOfDataInspections.map(({ node }) => getUserNameById(node.assignedTo)
-      //   )]
-      // );
-
-      // console.log("arrayOfAssignedName", arrayOfAssignedName.map(item => item?.name));
-
-      // const objectOfProperty = {};
-
-      // for (const variable of arrayOfDataInspections) {
-      //   if (objectOfProperty[variable.node.assignedTo]) {
-      //     objectOfProperty[variable.node.assignedTo] += 1;
-      //   } else {
-      //     objectOfProperty[variable.node.assignedTo] = 1
-      //   }
-      // }
-
-      // for (const key in objectOfProperty) {
-      //   console.log("objectOfProperty", key)
-      // }
-
-      // console.log(objectOfProperty)
-
       console.log("render before");
 
       const responceOfHouseHoldName = await Promise.all(
