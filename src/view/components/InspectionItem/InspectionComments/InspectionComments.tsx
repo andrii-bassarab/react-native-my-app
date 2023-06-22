@@ -11,7 +11,7 @@ import { InspectionItem } from "~/types/InspectionItem";
 import CommentIcon from "~/view/assets/icons/comment.svg";
 import { AddCommentBox } from "./AddCommentBox";
 import { CommentItem } from "./CommentItem";
-import { Comment } from "~/types/Comment";
+import { IComment } from "~/types/Comment";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -29,7 +29,7 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
     })
   );
 
-  const handleAddNewComment = (newComment: Comment) => setComments((prev) => [newComment, ...prev]);
+  const handleAddNewComment = (newComment: IComment) => setComments((prev) => [newComment, ...prev]);
 
   return (
     <View style={styles.content}>
@@ -43,6 +43,7 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
                   comment={comment}
                   index={index}
                   arrayLength={array.length}
+                  showDotPoint
                 />
               ))}
             </ScrollView>

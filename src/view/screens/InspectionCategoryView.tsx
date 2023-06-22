@@ -10,7 +10,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Platform,
 } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
@@ -19,8 +18,10 @@ import { InspectionItem } from "~/types/InspectionItem";
 import { Category, CategoryItemField } from "~/types/Category";
 import { CharacterCard } from "../components/CategoryView/CharacterCard";
 import { AmenitiesCard } from "../components/CategoryView/AmenitiesCard";
-import { makeRequestPDF } from "~/utils/fetch";
-import { useAppSelector } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORY_COMMENT } from "~/services/api/GetInspectionCategory";
+import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 
 interface Props {
   route: RouteProp<
@@ -41,13 +42,27 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   navigation,
   route,
 }) => {
+  const dispatch = useAppDispatch();
   const { inspection, category, items, amenities } = route.params;
   const { categoryApplyToInspection } = useAppSelector(state => state.inspectionItem);
+  const categoriesTemplates = useAppSelector(state => state.categoriesTemplates);
+
 
   const goBack = () => navigation.goBack();
 
+  const {data} = useQuery(GET_CATEGORY_COMMENT, {
+    variables: {
+      ids: items.map(item => item.id)
+    }
+  });
+
   useEffect(() => {
-    makeRequestPDF().then((res) => console.log("res res res res", res.blob()));
+    dispatch(actionsCategoryTemplate.addCategoryComment({
+        templateId: inspection.templateId,
+        itemId: items.map(item => item.id)[0],
+        commentToAdd: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. ",
+    }))
+    console.log("dispatch");
   }, []);
 
   return (
@@ -73,6 +88,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
                   message={item.description}
                   result={"Passed"}
                   categoryApplyToInspection={categoryApplyToInspection}
+                  comment={item.comment}
+                  id={item.id}
                 />
               ))}
             </>

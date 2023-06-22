@@ -43,14 +43,9 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
-  const categoriesTemplates = useAppSelector(
-    (state) => state.categoriesTemplates
-  );
+  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
 
   const goBack = () => navigation.navigate("Inspections");
-
-  const stringAssigned =
-    inspection.assignedTo === "5e94b7f0fa86cf0016c4d92c" ? "Me" : "Unassigned";
 
   const inspectOptions = {
     tabBarLabel:

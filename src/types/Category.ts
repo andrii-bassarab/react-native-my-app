@@ -1,3 +1,5 @@
+import { IComment } from "./Comment";
+
 export interface Category {
   title: string;
   status: string;
@@ -18,6 +20,7 @@ export interface CategoryItemField {
   name: string;
   description: string;
   options: CategoryOptionField[];
+  comment?: IComment;
 }
 
 export interface CategoryType {

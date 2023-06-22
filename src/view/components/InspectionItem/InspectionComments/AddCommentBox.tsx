@@ -4,14 +4,14 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-nativ
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { useAppDispatch } from "~/store/hooks";
-import { Comment } from "~/types/Comment";
+import { IComment } from "~/types/Comment";
 import { colors } from "~/view/theme";
 import { ModalLoader } from "../../Loader/ModalLoader";
 
 interface Props {
   input: string;
   setInput: React.Dispatch<React.SetStateAction<string>>;
-  addNewComment: (newComment: Comment) => void;
+  addNewComment: (newComment: IComment) => void;
   inspectionId: string;
 }
 
@@ -27,7 +27,7 @@ export const AddCommentBox: React.FC<Props> = ({
 
   const [updateInspection, { loading }] = useMutation(CREATE_INSPECTION_COMMENT);
 
-  const updateCache = (commentToAdd: Comment, callback: (commentToAdd: Comment) => void) => {
+  const updateCache = (commentToAdd: IComment, callback: (commentToAdd: IComment) => void) => {
     return (cache: ApolloCache<any>, { data }: any) => {
       if (!data?.createInspectionComment?.affectedEntity?.id) {
         return;
@@ -58,7 +58,7 @@ export const AddCommentBox: React.FC<Props> = ({
     };
   };
 
-  const handleCreateInspectionComment = (newComment: Comment) => {
+  const handleCreateInspectionComment = (newComment: IComment) => {
     updateInspection({
       variables: {
         command: {
@@ -78,7 +78,7 @@ export const AddCommentBox: React.FC<Props> = ({
     commentBody: input,
   };
 
-  const handleAddNewComment = (newComment: Comment) => {
+  const handleAddNewComment = (newComment: IComment) => {
     addNewComment(newComment);
     setInput("");
     showToastNotification();

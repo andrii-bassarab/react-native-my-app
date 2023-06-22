@@ -12,6 +12,7 @@ import { InspectionStatus } from "~/types/inspectionStatus";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { getCalendarVisibleDate } from "~/utils/visibleDate";
 import { InspectionItem } from "~/types/InspectionItem";
+import { ContentLoader } from "../components/Loader/Loader";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export const Inspections: React.FC<Props> = ({ route, navigation }) => {
-  const { inspections } = useAppSelector((state) => state.inspections);
+  const { inspections, visibleLoader } = useAppSelector((state) => state.inspections);
 
   const [query, setQuery] = useState("");
   const [visibleInspections, setVisibleInspections] = useState(inspections);
@@ -198,7 +199,11 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
         <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
         <Text style={styles.title}>Inspections</Text>
         <SearchForm query={query} setQuery={setQuery} showFilterButton={true} />
-        {visibleInspections.length > 0 ? (
+        {visibleLoader && inspections.length === 0 ? (
+          <View style={styles.contentLoaderContainer}>
+          <ContentLoader />
+        </View>
+        ) : visibleInspections.length > 0 ? (
           <View style={{ marginBottom: "45%", marginTop: 10 }}>
             <FlatList
               data={visibleInspections}
@@ -262,5 +267,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 20,
+  },
+  contentLoaderContainer: {
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

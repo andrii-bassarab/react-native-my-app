@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
+import { ContentLoader } from "../components/Loader/Loader";
 
 interface Props {
   navigation: NavigationProp<ParamListBase>;
@@ -16,15 +17,25 @@ interface Props {
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useAppDispatch();
 
-  const { inspections } = useAppSelector((state) => state.inspections);
+  const { inspections, visibleLoader } = useAppSelector(
+    (state) => state.inspections
+  );
   const showWindow = useAppSelector((state) => state.showWindow);
+
+  console.log(visibleLoader, "visibleLoader");
+  console.log(inspections.length, "inspections");
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
-        <View style={styles.content}>
-          <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
-          <View style={styles.activityBox}>
-            <View>
+      <View style={styles.content}>
+        <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
+        <View style={styles.activityBox}>
+          <View>
+            {visibleLoader && inspections.length === 0 ? (
+              <View style={styles.contentLoaderContainer}>
+                <ContentLoader />
+              </View>
+            ) : (
               <FlatList
                 data={inspections}
                 keyExtractor={(item, index) => `key-${item.id}`}
@@ -46,10 +57,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 showsVerticalScrollIndicator={false}
               />
-            </View>
+            )}
           </View>
-          {showWindow.showNotification && <Notifications />}
         </View>
+        {showWindow.showNotification && <Notifications />}
+      </View>
     </Screen>
   );
 };
@@ -70,5 +82,10 @@ const styles = StyleSheet.create({
     color: "#7F888D",
     fontWeight: "700",
     marginBottom: 10,
+  },
+  contentLoaderContainer: {
+    height: "90%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

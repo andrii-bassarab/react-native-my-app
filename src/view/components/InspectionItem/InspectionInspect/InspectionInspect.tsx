@@ -30,7 +30,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const inspectionItem = useAppSelector(state => state.inspectionItem);
   const categoriesTemplates = useAppSelector(state => state.categoriesTemplates);
 
-
   const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
       ids: [route.params.templateId],

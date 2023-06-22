@@ -21,35 +21,37 @@ import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
 import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { ModalViewImage } from "./ModalViewImage";
+import { IComment } from "~/types/Comment";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 
 interface Props {
   title: string;
   message: string;
   result: "Fail" | "Passed";
   categoryApplyToInspection?: boolean;
+  comment?: IComment;
+  id?: string;
 }
-
-const mocksComments = [
-  {
-    createdBy: "heather@hdslabs.com",
-    createdOn: "2020-04-13T19:19:31.460Z",
-    commentBody: "Please knock, if no response, then you can enter.",
-  },
-];
 
 export const CharacterCard: React.FC<Props> = ({
   title,
   message,
   result,
   categoryApplyToInspection = false,
+  comment,
+  id,
 }) => {
+  const dispatch = useAppDispatch();
+  const { inspectionItem } = useAppSelector(state => state.inspectionItem);
   const resultDropdownOptions = ["Fail", "Passed"];
   const [selectedResult, setSelectedResult] = useState<OptionItem>(result);
-  const [comment, setComment] = useState("");
   const [openMainInfo, setOpenMainInfo] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [images, setImages] = useState<Asset[]>([]);
   const [showModalImage, setShowModalImage] = useState(false);
+
+  const [visibleComment, setVisibleComment] = useState(comment);
 
   const handleTakePhoto = async () => {
     try {
@@ -102,6 +104,18 @@ export const CharacterCard: React.FC<Props> = ({
     setShowModalImage(true);
   }
 
+  const handleEditComment = (comment: string) => {
+    setVisibleComment((prev) => prev && ({
+      ...prev,
+      commentBody: comment,
+    }))
+    dispatch(actionsCategoryTemplate.addCategoryComment({
+      templateId: inspectionItem?.templateId || "",
+        itemId: id || "",
+        commentToAdd: comment,
+    }))
+  };
+
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <TouchableOpacity style={styles.label} onPress={() => setOpenMainInfo((prev) => !prev)}>
@@ -152,24 +166,14 @@ export const CharacterCard: React.FC<Props> = ({
                 {categoryApplyToInspection ? (
                   <>
                     <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 10 }}>
-                      {mocksComments.map((comment, index, array) => (
-                        <CommentItem
-                          key={index}
-                          comment={comment}
-                          index={index}
-                          arrayLength={array.length}
+                        {visibleComment && <CommentItem
+                          comment={visibleComment}
+                          index={0}
+                          arrayLength={1}
                           showEditComment
-                        />
-                      ))}
+                          saveEditedComment={handleEditComment}
+                        />}
                     </ScrollView>
-                    {/* <TextInput
-                      value={comment}
-                      onChangeText={setComment}
-                      placeholder="Write a comment..."
-                      style={styles.commentInput}
-                      textAlignVertical="top"
-                      multiline={true}
-                    /> */}
                   </>
                 ) : (
                   <Text style={styles.noResultText}>N/A</Text>

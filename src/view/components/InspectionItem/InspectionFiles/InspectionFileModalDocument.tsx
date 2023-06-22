@@ -30,8 +30,6 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
     },
   };
 
-  console.log("process.env", process.env.NODE_ENV)
-
   return (
     <Modal transparent={true}>
       {

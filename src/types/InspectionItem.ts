@@ -1,5 +1,5 @@
 import { InspectionStatus } from "./inspectionStatus";
-import { Comment } from "./Comment";
+import { IComment } from "./Comment";
 
 export interface InspectionItem {
   id: string;
@@ -21,7 +21,7 @@ export interface InspectionItem {
   visibleHouseholdName: string;
   visibleInspectionForm: string;
   visibleAssignedTo: string;
-  inspectionComments: Comment[];
+  inspectionComments: IComment[];
   isReinspection: boolean;
   unit: {
     id: string;

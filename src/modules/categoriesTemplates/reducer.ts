@@ -21,6 +21,30 @@ const categoryTemplateSlice = createSlice({
       const { templateIdToAdd, categories } = payload;
       state[templateIdToAdd] = categories;
     },
+    addCategoryComment: (
+      state,
+      { payload }: PayloadAction<{
+        templateId: string;
+        itemId: string;
+        commentToAdd: string;
+      }>
+    ) => {
+      const { templateId, commentToAdd, itemId } = payload;
+      const categories = state[templateId];
+
+      const mocksComments = {
+        createdBy: "heather@hdslabs.com",
+        createdOn: "2020-04-13T19:19:31.460Z",
+        commentBody: commentToAdd,
+      };
+
+      categories.forEach((category) => {
+        const item = category.items.find((item) => item.id === itemId);
+        if (item) {
+          item.comment = mocksComments;
+        }
+      });    
+    },
   },
 });
 
