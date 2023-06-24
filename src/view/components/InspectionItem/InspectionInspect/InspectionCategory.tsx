@@ -11,6 +11,7 @@ import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
 
 interface Props {
   category: {
+    id: string;
     title: string;
     status: string;
     result: string;

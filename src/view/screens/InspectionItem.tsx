@@ -10,7 +10,7 @@ import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { TopTabBar } from "../components/Navigation/TopTabBar";
-import { InspectionStatus } from "~/types/inspectionStatus";
+import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { InspectionDetails } from "../components/InspectionItem/InspectionDetail/InspectionDetail";
 import { InspectionInspect } from "../components/InspectionItem/InspectionInspect/InspectionInspect";
 import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
@@ -49,8 +49,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   const inspectOptions = {
     tabBarLabel:
-      inspection.visibleStatus === InspectionStatus.PASSED ||
-      inspection.status === InspectionStatus.FAILED
+      inspection.visibleStatus === InspectionVisibleStatus.PASSED ||
+      inspection.status === InspectionVisibleStatus.FAILED
         ? "Results"
         : "Inspect",
   };
@@ -85,6 +85,11 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   const handleGoBack = () => {
+    if (startSignature) {
+      dispatch(actionsInspectionItem.setStartSignature(false));
+      return;
+    }
+
     if (hasUnsavedChanges) {
       setShowModalUnsavedChanges(true);
       return;
@@ -92,6 +97,10 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
     goBack();
   };
+
+  useEffect(() => {
+    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []))
+  }, [categoriesTemplates[inspection.templateId]]);
 
   return (
     <KeyboardAvoidingDisplayComponent>
@@ -117,8 +126,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
               tabBar={(props) => <TopTabBar {...props} />}
               initialRouteName="HomeScreen"
             >
-              {inspection.status !== InspectionStatus.NEW &&
-                inspection.status !== InspectionStatus.SCHEDULED && (
+              {inspection.status !== InspectionVisibleStatus.NEW &&
+                inspection.status !== InspectionVisibleStatus.SCHEDULED && (
                   <Tab.Screen
                     name="Inspect"
                     component={InspectionInspect}

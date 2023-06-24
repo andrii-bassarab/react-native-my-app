@@ -68,6 +68,7 @@ export const CommentItem: React.FC<Props> = ({
           !showDotPoint && {
             paddingLeft: 0,
             marginLeft: 0,
+            paddingBottom: 0,
           },
         ]}
       >
@@ -105,7 +106,7 @@ export const CommentItem: React.FC<Props> = ({
               <View style={styles.header}>
                 <Text style={styles.author}>{visibleCreatedBy}</Text>
                 <Text style={styles.date}>
-                  {Date.parse(comment.createdOn) >= Date.now() - 5 * 60 * 1000
+                  {comment.createdOn === "Created time not regognized" ? "N/A" : Date.parse(comment.createdOn) >= Date.now() - 5 * 60 * 1000
                     ? "Now"
                     : getVisibleDate(new Date(comment.createdOn))}
                 </Text>

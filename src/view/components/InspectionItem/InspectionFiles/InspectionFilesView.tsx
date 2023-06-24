@@ -37,6 +37,7 @@ import { generateUniqueId } from "~/utils/genereteUniqueId";
 import { ModalViewImage } from "../../CategoryView/ModalViewImage";
 import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
 import { BASE_DOCUMENT_API } from "~/constants/env";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 export interface File {
   id: string;
@@ -268,7 +269,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         />
       </View>
       <View style={{ height: "2%" }} />
-      {route.params.status !== "complete" && (
+      {route.params.status !== InspectionStatus.COMPLETE && (
         <TouchableOpacity onPress={() => setShowModalAddFile(true)}>
           <InspectionFilesAddButton />
         </TouchableOpacity>
@@ -291,7 +292,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   <InspectionFileCard
                     file={file}
                     deleteFile={handleDeleteFile}
-                    displayDeleteIcon={route.params.status !== "complete"}
+                    displayDeleteIcon={route.params.status !== InspectionStatus.COMPLETE}
                   />
                 </TouchableOpacity>
               ))}

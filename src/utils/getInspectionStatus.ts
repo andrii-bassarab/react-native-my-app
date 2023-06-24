@@ -1,20 +1,20 @@
-import { InspectionStatus } from "~/types/inspectionStatus";
+import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 
 export const getInspectionStatus = (status: string, hasPassed: boolean) => {
   switch (true) {
     case status === "incomplete":
-      return InspectionStatus.INPROGRESS
+      return InspectionVisibleStatus.INPROGRESS
     case status === "scheduled":
-      return InspectionStatus.SCHEDULED;
+      return InspectionVisibleStatus.SCHEDULED;
     case status === "unscheduled":
-      return InspectionStatus.UNSCHEDULED;
+      return InspectionVisibleStatus.UNSCHEDULED;
     case status === "new":
-      return InspectionStatus.NEW;
+      return InspectionVisibleStatus.NEW;
     case status === "complete" && !hasPassed:
-      return InspectionStatus.FAILED;
+      return InspectionVisibleStatus.FAILED;
     case status === "complete" && hasPassed:
-      return InspectionStatus.PASSED;
+      return InspectionVisibleStatus.PASSED;
     default:
-      return InspectionStatus.NEW;
+      return InspectionVisibleStatus.NEW;
   }
 }

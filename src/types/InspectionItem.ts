@@ -1,4 +1,4 @@
-import { InspectionStatus } from "./inspectionStatus";
+import { InspectionVisibleStatus } from "./inspectionStatus";
 import { IComment } from "./Comment";
 
 export interface InspectionItem {
@@ -17,7 +17,7 @@ export interface InspectionItem {
   completedBy: string | null;
   hasPermissionToEnter: boolean;
   householdPhone: string | null;
-  visibleStatus: InspectionStatus;
+  visibleStatus: InspectionVisibleStatus;
   visibleHouseholdName: string;
   visibleInspectionForm: string;
   visibleAssignedTo: string;

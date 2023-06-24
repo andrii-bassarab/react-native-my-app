@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   NavigationProp,
   ParamListBase,
@@ -16,12 +16,13 @@ import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
 import { Category, CategoryItemField } from "~/types/Category";
-import { CharacterCard } from "../components/CategoryView/CharacterCard";
-import { AmenitiesCard } from "../components/CategoryView/AmenitiesCard";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_COMMENT } from "~/services/api/GetInspectionCategory";
+import { GET_CATEGORY_ITEM_VALUE } from "~/services/api/GetInspectionCategory";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
+import { ContentLoader } from "../components/Loader/Loader";
+import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
+import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
 
 interface Props {
   route: RouteProp<
@@ -44,26 +45,52 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { inspection, category, items, amenities } = route.params;
-  const { categoryApplyToInspection } = useAppSelector(state => state.inspectionItem);
-  const categoriesTemplates = useAppSelector(state => state.categoriesTemplates);
-
+  const { categoryApplyToInspection, categories } = useAppSelector(
+    (state) => state.inspectionItem
+  );
 
   const goBack = () => navigation.goBack();
 
-  const {data} = useQuery(GET_CATEGORY_COMMENT, {
+  const categoryItemsValues = useMemo(
+    () =>
+      categories.find((categoryTemplate) => categoryTemplate.id === category.id)
+        ?.items || [],
+    [categories, category]
+  );
+
+  const { data, loading, error } = useQuery(GET_CATEGORY_ITEM_VALUE, {
     variables: {
-      ids: items.map(item => item.id)
-    }
+      ids: items.map((item) => item.id),
+    },
+    skip: items.length === 0,
   });
 
   useEffect(() => {
-    dispatch(actionsCategoryTemplate.addCategoryComment({
-        templateId: inspection.templateId,
-        itemId: items.map(item => item.id)[0],
-        commentToAdd: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. ",
-    }))
-    console.log("dispatch");
-  }, []);
+    if (
+      data &&
+      data?.inspectionItemValues?.edges &&
+      Array.isArray(data?.inspectionItemValues?.edges) &&
+      data?.inspectionItemValues?.edges.every(
+        (edge: any) =>
+          typeof edge === "object" && edge.node && typeof edge.node === "object"
+      )
+    ) {
+      dispatch(
+        actionsCategoryTemplate.addCategoryItemValue({
+          templateId: inspection.templateId,
+          categoryId: category.id,
+          itemsValues: data?.inspectionItemValues?.edges.map(
+            (edge: any) => edge.node
+          ),
+        })
+      );
+    }
+  }, [data, loading, error]);
+
+  console.log(loading, "loading");
+  console.log(data, "data");
+  console.log(error, "error");
+  console.log(items, "items");
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
@@ -75,53 +102,37 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
           category={category}
         />
         <View style={{ height: 15 }}></View>
-        <ScrollView
-          style={{ paddingHorizontal: 5, flex: 1 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {items.length > 0 ? (
-            <>
-              {items.map((item) => (
-                <CharacterCard
-                  key={item.id}
-                  title={item.name}
-                  message={item.description}
-                  result={"Passed"}
-                  categoryApplyToInspection={categoryApplyToInspection}
-                  comment={item.comment}
-                  id={item.id}
-                />
-              ))}
-            </>
-          ) : (
-            <View style={styles.noItemsBox}>
-              <Text style={styles.noItemsText}>No category items</Text>
-            </View>
-          )}
-          {amenities.length > 0 ? (
-            <>
-              <Text style={styles.amenitiesTitle}>Amenities</Text>
-              {amenities.map((amenity) => (
-                <AmenitiesCard
-                  key={amenity.id}
-                  title={amenity.name}
-                  message={amenity.name}
-                  result="Yes"
-                  categoryApplyToInspection={categoryApplyToInspection}
-                />
-              ))}
-            </>
-          ) : (
-            <View style={styles.noItemsBox}>
-              <Text style={styles.noItemsText}>No category amenities</Text>
-            </View>
-          )}
-          {(items.length > 0 || amenities.length > 0) && (
-            <TouchableOpacity style={styles.saveButton} onPress={goBack}>
-              <Text style={styles.saveButtonText}>Save and Go Back</Text>
-            </TouchableOpacity>
-          )}
-        </ScrollView>
+        {loading ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+            }}
+          >
+            <ContentLoader />
+          </View>
+        ) : (
+          <ScrollView
+            style={{ paddingHorizontal: 5, flex: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <CategoryItemsList
+              categoryItemsValues={categoryItemsValues}
+              loading={loading}
+              categoryApplyToInspection={categoryApplyToInspection}
+            />
+            <CategoryAmenitiesList
+              categoryItemsValues={amenities}
+              loading={false}
+              categoryApplyToInspection={categoryApplyToInspection}
+            />
+            {(items.length > 0 || amenities.length > 0) && (
+              <TouchableOpacity style={styles.saveButton} onPress={goBack}>
+                <Text style={styles.saveButtonText}>Save and Go Back</Text>
+              </TouchableOpacity>
+            )}
+          </ScrollView>
+        )}
       </View>
     </Screen>
   );

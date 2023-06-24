@@ -6,27 +6,45 @@ import { CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
 
 interface Props {
-  visibleCategory: CategoryType[];
+  visibleCategories: CategoryType[];
   navigation: NavigationProp<ParamListBase>;
   inspection: InspectionItem;
 }
 
 export const CategoryList: React.FC<Props> = ({
-  visibleCategory,
+  visibleCategories,
   navigation,
   inspection,
 }) => {
+  const detectCategoryResult = (category: CategoryType) => {
+    switch (true) {
+      case category.items.length === 0:
+        return "No result yet";
+      case category.items.some((item) => item.result === undefined):
+        return "--";
+      case category.items.every((item) => item.result):
+        return "Passed";
+      case category.items.some((item) => item.result === false):
+        return "Failed";
+      default:
+        return "--";
+    }
+  };
+
+  const renderCategoryItem = (category: CategoryType) => ({
+    id: category.id,
+    title: category.name,
+    status: category.items.length > 0 ? "Complete" : "Incomplete",
+    result: detectCategoryResult(category),
+    items: category.items?.length,
+    photos: "No",
+    categoryApplyToInspection: category.isRequired,
+  })
+
   const handleNavigate = (category: CategoryType) => {
     navigation.navigate("InspectionCategory", {
       inspection,
-      category: {
-        title: category.name,
-        status: "Incomplete",
-        result: "--",
-        items: category.items?.length,
-        photos: "No",
-        categoryApplyToInspection: category.isRequired,
-      },
+      category: renderCategoryItem(category),
       items: category.items,
       amenities: category.amenities,
     });
@@ -36,7 +54,7 @@ export const CategoryList: React.FC<Props> = ({
     <View style={{ flex: 1 }}>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={visibleCategory}
+        data={visibleCategories}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListFooterComponent={() => <View style={{ height: 10 }} />}
@@ -46,13 +64,7 @@ export const CategoryList: React.FC<Props> = ({
             onPress={() => handleNavigate(category)}
           >
             <InspectionCategory
-              category={{
-                title: category.name,
-                status: "Incomplete",
-                result: "--",
-                items: category.items?.length,
-                photos: "No",
-              }}
+              category={renderCategoryItem(category)}
             />
           </TouchableOpacity>
         )}

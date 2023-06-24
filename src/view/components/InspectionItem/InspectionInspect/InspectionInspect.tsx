@@ -17,6 +17,7 @@ import { ContentLoader } from "../../Loader/Loader";
 import { CategoryList } from "./CategoryList";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -28,7 +29,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const inspection = route.params;
 
   const inspectionItem = useAppSelector(state => state.inspectionItem);
-  const categoriesTemplates = useAppSelector(state => state.categoriesTemplates);
 
   const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
@@ -37,7 +37,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   });
 
   const [query, setQuery] = useState("");
-  const [visibleCategory, setVisibleCategory] = useState(inspectionItem.categories);
+  const [visibleCategories, setVisibleCategory] = useState(inspectionItem.categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
   useEffect(() => {
@@ -73,11 +73,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log("changed selectedCategories")
-    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []))
-  }, [categoriesTemplates[inspection.templateId]]);
-
   return (
     <View style={styles.content}>
       <View style={{ padding: 2 }}>
@@ -88,7 +83,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         />
       </View>
       <View style={{ height: 15 }} />
-      {inspection.status !== "complete" && (
+      {inspection.status !== InspectionStatus.COMPLETE && (
         <TouchableOpacity onPress={() => setShowModalAddCategory(true)}>
           <InspecitonAddCategory />
         </TouchableOpacity>
@@ -100,7 +95,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         </View>
       ) : (
         <CategoryList
-          visibleCategory={visibleCategory || []}
+          visibleCategories={visibleCategories || []}
           inspection={inspection}
           navigation={navigation}
         />

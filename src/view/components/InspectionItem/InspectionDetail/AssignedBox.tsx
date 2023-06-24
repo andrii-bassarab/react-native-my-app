@@ -8,6 +8,7 @@ import { CustomSelect, OptionItem } from "../../Custom/CustomSelect";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   inspection: InspectionItem;
@@ -40,7 +41,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.labelText}>Assigned:</Text>
         <View style={styles.assignedBox}>
           <Text style={styles.text}>{assignedOption.name}</Text>
-          {inspection.status !== "complete" && (
+          {inspection.status !== InspectionStatus.COMPLETE && (
             <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
               <EditIcon color={colors.blue} height={15} width={15} />
             </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryType } from "~/types/Category";
+import { CategoryItemValue, CategoryType } from "~/types/Category";
 
 interface CategoryTemplate {
   [templateId: string]: CategoryType[];
@@ -13,7 +13,9 @@ const categoryTemplateSlice = createSlice({
   reducers: {
     addCategoryTemplate: (
       state,
-      { payload }: PayloadAction<{
+      {
+        payload,
+      }: PayloadAction<{
         templateIdToAdd: string;
         categories: CategoryType[];
       }>
@@ -21,29 +23,31 @@ const categoryTemplateSlice = createSlice({
       const { templateIdToAdd, categories } = payload;
       state[templateIdToAdd] = categories;
     },
-    addCategoryComment: (
+    addCategoryItemValue: (
       state,
-      { payload }: PayloadAction<{
+      {
+        payload,
+      }: PayloadAction<{
         templateId: string;
-        itemId: string;
-        commentToAdd: string;
+        categoryId: string;
+        itemsValues: CategoryItemValue[];
       }>
     ) => {
-      const { templateId, commentToAdd, itemId } = payload;
+      const { templateId, categoryId, itemsValues } = payload;
       const categories = state[templateId];
+      const foundCategory = categories.find(category => category.id === categoryId);
 
-      const mocksComments = {
-        createdBy: "heather@hdslabs.com",
-        createdOn: "2020-04-13T19:19:31.460Z",
-        commentBody: commentToAdd,
-      };
-
-      categories.forEach((category) => {
-        const item = category.items.find((item) => item.id === itemId);
-        if (item) {
-          item.comment = mocksComments;
-        }
-      });    
+      itemsValues.forEach(itemValue => {        
+          const item = foundCategory?.items?.find((item) => item.id === itemValue.inspectionItemId);
+          if (item) {
+            item.comment = {
+              createdBy: itemValue.inspectedBy || "User not regognized",
+              createdOn: itemValue.inspectedOn || "Created time not regognized",
+              commentBody: itemValue.comment,
+            };
+            item.result = itemValue.itemOptionId === null
+          }
+      });
     },
   },
 });

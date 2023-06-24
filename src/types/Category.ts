@@ -1,6 +1,7 @@
 import { IComment } from "./Comment";
 
 export interface Category {
+  id: string;
   title: string;
   status: string;
   result: string;
@@ -21,6 +22,18 @@ export interface CategoryItemField {
   description: string;
   options: CategoryOptionField[];
   comment?: IComment;
+  result?: boolean;
+}
+
+export interface CategoryItemValue {
+  id: string;
+  inspectionId: string;
+  inspectionItemId: string;
+  comment: string;
+  inspectedBy: null | string;
+  inspectedOn: null | string;
+  value: "false" | "true";
+  itemOptionId: null | string;
 }
 
 export interface CategoryType {

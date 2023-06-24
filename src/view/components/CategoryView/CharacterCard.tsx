@@ -18,20 +18,25 @@ import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 import PlusIcon from "~/view/assets/icons/plus.svg";
 import CameraIcon from "~/view/assets/icons/camera.svg";
 import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
-import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
+import {
+  Asset,
+  launchCamera,
+  launchImageLibrary,
+} from "react-native-image-picker";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { ModalViewImage } from "./ModalViewImage";
 import { IComment } from "~/types/Comment";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
+import { ContentLoader } from "../Loader/Loader";
 
 interface Props {
   title: string;
   message: string;
-  result: "Fail" | "Passed";
+  result?: boolean;
   categoryApplyToInspection?: boolean;
   comment?: IComment;
   id?: string;
+  loading: boolean;
 }
 
 export const CharacterCard: React.FC<Props> = ({
@@ -40,17 +45,18 @@ export const CharacterCard: React.FC<Props> = ({
   result,
   categoryApplyToInspection = false,
   comment,
+  loading,
   id,
 }) => {
   const dispatch = useAppDispatch();
-  const { inspectionItem } = useAppSelector(state => state.inspectionItem);
   const resultDropdownOptions = ["Fail", "Passed"];
-  const [selectedResult, setSelectedResult] = useState<OptionItem>(result);
+  const [selectedResult, setSelectedResult] = useState<OptionItem>(
+    result ? "Passed" : "Fail"
+  );
   const [openMainInfo, setOpenMainInfo] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [images, setImages] = useState<Asset[]>([]);
   const [showModalImage, setShowModalImage] = useState(false);
-
   const [visibleComment, setVisibleComment] = useState(comment);
 
   const handleTakePhoto = async () => {
@@ -76,7 +82,9 @@ export const CharacterCard: React.FC<Props> = ({
 
   const handleChoosePhoto = async () => {
     try {
-      const chosenImageFromGallery = await launchImageLibrary({ mediaType: "photo" });
+      const chosenImageFromGallery = await launchImageLibrary({
+        mediaType: "photo",
+      });
 
       if (
         chosenImageFromGallery.assets &&
@@ -96,30 +104,40 @@ export const CharacterCard: React.FC<Props> = ({
   };
 
   const handleDeleteImage = (imageToDelete: Asset) => {
-    setImages((prev) => prev.filter((photo) => photo.fileName !== imageToDelete.fileName));
+    setImages((prev) =>
+      prev.filter((photo) => photo.fileName !== imageToDelete.fileName)
+    );
   };
 
   const handleOpenModalImage = (imageToSet: Asset) => {
     setNewPhoto(imageToSet);
     setShowModalImage(true);
-  }
+  };
 
   const handleEditComment = (comment: string) => {
-    setVisibleComment((prev) => prev && ({
-      ...prev,
-      commentBody: comment,
-    }))
-    dispatch(actionsCategoryTemplate.addCategoryComment({
-      templateId: inspectionItem?.templateId || "",
-        itemId: id || "",
-        commentToAdd: comment,
-    }))
+    setVisibleComment(
+      (prev) =>
+        prev && {
+          ...prev,
+          commentBody: comment,
+        }
+    );
   };
+
+  console.log(result, "result")
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
-      <TouchableOpacity style={styles.label} onPress={() => setOpenMainInfo((prev) => !prev)}>
-        <View style={[styles.expandBox, !openMainInfo && { transform: [{ rotate: "-90deg" }] }]}>
+      <TouchableOpacity
+        style={styles.label}
+        onPress={() => setOpenMainInfo((prev) => !prev)}
+      >
+        <View
+          style={[
+            styles.expandBox,
+            !openMainInfo && { transform: [{ rotate: "-90deg" }] },
+          ]}
+        >
           <ExpandIcon color={"#fff"} width={15} height={15} />
         </View>
         <Text style={styles.title}>{title}</Text>
@@ -132,98 +150,147 @@ export const CharacterCard: React.FC<Props> = ({
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.mainInfo}>
               <Text style={styles.messageText}>{message}</Text>
-              <View
-                style={[
-                  styles.resultLabel,
-                  !categoryApplyToInspection && { justifyContent: "flex-start" },
-                ]}
-              >
-                <Text style={{ ...styles.labelItemText, flex: 1 }}>Result:</Text>
-                {categoryApplyToInspection ? (
-                  <View style={{ width: "60%", height: 40, backgroundColor: "#fff" }}>
-                    <CustomSelect
-                      data={resultDropdownOptions}
-                      selectedItem={selectedResult}
-                      setSelectedItem={setSelectedResult}
-                      dropdownStyle={styles.dropdownStyle}
-                      selectedItemStyle={styles.selectedResultItem}
-                    />
-                  </View>
-                ) : (
-                  <Text style={styles.noResultText}>N/A</Text>
-                )}
-              </View>
-              <View
-                style={[
-                  styles.commentsLabel,
-                  !categoryApplyToInspection && {
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  },
-                ]}
-              >
-                <Text style={styles.labelItemText}>Comments:</Text>
-                {categoryApplyToInspection ? (
-                  <>
-                    <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: 10 }}>
-                        {visibleComment && <CommentItem
-                          comment={visibleComment}
-                          index={0}
-                          arrayLength={1}
-                          showEditComment
-                          saveEditedComment={handleEditComment}
-                        />}
-                    </ScrollView>
-                  </>
-                ) : (
-                  <Text style={styles.noResultText}>N/A</Text>
-                )}
-              </View>
-              {categoryApplyToInspection ? (
-                <View style={styles.commentsLabel}>
-                  <Text style={styles.labelItemText}>Add Photos</Text>
-                  <View style={styles.buttonsTakePhotoContainer}>
-                    <View>
-                      <TouchableOpacity style={styles.takePhotoButton} onPress={handleChoosePhoto}>
-                        <PlusIcon color={"rgba(51, 51, 51, 0.33)"} width={"40%"} height={"40%"} />
-                      </TouchableOpacity>
-                      <Text style={styles.photoName}>From Gallery</Text>
-                    </View>
-                    <View>
-                      <TouchableOpacity style={styles.takePhotoButton} onPress={handleTakePhoto}>
-                        <CameraIcon color={"rgba(51, 51, 51, 0.33)"} width={"60%"} height={"60%"} />
-                      </TouchableOpacity>
-                      <Text style={styles.photoName}>Take Photo</Text>
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                    {images.map((photo) => (
-                      <View style={styles.photoLabel} key={photo.uri}>
-                        <TouchableOpacity onPress={() => handleOpenModalImage(photo)}>
-                          <Image
-                            source={{
-                              uri: photo?.uri,
-                            }}
-                            style={styles.photoImage}
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.deletePhoto}
-                          onPress={() => handleDeleteImage(photo)}
-                        >
-                          <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
-                        </TouchableOpacity>
-                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.imageFileName}>
-                          {photo.fileName}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
+              {loading ? (
+                <View>
+                  <ContentLoader size="medium" />
                 </View>
               ) : (
-                <View style={styles.resultLabel}>
-                  <Text style={styles.labelItemText}>Photos:</Text>
-                  <Text style={styles.noResultText}>N/A</Text>
+                <View>
+                  {typeof result === 'boolean' && <View
+                    style={[
+                      styles.resultLabel,
+                      !categoryApplyToInspection && {
+                        justifyContent: "flex-start",
+                      },
+                    ]}
+                  >
+                    <Text style={{ ...styles.labelItemText, flex: 1 }}>
+                      Result:
+                    </Text>
+                    {categoryApplyToInspection ? (
+                      <View
+                        style={{
+                          width: "60%",
+                          height: 40,
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <CustomSelect
+                          data={resultDropdownOptions}
+                          selectedItem={selectedResult}
+                          setSelectedItem={setSelectedResult}
+                          dropdownStyle={styles.dropdownStyle}
+                          selectedItemStyle={styles.selectedResultItem}
+                        />
+                      </View>
+                    ) : (
+                      <Text style={styles.noResultText}>N/A</Text>
+                    )}
+                  </View>}
+                  {visibleComment && (
+                    <View
+                      style={[
+                        styles.commentsLabel,
+                        !categoryApplyToInspection && {
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        },
+                      ]}
+                    >
+                      <Text style={styles.labelItemText}>Comments:</Text>
+                      {categoryApplyToInspection ? (
+                        <ScrollView
+                          showsVerticalScrollIndicator={false}
+                          style={{ marginTop: 10 }}
+                        >
+                          <CommentItem
+                            comment={visibleComment}
+                            index={0}
+                            arrayLength={1}
+                            showEditComment
+                            saveEditedComment={handleEditComment}
+                          />
+                        </ScrollView>
+                      ) : (
+                        <Text style={styles.noResultText}>N/A</Text>
+                      )}
+                    </View>
+                  )}
+                  <View>
+                    {categoryApplyToInspection ? (
+                      <View style={styles.commentsLabel}>
+                        <Text style={styles.labelItemText}>Add Photos</Text>
+                        <View style={styles.buttonsTakePhotoContainer}>
+                          <View>
+                            <TouchableOpacity
+                              style={styles.takePhotoButton}
+                              onPress={handleChoosePhoto}
+                            >
+                              <PlusIcon
+                                color={"rgba(51, 51, 51, 0.33)"}
+                                width={"40%"}
+                                height={"40%"}
+                              />
+                            </TouchableOpacity>
+                            <Text style={styles.photoName}>From Gallery</Text>
+                          </View>
+                          <View>
+                            <TouchableOpacity
+                              style={styles.takePhotoButton}
+                              onPress={handleTakePhoto}
+                            >
+                              <CameraIcon
+                                color={"rgba(51, 51, 51, 0.33)"}
+                                width={"60%"}
+                                height={"60%"}
+                              />
+                            </TouchableOpacity>
+                            <Text style={styles.photoName}>Take Photo</Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{ flexDirection: "row", flexWrap: "wrap" }}
+                        >
+                          {images.map((photo) => (
+                            <View style={styles.photoLabel} key={photo.uri}>
+                              <TouchableOpacity
+                                onPress={() => handleOpenModalImage(photo)}
+                              >
+                                <Image
+                                  source={{
+                                    uri: photo?.uri,
+                                  }}
+                                  style={styles.photoImage}
+                                />
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.deletePhoto}
+                                onPress={() => handleDeleteImage(photo)}
+                              >
+                                <CloseIcon
+                                  color={"#fff"}
+                                  width={"60%"}
+                                  height={"60%"}
+                                />
+                              </TouchableOpacity>
+                              <Text
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                                style={styles.imageFileName}
+                              >
+                                {photo.fileName}
+                              </Text>
+                            </View>
+                          ))}
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={styles.resultLabel}>
+                        <Text style={styles.labelItemText}>Photos:</Text>
+                        <Text style={styles.noResultText}>N/A</Text>
+                      </View>
+                    )}
+                  </View>
                 </View>
               )}
             </View>

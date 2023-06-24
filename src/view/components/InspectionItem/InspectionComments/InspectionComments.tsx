@@ -12,6 +12,7 @@ import CommentIcon from "~/view/assets/icons/comment.svg";
 import { AddCommentBox } from "./AddCommentBox";
 import { CommentItem } from "./CommentItem";
 import { IComment } from "~/types/Comment";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -59,7 +60,7 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
             <Text style={styles.noCommentText}>No comments</Text>
           </View>
         )}
-        {status !== "complete" && <AddCommentBox
+        {status !== InspectionStatus.COMPLETE && <AddCommentBox
           inspectionId={inspectionId}
           input={input}
           setInput={setInput}

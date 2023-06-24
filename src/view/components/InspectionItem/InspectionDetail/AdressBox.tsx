@@ -10,7 +10,7 @@ import {
 import { colors } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
-import { InspectionStatus } from "~/types/inspectionStatus";
+import { InspectionStatus, InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -73,7 +73,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
             <Text style={styles.text}>
               {`${inspection.unit.streetAddress} ${inspection.unit.city}, ${inspection.unit.state} ${inspection.unit.postalCode}`}
             </Text>
-            {inspection.status !== "complete" && (
+            {inspection.status !== InspectionStatus.COMPLETE && (
               <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
                 <EditIcon color={colors.blue} height={15} width={15} />
               </TouchableOpacity>

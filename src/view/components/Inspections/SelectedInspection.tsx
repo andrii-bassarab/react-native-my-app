@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { colors } from "../../theme";
 import LeftErrow from "~/view/assets/icons/leftArrow.svg";
-import { InspectionStatus } from "~/types/inspectionStatus";
+import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { Category } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsToastNotification } from "~/modules/toastNotification";
@@ -36,14 +36,6 @@ export const SelectedInspection: React.FC<Props> = ({
   const itemColor = getInspectionColorByStatus(item.visibleStatus);
 
   const [updateInspection, { loading, data, error }] = useMutation(UPDATE_INSPECTION);
-
-  useEffect(() => {
-    console.log('====================================');
-    console.log("assignedOption", assignedOption)
-    console.log("data", data)
-    console.log("error", error)
-    console.log('====================================');
-  }, [assignedOption, data, error])
 
   const updateStatusCache = (status: string) => {
     return (cache: ApolloCache<any>, { data }: any) => {
@@ -182,7 +174,7 @@ export const SelectedInspection: React.FC<Props> = ({
               : `Created on ${getInspectionDate(new Date(item?.createdOn || item.createdOn))}`}
           </Text>
         </View>
-        {(inspectionItem?.visibleStatus === InspectionStatus.NEW || inspectionItem?.visibleStatus === InspectionStatus.SCHEDULED) &&
+        {(inspectionItem?.visibleStatus === InspectionVisibleStatus.NEW || inspectionItem?.visibleStatus === InspectionVisibleStatus.SCHEDULED) &&
           !includeCategory && (
             <TouchableOpacity
               style={styles.startInspectionButton}
@@ -191,7 +183,7 @@ export const SelectedInspection: React.FC<Props> = ({
               <Text style={styles.startInspectionText}>Start Inspection</Text>
             </TouchableOpacity>
           )}
-        {!startSignature && inspectionItem?.visibleStatus === InspectionStatus.INPROGRESS && !includeCategory && (
+        {!startSignature && inspectionItem?.visibleStatus === InspectionVisibleStatus.INPROGRESS && !includeCategory && (
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity
               style={[styles.startInspectionButton, styles.saveButton]}

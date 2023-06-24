@@ -6,7 +6,11 @@ import {
 } from "react-native";
 import { colors } from "~/view/theme";
 
-export const ContentLoader: React.FC = () => {
+interface Props {
+  size?: 'large' | 'medium' | 'small'
+}
+
+export const ContentLoader: React.FC<Props> = ({size = 'large'}) => {
   const spinValue = new Animated.Value(0);
 
   const spin = spinValue.interpolate({
@@ -23,9 +27,17 @@ export const ContentLoader: React.FC = () => {
     })
   ).start();
 
+  const stylesSize = StyleSheet.create({
+    size: {
+      width: size === 'large' ? 100 : size === 'medium' ? 60 : 40,
+      height: size === 'large' ? 100 : size === 'medium' ? 60 : 40,
+      borderWidth: size === 'large' ? 12 : size === 'medium' ? 8 : 6,
+    },
+  });
+
   return (
     <Animated.View
-      style={{ ...styles.loaderContainer, transform: [{ rotate: spin }] }}
+      style={{ ...styles.loaderContainer, ...stylesSize.size, transform: [{ rotate: spin }] }}
     ></Animated.View>
   );
 };

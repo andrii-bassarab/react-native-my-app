@@ -8,7 +8,7 @@ import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
 import SearchIcon from "../assets/icons/search.svg";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { Screen } from "../components/Screen/Screen";
-import { InspectionStatus } from "~/types/inspectionStatus";
+import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { getCalendarVisibleDate } from "~/utils/visibleDate";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -56,13 +56,13 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
       );
     } else {
       setVisibleInspections((prev) => {
-        const newInspections = prev.filter((item) => item.visibleStatus === InspectionStatus.NEW);
-        const scheduled = prev.filter((item) => item.visibleStatus === InspectionStatus.SCHEDULED);
+        const newInspections = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.NEW);
+        const scheduled = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.SCHEDULED);
         const inProgress = prev.filter(
-          (item) => item.visibleStatus === InspectionStatus.INPROGRESS
+          (item) => item.visibleStatus === InspectionVisibleStatus.INPROGRESS
         );
-        const failed = prev.filter((item) => item.visibleStatus === InspectionStatus.FAILED);
-        const passed = prev.filter((item) => item.visibleStatus === InspectionStatus.PASSED);
+        const failed = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.FAILED);
+        const passed = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.PASSED);
 
         return [...inProgress, ...scheduled, ...newInspections, ...passed, ...failed];
       });
@@ -82,22 +82,22 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
 
     const newUnscheduledInspections = inspections.filter(
       (item) =>
-        item.visibleStatus === InspectionStatus.UNSCHEDULED ||
-        item.visibleStatus === InspectionStatus.NEW
+        item.visibleStatus === InspectionVisibleStatus.UNSCHEDULED ||
+        item.visibleStatus === InspectionVisibleStatus.NEW
     );
 
     const scheduledInspections = inspections.filter(
-      (item) => item.visibleStatus === InspectionStatus.SCHEDULED
+      (item) => item.visibleStatus === InspectionVisibleStatus.SCHEDULED
     );
 
     const incompleteInspections = inspections.filter(
-      (item) => item.visibleStatus === InspectionStatus.INPROGRESS
+      (item) => item.visibleStatus === InspectionVisibleStatus.INPROGRESS
     );
 
     const completeInspections = inspections.filter(
       (item) =>
-        item.visibleStatus === InspectionStatus.PASSED ||
-        item.visibleStatus === InspectionStatus.FAILED
+        item.visibleStatus === InspectionVisibleStatus.PASSED ||
+        item.visibleStatus === InspectionVisibleStatus.FAILED
     );
 
     let filteredInspections: InspectionItem[] = [];

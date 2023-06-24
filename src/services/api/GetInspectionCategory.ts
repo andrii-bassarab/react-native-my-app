@@ -61,29 +61,26 @@ export const ADD_INSPECTION_CATEGORY = gql`
   }
 `
 
-export const GET_CATEGORY_COMMENT = gql`
+export const GET_CATEGORY_ITEM_VALUE = gql`
   query GetInspectionItemValues ($ids: [String!]){
     inspectionItemValues (
-        first: 50      
-        where: {      
-          id: {in: $ids}
-      }   
-    ) {
-      edges {
-        node {
-          id
-          inspectionId       
-          inspectionItemId
-          comment         
-        }
-        cursor
-      } 
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
+        first: 50
+        where: {
+          inspectionItemId: {in: $ids}
       }
+    ) {
+    edges {
+      node {
+        id
+        inspectionId
+        inspectionItemId
+        comment
+        inspectedBy
+        inspectedOn
+        value
+        itemOptionId
+      }
+    }
     }
   }
 `

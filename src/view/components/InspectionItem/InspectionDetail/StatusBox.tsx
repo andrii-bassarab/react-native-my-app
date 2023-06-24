@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionStatus } from "~/types/inspectionStatus";
 import { getInspectionDate } from "~/utils/visibleDate";
 
 interface Props {
@@ -24,7 +25,7 @@ export const StatusBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Result:</Text>
-        <Text style={styles.text}>{inspection.status === "complete" ? inspection.hasPassed ? "Passed" : "Failed" : "--"}</Text>
+        <Text style={styles.text}>{inspection.status === InspectionStatus.COMPLETE ? inspection.hasPassed ? "Passed" : "Failed" : "--"}</Text>
       </View>
     </View>
   );
