@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from "react-native";
 import { getColorCategoryByResult } from "~/utils/getInspectionColor";
 import { colors } from "~/view/theme";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
@@ -8,6 +14,10 @@ import DotsIcon from "~/view/assets/icons/dots.svg";
 import DeleteIcon from "~/view/assets/icons/delete.svg";
 import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
 import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
+import { useAppSelector } from "~/store/hooks";
+import { InspectionStatus } from "~/types/inspectionStatus";
+import { useMutation } from "@apollo/client";
+import { DELETE_CATEGORY } from "~/services/api/GetInspectionCategory";
 
 interface Props {
   category: {
@@ -22,15 +32,34 @@ interface Props {
 }
 
 export const InspectionCategory: React.FC<Props> = ({ category }) => {
-  const { title, status, result, items, photos } = category;
+  const { title, status, result, items, photos, categoryAdded } = category;
   const [showDeleteLabel, setShowDeleteLabel] = useState(false);
   const [showDeleteModalWindow, setShowDeleteModalWindow] = useState(false);
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { profile } = useAppSelector((state) => state.user);
 
   const itemColor = getColorCategoryByResult(result, status);
 
-  const onContinue = () => {
+  const [deleteCategory, { loading }] = useMutation(DELETE_CATEGORY);
+
+  const closeModalDeleteWindow = () => {
     setShowDeleteModalWindow(false);
     setShowDeleteLabel(false);
+  }
+
+  const onContinue = async () => {
+    await deleteCategory({
+      variables: {
+        command: {
+          customerId: "pfdylv",
+          siteId: "pfdylv",
+          id: category.id,
+          deletedBy: profile?.email || "",
+        },
+      },
+    });
+
+    closeModalDeleteWindow()
   };
 
   const handleClickOnDotsIcon = (event: GestureResponderEvent) => {
@@ -42,26 +71,36 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
     <View style={[styles.card, styles.shadowProp, { borderColor: itemColor }]}>
       <View style={{ ...styles.mainInfo, borderColor: itemColor }}>
         <View style={styles.titleLabel}>
-          <Text style={{ ...styles.cardTitle, color: itemColor, flex: 1.5 }}>{title}</Text>
-          {category.categoryAdded && (
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 0.2 }}>
-              {showDeleteLabel && (
-                <TouchableOpacity
-                  style={[styles.deleteLabel, styles.shadowProp]}
-                  onPress={() => setShowDeleteModalWindow((prev) => !prev)}
-                >
-                  <DeleteIcon color={colors.layout} width={20} height={15} />
-                  <Text>Delete</Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity
-                onPress={handleClickOnDotsIcon}
-                style={{ paddingHorizontal: "50%", paddingVertical: "10%", }}
+          <Text style={{ ...styles.cardTitle, color: itemColor, flex: 1.5 }}>
+            {title}
+          </Text>
+          {categoryAdded &&
+            status !== "Complete" &&
+            inspectionItem?.status !== InspectionStatus.COMPLETE && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  flex: 0.2,
+                }}
               >
-                <DotsIcon color={colors.primary} height={15} width={15} />
-              </TouchableOpacity>
-            </View>
-          )}
+                {showDeleteLabel && (
+                  <TouchableOpacity
+                    style={[styles.deleteLabel, styles.shadowProp]}
+                    onPress={() => setShowDeleteModalWindow((prev) => !prev)}
+                  >
+                    <DeleteIcon color={colors.layout} width={20} height={15} />
+                    <Text>Delete</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  onPress={handleClickOnDotsIcon}
+                  style={{ paddingHorizontal: "50%", paddingVertical: "10%" }}
+                >
+                  <DotsIcon color={colors.primary} height={15} width={15} />
+                </TouchableOpacity>
+              </View>
+            )}
         </View>
         <View style={styles.content}>
           <View style={{ flex: 1 }}>
@@ -101,7 +140,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           title={"Are you sure you want to delete “Living Room (Additional)”?"}
           Icon={DeleteModalIcon}
           onContinue={onContinue}
-          onCancel={onContinue}
+          onCancel={closeModalDeleteWindow}
         />
       )}
     </View>
@@ -185,7 +224,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     marginRight: 5,
-    position: 'absolute',
-    right: "100%"
+    position: "absolute",
+    right: "100%",
   },
 });

@@ -25,6 +25,7 @@ interface Props {
 
 export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
   const dispatch = useAppDispatch();
+  const { profile }= useAppSelector((state) => state.user);
   const { inspectionItem } = useAppSelector(state => state.inspectionItem)
 
   const [addCategory, {loading}] = useMutation(ADD_INSPECTION_CATEGORY);
@@ -52,7 +53,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
     inspectionTemplateId: inspectionItem?.templateId,
     name: displayName,
     isRequired: true,
-    createdBy: "nazar.kubyk@appitventures.com",
+    createdBy: profile?.email || "",
   };
 
   const handleAddNewCategory = async () => {

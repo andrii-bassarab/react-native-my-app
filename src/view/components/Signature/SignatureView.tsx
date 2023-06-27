@@ -7,6 +7,7 @@ import { colors } from "~/view/theme";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { useAppDispatch } from "~/store/hooks";
 import { InspectionItem } from "~/types/InspectionItem";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   inspection: InspectionItem
@@ -23,6 +24,15 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
   const [currentPathNumber, setCurrentPathNumber] = useState<number | null>(null);
   const [startSignatureDraw, setStartSignatureDraw] = useState(false);
   const [showViewSignature, setShowViewSignature] = useState(false);
+
+
+  useEffect(() => {
+    if (pathSignTenant && pathSignLandlord && pathSignInspector) {
+      dispatch(actionsInspectionItem.setSignatureCount(3))
+    } else {
+      dispatch(actionsInspectionItem.setSignatureCount(0))
+    }
+  }, [pathSignInspector, pathSignLandlord, pathSignTenant])
 
   // console.log("pathSignInspector",pathSignInspector)
 

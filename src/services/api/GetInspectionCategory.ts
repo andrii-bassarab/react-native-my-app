@@ -7,6 +7,7 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
         order: { createdOn: ASC } 
         where: {      
           inspectionTemplateId: {in: $ids}
+          deletedOn: { eq: null}
       }   
     ) {
      edges {
@@ -16,6 +17,7 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
         name
         isRequired
         importKey
+        createdBy
         amenities{
           id
           name
@@ -81,6 +83,63 @@ export const GET_CATEGORY_ITEM_VALUE = gql`
         itemOptionId
       }
     }
+    }
+  }
+`
+
+export const GET_CATEGORY_AMENITY_VALUE = gql`
+  query GetInspectionAmenityValues ($ids: [String!]){
+    inspectionAmenityValues (
+        first: 50      
+        where: {      
+          inspectionAmenityId: {in: $ids}
+      }   
+    ) {
+    edges {
+      node {
+        id
+        inspectionId       
+        inspectionAmenityId
+        value
+        comment         
+      }
+    } 
+    }
+  }
+`
+
+export const DELETE_CATEGORY = gql`
+  mutation deleteInspectionCategoryMutation($command: DeleteInspectionCategoryCommandInput!){
+    deleteInspectionCategory(command: $command){
+      commandName
+          status
+          issuedOn
+          acceptedOn
+          succeededOn
+          failedOn
+          failureReason
+      affectedEntity{
+        id 
+        deletedBy                       
+      }
+    }
+  }
+`
+
+export const UPDATE_CATEGOTY_ITEM = gql`
+  mutation updateInspectionItemValueMutation($command: UpdateInspectionItemValueCommandInput!){
+    updateInspectionItemValue(command: $command){
+        commandName
+        status
+        issuedOn
+        acceptedOn
+        succeededOn
+        failedOn
+        failureReason
+        affectedEntity {
+            id            
+            comment
+        }
     }
   }
 `

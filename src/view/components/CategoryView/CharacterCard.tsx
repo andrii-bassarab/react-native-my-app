@@ -1,4 +1,4 @@
-import React, { createElement, useState } from "react";
+import React, { createElement, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -28,6 +28,15 @@ import { ModalViewImage } from "./ModalViewImage";
 import { IComment } from "~/types/Comment";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { ContentLoader } from "../Loader/Loader";
+import { useMutation } from "@apollo/client";
+import {
+  GET_ALL_INSPECTIONS_CATEGORY,
+  GET_CATEGORY_ITEM_VALUE,
+  UPDATE_CATEGOTY_ITEM,
+} from "~/services/api/GetInspectionCategory";
+import { useNavigation } from "@react-navigation/native";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   title: string;
@@ -35,8 +44,9 @@ interface Props {
   result?: boolean;
   categoryApplyToInspection?: boolean;
   comment?: IComment;
-  id?: string;
+  inspectionItemId?: string;
   loading: boolean;
+  id: string;
 }
 
 export const CharacterCard: React.FC<Props> = ({
@@ -46,18 +56,22 @@ export const CharacterCard: React.FC<Props> = ({
   categoryApplyToInspection = false,
   comment,
   loading,
+  inspectionItemId,
   id,
 }) => {
   const dispatch = useAppDispatch();
   const resultDropdownOptions = ["Fail", "Passed"];
   const [selectedResult, setSelectedResult] = useState<OptionItem>(
-    result ? "Passed" : "Fail"
+    result === true ? "Passed" : "Fail"
   );
   const [openMainInfo, setOpenMainInfo] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [images, setImages] = useState<Asset[]>([]);
   const [showModalImage, setShowModalImage] = useState(false);
   const [visibleComment, setVisibleComment] = useState(comment);
+  const { inspectionItem, categories, startUpdateInspectionCategoryView } =
+    useAppSelector((state) => state.inspectionItem);
+  const navitation = useNavigation();
 
   const handleTakePhoto = async () => {
     try {
@@ -124,7 +138,39 @@ export const CharacterCard: React.FC<Props> = ({
     );
   };
 
-  console.log(result, "result")
+  const [updateCategoryItem, { loading: load, error }] =
+    useMutation(UPDATE_CATEGOTY_ITEM);
+
+  console.log("loading", load);
+  console.log("error", error);
+
+  const handleSaveAndGoBack = async () => {
+    await updateCategoryItem({
+      variables: {
+        command: {
+          customerId: "pfdylv",
+          siteId: "pfdylv",
+          id: id,
+          inspectionId: inspectionItem?.id,
+          inspectionItemId: inspectionItemId,
+          value: selectedResult === "Passed",
+          comment: visibleComment?.commentBody || "",
+        },
+      },
+      refetchQueries: [
+        {
+          query: GET_CATEGORY_ITEM_VALUE,
+          variables: {
+            ids: categories
+              .flatMap((category) => category.items.map((item) => item.id))
+              .filter((itemId) => itemId.length > 0)
+              .flat(),
+          },
+        },
+      ],
+      awaitRefetchQueries: true,
+    });
+  };
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -156,68 +202,96 @@ export const CharacterCard: React.FC<Props> = ({
                 </View>
               ) : (
                 <View>
-                  {typeof result === 'boolean' && <View
-                    style={[
-                      styles.resultLabel,
-                      !categoryApplyToInspection && {
-                        justifyContent: "flex-start",
-                      },
-                    ]}
-                  >
-                    <Text style={{ ...styles.labelItemText, flex: 1 }}>
-                      Result:
-                    </Text>
-                    {categoryApplyToInspection ? (
-                      <View
-                        style={{
-                          width: "60%",
-                          height: 40,
-                          backgroundColor: "#fff",
-                        }}
-                      >
-                        <CustomSelect
-                          data={resultDropdownOptions}
-                          selectedItem={selectedResult}
-                          setSelectedItem={setSelectedResult}
-                          dropdownStyle={styles.dropdownStyle}
-                          selectedItemStyle={styles.selectedResultItem}
-                        />
-                      </View>
-                    ) : (
-                      <Text style={styles.noResultText}>N/A</Text>
-                    )}
-                  </View>}
+                  {typeof result === "boolean" && (
+                    <View
+                      style={[
+                        styles.resultLabel,
+                        !categoryApplyToInspection && {
+                          justifyContent: "flex-start",
+                        },
+                      ]}
+                    >
+                      <Text style={{ ...styles.labelItemText, flex: 1 }}>
+                        Result:
+                      </Text>
+                      {categoryApplyToInspection ? (
+                        <View
+                          style={{
+                            width: "60%",
+                            height: 40,
+                            backgroundColor: "#fff",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {inspectionItem?.status ===
+                          InspectionStatus.COMPLETE ? (
+                            <Text style={styles.labelItemText}>
+                              {typeof selectedResult === "string" &&
+                                selectedResult}
+                            </Text>
+                          ) : (
+                            <CustomSelect
+                              data={resultDropdownOptions}
+                              selectedItem={selectedResult}
+                              setSelectedItem={setSelectedResult}
+                              dropdownStyle={styles.dropdownStyle}
+                              selectedItemStyle={styles.selectedResultItem}
+                            />
+                          )}
+                        </View>
+                      ) : (
+                        <Text style={styles.noResultText}>N/A</Text>
+                      )}
+                    </View>
+                  )}
                   {visibleComment && (
                     <View
                       style={[
                         styles.commentsLabel,
-                        !categoryApplyToInspection && {
+                        (!categoryApplyToInspection ||
+                          inspectionItem?.status ===
+                            InspectionStatus.COMPLETE) && {
                           flexDirection: "row",
                           justifyContent: "space-between",
+                          flexWrap: "wrap",
                         },
                       ]}
                     >
-                      <Text style={styles.labelItemText}>Comments:</Text>
+                      <Text style={{ ...styles.labelItemText, flex: 1 }}>
+                        Comments:
+                      </Text>
                       {categoryApplyToInspection ? (
-                        <ScrollView
-                          showsVerticalScrollIndicator={false}
-                          style={{ marginTop: 10 }}
-                        >
-                          <CommentItem
-                            comment={visibleComment}
-                            index={0}
-                            arrayLength={1}
-                            showEditComment
-                            saveEditedComment={handleEditComment}
-                          />
-                        </ScrollView>
+                        <>
+                          {inspectionItem?.status ===
+                          InspectionStatus.COMPLETE ? (
+                            <Text
+                              style={{ ...styles.labelItemText, flex: 1.5 }}
+                            >
+                              {visibleComment.commentBody}
+                            </Text>
+                          ) : (
+                            <ScrollView
+                              showsVerticalScrollIndicator={false}
+                              style={{ marginTop: 10 }}
+                            >
+                              <CommentItem
+                                comment={visibleComment}
+                                index={0}
+                                arrayLength={1}
+                                showEditComment
+                                saveEditedComment={handleEditComment}
+                              />
+                            </ScrollView>
+                          )}
+                        </>
                       ) : (
                         <Text style={styles.noResultText}>N/A</Text>
                       )}
                     </View>
                   )}
                   <View>
-                    {categoryApplyToInspection ? (
+                    {(categoryApplyToInspection &&
+                    inspectionItem?.status !== InspectionStatus.COMPLETE) ? (
                       <View style={styles.commentsLabel}>
                         <Text style={styles.labelItemText}>Add Photos</Text>
                         <View style={styles.buttonsTakePhotoContainer}>
@@ -359,7 +433,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 14,
     color: "#808080",
-    flex: 1,
   },
   dropdownStyle: {
     width: "100%",

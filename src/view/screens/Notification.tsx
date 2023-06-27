@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingTop: 10,
   },
   notificationsLabel: {

@@ -22,9 +22,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   );
   const showWindow = useAppSelector((state) => state.showWindow);
 
-  console.log(visibleLoader, "visibleLoader");
-  console.log(inspections.length, "inspections");
-
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
       <View style={styles.content}>

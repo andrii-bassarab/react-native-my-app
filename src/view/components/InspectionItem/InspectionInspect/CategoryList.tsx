@@ -16,30 +16,16 @@ export const CategoryList: React.FC<Props> = ({
   navigation,
   inspection,
 }) => {
-  const detectCategoryResult = (category: CategoryType) => {
-    switch (true) {
-      case category.items.length === 0:
-        return "No result yet";
-      case category.items.some((item) => item.result === undefined):
-        return "--";
-      case category.items.every((item) => item.result):
-        return "Passed";
-      case category.items.some((item) => item.result === false):
-        return "Failed";
-      default:
-        return "--";
-    }
-  };
-
   const renderCategoryItem = (category: CategoryType) => ({
     id: category.id,
     title: category.name,
     status: category.items.length > 0 ? "Complete" : "Incomplete",
-    result: detectCategoryResult(category),
+    result: category.result || "No results yet",
     items: category.items?.length,
     photos: "No",
     categoryApplyToInspection: category.isRequired,
-  })
+    categoryAdded: true,
+  });
 
   const handleNavigate = (category: CategoryType) => {
     navigation.navigate("InspectionCategory", {

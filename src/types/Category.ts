@@ -18,11 +18,27 @@ export interface CategoryOptionField {
 
 export interface CategoryItemField {
   id: string;
+  inspectionItemId?: string;
   name: string;
   description: string;
   options: CategoryOptionField[];
   comment?: IComment;
   result?: boolean;
+}
+
+export interface CategoryAmenityField {
+  id: string;
+  name: string;
+  comment?: IComment;
+  result?: boolean;
+}
+
+export interface CategoryAmenityValue {
+  id: string;
+  inspectionId: string;
+  inspectionAmenityId: string;
+  value: "true" | "false";
+  comment: string | null;
 }
 
 export interface CategoryItemValue {
@@ -42,6 +58,8 @@ export interface CategoryType {
   name: string;
   isRequired: boolean;
   importKey?: null | string;
-  amenities: any[];
+  createdBy: string | null;
+  amenities: CategoryAmenityField[];
   items: CategoryItemField[];
+  result?: string;
 }

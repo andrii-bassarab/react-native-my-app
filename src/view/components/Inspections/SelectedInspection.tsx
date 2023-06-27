@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
@@ -32,8 +32,9 @@ export const SelectedInspection: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const startSignatureScreen = () => dispatch(actionsInspectionItem.setStartSignature(true));
   const { startSignature, signatureCount, inspectionItem, assignedOption } = useAppSelector((state) => state.inspectionItem);
+  const { profile }= useAppSelector((state) => state.user);
   const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
-  const itemColor = getInspectionColorByStatus(item.visibleStatus);
+  const itemColor = getInspectionColorByStatus(inspectionItem?.visibleStatus || '');
 
   const [updateInspection, { loading, data, error }] = useMutation(UPDATE_INSPECTION);
 
@@ -95,6 +96,36 @@ export const SelectedInspection: React.FC<Props> = ({
     };
   };
 
+  const updatStatusSubmitCache = () => {
+    return (cache: ApolloCache<any>, { data }: any) => {
+      if (!data?.updateInspection?.affectedEntity?.id) {
+        return;
+      }
+
+      const updatedItem = data?.updateInspection;
+      const { inspections } = cache.readQuery({ query: GET_ALL_INSPECTIONS }) as {
+        inspections: any;
+      };
+
+      const itemIndex = inspections.edges.findIndex(
+        (edge: any) => edge.node.id === updatedItem?.affectedEntity?.id
+      );
+
+      if (itemIndex !== -1) {
+        inspections.edges[itemIndex].node = {
+          ...inspections.edges[itemIndex].node,
+          status: "complete",
+          hasPassed: false,
+        };
+
+        cache.writeQuery({
+          query: GET_ALL_INSPECTIONS,
+          data: { inspections },
+        });
+      }
+    };
+  };
+
   const handleChangeInspectionStatus = async (status: string) => {
     await updateInspection({
       variables: {
@@ -112,7 +143,7 @@ export const SelectedInspection: React.FC<Props> = ({
           inspectionType: item.inspectionType,
           propertyType: item.propertyType,
           isReInspection: item.isReinspection,
-          modifiedBy: "nazar.kubyk@appitventures.com",
+          modifiedBy: profile?.email || "",
         },
       },
       update: updateStatusCache(status),
@@ -137,13 +168,40 @@ export const SelectedInspection: React.FC<Props> = ({
           inspectionType: item.inspectionType,
           propertyType: item.propertyType,
           isReInspection: item.isReinspection,
-          modifiedBy: "nazar.kubyk@appitventures.com",
+          modifiedBy: profile?.email || "",
         },
       },
       update: updatDetailCache(assignedTo),
     });
     dispatch(actionsInspectionItem.setInspectionAssigned(assignedTo));
     showToast("Success! Inspection saved.")
+  };
+
+  const handleSubmitInspection = async () => {
+    await updateInspection({
+      variables: {
+        command: {
+          id: item.id,
+          customerId: "pfdylv",
+          siteId: "pfdylv",
+          templateId: item.templateId,
+          unitId: item.unit?.id,
+          assignedTo: inspectionItem?.assignedTo || "5e94b7f0fa86cf0016c4d92c",
+          houseHoldId: item.household?.headOfHouseholdId || "5f6e70c53ddf6a0016378dbf",
+          status: "complete",
+          hasPassed: false,
+          hasPermissionToEnter: item.hasPermissionToEnter,
+          inspectionType: item.inspectionType,
+          propertyType: item.propertyType,
+          isReInspection: item.isReinspection,
+          modifiedBy: profile?.email || "",
+        },
+      },
+      update: updatStatusSubmitCache(),
+    });
+    dispatch(actionsInspectionItem.setInspectionStatus("complete"));
+    showToast("Success! Inspection submited.");
+    dispatch(actionsInspectionItem.setStartSignature(false));
   };
 
   return (
@@ -203,6 +261,7 @@ export const SelectedInspection: React.FC<Props> = ({
           <TouchableOpacity
             style={[styles.startInspectionButton, styles.startSignatureButton]}
             disabled={signatureCount !== 3}
+            onPress={handleSubmitInspection}
           >
             <Text style={{ ...styles.startInspectionText, color: "#fff" }}>
               {signatureCount === 3 ? "Complete" : "Pass Remaining and Submit"}

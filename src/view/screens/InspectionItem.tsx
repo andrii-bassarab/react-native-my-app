@@ -10,7 +10,7 @@ import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { TopTabBar } from "../components/Navigation/TopTabBar";
-import { InspectionVisibleStatus } from "~/types/inspectionStatus";
+import { InspectionStatus, InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { InspectionDetails } from "../components/InspectionItem/InspectionDetail/InspectionDetail";
 import { InspectionInspect } from "../components/InspectionItem/InspectionInspect/InspectionInspect";
 import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
@@ -48,9 +48,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const goBack = () => navigation.navigate("Inspections");
 
   const inspectOptions = {
-    tabBarLabel:
-      inspection.visibleStatus === InspectionVisibleStatus.PASSED ||
-      inspection.status === InspectionVisibleStatus.FAILED
+    tabBarLabel: inspectionItem?.status === InspectionStatus.COMPLETE
         ? "Results"
         : "Inspect",
   };
@@ -62,9 +60,6 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     [assignedOption, visiblePhoneNumber, inspectionItem]
   );
 
-  useEffect(() => {
-
-  }, [inspectionItem?.visibleAssignedTo]);
 
   useEffect(() => {
     dispatch(actionsInspectionItem.setInspectionItem(inspection));
@@ -126,15 +121,12 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
               tabBar={(props) => <TopTabBar {...props} />}
               initialRouteName="HomeScreen"
             >
-              {inspection.status !== InspectionVisibleStatus.NEW &&
-                inspection.status !== InspectionVisibleStatus.SCHEDULED && (
-                  <Tab.Screen
-                    name="Inspect"
-                    component={InspectionInspect}
-                    options={inspectOptions}
-                    initialParams={inspection}
-                  />
-                )}
+              <Tab.Screen
+                name="Inspect"
+                component={InspectionInspect}
+                options={inspectOptions}
+                initialParams={inspection}
+              />
               <Tab.Screen
                 name="Details"
                 component={InspectionDetails}

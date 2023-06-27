@@ -8,6 +8,7 @@ interface Props {
   activeColor?: string;
   inactiveColor?: string;
   containerStyle?: object;
+  disabled?: boolean;
 }
 
 export const CustomToggleInput: React.FC<Props> = ({
@@ -16,6 +17,7 @@ export const CustomToggleInput: React.FC<Props> = ({
   activeColor = "#34C759",
   inactiveColor = colors.primary,
   containerStyle = {},
+  disabled,
 }) => {
 
   return (
@@ -25,6 +27,7 @@ export const CustomToggleInput: React.FC<Props> = ({
           styles.toggle,
           value ? { backgroundColor: activeColor } : { backgroundColor: inactiveColor },
         ]}
+        disabled={disabled}
         onPress={onValueChange}
       >
         <View style={[styles.toggleText, { alignSelf: value ? 'flex-end' : 'flex-start' }]} />

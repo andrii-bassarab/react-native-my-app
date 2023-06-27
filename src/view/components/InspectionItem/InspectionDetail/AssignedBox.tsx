@@ -9,6 +9,10 @@ import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections";
+import { ApolloCache, useMutation } from "@apollo/client";
+import { actionsToastNotification } from "~/modules/toastNotification";
+import { ModalLoader } from "../../Loader/ModalLoader";
 
 interface Props {
   inspection: InspectionItem;
@@ -24,13 +28,77 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
     name: user.fullName,
   }));
   const [assignedTo, setAssignedTo] = useState<OptionItem>(assignedOption);
+  const { profile }= useAppSelector((state) => state.user);
+  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
 
   const closeModalAssigned = () => {
     setShowModalAssigned(false);
     setAssignedTo(assignedTo);
   };
 
-  const saveAssignedTo = () => {
+  const [updateInspection, { loading }] = useMutation(UPDATE_INSPECTION);
+
+  const updatDetailCache = (assignedTo: string) => {
+    return (cache: ApolloCache<any>, { data }: any) => {
+      if (!data?.updateInspection?.affectedEntity?.id) {
+        return;
+      }
+
+      const updatedItem = data?.updateInspection;
+      const { inspections } = cache.readQuery({ query: GET_ALL_INSPECTIONS }) as {
+        inspections: any;
+      };
+
+      const itemIndex = inspections.edges.findIndex(
+        (edge: any) => edge.node.id === updatedItem?.affectedEntity?.id
+      );
+
+      if (itemIndex !== -1) {
+        inspections.edges[itemIndex].node = {
+          ...inspections.edges[itemIndex].node,
+          assignedTo,
+        };
+
+        cache.writeQuery({
+          query: GET_ALL_INSPECTIONS,
+          data: { inspections },
+        });
+      }
+    };
+  };
+
+  const handleChangeInspectionDetail = async (assignedTo: string, ) => {
+    await updateInspection({
+      variables: {
+        command: {
+          id: inspection.id,
+          customerId: "pfdylv",
+          siteId: "pfdylv",
+          templateId: inspection.templateId,
+          unitId: inspection.unit?.id,
+          assignedTo,
+          houseHoldId: inspection.household?.headOfHouseholdId || "5f6e70c53ddf6a0016378dbf",
+          status: inspectionItem?.status,
+          hasPassed: false,
+          hasPermissionToEnter: inspection.hasPermissionToEnter,
+          inspectionType: inspection.inspectionType,
+          propertyType: inspection.propertyType,
+          isReInspection: inspection.isReinspection,
+          modifiedBy: profile?.email || "",
+        },
+      },
+      update: updatDetailCache(assignedTo),
+    });
+    dispatch(actionsInspectionItem.setInspectionAssigned(assignedTo));
+    showToast("Success! Inspection saved.")
+  };
+
+  const saveAssignedTo = async () => {
+    if (inspectionItem?.status !== InspectionStatus.INCOMPLETE && typeof assignedTo === "object") {
+      console.log("render")
+      await handleChangeInspectionDetail(assignedTo.value)
+    }
+
     setShowModalAssigned(false);
     typeof assignedTo !== "string" && dispatch(actionsInspectionItem.setAssignedOption(assignedTo));
   };
@@ -41,7 +109,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.labelText}>Assigned:</Text>
         <View style={styles.assignedBox}>
           <Text style={styles.text}>{assignedOption.name}</Text>
-          {inspection.status !== InspectionStatus.COMPLETE && (
+          {inspectionItem?.status !== InspectionStatus.COMPLETE && (
             <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
               <EditIcon color={colors.blue} height={15} width={15} />
             </TouchableOpacity>
@@ -88,6 +156,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
+          {loading && <ModalLoader />}
         </ModalSwipeScreen>
       )}
     </View>

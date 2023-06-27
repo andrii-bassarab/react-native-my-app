@@ -20,7 +20,7 @@ export const InspectionDetails: React.FC<Props> = ({ route }) => {
       <View style={{ height: 10 }} />
       <AdressBox inspection={route.params} />
       <View style={{ height: 10 }} />
-      <CustomAttributes inspection={route.params} />
+      {/* <CustomAttributes inspection={route.params} /> */}
       <View style={{ height: 20 }} />
     </ScrollView>
   );

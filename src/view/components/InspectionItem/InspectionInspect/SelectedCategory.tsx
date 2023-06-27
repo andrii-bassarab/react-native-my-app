@@ -5,6 +5,7 @@ import { CustomToggleInput } from "../../Custom/CustomToggleInput";
 import { Category } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   category: Category;
@@ -14,11 +15,9 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
   const [categoryIncludeInspection, setCategoryIncludeInspection] = useState(true);
   const { status, result, items, photos } = category;
-  const { categories, categoryApplyToInspection } = useAppSelector((state) => state.inspectionItem);
+  const { categories, categoryApplyToInspection, inspectionItem } = useAppSelector((state) => state.inspectionItem);
   
   const handleChangeCategoryApplyToInspection = () => dispatch(actionsInspectionItem.setCategoryApplyToInspection(!categoryApplyToInspection))
-
-  // const [toggleCategoryApplyToInspection, setToggleCategoryApplyToInspection] = useState(categoryApplyToInspection);
 
   return (
     <View style={styles.categoryBox}>
@@ -47,13 +46,14 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
           </View>
         </View>
       </View>
-      <View style={styles.applyCategoryBox}>
+      <View style={[styles.applyCategoryBox, inspectionItem?.status === InspectionStatus.COMPLETE &&  styles.disabledApplyCategoryBox]}>
         <Text style={styles.categoryApplyText}>
           Does this category apply to the inspection?
         </Text>
         <CustomToggleInput
           value={categoryApplyToInspection}
           onValueChange={handleChangeCategoryApplyToInspection}
+          disabled={inspectionItem?.status === InspectionStatus.COMPLETE}
         />
       </View>
     </View>
@@ -103,4 +103,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingRight: 10,
   },
+  disabledApplyCategoryBox: {
+    opacity: 0.7
+  }
 });

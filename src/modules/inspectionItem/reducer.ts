@@ -7,7 +7,7 @@ const initialState = {
   inspectionItem: null as null | InspectionItem,
   categories: [] as CategoryType[],
   startSignature: false,
-  signatureCount: 3,
+  signatureCount: 0,
   visibleAssignedTo: null as null | string,
   visiblePhoneNumber: null as null | string,
   assignedOption: {
@@ -15,6 +15,7 @@ const initialState = {
     value: ''
   } as { name: string; value: string; },
   categoryApplyToInspection: true,
+  startUpdateInspectionCategoryView: false,
 };
 
 const inspectionItemSlice = createSlice({
@@ -68,6 +69,12 @@ const inspectionItemSlice = createSlice({
     setVisiblePhoneNumber: (state, action: PayloadAction<string>) => {
       state.visiblePhoneNumber = action.payload;
     },
+    setSignatureCount: (state, action: PayloadAction<number>) => {
+      state.signatureCount = action.payload;
+    },
+    setStartUpdateInspectionCategoryView: (state, action: PayloadAction<boolean>) => {
+      state.startUpdateInspectionCategoryView = action.payload;
+    },
     clearInspectionItem: () => ({
       inspectionItem: null,
       categories: [],
@@ -80,6 +87,7 @@ const inspectionItemSlice = createSlice({
         value: ''
       },
       categoryApplyToInspection: true,
+      startUpdateInspectionCategoryView: false,
     }),
   },
 });

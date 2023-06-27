@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
+import { useAppSelector } from "~/store/hooks";
 import { InspectionItem } from "~/types/InspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { getInspectionDate } from "~/utils/visibleDate";
@@ -9,12 +10,14 @@ interface Props {
 }
 
 export const StatusBox: React.FC<Props> = ({ inspection }) => {
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
         <Text style={styles.labelText}>Status:</Text>
         <Text style={styles.text}>{`${
-          inspection.status[0].toLocaleUpperCase() + inspection.status.slice(1)
+          (inspectionItem?.status[0].toLocaleUpperCase() || '') + (inspectionItem?.status?.slice(1) || '')
         }`}</Text>
       </View>
       <View style={styles.label}>
@@ -25,7 +28,7 @@ export const StatusBox: React.FC<Props> = ({ inspection }) => {
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Result:</Text>
-        <Text style={styles.text}>{inspection.status === InspectionStatus.COMPLETE ? inspection.hasPassed ? "Passed" : "Failed" : "--"}</Text>
+        <Text style={styles.text}>{inspectionItem?.status === InspectionStatus.COMPLETE ? inspectionItem?.hasPassed ? "Passed" : "Failed" : "--"}</Text>
       </View>
     </View>
   );

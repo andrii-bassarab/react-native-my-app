@@ -3,7 +3,7 @@ import React from "react";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/inspections";
-import { useAppDispatch } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { IComment } from "~/types/Comment";
 import { colors } from "~/view/theme";
 import { ModalLoader } from "../../Loader/ModalLoader";
@@ -22,8 +22,8 @@ export const AddCommentBox: React.FC<Props> = ({
   inspectionId,
 }) => {
   const dispatch = useAppDispatch();
-  const showToastNotification = () =>
-    dispatch(actionsToastNotification.showToastMessage("Success! Comment added."));
+  const showToastNotification = () => dispatch(actionsToastNotification.showToastMessage("Success! Comment added."));
+  const { profile }= useAppSelector((state) => state.user);
 
   const [updateInspection, { loading }] = useMutation(CREATE_INSPECTION_COMMENT);
 
@@ -66,7 +66,7 @@ export const AddCommentBox: React.FC<Props> = ({
           siteId: "pfdylv",
           inspectionId: inspectionId,
           commentBody: input,
-          createdBy: "nazar.kubyk@appitventures.com",
+          createdBy: profile?.email || "",
         },
       },
       update: updateCache(newComment, handleAddNewComment),
@@ -74,7 +74,7 @@ export const AddCommentBox: React.FC<Props> = ({
   };
 
   const newCommentBody = {
-    createdBy: "nazar.kubyk@appitventures.com",
+    createdBy: profile?.email || "",
     commentBody: input,
   };
 

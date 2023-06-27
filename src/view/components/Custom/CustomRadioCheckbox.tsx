@@ -4,7 +4,7 @@ import { colors } from "~/view/theme";
 
 interface Props {
   value: string;
-  onValueChange: (value: boolean) => void;
+  onValueChange: React.Dispatch<React.SetStateAction<string>>;
   data: any[];
   containerStyle?: object;
 }
@@ -15,14 +15,12 @@ export const CustomRadioCheckbox: React.FC<Props> = ({
   containerStyle = {},
   data,
 }) => {
-  const [selectedItem, setSelectedItem] = useState(value);
-
   return (
     <View style={[styles.container, containerStyle]}>
       {data.map((item, index) => (
-        <TouchableOpacity style={[styles.item]} onPress={() => setSelectedItem(item)} key={index}>
+        <TouchableOpacity style={[styles.item]} onPress={() => onValueChange(item)} key={index}>
           <Text style={styles.resultOption}>{item}</Text>
-          {selectedItem === item ? (
+          {value === item ? (
             <View style={styles.selectedItem}>
               <View
                 style={[styles.toggle, { backgroundColor: colors.blue }]}
@@ -30,7 +28,7 @@ export const CustomRadioCheckbox: React.FC<Props> = ({
             </View>
           ) : (
             <View
-              style={[styles.toggle, selectedItem === item && { backgroundColor: colors.blue }]}
+              style={[styles.toggle, value === item && { backgroundColor: colors.blue }]}
             />
           )}
         </TouchableOpacity>

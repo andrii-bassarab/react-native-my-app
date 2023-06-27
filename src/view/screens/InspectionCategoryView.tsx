@@ -15,14 +15,24 @@ import { Screen } from "../components/Screen/Screen";
 import { colors } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
-import { Category, CategoryItemField } from "~/types/Category";
+import {
+  Category,
+  CategoryAmenityField,
+  CategoryItemField,
+} from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_ITEM_VALUE } from "~/services/api/GetInspectionCategory";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  GET_CATEGORY_AMENITY_VALUE,
+  GET_CATEGORY_ITEM_VALUE,
+  UPDATE_CATEGOTY_ITEM,
+} from "~/services/api/GetInspectionCategory";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { ContentLoader } from "../components/Loader/Loader";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { ModalLoader } from "../components/Loader/ModalLoader";
 
 interface Props {
   route: RouteProp<
@@ -31,7 +41,7 @@ interface Props {
         category: Category;
         inspection: InspectionItem;
         items: CategoryItemField[];
-        amenities: any[];
+        amenities: CategoryAmenityField[];
       };
     },
     "params"
@@ -45,11 +55,13 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { inspection, category, items, amenities } = route.params;
-  const { categoryApplyToInspection, categories } = useAppSelector(
+  const { categoryApplyToInspection, categories, startUpdateInspectionCategoryView } = useAppSelector(
     (state) => state.inspectionItem
   );
 
-  const goBack = () => navigation.goBack();
+  const goBack = () => {
+    navigation.goBack();
+  }
 
   const categoryItemsValues = useMemo(
     () =>
@@ -58,39 +70,46 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     [categories, category]
   );
 
-  const { data, loading, error } = useQuery(GET_CATEGORY_ITEM_VALUE, {
+  const categoryAmenitiesValues = useMemo(
+    () =>
+      categories.find((categoryTemplate) => categoryTemplate.id === category.id)
+        ?.amenities || [],
+    [categories, category]
+  );
+
+  const {
+    data: dataAmenitiesValues,
+    loading: loadingAmenitiesValues,
+    error: errorAmenitiesValues,
+  } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
     variables: {
-      ids: items.map((item) => item.id),
+      ids: amenities.map((item) => item.id),
     },
-    skip: items.length === 0,
+    skip: amenities.length === 0,
   });
 
   useEffect(() => {
     if (
-      data &&
-      data?.inspectionItemValues?.edges &&
-      Array.isArray(data?.inspectionItemValues?.edges) &&
-      data?.inspectionItemValues?.edges.every(
+      dataAmenitiesValues &&
+      dataAmenitiesValues?.inspectionAmenityValues?.edges &&
+      Array.isArray(dataAmenitiesValues?.inspectionAmenityValues?.edges) &&
+      dataAmenitiesValues?.inspectionAmenityValues?.edges.every(
         (edge: any) =>
           typeof edge === "object" && edge.node && typeof edge.node === "object"
       )
     ) {
       dispatch(
-        actionsCategoryTemplate.addCategoryItemValue({
+        actionsCategoryTemplate.addCategoryAmenitieValue({
           templateId: inspection.templateId,
           categoryId: category.id,
-          itemsValues: data?.inspectionItemValues?.edges.map(
-            (edge: any) => edge.node
-          ),
+          amenitiesValues:
+            dataAmenitiesValues?.inspectionAmenityValues?.edges.map(
+              (edge: any) => edge.node
+            ),
         })
       );
     }
-  }, [data, loading, error]);
-
-  console.log(loading, "loading");
-  console.log(data, "data");
-  console.log(error, "error");
-  console.log(items, "items");
+  }, [dataAmenitiesValues, loadingAmenitiesValues, errorAmenitiesValues]);
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
@@ -102,7 +121,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
           category={category}
         />
         <View style={{ height: 15 }}></View>
-        {loading ? (
+        {loadingAmenitiesValues ? (
           <View
             style={{
               flex: 1,
@@ -118,19 +137,19 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
           >
             <CategoryItemsList
               categoryItemsValues={categoryItemsValues}
-              loading={loading}
-              categoryApplyToInspection={categoryApplyToInspection}
-            />
-            <CategoryAmenitiesList
-              categoryItemsValues={amenities}
               loading={false}
               categoryApplyToInspection={categoryApplyToInspection}
             />
-            {(items.length > 0 || amenities.length > 0) && (
+            <CategoryAmenitiesList
+              categoryAmenitiesValues={categoryAmenitiesValues}
+              loading={loadingAmenitiesValues}
+              categoryApplyToInspection={categoryApplyToInspection}
+            />
+            {
               <TouchableOpacity style={styles.saveButton} onPress={goBack}>
                 <Text style={styles.saveButtonText}>Save and Go Back</Text>
               </TouchableOpacity>
-            )}
+            }
           </ScrollView>
         )}
       </View>

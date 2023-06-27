@@ -13,7 +13,7 @@ import {
   RouteProp,
 } from "@react-navigation/native";
 import { SearchForm } from "../../Inspections/SearchForm";
-import { useAppDispatch } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionFilesAddButton } from "./InspectionFilesAddButton";
 import { InspectionItem } from "~/types/InspectionItem";
 import { InspectionFileCard } from "./InspectionFileCard";
@@ -69,13 +69,6 @@ const mocksFiles: File[] = [
     uploadTime: "May 21, 2023 at 2:00pm",
     docFormat: "pdf",
   },
-  {
-    id: generateUniqueId(),
-    uri: "https://reintech.io/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBa3lvIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--ce810b0818c990fa5fd92e4503e5df81c4da7be4/3h0j6dfmmzrtmzlmc3ook4m9r5by",
-    fileName: "Some Image.png",
-    uploadTime: "May 20, 2023 at 3:00pm",
-    docFormat: "png",
-  },
 ];
 
 const mocksSignatures = [
@@ -106,6 +99,7 @@ interface Props {
 
 export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
 
   const [query, setQuery] = useState("");
   const [visibleFiles, setVisibleFiles] = useState(mocksFiles);
@@ -269,7 +263,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         />
       </View>
       <View style={{ height: "2%" }} />
-      {route.params.status !== InspectionStatus.COMPLETE && (
+      {inspectionItem?.status !== InspectionStatus.COMPLETE && (
         <TouchableOpacity onPress={() => setShowModalAddFile(true)}>
           <InspectionFilesAddButton />
         </TouchableOpacity>
@@ -292,7 +286,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   <InspectionFileCard
                     file={file}
                     deleteFile={handleDeleteFile}
-                    displayDeleteIcon={route.params.status !== InspectionStatus.COMPLETE}
+                    displayDeleteIcon={inspectionItem?.status !== InspectionStatus.COMPLETE}
                   />
                 </TouchableOpacity>
               ))}
@@ -310,7 +304,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           )}
           <View style={styles.separator} />
           <Text style={styles.fileTitle}>Signatures</Text>
-          {mocksSignatures.length > 0 ? (
+          {mocksSignatures.length === 0 ? (
             <>
               {mocksSignatures.map((file, index) => (
                 <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>

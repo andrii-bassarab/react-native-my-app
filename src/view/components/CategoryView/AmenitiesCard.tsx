@@ -13,24 +13,54 @@ import {
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors } from "~/view/theme";
 import { CustomRadioCheckbox } from "../Custom/CustomRadioCheckbox";
+import { ContentLoader } from "../Loader/Loader";
+import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
+import { IComment } from "~/types/Comment";
 
 interface Props {
   title: string;
-  message?: string;
-  result: "No" | "Yes";
+  result?: boolean;
   categoryApplyToInspection?: boolean;
+  loading: boolean;
+  comment?: IComment;
 }
 
-export const AmenitiesCard: React.FC<Props> = ({ title, message, result, categoryApplyToInspection = false }) => {
+export const AmenitiesCard: React.FC<Props> = ({
+  title,
+  result,
+  categoryApplyToInspection = false,
+  loading,
+  comment,
+}) => {
   const resultDropdownOptions = ["Yes", "No"];
-  const [selectedResult, setSelectedResult] = useState<string>(result);
-  const [comment, setComment] = useState("");
+  const [selectedResult, setSelectedResult] = useState<string>(
+    result ? "Yes" : "No"
+  );
+  const [visibleComment, setVisibleComment] = useState(comment);
   const [openMainInfo, setOpenMainInfo] = useState(false);
+
+  const handleEditComment = (comment: string) => {
+    setVisibleComment(
+      (prev) =>
+        prev && {
+          ...prev,
+          commentBody: comment,
+        }
+    );
+  };
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
-      <TouchableOpacity style={styles.label} onPress={() => setOpenMainInfo((prev) => !prev)}>
-        <View style={[styles.expandBox, !openMainInfo && { transform: [{ rotate: "-90deg" }] }]}>
+      <TouchableOpacity
+        style={styles.label}
+        onPress={() => setOpenMainInfo((prev) => !prev)}
+      >
+        <View
+          style={[
+            styles.expandBox,
+            !openMainInfo && { transform: [{ rotate: "-90deg" }] },
+          ]}
+        >
           <ExpandIcon color={"#fff"} width={15} height={15} />
         </View>
         <Text style={styles.title}>{title}</Text>
@@ -41,36 +71,54 @@ export const AmenitiesCard: React.FC<Props> = ({ title, message, result, categor
           style={{ flex: 1 }}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.mainInfo}>
-              {message && <Text style={styles.messageText}>{message}</Text>}
-              <View style={[styles.resultLabel, !categoryApplyToInspection && { justifyContent: "space-between" }]}>
-                <Text style={styles.labelItemText}>Result:</Text>
-                {categoryApplyToInspection ? (
-                  <CustomRadioCheckbox
-                    value={result}
-                    onValueChange={() => null}
-                    data={resultDropdownOptions}
-                  />
-                ) : (
-                  <Text style={styles.noResultText}>N/A</Text>
+            {loading ? (
+              <View>
+                <ContentLoader size="medium" />
+              </View>
+            ) : (
+              <View style={styles.mainInfo}>
+                {result && <View
+                  style={[
+                    styles.resultLabel,
+                    !categoryApplyToInspection && {
+                      justifyContent: "space-between",
+                    },
+                  ]}
+                >
+                  <Text style={styles.labelItemText}>Result:</Text>
+                  {categoryApplyToInspection ? (
+                    <CustomRadioCheckbox
+                      value={selectedResult}
+                      onValueChange={setSelectedResult}
+                      data={resultDropdownOptions}
+                    />
+                  ) : (
+                    <Text style={styles.noResultText}>N/A</Text>
+                  )}
+                </View>}
+                {visibleComment && (
+                  <View
+                    style={[
+                      styles.commentsLabel,
+                      !categoryApplyToInspection && styles.rowLabel,
+                    ]}
+                  >
+                    <Text style={styles.labelItemText}>Comments:</Text>
+                    {categoryApplyToInspection ? (
+                      <CommentItem
+                        comment={visibleComment}
+                        index={0}
+                        arrayLength={1}
+                        showEditComment
+                        saveEditedComment={handleEditComment}
+                      />
+                    ) : (
+                      <Text style={styles.noResultText}>N/A</Text>
+                    )}
+                  </View>
                 )}
               </View>
-              <View style={[styles.commentsLabel, !categoryApplyToInspection && styles.rowLabel]}>
-                <Text style={styles.labelItemText}>Comments:</Text>
-                {categoryApplyToInspection ? (
-                  <TextInput
-                    value={comment}
-                    onChangeText={setComment}
-                    placeholder="Write a comment..."
-                    style={styles.commentInput}
-                    textAlignVertical="top"
-                    multiline={true}
-                  />
-                ) : (
-                  <Text style={styles.noResultText}>N/A</Text>
-                )}
-              </View>
-            </View>
+            )}
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       )}

@@ -60,7 +60,7 @@ export const AuthScreen: React.FC = () => {
         await handleRequestPermissions();
       }
 
-      dispatch(setUser({ id: 1, email: userName.toLocaleLowerCase().replace(/ /g, ''), userName: userName}));
+      dispatch(setUser({ id: 1, email: userName.toLocaleLowerCase().replace(/ /g, '.') + "@appitventures.com", userName: userName}));
       dispatch(setProfileStatus(AsyncStatus.SUCCESS));
       dispatch(setAuth({ access: "string", refresh: "string" }));
       dispatch(setFirstInit(false));

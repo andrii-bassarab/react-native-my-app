@@ -31,8 +31,9 @@ export const CategoryItemsList: React.FC<Props> = ({
               result={item.result}
               categoryApplyToInspection={categoryApplyToInspection}
               comment={item.comment}
-              id={item.id}
+              inspectionItemId={item.inspectionItemId}
               loading={loading}
+              id={item.id}
             />
           ))}
         </>
