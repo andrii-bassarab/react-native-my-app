@@ -9,8 +9,9 @@ import LogOutIcon from "../assets/icons/logout.svg";
 import { useAppDispatch } from "~/store/hooks";
 import { signOut } from "~/modules/user/actions";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
-import { colors } from "../theme";
+import { colors, textStyles } from "../theme";
 import { actionsShowWindow } from "~/modules/showWindow";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props extends DrawerContentComponentProps {
 }
@@ -30,7 +31,7 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   return (
     <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: "10%" }}>
-        <View style={{marginTop: '10%', marginLeft: '6%'}}>
+        <View style={{marginTop: normalize(30), marginLeft: normalize(10)}}>
         <WelcomeBox backgroundColor="transparant" textColor="#fff" height="25%" padding={25} iconSize="large"/>
         </View>
         <Image
@@ -43,8 +44,8 @@ export const Settings: React.FC<Props> = ({navigation}) => {
           }}
         />
         <View style={styles.contentContainer}>
-          <View>
-            <TouchableOpacity style={styles.settingsItem} onPress={() => navigation.navigate('Inspections')}>
+          <View >
+            <TouchableOpacity style={styles.settingsItem} onPress={() => navigation.navigate('InspectionNavigation')}>
               <DocumentIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Inspections</Text>
             </TouchableOpacity>
@@ -91,13 +92,14 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingHorizontal: "5%",
-    paddingVertical: "12%",
+    paddingVertical: normalize(40),
     borderBottomWidth: 1,
     borderBottomColor: "#7F878B",
   },
   itemsText: {
-    fontSize: 20,
     color: "#7F878B",
+    ...textStyles.regular,
+    marginLeft: '3%'
   },
   contentContainer: {
     flex: 1,

@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import { useAppSelector } from "~/store/hooks";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   backgroundColor: string;
@@ -34,13 +35,13 @@ export const WelcomeBox: React.FC<Props> = ({
           source={require("~/view/assets/images/settings.png")}
           style={{
             ...styles.settingsIcon,
-            height: iconSize === "large" ? 100 : 60,
-            width: iconSize === "large" ? 100 : 60,
-            marginBottom: iconSize === "large" ? 10 : 0,
+            height: iconSize === "large" ? normalize(130) : normalize(100),
+            width: iconSize === "large" ? normalize(130) : normalize(100),
+            marginBottom: iconSize === "large" ? normalize(10) : 0,
           }}
         />
         <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
-        <Text style={{ ...styles.welcomeText, fontSize: 24, color: textColor }}>{profile?.userName}</Text>
+        <Text style={{ ...styles.welcomeText, ...textStyles.large, color: textColor }}>{profile?.userName}</Text>
       </View>
     </View>
   );
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     color: "#fff",
-    fontSize: 24,
+    ...textStyles.medium,
     marginTop: "0.5%",
     fontWeight: "700",
   },

@@ -9,6 +9,7 @@ import CloseIcon from "~/view/assets/icons/failed.svg";
 import Pdf, { Source } from "react-native-pdf";
 import { ContentLoader } from "../../Loader/Loader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   closeModalFunction: () => void;
@@ -90,8 +91,8 @@ const styles = StyleSheet.create({
   closeButton: {
     borderRadius: 100,
     backgroundColor: "#BDBDBD",
-    width: 25,
-    height: 25,
+    width: normalize(40),
+    height: normalize(40),
     position: "absolute",
     right: "3%",
     top: "3%",

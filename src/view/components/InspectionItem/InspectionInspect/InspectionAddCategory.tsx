@@ -1,14 +1,15 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import PlusIcon from "~/view/assets/icons/plus.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 export const InspecitonAddCategory: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Add Inspection Category</Text>
       <View style={styles.addCategoryButton}>
-        <PlusIcon color={'#fff'} height={15} width={15} />
+        <PlusIcon color={'#fff'} height={normalize(25)} width={normalize(25)} />
       </View>
     </View>
   );
@@ -30,13 +31,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue,
     justifyContent: "center",
     alignItems: "center",
-    width: 25,
-    height: 25,
+    width: normalize(40),
+    height: normalize(40),
   },
   text: {
     color: colors.blue,
     fontWeight: "500",
-    fontSize: 18,
-    paddingVertical: 5
+    paddingVertical: 5,
+    ...textStyles.regular,
   },
 });

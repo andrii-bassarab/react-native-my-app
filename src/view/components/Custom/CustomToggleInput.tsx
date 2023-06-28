@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { normalize } from '~/utils/getWindowHeight';
 import { colors } from '~/view/theme';
 
 interface Props {
@@ -46,12 +47,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 2,
     paddingHorizontal: 2,
-    width: 32
+    width: normalize(38)
   },
   toggleText: {
     borderRadius: 100,
-    height: 14,
-    width: 14,
+    height: normalize(16),
+    width: normalize(16),
     backgroundColor: '#fff'
   },
 });

@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   children?: React.ReactNode;
@@ -112,14 +113,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   closeLabel: {
-    height: 5,
+    height: normalize(8),
     backgroundColor: "rgba(193, 188, 185, 1)",
     alignSelf: "center",
     width: "60%",
     borderRadius: 40,
   },
   labelBox: {
-    paddingVertical: 10,
+    paddingVertical: normalize(20),
     flex: 1,
   },
 });

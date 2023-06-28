@@ -8,7 +8,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 
 export type OptionItem = string | { name: string; value: string };
@@ -92,7 +92,7 @@ export const CustomSelect: React.FC<Props> = ({
               <Text
                 style={{
                   color: selectedItem === item ? "#fff" : colors.primary,
-                  fontSize: 20,
+                  ...textStyles.regular,
                 }}
               >
                 {typeof item === "string" ? item : item.name}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   selectedText: {
-    fontSize: 20,
+    ...textStyles.regular,
     color: colors.primary,
     fontWeight: "500",
   },

@@ -11,6 +11,7 @@ import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import SyncIcon from "~/view/assets/icons/sync.svg";
 import { colors } from "~/view/theme";
 import { actionsShowWindow } from "~/modules/showWindow";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;
@@ -49,7 +50,7 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
       dispatch(actionsShowWindow.setTopNavigationHeight(height))
     }}>
       <TouchableOpacity onPress={toggleDrawer}>
-        <DrawerToggleIcon color="#fff" height="30" />
+        <DrawerToggleIcon color="#fff" height={normalize(40)} />
       </TouchableOpacity>
     </View>
   );
@@ -60,8 +61,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginLeft: 20,
-    paddingVertical: 10,
-    marginTop: 10,
+    marginLeft: normalize(20),
+    paddingVertical: normalize(10),
+    marginTop: normalize(20),
   },
 });

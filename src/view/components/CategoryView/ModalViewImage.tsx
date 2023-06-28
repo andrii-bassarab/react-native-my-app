@@ -9,6 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { Asset } from "react-native-image-picker";
+import { normalize } from "~/utils/getWindowHeight";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { colors } from "~/view/theme";
 
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: "#fff",
-    height: "50%",
+    height: "60%",
     width: "95%",
     opacity: 1,
     paddingHorizontal: "6%",
@@ -76,8 +77,8 @@ const styles = StyleSheet.create({
   closeButton: {
     borderRadius: 100,
     backgroundColor: "#BDBDBD",
-    width: 25,
-    height: 25,
+    width: normalize(40),
+    height: normalize(40),
     position: "absolute",
     right: "3%",
     top: "3%",

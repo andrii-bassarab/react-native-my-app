@@ -7,6 +7,7 @@ import { colors } from "../theme";
 import BuilderIncon from "../assets/icons/build.svg";
 import SettingsDetail from "../assets/icons/settings.svg";
 import { Screen } from "../components/Screen/Screen";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   navigation: BottomTabNavigationProp<ParamListBase>;
@@ -24,7 +25,7 @@ export const WorkOrder: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={20}>
+    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)}>
       <View style={styles.screenContainer}>
         <View style={styles.content}>
           <WelcomeBox

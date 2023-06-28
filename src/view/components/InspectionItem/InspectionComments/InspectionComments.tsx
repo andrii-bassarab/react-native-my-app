@@ -5,7 +5,7 @@ import {
   ScrollView,
   Text,
 } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
 import { InspectionItem } from "~/types/InspectionItem";
 import CommentIcon from "~/view/assets/icons/comment.svg";
@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
     fontWeight: "600",
     alignSelf: "center",
-    fontSize: 26,
+    ...textStyles.medium,
   },
 });

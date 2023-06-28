@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { CustomToggleInput } from "../../Custom/CustomToggleInput";
 import { Category } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   category: Category;
@@ -14,21 +15,39 @@ interface Props {
 
 export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
-  const [categoryIncludeInspection, setCategoryIncludeInspection] = useState(true);
+  const [categoryIncludeInspection, setCategoryIncludeInspection] =
+    useState(true);
   const { status, result, items, photos } = category;
-  const { categories, categoryApplyToInspection, inspectionItem } = useAppSelector((state) => state.inspectionItem);
-  
-  const handleChangeCategoryApplyToInspection = () => dispatch(actionsInspectionItem.setCategoryApplyToInspection(!categoryApplyToInspection))
+  const { categories, categoryApplyToInspection, inspectionItem } =
+    useAppSelector((state) => state.inspectionItem);
+
+  const handleChangeCategoryApplyToInspection = () =>
+    dispatch(
+      actionsInspectionItem.setCategoryApplyToInspection(
+        !categoryApplyToInspection
+      )
+    );
 
   return (
     <View style={styles.categoryBox}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Text style={{ fontSize: 20, fontWeight: "700", color: colors.darkGrey }}>
-        {category.title}
-      </Text>
-      {status === "Complete" && result === "Passed" && (
-        <CompletedIcon color={"#96BF5B"} style={{marginLeft: '3%'}} height={20} width={20} />
-      )}
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text
+          style={{
+            fontWeight: "700",
+            color: colors.darkGrey,
+            ...textStyles.regular,
+          }}
+        >
+          {category.title}
+        </Text>
+        {status === "Complete" && result === "Passed" && (
+          <CompletedIcon
+            color={"#96BF5B"}
+            style={{ marginLeft: "2%" }}
+            height={normalize(20)}
+            width={normalize(20)}
+          />
+        )}
       </View>
       <View style={styles.content}>
         <View style={{ flex: 1 }}>
@@ -52,7 +71,13 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
           </View>
         </View>
       </View>
-      <View style={[styles.applyCategoryBox, inspectionItem?.status === InspectionStatus.COMPLETE &&  styles.disabledApplyCategoryBox]}>
+      <View
+        style={[
+          styles.applyCategoryBox,
+          inspectionItem?.status === InspectionStatus.COMPLETE &&
+            styles.disabledApplyCategoryBox,
+        ]}
+      >
         <Text style={styles.categoryApplyText}>
           Does this category apply to the inspection?
         </Text>
@@ -83,7 +108,7 @@ const styles = StyleSheet.create({
     color: "#8E8E8E",
     fontWeight: "600",
     flex: 0.5,
-    fontSize: 16,
+    ...textStyles.small,
   },
   label: {
     flexDirection: "row",
@@ -95,10 +120,10 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 16,
+    ...textStyles.small,
   },
   categoryApplyText: {
-    fontSize: 14,
+    ...textStyles.small,
     flex: 1,
     marginRight: 10,
     color: colors.darkGrey,
@@ -110,6 +135,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   disabledApplyCategoryBox: {
-    opacity: 0.7
-  }
+    opacity: 0.7,
+  },
 });

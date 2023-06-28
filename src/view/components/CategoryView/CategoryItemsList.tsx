@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import { CategoryItemField } from "~/types/Category";
 import { CharacterCard } from "../../components/CategoryView/CharacterCard";
 
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     height: 60,
   },
   noItemsText: {
-    fontSize: 20,
     color: colors.textGrey,
     fontWeight: "700",
+    ...textStyles.regular
   },
 });

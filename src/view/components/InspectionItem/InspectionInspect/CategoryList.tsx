@@ -4,6 +4,7 @@ import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { InspectionCategory } from "./InspectionCategory";
 import { CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   visibleCategories: CategoryType[];
@@ -42,8 +43,8 @@ export const CategoryList: React.FC<Props> = ({
         showsVerticalScrollIndicator={false}
         data={visibleCategories}
         keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListFooterComponent={() => <View style={{ height: 10 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: normalize(10) }} />}
+        ListFooterComponent={() => <View style={{ height: normalize(10) }} />}
         renderItem={({ item: category }) => (
           <TouchableOpacity
             key={category.id}

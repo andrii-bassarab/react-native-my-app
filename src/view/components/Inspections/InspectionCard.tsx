@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import CalendarIcon from "../../assets/icons/calendar.svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -21,7 +21,7 @@ export const InspectionCard: React.FC<Props> = ({ inspection: item, onPress }) =
           <Text style={{ ...styles.cardTitle, color: itemColor }}>
             {`Inspection ${item.unit.streetAddress}`}
           </Text>
-          <Text style={{ color: itemColor, fontWeight: "600", marginLeft: 5, fontSize: 20 }}>{item.visibleStatus}</Text>
+          <Text style={{ color: itemColor, fontWeight: "600", marginLeft: 5, ...textStyles.small }}>{item.visibleStatus}</Text>
         </View>
         <View style={styles.dateLabel}>
           <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 2 }} />
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 22,
+    ...textStyles.small,
     fontWeight: "500",
     flex: 1
   },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   textInfo: {
-    fontSize: 18,
+    ...textStyles.mini,
     color: "#8E8E8E",
   },
   dateLabel: {

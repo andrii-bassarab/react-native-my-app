@@ -4,6 +4,7 @@ import { useAppSelector } from "~/store/hooks";
 import { InspectionItem } from "~/types/InspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { getInspectionDate } from "~/utils/visibleDate";
+import { textStyles } from "~/view/theme";
 
 interface Props {
   inspection: InspectionItem;
@@ -17,18 +18,27 @@ export const StatusBox: React.FC<Props> = ({ inspection }) => {
       <View style={styles.label}>
         <Text style={styles.labelText}>Status:</Text>
         <Text style={styles.text}>{`${
-          (inspectionItem?.status[0].toLocaleUpperCase() || '') + (inspectionItem?.status?.slice(1) || '')
+          (inspectionItem?.status[0].toLocaleUpperCase() || "") +
+          (inspectionItem?.status?.slice(1) || "")
         }`}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Date Completed:</Text>
         <Text style={styles.text}>
-          {inspection.completedOn ? `${getInspectionDate(new Date(inspection.completedOn))}` : "--"}
+          {inspection.completedOn
+            ? `${getInspectionDate(new Date(inspection.completedOn))}`
+            : "--"}
         </Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Result:</Text>
-        <Text style={styles.text}>{inspectionItem?.status === InspectionStatus.COMPLETE ? inspectionItem?.hasPassed ? "Passed" : "Failed" : "--"}</Text>
+        <Text style={styles.text}>
+          {inspectionItem?.status === InspectionStatus.COMPLETE
+            ? inspectionItem?.hasPassed
+              ? "Passed"
+              : "Failed"
+            : "--"}
+        </Text>
       </View>
     </View>
   );
@@ -59,7 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 0.8,
     marginRight: 10,
-    fontSize: 16,
+    ...textStyles.little,
   },
   label: {
     flexDirection: "row",
@@ -69,7 +79,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#8E8E8E",
     fontWeight: "400",
-    fontSize: 16,
+    ...textStyles.little,
     flex: 1,
   },
 });

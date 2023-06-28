@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Screen } from "../components/Screen/Screen";
-import { colors } from "../theme";
+import { colors, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
 import {
@@ -34,6 +34,7 @@ import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenit
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { ModalLoader } from "../components/Loader/ModalLoader";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   route: RouteProp<
@@ -113,7 +114,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   }, [dataAmenitiesValues, loadingAmenitiesValues, errorAmenitiesValues]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
       <View style={styles.content}>
         <SelectedInspection
           item={inspection}
@@ -168,52 +169,29 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     paddingBottom: 0,
   },
-  labelText: {
-    color: "#8E8E8E",
-    fontWeight: "600",
-    flex: 0.5,
-    fontSize: 13,
-  },
   label: {
     flexDirection: "row",
     marginBottom: 5,
     flexWrap: "wrap",
   },
-  text: {
-    color: "#8E8E8E",
-    fontWeight: "400",
-    textAlign: "left",
-    flex: 1,
-    fontSize: 13,
-  },
-  amenitiesTitle: {
-    color: colors.textGrey,
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: "3%",
-  },
   saveButton: {
     alignSelf: "center",
     alignItems: "center",
     backgroundColor: colors.layout,
-    paddingVertical: "3%",
+    paddingVertical: "2%",
     paddingHorizontal: "10%",
     borderRadius: 30,
     marginBottom: "5%",
+    marginTop: '4%'
   },
   saveButtonText: {
     color: "#fff",
-    fontSize: 16,
     fontWeight: "600",
+    ...textStyles.regular,
   },
   noItemsBox: {
     alignItems: "center",
     justifyContent: "center",
     height: 60,
-  },
-  noItemsText: {
-    fontSize: 20,
-    color: colors.textGrey,
-    fontWeight: "700",
   },
 });

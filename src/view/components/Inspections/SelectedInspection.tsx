@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import LeftErrow from "~/view/assets/icons/leftArrow.svg";
 import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { Category } from "~/types/Category";
@@ -15,6 +15,7 @@ import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { ApolloCache, useMutation } from "@apollo/client";
 import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections";
 import { ModalLoader } from "../Loader/ModalLoader";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   item: InspectionItem;
@@ -207,7 +208,7 @@ export const SelectedInspection: React.FC<Props> = ({
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
-        <LeftErrow color={colors.primary} height={20} width={20} />
+        <LeftErrow color={colors.primary} height={normalize(20)} width={normalize(20)} />
       </TouchableOpacity>
       <View
         style={{
@@ -223,7 +224,7 @@ export const SelectedInspection: React.FC<Props> = ({
           </Text>
         </View>
         <View style={styles.dateLabel}>
-          <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 5 }} />
+          <CalendarIcon height={normalize(20)} width={normalize(20)} color={colors.primary} style={{ marginRight: 5 }} />
           <Text style={styles.textInfo}>
             {item?.scheduledOn
               ? `Scheduled ${getInspectionDate(new Date(item?.scheduledOn))} ${
@@ -302,9 +303,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 20,
     fontWeight: "500",
-    marginBottom: '1%'
+    marginBottom: '1%',
+    ...textStyles.regular,
   },
   mainInfo: {
     flex: 1,
@@ -315,7 +316,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   textInfo: {
-    fontSize: 18,
+    ...textStyles.little,
     color: "#8E8E8E",
   },
   dateLabel: {
@@ -324,7 +325,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   goBackButton: {
-    padding: "2%",
+    padding: normalize(10),
     borderWidth: 1,
     borderColor: colors.blue,
     marginRight: 10,
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
   startInspectionButton: {
     alignSelf: "flex-end",
     marginTop: "5%",
-    paddingVertical: "1.5%",
+    paddingVertical: normalize(5),
     paddingHorizontal: 20,
     backgroundColor: colors.layout,
     borderRadius: 20,
@@ -344,7 +345,7 @@ const styles = StyleSheet.create({
   startInspectionText: {
     color: "#fff",
     fontWeight: "600",
-    fontSize: 16,
+    ...textStyles.small,
   },
   saveButton: {
     width: "48%",

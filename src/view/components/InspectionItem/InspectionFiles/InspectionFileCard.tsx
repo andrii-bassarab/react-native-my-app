@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from "react-native";
 import { getColorIconFileByFormat } from "~/utils/getInspectionColor";
 import DotsIcon from "~/view/assets/icons/dots.svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import DeleteIcon from "~/view/assets/icons/delete.svg";
 import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
 import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
 import { File } from "./InspectionFilesView";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   file: File;
@@ -51,19 +52,19 @@ export const InspectionFileCard: React.FC<Props> = ({
         <Text style={[styles.fileInfoText, styles.fileNameText]}>{file.fileName}</Text>
       </View>
       <View style={{ ...styles.label, width: "52%", justifyContent: "space-between" }}>
-        <Text style={styles.fileInfoText}>{file.uploadTime}</Text>
+        <Text style={{...styles.fileInfoText, flex: 1}}>{file.uploadTime}</Text>
         {showDeleteLabel && (
           <TouchableOpacity
             style={[styles.deleteLabel, styles.shadowProp]}
             onPress={() => setShowDeleteModalWindow((prev) => !prev)}
           >
-            <DeleteIcon color={colors.layout} width={20} height={15} />
-            <Text>Delete</Text>
+            <DeleteIcon color={colors.layout} width={normalize(25)} height={normalize(25)} />
+            <Text style={textStyles.little}>Delete</Text>
           </TouchableOpacity>
         )}
         {displayDeleteIcon && (
           <TouchableOpacity style={styles.deleteButton} onPress={clickToDotsButton}>
-            <DotsIcon color={colors.darkGrey} height={15} width={10} />
+            <DotsIcon color={colors.darkGrey} height={normalize(25)} width={normalize(20)} />
           </TouchableOpacity>
         )}
       </View>
@@ -94,8 +95,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   docFileIcon: {
-    height: 40,
-    width: 40,
+    height: normalize(50),
+    width: normalize(50),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -104,20 +105,20 @@ const styles = StyleSheet.create({
   fileInfoText: {
     color: colors.darkGrey,
     fontWeight: "400",
-    fontSize: 16,
+    ...textStyles.little,
   },
   docIconText: {
     color: "#fff",
     textTransform: "uppercase",
     fontWeight: "700",
-    fontSize: 14,
+    ...textStyles.little,
   },
   fileNameText: {
     color: "#5F6064",
   },
   deleteButton: {
-    paddingHorizontal: "7%",
-    paddingVertical: "2%",
+    paddingHorizontal: normalize(30),
+    paddingVertical: normalize(10),
   },
   deleteLabel: {
     flexDirection: "row",
@@ -125,10 +126,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
     position: "absolute",
     right: "20%",
+    paddingVertical: normalize(10),
+    paddingHorizontal: normalize(10)
   },
   shadowProp: {
     shadowColor: "#171717",

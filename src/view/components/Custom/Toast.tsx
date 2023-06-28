@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { actionsToastNotification } from "../../../modules/toastNotification";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
 import SyncIcon from "~/view/assets/icons/sync.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 export const Toast = () => {
   const dispatch = useAppDispatch();
@@ -43,7 +44,7 @@ export const Toast = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.toast, { opacity: fadeAnim, paddingTop: insets.top }]}>
+      <Animated.View style={[styles.toast, { opacity: fadeAnim, paddingTop: insets.top, minHeight: normalize(100) }]}>
         {toastMessage === "Success! Sync is complete." ? (
           <SyncIcon width={30} height={30} color={"#fff"} style={{ marginRight: "10%" }} />
         ) : (
@@ -77,5 +78,6 @@ const styles = StyleSheet.create({
   text: {
     color: "#fff",
     fontWeight: "600",
+    ...textStyles.regular,
   },
 });

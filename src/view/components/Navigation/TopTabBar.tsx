@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, View, TouchableOpacity, Platform, Animated } from "react-native";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface TopTabBarProps extends MaterialTopTabBarProps {}
 
@@ -87,7 +88,7 @@ const style = StyleSheet.create({
   },
   button: {
     backgroundColor: "#fff",
-    paddingVertical: "1.5%",
+    paddingVertical: normalize(5),
     flex: 1,
   },
   active: {
@@ -97,7 +98,7 @@ const style = StyleSheet.create({
     alignSelf: "center",
     color: colors.blue,
     fontWeight: "600",
-    fontSize: 16,
+    ...textStyles.small
   },
   activeText: {
     color: "#fff",

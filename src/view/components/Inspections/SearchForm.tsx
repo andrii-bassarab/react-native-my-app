@@ -2,10 +2,11 @@ import React from "react";
 import { TouchableOpacity, StyleSheet, View, Platform, TextInput } from "react-native";
 import SettingInspectionsIcon from "~/view/assets/icons/settingInspections.svg";
 import SearchIcon from "~/view/assets/icons/search.svg";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import { useAppDispatch } from "~/store/hooks";
 import CloseIcon from "~/view/assets/svg/close";
 import { actionsShowWindow } from "~/modules/showWindow";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   query: string;
@@ -21,7 +22,7 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
     <View style={styles.formContainer}>
       <View style={[styles.searchLabel, styles.shadowProp, !showFilterButton && {marginRight: 0}]}>
         <View style={styles.inputContainer}>
-          <SearchIcon color={colors.primary} width={15} height={15} />
+          <SearchIcon color={colors.primary} width={normalize(20)} height={normalize(20)} />
           <TextInput
             style={styles.searchInput}
             textAlignVertical="center"
@@ -41,7 +42,7 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
           style={styles.filterButton}
           onPress={() => dispatch(actionsShowWindow.setShowInspectionsFilter(true))}
         >
-          <SettingInspectionsIcon color="#fff" width={30} height={30} />
+          <SettingInspectionsIcon color="#fff" width={"90%"} height={"90%"} />
         </TouchableOpacity>
       )}
     </View>
@@ -58,8 +59,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue,
     padding: 5,
     borderRadius: 10,
-    width: 40,
-    height: 40,
+    width: normalize(60),
+    height: normalize(60),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   searchLabel: {
     flexDirection: "row",
@@ -82,11 +85,11 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     fontWeight: "600",
-    fontSize: 16,
     paddingLeft: "5%",
     flex: 1,
-    lineHeight: 20,
-    paddingVertical: "1%"
+    paddingVertical: "2%",
+    ...textStyles.little,
+    textAlignVertical: 'center',
   },
   shadowProp: {
     shadowColor: "#171717",

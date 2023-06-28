@@ -11,11 +11,12 @@ import {
 } from "react-native";
 import NotificationsIcon from "../assets/icons/notifications.svg";
 import SyncIcon from "../assets/icons/sync.svg";
-import { colors } from "../theme";
+import { colors, textStyles } from "../theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { actionsNotifications } from "~/modules/notifications";
+import { normalize } from "~/utils/getWindowHeight";
 
 export const Notifications: React.FC = () => {
   const windowHeight = Dimensions.get("window").height;
@@ -49,7 +50,7 @@ export const Notifications: React.FC = () => {
       },
       onPanResponderRelease: () => {
         Animated.spring(pan, {
-          toValue: { x: 0, y: 10 },
+          toValue: { x: 0, y: normalize(20) },
           useNativeDriver: false,
         }).start();
       },
@@ -60,7 +61,7 @@ export const Notifications: React.FC = () => {
     pan.y.setValue(0);
 
     return Animated.timing(position, {
-      toValue: { x: 0, y: 10 },
+      toValue: { x: 0, y: normalize(20) },
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -85,7 +86,7 @@ export const Notifications: React.FC = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           {notifications.map((notification, index) => (
             <View key={index} style={styles.notificationItem}>
-              <SyncIcon color={colors.layout} width={40} height={40} />
+              <SyncIcon color={colors.layout} width={normalize(40)} height={normalize(40)} />
               <View style={{ marginLeft: 10 }}>
                 <Text style={styles.notificationItemTitle}>{notification.title}</Text>
                 <View>
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: "7%",
   },
   notificationsLabel: {
-    height: 8,
+    height: normalize(6),
     backgroundColor: "rgba(193, 188, 185, 1)",
     alignSelf: "center",
     width: "60%",
@@ -153,15 +154,15 @@ const styles = StyleSheet.create({
   },
   notificationsTitle: {
     alignSelf: "flex-start",
-    fontSize: 30,
     fontWeight: "600",
     color: colors.darkGrey,
+    ...textStyles.strong,
   },
   noNotificationText: {
     alignSelf: "center",
-    fontSize: 20,
     color: colors.primary,
     fontWeight: "600",
+    ...textStyles.strong,
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -176,17 +177,17 @@ const styles = StyleSheet.create({
   },
   notificationItemTitle: {
     color: "#141414",
-    fontSize: 24,
     marginBottom: 5,
+    ...textStyles.medium
   },
   notificationItemDate: {
     color: colors.darkGrey,
-    fontSize: 22,
+    ...textStyles.regular,
   },
   notificationItemDetail: {
     fontWeight: "600",
     color: "#141414",
     marginBottom: 5,
-    fontSize: 20
+    ...textStyles.small,
   },
 });

@@ -6,9 +6,10 @@ import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { Notifications } from "./Notification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";
-import { colors } from "../theme";
+import { colors, textStyles } from "../theme";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { ContentLoader } from "../components/Loader/Loader";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   navigation: NavigationProp<ParamListBase>;
@@ -24,7 +25,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
       <View style={styles.content}>
         <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
         <View style={styles.activityBox}>
@@ -49,9 +50,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                   />
                 )}
                 ListHeaderComponent={() => (
-                  <Text style={styles.activityTitle}>Recent Activity</Text>
+                  <Text style={[styles.activityTitle, textStyles.medium]}>Recent Activity</Text>
                 )}
-                ListFooterComponent={() => <View style={{ height: 80 }} />}
+                ListFooterComponent={() => <View style={{ height: normalize(180) }} />}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 showsVerticalScrollIndicator={false}
               />

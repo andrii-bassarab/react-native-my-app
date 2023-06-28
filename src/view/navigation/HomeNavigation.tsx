@@ -23,6 +23,7 @@ import { getAvailableUsers, getUserNameById } from "~/services/api/GetUserById";
 import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
 import { setAvailableUsers } from "~/modules/user/actions";
 import { getVisibleAssignedTo } from "~/utils/getVisibleAssigned";
+import { normalize } from "~/utils/getWindowHeight";
 
 const Drawer = createDrawerNavigator();
 
@@ -34,8 +35,6 @@ export const HomeNavigation: React.FC = () => {
   const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
   const { availableUsers } = useAppSelector((state) => state.user);
   const ids = Object.keys(categoriesTemplates);
-
-  const {height} = Dimensions.get('window');
 
   useEffect(() => {
     getAvailableUsers().then((usersResponse) => {
@@ -196,6 +195,12 @@ export const HomeNavigation: React.FC = () => {
     headerShadowVisible: false,
     drawerType: "front",
   };
+
+  if (Dimensions.get('window').width > 600) {
+    screenOptions.drawerStyle = {
+      width: "50%"
+    }
+  }
 
   return (
     <Drawer.Navigator

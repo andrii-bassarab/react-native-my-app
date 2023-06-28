@@ -5,7 +5,7 @@ import { actionsToastNotification } from "~/modules/toastNotification";
 import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { IComment } from "~/types/Comment";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { ModalLoader } from "../../Loader/ModalLoader";
 
 interface Props {
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   commentButtonText: {
     color: "#fff",
-    fontSize: 16,
     fontWeight: "600",
+    ...textStyles.little,
   },
 });

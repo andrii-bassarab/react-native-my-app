@@ -7,9 +7,10 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { ParamListBase } from "@react-navigation/native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import NetInfo from "@react-native-community/netinfo";
 import { actionsNetworkConnectivity } from "~/modules/networkConnectivity";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;
@@ -81,21 +82,21 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
             }}
           >
             <Animated.View style={{ transform: [{ rotate: spin }] }}>
-              <SyncIcon color={colors.blue} height={25} width={30} />
+              <SyncIcon color={colors.blue} height={normalize(30)} width={normalize(30)} />
             </Animated.View>
-            <Text style={{ color: colors.blue, fontWeight: "600" }}>Syncing In Progress</Text>
+            <Text style={{ color: colors.blue, fontWeight: "600", ...textStyles.little }}>Syncing In Progress</Text>
           </Animated.View>
         )}
         {!networkConnectivity && (
           <View style={styles.syncContent}>
             <View>
-              <NoInternetIcon color={colors.darkGrey} height={20} width={20} />
+              <NoInternetIcon color={colors.darkGrey} height={normalize(20)} width={normalize(20)} />
             </View>
             <Text style={styles.noInternetText}>No Network Connectivity</Text>
           </View>
         )}
         <TouchableOpacity onPress={toggleNotifications}>
-          <NotificationIcon color="#fff" height="40" />
+          <NotificationIcon color="#fff" height={normalize(45)} />
           {unreadMessage > 0 && (
             <View style={styles.unreadIcon}>
               <Text style={styles.unreadMessageText}>{unreadMessage}</Text>
@@ -112,9 +113,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginRight: 10,
-    paddingVertical: 10,
-    marginTop: 10,
+    marginRight: normalize(10),
+    paddingVertical: normalize(10),
+    marginTop: normalize(20),
   },
   syncContent: {
     height: "100%",
@@ -127,12 +128,12 @@ const styles = StyleSheet.create({
   },
   unreadMessageText: {
     color: "#fff",
-    fontSize: 14,
+    ...textStyles.mini,
     fontWeight: "700",
   },
   unreadIcon: {
-    height: 16,
-    width: 16,
+    height: normalize(24),
+    width: normalize(24),
     backgroundColor: "#FEBB11",
     position: "absolute",
     left: "50%",
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   noInternetText: {
     color: colors.darkGrey,
     fontWeight: "600",
-    fontSize: 14,
-    marginLeft: "2%"
+    marginLeft: "2%",
+    ...textStyles.small,
   },
 });

@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import { CategoryAmenityField } from "~/types/Category";
 import { AmenitiesCard } from "./AmenitiesCard";
 
@@ -51,13 +51,13 @@ const styles = StyleSheet.create({
     height: 60,
   },
   noItemsText: {
-    fontSize: 20,
+    ...textStyles.regular,
     color: colors.textGrey,
     fontWeight: "700",
   },
   amenitiesTitle: {
     marginBottom: '5%',
-    fontSize: 20,
+    ...textStyles.regular,
     fontWeight: '600',
     color: colors.textGrey
   }

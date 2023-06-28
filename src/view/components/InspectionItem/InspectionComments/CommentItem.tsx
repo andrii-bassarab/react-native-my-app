@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { IComment } from "~/types/Comment";
 import { getVisibleDate } from "~/utils/visibleDate";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import EditIcon from "~/view/assets/icons/edit.svg";
 
 interface Props {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   author: {
-    fontSize: 13,
+    ...textStyles.small,
     fontWeight: "600",
     color: "#8E8E8E",
   },
@@ -156,11 +156,12 @@ const styles = StyleSheet.create({
     marginLeft: "2%",
     color: "#8E8E8E",
     fontWeight: "500",
-    fontSize: 13,
+    ...textStyles.little,
   },
   comment: {
     color: "#8E8E8E",
     flex: 1,
+    ...textStyles.small,
   },
   comentLabel: {
     flexDirection: "row",
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.layout,
   },
   inputButtonText: {
-    fontSize: 16,
+    ...textStyles.small,
     fontWeight: "600",
     color: "#fff",
   },

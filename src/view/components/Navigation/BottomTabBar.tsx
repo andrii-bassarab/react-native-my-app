@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HomeIcon from "~/view/assets/icons/home.svg";
 import DocumentIcon from "~/view/assets/icons/document.svg";
@@ -17,10 +17,16 @@ import { getPreviousValue } from "~/utils/getPreviousValue";
 
 interface Props extends BottomTabBarProps {}
 
-export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }) => {
+export const BottomTabBar: React.FC<Props> = ({
+  state,
+  descriptors,
+  navigation,
+}) => {
   const insets = useSafeAreaInsets();
   const showWindow = useAppSelector((state) => state.showWindow);
-  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
+  const networkConnectivity = useAppSelector(
+    (state) => state.networkConnectivity
+  );
   const dispatch = useAppDispatch();
 
   const prevNetworkStatus = getPreviousValue(networkConnectivity);
@@ -56,8 +62,8 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
   }, [loading, networkConnectivity]);
 
   useEffect(() => {
-      dispatch(actionsInspections.setSyncError(!!error))
-  }, [error])
+    dispatch(actionsInspections.setSyncError(!!error));
+  }, [error]);
 
   const detectIconByName = (label: string, color: string) => {
     switch (label) {
@@ -130,7 +136,8 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
               style={{
                 color: isFocused ? colors.blue : colors.primary,
                 fontWeight: "500",
-                marginTop: "2%"
+                marginTop: "2%",
+                ...textStyles.small,
               }}
             >
               {typeof label === "string" && label}
@@ -140,7 +147,15 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
       })}
       <TouchableOpacity style={styles.item} onPress={handleRefetchQuery}>
         <SyncIcon height="35%" color={colors.primary} />
-        <Text style={{ color: colors.primary, fontWeight: "500" }}>Sync</Text>
+        <Text
+          style={{
+            color: colors.primary,
+            fontWeight: "500",
+            ...textStyles.small,
+          }}
+        >
+          Sync
+        </Text>
       </TouchableOpacity>
     </View>
   );

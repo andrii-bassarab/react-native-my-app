@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
@@ -13,6 +13,7 @@ import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspectio
 import { ApolloCache, useMutation } from "@apollo/client";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { ModalLoader } from "../../Loader/ModalLoader";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   inspection: InspectionItem;
@@ -111,7 +112,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
           <Text style={styles.text}>{assignedOption.name}</Text>
           {inspectionItem?.status !== InspectionStatus.COMPLETE && (
             <TouchableOpacity onPress={() => setShowModalAssigned(true)}>
-              <EditIcon color={colors.blue} height={15} width={15} />
+              <EditIcon color={colors.blue} height={normalize(20)} width={normalize(20)} />
             </TouchableOpacity>
           )}
         </View>
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 0.8,
     marginRight: 10,
-    fontSize: 16,
+    ...textStyles.little,
   },
   label: {
     flexDirection: "row",
@@ -206,17 +207,17 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 16,
+    ...textStyles.little,
   },
   modalContainer: {
     alignItems: "stretch",
     flex: 1,
-    marginTop: "10%",
-    paddingHorizontal: '7%'
+    marginTop: "5%",
+    paddingHorizontal: '7%',
   },
   modalTitle: {
     color: colors.darkGrey,
-    fontSize: 24,
+    ...textStyles.large,
     fontWeight: "600",
   },
   modalSaveButton: {
@@ -224,13 +225,13 @@ const styles = StyleSheet.create({
     width: "40%",
     borderRadius: 50,
     backgroundColor: colors.layout,
-    marginTop: 20,
+    marginTop: normalize(30),
     alignItems: "center",
     alignSelf: "flex-end",
   },
   modalSaveButtonText: {
     color: "#fff",
     fontWeight: "600",
-    fontSize: 20,
+    ...textStyles.regular,
   },
 });

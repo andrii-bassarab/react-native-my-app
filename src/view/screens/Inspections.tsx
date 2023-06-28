@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Text, StyleSheet, View, FlatList, Platform } from "react-native";
-import { colors } from "../theme";
+import { colors, textStyles } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
 import { useAppSelector } from "~/store/hooks";
@@ -13,6 +13,7 @@ import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { getCalendarVisibleDate } from "~/utils/visibleDate";
 import { InspectionItem } from "~/types/InspectionItem";
 import { ContentLoader } from "../components/Loader/Loader";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
@@ -194,7 +195,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   ]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
       <View style={styles.content}>
         <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
         <Text style={styles.title}>Inspections</Text>
@@ -204,7 +205,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
           <ContentLoader />
         </View>
         ) : visibleInspections.length > 0 ? (
-          <View style={{  marginBottom: "25%", marginTop: 10 }}>
+          <View style={{  marginBottom: normalize(300), marginTop: normalize(15) }}>
             <FlatList
               data={visibleInspections}
               keyExtractor={(item) => item.id}
@@ -214,8 +215,8 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
                   onPress={() => navigation.navigate("InspectionItem", item)}
                 />
               )}
-              ListFooterComponent={() => <View style={{ height: 10 }} />}
-              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+              ListFooterComponent={() => <View style={{ height: normalize(15) }} />}
+              ItemSeparatorComponent={() => <View style={{ height: normalize(15) }} />}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -254,9 +255,9 @@ const styles = StyleSheet.create({
   title: {
     color: colors.primary,
     fontWeight: "700",
-    fontSize: 24,
     marginTop: "3%",
     marginBottom: "3%",
+    ...textStyles.medium
   },
   noResultContainer: {
     flex: 1,

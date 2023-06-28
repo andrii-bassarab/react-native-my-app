@@ -7,7 +7,7 @@ import {
   GestureResponderEvent,
 } from "react-native";
 import { getColorCategoryByResult } from "~/utils/getInspectionColor";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
 import FailedIcon from "~/view/assets/icons/failed.svg";
 import DotsIcon from "~/view/assets/icons/dots.svg";
@@ -23,6 +23,7 @@ import {
 } from "~/services/api/GetInspectionCategory";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   category: {
@@ -41,7 +42,9 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
   const { title, status, result, items, photos, categoryAdded } = category;
   const [showDeleteLabel, setShowDeleteLabel] = useState(false);
   const [showDeleteModalWindow, setShowDeleteModalWindow] = useState(false);
-  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionItem, categories } = useAppSelector(
+    (state) => state.inspectionItem
+  );
   const { profile } = useAppSelector((state) => state.user);
 
   const itemColor = getColorCategoryByResult(result, status);
@@ -56,45 +59,52 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
   useEffect(() => {
     console.log(loading, "loading");
     console.log(error, "error");
-  }, [loading, error])
+  }, [loading, error]);
 
   const updateStatusCache = () => {
     return (cache: ApolloCache<any>, { data }: any) => {
-      console.log("start")
+      console.log("start");
       if (!data?.deleteInspectionCategory?.affectedEntity?.id) {
-        console.log("end")
+        console.log("end");
 
         return;
       }
 
-      console.log("norm")
-
+      console.log("norm");
 
       const deletedItem = data?.deleteInspectionCategory;
       const { inspectionCategories } = cache.readQuery({
         query: GET_ALL_INSPECTIONS_CATEGORY,
         variables: {
-          ids: [inspectionItem?.templateId]
-        }
+          ids: [inspectionItem?.templateId],
+        },
       }) as {
         inspectionCategories: any;
       };
 
-      console.log("inspectionCategories.edges", inspectionCategories.edges.map((edge: any) => edge.node.id))
-      console.log("updatedItem?.affectedEntity?.id", deletedItem?.affectedEntity?.id)
+      console.log(
+        "inspectionCategories.edges",
+        inspectionCategories.edges.map((edge: any) => edge.node.id)
+      );
+      console.log(
+        "updatedItem?.affectedEntity?.id",
+        deletedItem?.affectedEntity?.id
+      );
 
       const itemIndex = inspectionCategories.edges.findIndex(
         (edge: any) => edge.node.id === deletedItem?.affectedEntity?.id
       );
 
-      console.log("itemIndex", itemIndex)
+      console.log("itemIndex", itemIndex);
 
       if (itemIndex !== -1) {
         // inspectionCategories.edges.splice(itemIndex, 1);
 
-        inspectionCategories.edges = inspectionCategories.edges.filter((edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id)
+        inspectionCategories.edges = inspectionCategories.edges.filter(
+          (edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id
+        );
 
-        console.log("length", inspectionCategories)
+        console.log("length", inspectionCategories);
 
         cache.writeQuery({
           query: GET_ALL_INSPECTIONS_CATEGORY,
@@ -105,8 +115,8 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
   };
 
   useEffect(() => {
-    console.log("categories.length", categories.length)
-  }, [categories])
+    console.log("categories.length", categories.length);
+  }, [categories]);
 
   const onContinue = async () => {
     try {
@@ -120,15 +130,21 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           },
         },
         // update: updateStatusCache(),
-        refetchQueries: [{
-          query: GET_ALL_INSPECTIONS_CATEGORY,
-          variables: {
-            ids: [inspectionItem?.templateId],
+        refetchQueries: [
+          {
+            query: GET_ALL_INSPECTIONS_CATEGORY,
+            variables: {
+              ids: [inspectionItem?.templateId],
+            },
           },
-        }],
+        ],
         awaitRefetchQueries: true,
       });
-      dispatch(actionsToastNotification.showToastMessage("Success! Category was deleted."));
+      dispatch(
+        actionsToastNotification.showToastMessage(
+          "Success! Category was deleted."
+        )
+      );
     } finally {
       closeModalDeleteWindow();
     }
@@ -167,7 +183,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
                 )}
                 <TouchableOpacity
                   onPress={handleClickOnDotsIcon}
-                  style={{ paddingHorizontal: "30%", paddingVertical: '5%' }}
+                  style={{ paddingHorizontal: "30%", paddingVertical: "5%" }}
                 >
                   <DotsIcon color={colors.primary} height={20} width={20} />
                 </TouchableOpacity>
@@ -228,11 +244,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingVertical: normalize(15),
+    paddingHorizontal: normalize(20),
     width: "98%",
     flexWrap: "wrap",
-    height: 100,
     borderWidth: 2,
   },
   content: {
@@ -247,13 +262,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 20,
     fontWeight: "500",
+    ...textStyles.regular,
   },
   mainInfo: {
     flex: 1,
-    borderLeftWidth: 3,
-    paddingLeft: 10,
+    borderLeftWidth: normalize(4),
+    paddingLeft: normalize(15),
     alignSelf: "stretch",
     width: "100%",
   },
@@ -261,7 +276,7 @@ const styles = StyleSheet.create({
     color: "#8E8E8E",
     fontWeight: "600",
     flex: 0.5,
-    fontSize: 16,
+    ...textStyles.little,
   },
   label: {
     flexDirection: "row",
@@ -273,7 +288,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 16,
+    ...textStyles.little,
   },
   failedBox: {
     width: 30,

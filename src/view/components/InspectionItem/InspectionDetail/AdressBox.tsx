@@ -7,7 +7,7 @@ import {
   TextInput,
   Image,
 } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus, InspectionVisibleStatus } from "~/types/inspectionStatus";
@@ -16,6 +16,7 @@ import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   inspection: InspectionItem;
@@ -75,7 +76,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
             </Text>
             {inspectionItem?.status !== InspectionStatus.COMPLETE && (
               <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
-                <EditIcon color={colors.blue} height={15} width={15} />
+                <EditIcon color={colors.blue} height={normalize(20)} width={normalize(20)} />
               </TouchableOpacity>
             )}
           </View>
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 0.8,
     marginRight: 10,
-    fontSize: 16,
+    ...textStyles.little,
   },
   label: {
     flexDirection: "row",
@@ -221,17 +222,17 @@ const styles = StyleSheet.create({
     color: "#8E8E8E",
     fontWeight: "400",
     flex: 1,
-    fontSize: 16,
+    ...textStyles.little,
   },
   modalContainer: {
     alignItems: "stretch",
     flex: 1,
-    marginTop: "10%",
+    marginTop: "8%",
     paddingHorizontal: '7%'
   },
   modalTitle: {
     color: colors.darkGrey,
-    fontSize: 24,
+    ...textStyles.large,
     fontWeight: "600",
   },
   modalSaveButton: {
@@ -239,14 +240,14 @@ const styles = StyleSheet.create({
     width: "40%",
     borderRadius: 50,
     backgroundColor: colors.layout,
-    marginTop: "5%",
+    marginTop: normalize(25),
     alignItems: "center",
     alignSelf: "flex-end",
   },
   modalSaveButtonText: {
     color: "#fff",
     fontWeight: "600",
-    fontSize: 18,
+    ...textStyles.regular,
   },
   phoneLabel: {
     borderRadius: 50,
@@ -259,13 +260,13 @@ const styles = StyleSheet.create({
   },
   modalPhoneNumber: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: normalize(15),
     paddingHorizontal: 20,
     borderLeftWidth: 3,
     borderColor: "#EBEBEB",
   },
   modalFlag: {
-    width: 20,
+    width: normalize(30),
     resizeMode: "contain",
   },
   detailBox: {

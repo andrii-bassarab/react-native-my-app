@@ -22,6 +22,7 @@ import { SignatureView } from "../components/Signature/SignatureView";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionFilesView } from "../components/InspectionItem/InspectionFiles/InspectionFilesView";
 import { KeyboardAvoidingDisplayComponent } from "../hoc/KeyboardAvoidingDisplayComponent";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
@@ -99,7 +100,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingDisplayComponent>
-      <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
+      <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
         <View style={styles.content}>
           <View style={{ paddingHorizontal: "5%" }}>
             <SelectedInspection item={inspection} goBack={handleGoBack} />

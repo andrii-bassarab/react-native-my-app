@@ -20,7 +20,7 @@ import { InspectionFileCard } from "./InspectionFileCard";
 import FileIcon from "~/view/assets/icons/file.svg";
 import TakePhotoIcon from "~/view/assets/icons/takePhoto.svg";
 import ImageGallery from "~/view/assets/icons/gallery.svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import {
   Asset,
@@ -38,6 +38,7 @@ import { ModalViewImage } from "../../CategoryView/ModalViewImage";
 import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
 import { BASE_DOCUMENT_API } from "~/constants/env";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { normalize } from "~/utils/getWindowHeight";
 
 export interface File {
   id: string;
@@ -325,7 +326,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       {showModalAddFile && (
         <ModalSwipeScreen
           closeModalFunction={handleCloseModalAddFile}
-          height={"50%"}
+          height={"45%"}
           percentSwipeToClose={0.2}
         >
           <View style={styles.modalContainer}>
@@ -362,7 +363,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   style={[styles.fileButton, styles.shadowProp]}
                   onPress={handleSelectFile}
                 >
-                  <FileIcon width={"60%"} height={"60%"} color={"#D7D7D7"} />
+                  <FileIcon width={normalize(50)} height={normalize(50)} color={"#D7D7D7"} />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>
                   Add File From Documents
@@ -408,9 +409,9 @@ const styles = StyleSheet.create({
   },
   fileTitle: {
     color: "#7F888D",
-    fontSize: 24,
     marginBottom: "3%",
     fontWeight: "600",
+    ...textStyles.medium
   },
   filesContainer: {
     flex: 1,
@@ -432,8 +433,8 @@ const styles = StyleSheet.create({
   noFilesFindText: {
     color: "#7F888D",
     fontWeight: "600",
-    fontSize: 18,
     marginTop: "5%",
+    ...textStyles.regular
   },
   noFilesFindContainer: {
     flex: 1,
@@ -445,20 +446,20 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     flex: 1,
     marginTop: "10%",
-    paddingHorizontal: "7%"
+    paddingHorizontal: normalize(20)
   },
   modalTitle: {
     color: colors.darkGrey,
-    fontSize: 24,
     fontWeight: "600",
+    ...textStyles.large
   },
   modalPhotoButtons: {
     flexDirection: "row",
     flex: 1,
   },
   fileButton: {
-    height: 100,
-    width: 100,
+    height: normalize(150),
+    width: normalize(150),
     borderWidth: 2,
     borderRadius: 10,
     borderColor: colors.blue,
@@ -470,13 +471,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.textGrey,
     fontWeight: "400",
-    fontSize: 13,
     marginTop: "7%",
+    ...textStyles.little
   },
   fileButtonContainer: {
     flex: 1,
     alignItems: "center",
-    marginTop: "20%",
+    marginTop: "10%",
   },
   separator: {
     height: 1,
@@ -490,6 +491,6 @@ const styles = StyleSheet.create({
     marginTop: "6%",
     marginBottom: "10%",
     alignSelf: "center",
-    fontSize: 18,
+    ...textStyles.regular,
   },
 });
