@@ -22,6 +22,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   );
   const showWindow = useAppSelector((state) => state.showWindow);
 
+
   return (
     <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
       <View style={styles.content}>
@@ -57,7 +58,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
             )}
           </View>
         </View>
-        {showWindow.showNotification && <Notifications />}
       </View>
     </Screen>
   );

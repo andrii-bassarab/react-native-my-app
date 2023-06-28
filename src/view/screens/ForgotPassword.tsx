@@ -19,7 +19,7 @@ interface Props {
 
 export const ForgotPassword: React.FC<Props> = ({ route, navigation }) => {
   return (
-    <Screen backgroundColor={colors.layout}>
+    <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={styles.screen}>
         <View style={styles.logo}>
           <Image

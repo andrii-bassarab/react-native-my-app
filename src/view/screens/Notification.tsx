@@ -17,7 +17,11 @@ import { getVisibleDate } from "~/utils/visibleDate";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { actionsNotifications } from "~/modules/notifications";
 
-export const Notifications: React.FC = () => {
+interface Props {
+  showNotificationScreen?: boolean;
+}
+
+export const Notifications: React.FC<Props> = ({showNotificationScreen = true}) => {
   const windowHeight = Dimensions.get("window").height;
   const dispatch = useAppDispatch();
   const { notifications, unreadMessage } = useAppSelector((state) => state.notifications);

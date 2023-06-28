@@ -24,7 +24,7 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
   const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
 
   const toggleNotifications = () => {
-    navigationProps.navigate("HomeScreen");
+    // navigationProps.navigate("HomeScreen");
     dispatch(actionsShowWindow.setShowSwitchSite(false));
     dispatch(actionsShowWindow.setShowNotification(!showWindow.showNotification));
   };

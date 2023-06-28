@@ -28,7 +28,7 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   };
 
   return (
-    <Screen backgroundColor={colors.layout}>
+    <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: "10%" }}>
         <WelcomeBox backgroundColor="transparant" textColor="#fff" height="25%" padding={25} iconSize="large"/>
         <Image

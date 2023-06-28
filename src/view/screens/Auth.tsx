@@ -83,7 +83,7 @@ export const AuthScreen: React.FC = () => {
   // console.log("events", events);
 
   return (
-    <Screen backgroundColor={colors.layout}>
+    <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={styles.screen}>
         <View style={styles.logo}>
           <Image
