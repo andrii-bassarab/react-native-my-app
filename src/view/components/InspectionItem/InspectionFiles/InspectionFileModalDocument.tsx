@@ -40,6 +40,7 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
                 style={{
                   position: "absolute",
                   alignSelf: "center",
+                  justifyContent: 'center',
                   zIndex: 2
                 }}
               >
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     opacity: 1,
-    paddingHorizontal: "5%",
+    paddingHorizontal: "7%",
     paddingVertical: "10%",
     borderRadius: 15,
     justifyContent: "space-between",

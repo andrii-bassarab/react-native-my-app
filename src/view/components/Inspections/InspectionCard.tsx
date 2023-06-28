@@ -21,7 +21,7 @@ export const InspectionCard: React.FC<Props> = ({ inspection: item, onPress }) =
           <Text style={{ ...styles.cardTitle, color: itemColor }}>
             {`Inspection ${item.unit.streetAddress}`}
           </Text>
-          <Text style={{ color: itemColor, fontWeight: "600", marginLeft: 5 }}>{item.visibleStatus}</Text>
+          <Text style={{ color: itemColor, fontWeight: "600", marginLeft: 5, fontSize: 20 }}>{item.visibleStatus}</Text>
         </View>
         <View style={styles.dateLabel}>
           <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 2 }} />
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: "3%",
     width: "98%",
     flexWrap: "wrap",
   },
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: "500",
     flex: 1
   },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   textInfo: {
-    fontSize: 13,
+    fontSize: 18,
     color: "#8E8E8E",
   },
   dateLabel: {
@@ -88,5 +88,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     marginBottom: "1%",
+    flexWrap: 'wrap'
   },
 });

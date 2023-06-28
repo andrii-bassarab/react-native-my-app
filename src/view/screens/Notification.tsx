@@ -17,11 +17,7 @@ import { getVisibleDate } from "~/utils/visibleDate";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { actionsNotifications } from "~/modules/notifications";
 
-interface Props {
-  showNotificationScreen?: boolean;
-}
-
-export const Notifications: React.FC<Props> = ({showNotificationScreen = true}) => {
+export const Notifications: React.FC = () => {
   const windowHeight = Dimensions.get("window").height;
   const dispatch = useAppDispatch();
   const { notifications, unreadMessage } = useAppSelector((state) => state.notifications);
@@ -53,7 +49,7 @@ export const Notifications: React.FC<Props> = ({showNotificationScreen = true}) 
       },
       onPanResponderRelease: () => {
         Animated.spring(pan, {
-          toValue: { x: 0, y: 0 },
+          toValue: { x: 0, y: 10 },
           useNativeDriver: false,
         }).start();
       },
@@ -64,7 +60,7 @@ export const Notifications: React.FC<Props> = ({showNotificationScreen = true}) 
     pan.y.setValue(0);
 
     return Animated.timing(position, {
-      toValue: { x: 0, y: 0 },
+      toValue: { x: 0, y: 10 },
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -143,22 +139,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingHorizontal: "7%",
   },
   notificationsLabel: {
-    height: 5,
+    height: 8,
     backgroundColor: "rgba(193, 188, 185, 1)",
     alignSelf: "center",
     width: "60%",
     borderRadius: 40,
   },
   notificationsLabelBox: {
-    paddingVertical: 15,
+    paddingVertical: "5%",
   },
   notificationsTitle: {
     alignSelf: "flex-start",
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: "600",
     color: colors.darkGrey,
   },
@@ -181,16 +176,17 @@ const styles = StyleSheet.create({
   },
   notificationItemTitle: {
     color: "#141414",
-    fontSize: 16,
+    fontSize: 24,
     marginBottom: 5,
   },
   notificationItemDate: {
     color: colors.darkGrey,
-    fontSize: 16,
+    fontSize: 22,
   },
   notificationItemDetail: {
     fontWeight: "600",
     color: "#141414",
     marginBottom: 5,
+    fontSize: 20
   },
 });

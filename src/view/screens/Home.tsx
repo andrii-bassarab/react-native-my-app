@@ -24,7 +24,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
       <View style={styles.content}>
         <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
         <View style={styles.activityBox}>
@@ -70,12 +70,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 25,
+    paddingHorizontal: "7%",
   },
   activityBox: {
     marginTop: "2%",
   },
   activityTitle: {
-    fontSize: 16,
+    fontSize: 24,
     color: "#7F888D",
     fontWeight: "700",
     marginBottom: 10,

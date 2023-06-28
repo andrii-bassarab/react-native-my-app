@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
   title: {
     marginLeft: 10,
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 20,
     color: colors.textGrey,
   },
   mainInfo: {
@@ -422,6 +422,7 @@ const styles = StyleSheet.create({
   messageText: {
     color: colors.textGrey,
     fontWeight: "500",
+    fontSize: 16
   },
   resultLabel: {
     flexDirection: "row",
@@ -431,7 +432,7 @@ const styles = StyleSheet.create({
   },
   labelItemText: {
     fontWeight: "600",
-    fontSize: 14,
+    fontSize: 16,
     color: "#808080",
   },
   dropdownStyle: {
@@ -474,7 +475,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   photoName: {
-    fontSize: 12,
+    fontSize: 16,
     marginTop: "5%",
     color: "#979797",
     fontWeight: "500",
@@ -483,7 +484,7 @@ const styles = StyleSheet.create({
     width: "50%",
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 14,
+    fontSize: 16,
   },
   photoLabel: {
     flexWrap: "wrap",
@@ -499,7 +500,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   imageFileName: {
-    fontSize: 11,
+    fontSize: 16,
     flexWrap: "wrap",
     width: 60,
     alignSelf: "center",

@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   dropdownContainer: {
-    marginTop: 20,
+    marginTop: '5%',
     borderColor: colors.primary,
     borderTopWidth: 0,
     zIndex: 2,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: colors.layout,
     borderRadius: 50,
-    marginTop: 20,
+    marginTop: "5%",
   },
   saveButtonText: {
     color: "#fff",
@@ -220,18 +220,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   switchBox: {
-    height: "50%",
+    height: "40%",
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 30,
     paddingTop: 0,
     alignItems: "stretch",
+    paddingHorizontal: '12%'
   },
   switchSiteTitle: {
     alignSelf: "flex-start",
     marginTop: 10,
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "600",
     color: "#808080",
   },

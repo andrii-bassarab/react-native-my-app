@@ -95,7 +95,7 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
           </View>
         )}
         <TouchableOpacity onPress={toggleNotifications}>
-          <NotificationIcon color="#fff" height="30" />
+          <NotificationIcon color="#fff" height="40" />
           {unreadMessage > 0 && (
             <View style={styles.unreadIcon}>
               <Text style={styles.unreadMessageText}>{unreadMessage}</Text>
@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     marginRight: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
+    marginTop: 10,
   },
   syncContent: {
     height: "100%",
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   },
   unreadMessageText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "700",
   },
   unreadIcon: {
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   noInternetText: {
     color: colors.darkGrey,
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: 14,
     marginLeft: "2%"
   },
 });

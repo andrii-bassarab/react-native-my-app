@@ -50,6 +50,7 @@ export const LoginForm: React.FC<Props> = ({
         <TextInput
           style={{
             ...styles.input,
+            paddingVertical: "3%",
             borderColor: errorLogin
               ? "rgba(219, 0, 28, 1)"
               : userName
@@ -73,6 +74,7 @@ export const LoginForm: React.FC<Props> = ({
             alignItems: "center",
             ...styles.input,
             padding: 0,
+            height: "25%",
             borderColor: errorLogin
               ? "rgba(219, 0, 28, 1)"
               : password
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "rgba(127, 136, 141, 1)",
     fontWeight: "600",
+    fontSize: 20,
   },
   formContainer: {
     backgroundColor: "#fff",
@@ -140,6 +143,7 @@ const styles = StyleSheet.create({
     padding: 30,
     justifyContent: "flex-start",
     alignItems: "stretch",
+    paddingHorizontal: '7%'
   },
   logo: {
     marginBottom: 0,
@@ -154,7 +158,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   title: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "600",
     color: "rgba(44, 70, 96, 1)",
   },
@@ -164,7 +168,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     color: "rgba(37, 192, 220, 1)",
-    fontSize: 16,
+    fontSize: 20,
   },
   signInButton: {
     paddingVertical: "3%",

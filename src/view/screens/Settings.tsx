@@ -30,7 +30,9 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   return (
     <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: "10%" }}>
+        <View style={{marginTop: '10%', marginLeft: '6%'}}>
         <WelcomeBox backgroundColor="transparant" textColor="#fff" height="25%" padding={25} iconSize="large"/>
+        </View>
         <Image
           source={require("../assets/images/settingsHeader.png")}
           style={{
@@ -88,13 +90,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    padding: 10,
-    paddingVertical: 25,
+    paddingHorizontal: "5%",
+    paddingVertical: "12%",
     borderBottomWidth: 1,
     borderBottomColor: "#7F878B",
   },
   itemsText: {
-    fontSize: 18,
+    fontSize: 20,
     color: "#7F878B",
   },
   contentContainer: {
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 20,
     marginTop: 10,
     fontWeight: "700",
   },

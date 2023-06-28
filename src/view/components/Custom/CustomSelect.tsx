@@ -92,7 +92,7 @@ export const CustomSelect: React.FC<Props> = ({
               <Text
                 style={{
                   color: selectedItem === item ? "#fff" : colors.primary,
-                  fontSize: 16,
+                  fontSize: 20,
                 }}
               >
                 {typeof item === "string" ? item : item.name}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   selectedText: {
-    fontSize: 16,
+    fontSize: 20,
     color: colors.primary,
     fontWeight: "500",
   },

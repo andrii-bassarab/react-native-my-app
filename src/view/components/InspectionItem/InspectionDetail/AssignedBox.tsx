@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 0.8,
     marginRight: 10,
-    fontSize: 13,
+    fontSize: 16,
   },
   label: {
     flexDirection: "row",
@@ -206,20 +206,21 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 13,
+    fontSize: 16,
   },
   modalContainer: {
     alignItems: "stretch",
     flex: 1,
     marginTop: "10%",
+    paddingHorizontal: '7%'
   },
   modalTitle: {
     color: colors.darkGrey,
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "600",
   },
   modalSaveButton: {
-    paddingVertical: 6,
+    paddingVertical: "2%",
     width: "40%",
     borderRadius: 50,
     backgroundColor: colors.layout,
@@ -230,6 +231,6 @@ const styles = StyleSheet.create({
   modalSaveButtonText: {
     color: "#fff",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 20,
   },
 });

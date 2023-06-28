@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   title: {
     marginLeft: 10,
     fontWeight: "700",
-    fontSize: 14,
+    fontSize: 16,
     color: colors.textGrey,
     paddingRight: "2%",
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
   labelItemText: {
     fontWeight: "600",
-    fontSize: 14,
+    fontSize: 16,
     color: "#808080",
     marginRight: "20%",
   },
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   photoName: {
-    fontSize: 12,
+    fontSize: 16,
     marginTop: "5%",
     color: "#979797",
     fontWeight: "500",
@@ -257,12 +257,12 @@ const styles = StyleSheet.create({
   resultOption: {
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 14,
+    fontSize: 16,
   },
   noResultText: {
     width: "50%",
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 14,
+    fontSize: 16,
   },
 });

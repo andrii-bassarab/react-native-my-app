@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     paddingTop: 5,
-    paddingHorizontal: 25,
+    paddingHorizontal: "7%",
     paddingBottom: 20,
   },
   shadowProp: {
@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
     fontWeight: "600",
     alignSelf: "center",
-    fontSize: 18,
+    fontSize: 26,
   },
 });

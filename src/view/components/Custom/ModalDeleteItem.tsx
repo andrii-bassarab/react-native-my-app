@@ -68,25 +68,26 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingVertical: 40,
+    paddingVertical: "7%",
     borderRadius: 10,
-    width: "85%",
-    minHeight: "20%",
+    width: "80%",
+    minHeight: "25%",
     alignItems: "center",
   },
   deleteContainer: {
     backgroundColor: colors.red,
     borderRadius: 100,
-    height: 150,
-    width: 150,
+    height: 200,
+    width: 200,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: '5%'
   },
   title: {
     textAlign: "center",
     marginTop: 10,
     color: colors.blue,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "600",
   },
   buttonsContainer: {
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 40,
     borderWidth: 1,
-    paddingVertical: 5,
+    paddingVertical: "2%",
     width: "48%",
     alignItems: 'center'
   },

@@ -166,13 +166,15 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     borderRadius: 10,
     width: "85%",
-    minHeight: "20%",
+    minHeight: "25%",
+    justifyContent: 'center'
   },
   title: {
     color: colors.primary,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
     zIndex: -1,
+    marginBottom: '4%'
   },
   customSelectPosition: {
     position: "absolute",
@@ -184,11 +186,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     zIndex: -2,
+    marginTop: '4%'
   },
   button: {
     borderRadius: 40,
     borderWidth: 1,
-    paddingVertical: 5,
+    paddingVertical: 10,
     width: "48%",
     textAlign: "center",
     alignItems: "center",

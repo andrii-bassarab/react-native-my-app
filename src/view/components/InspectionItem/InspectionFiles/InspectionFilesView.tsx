@@ -404,11 +404,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     paddingTop: 5,
-    paddingHorizontal: 25,
+    paddingHorizontal: "7%",
   },
   fileTitle: {
     color: "#7F888D",
-    fontSize: 20,
+    fontSize: 24,
     marginBottom: "3%",
     fontWeight: "600",
   },
@@ -445,10 +445,11 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     flex: 1,
     marginTop: "10%",
+    paddingHorizontal: "7%"
   },
   modalTitle: {
     color: colors.darkGrey,
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "600",
   },
   modalPhotoButtons: {
@@ -456,8 +457,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   fileButton: {
-    height: 80,
-    width: 80,
+    height: 100,
+    width: 100,
     borderWidth: 2,
     borderRadius: 10,
     borderColor: colors.blue,

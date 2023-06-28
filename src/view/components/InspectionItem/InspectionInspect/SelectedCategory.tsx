@@ -23,7 +23,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
   return (
     <View style={styles.categoryBox}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Text style={{ fontSize: 16, fontWeight: "700", color: colors.darkGrey }}>
+      <Text style={{ fontSize: 20, fontWeight: "700", color: colors.darkGrey }}>
         {category.title}
       </Text>
       {status === "Complete" && result === "Passed" && (
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     color: "#8E8E8E",
     fontWeight: "600",
     flex: 0.5,
-    fontSize: 13,
+    fontSize: 16,
   },
   label: {
     flexDirection: "row",
@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 13,
+    fontSize: 16,
   },
   categoryApplyText: {
-    fontSize: 12,
+    fontSize: 14,
     flex: 1,
     marginRight: 10,
     color: colors.darkGrey,

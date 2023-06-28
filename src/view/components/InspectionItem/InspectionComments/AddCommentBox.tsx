@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     width: "45%",
     marginTop: 15,
-    paddingVertical: 8,
+    paddingVertical: "2%",
     borderRadius: 20,
     backgroundColor: colors.layout,
     alignItems: "center",

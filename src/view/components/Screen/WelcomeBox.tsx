@@ -34,13 +34,13 @@ export const WelcomeBox: React.FC<Props> = ({
           source={require("~/view/assets/images/settings.png")}
           style={{
             ...styles.settingsIcon,
-            height: iconSize === "large" ? 80 : 50,
-            width: iconSize === "large" ? 80 : 50,
+            height: iconSize === "large" ? 100 : 60,
+            width: iconSize === "large" ? 100 : 60,
             marginBottom: iconSize === "large" ? 10 : 0,
           }}
         />
         <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
-        <Text style={{ ...styles.welcomeText, fontSize: 20, color: textColor }}>{profile?.userName}</Text>
+        <Text style={{ ...styles.welcomeText, fontSize: 24, color: textColor }}>{profile?.userName}</Text>
       </View>
     </View>
   );
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     color: "#fff",
-    fontSize: 18,
-    marginTop: 0,
+    fontSize: 24,
+    marginTop: "0.5%",
     fontWeight: "700",
   },
 });

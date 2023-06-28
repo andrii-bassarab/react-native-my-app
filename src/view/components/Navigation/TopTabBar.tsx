@@ -76,7 +76,7 @@ const style = StyleSheet.create({
   container: {
     paddingTop: 20,
     paddingBottom: 10,
-    paddingHorizontal: 25,
+    paddingHorizontal: "7%",
     elevation: 0,
   },
   bar: {
@@ -87,7 +87,7 @@ const style = StyleSheet.create({
   },
   button: {
     backgroundColor: "#fff",
-    paddingVertical: 5,
+    paddingVertical: "1.5%",
     flex: 1,
   },
   active: {
@@ -97,7 +97,7 @@ const style = StyleSheet.create({
     alignSelf: "center",
     color: colors.blue,
     fontWeight: "600",
-    fontSize: 14,
+    fontSize: 16,
   },
   activeText: {
     color: "#fff",

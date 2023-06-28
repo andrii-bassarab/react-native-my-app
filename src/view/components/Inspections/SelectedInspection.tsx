@@ -223,7 +223,7 @@ export const SelectedInspection: React.FC<Props> = ({
           </Text>
         </View>
         <View style={styles.dateLabel}>
-          <CalendarIcon height={10} width={10} color={colors.primary} style={{ marginRight: 5 }} />
+          <CalendarIcon height={15} width={15} color={colors.primary} style={{ marginRight: 5 }} />
           <Text style={styles.textInfo}>
             {item?.scheduledOn
               ? `Scheduled ${getInspectionDate(new Date(item?.scheduledOn))} ${
@@ -302,8 +302,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "500",
+    marginBottom: '1%'
   },
   mainInfo: {
     flex: 1,
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   textInfo: {
-    fontSize: 13,
+    fontSize: 18,
     color: "#8E8E8E",
   },
   dateLabel: {
@@ -323,7 +324,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   goBackButton: {
-    padding: 5,
+    padding: "2%",
     borderWidth: 1,
     borderColor: colors.blue,
     marginRight: 10,
@@ -332,7 +333,7 @@ const styles = StyleSheet.create({
   startInspectionButton: {
     alignSelf: "flex-end",
     marginTop: "5%",
-    paddingVertical: 5,
+    paddingVertical: "1.5%",
     paddingHorizontal: 20,
     backgroundColor: colors.layout,
     borderRadius: 20,
@@ -355,5 +356,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: colors.green,
     alignSelf: "center",
+    paddingVertical: '1.5%'
   },
 });

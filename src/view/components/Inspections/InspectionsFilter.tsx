@@ -39,6 +39,8 @@ export const InspectionsFilter = () => {
     selectedDayBy,
   } = useAppSelector((state) => state.filterInspections);
 
+  const { topNavigationHeight} = useAppSelector((state) => state.showWindow);
+
   const {
     setStatusNewUnscheduled,
     setStatusScheduled,
@@ -150,7 +152,7 @@ export const InspectionsFilter = () => {
   return (
     <Modal transparent>
       <Pressable
-        style={{...styles.modalOverlay, paddingTop: Platform.OS === "ios" ? insets.top + 10 : 0}}
+        style={{...styles.modalOverlay, paddingTop: insets.top + (topNavigationHeight * 1.3)}}
         onPress={(event) => {
           event.stopPropagation();
           event.preventDefault();
@@ -284,7 +286,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 55,
     padding: 30,
     paddingTop: 10,
-    marginTop: Platform.OS === "ios" ? "10%" : "15%",
+    paddingHorizontal: '10%'
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 22,
+    fontSize: 28,
     marginTop: 10,
   },
   closeLabel: {
@@ -307,7 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   labelBox: {
-    paddingVertical: 10,
+    paddingVertical: "4%",
     flex: 1,
   },
   calendar: {
@@ -323,9 +325,9 @@ const styles = StyleSheet.create({
   calendarTitle: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 20,
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: "3%",
   },
   calendarRange: {
     flexDirection: "row",
@@ -341,7 +343,7 @@ const styles = StyleSheet.create({
   dataRangeText: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 20,
   },
   statusContainer: {
     marginVertical: 10,
@@ -349,7 +351,8 @@ const styles = StyleSheet.create({
   statusTitle: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 24,
+    marginBottom: '2%'
   },
   statusBox: {
     paddingHorizontal: 15,
@@ -382,12 +385,12 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontWeight: "500",
-    fontSize: 16,
+    fontSize: 20,
     color: colors.blue,
   },
   applyButtonText: {
     fontWeight: "500",
-    fontSize: 16,
+    fontSize: 20,
     color: "#fff",
   },
 });

@@ -5,6 +5,7 @@ const initialState = {
   showSwitchSite: false,
   showNotification: false,
   showInspectionsFilter: false,
+  topNavigationHeight: 0,
 }
 
 const showWindowSlice = createSlice({
@@ -19,6 +20,9 @@ const showWindowSlice = createSlice({
     },
     setShowInspectionsFilter: (state, action: PayloadAction<boolean>) => {
       state.showInspectionsFilter = action.payload;
+    },
+    setTopNavigationHeight: (state, action: PayloadAction<number>) => {
+      state.topNavigationHeight = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -27,6 +31,7 @@ const showWindowSlice = createSlice({
         showSwitchSite: false,
         showNotification: false,
         showInspectionsFilter: false,
+        topNavigationHeight: 0,
       }
     })
   }

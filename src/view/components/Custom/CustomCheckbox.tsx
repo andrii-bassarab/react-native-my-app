@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     position: 'relative',
-    width: 22,
-    height: 22,
+    width: 28,
+    height: 28,
     borderWidth: 1,
     borderColor: colors.blue,
     backgroundColor: colors.blue,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   label: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.primary,
     fontWeight: '500'
   },

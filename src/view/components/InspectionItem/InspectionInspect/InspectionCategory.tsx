@@ -161,15 +161,15 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
                     style={[styles.deleteLabel, styles.shadowProp]}
                     onPress={() => setShowDeleteModalWindow((prev) => !prev)}
                   >
-                    <DeleteIcon color={colors.layout} width={20} height={15} />
+                    <DeleteIcon color={colors.layout} width={20} height={20} />
                     <Text>Delete</Text>
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   onPress={handleClickOnDotsIcon}
-                  style={{ paddingHorizontal: "50%", paddingVertical: "10%" }}
+                  style={{ paddingHorizontal: "30%", paddingVertical: '5%' }}
                 >
-                  <DotsIcon color={colors.primary} height={15} width={15} />
+                  <DotsIcon color={colors.primary} height={20} width={20} />
                 </TouchableOpacity>
               </View>
             )}
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "500",
   },
   mainInfo: {
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     color: "#8E8E8E",
     fontWeight: "600",
     flex: 0.5,
-    fontSize: 13,
+    fontSize: 16,
   },
   label: {
     flexDirection: "row",
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 13,
+    fontSize: 16,
   },
   failedBox: {
     width: 30,
@@ -294,8 +294,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     marginRight: 5,
     position: "absolute",
     right: "100%",

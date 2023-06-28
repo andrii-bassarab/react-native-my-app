@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   docFileIcon: {
-    height: 35,
-    width: 35,
+    height: 40,
+    width: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -104,19 +104,19 @@ const styles = StyleSheet.create({
   fileInfoText: {
     color: colors.darkGrey,
     fontWeight: "400",
-    fontSize: 12,
+    fontSize: 16,
   },
   docIconText: {
     color: "#fff",
     textTransform: "uppercase",
     fontWeight: "700",
-    fontSize: 13,
+    fontSize: 14,
   },
   fileNameText: {
     color: "#5F6064",
   },
   deleteButton: {
-    paddingHorizontal: "5%",
+    paddingHorizontal: "7%",
     paddingVertical: "2%",
   },
   deleteLabel: {

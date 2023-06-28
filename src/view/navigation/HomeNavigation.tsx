@@ -4,6 +4,7 @@ import {
   createDrawerNavigator,
 } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
+import {Dimensions} from 'react-native';
 import { Settings } from "../screens/Settings";
 import { MainStack } from "./Main";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
@@ -33,6 +34,8 @@ export const HomeNavigation: React.FC = () => {
   const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
   const { availableUsers } = useAppSelector((state) => state.user);
   const ids = Object.keys(categoriesTemplates);
+
+  const {height} = Dimensions.get('window');
 
   useEffect(() => {
     getAvailableUsers().then((usersResponse) => {

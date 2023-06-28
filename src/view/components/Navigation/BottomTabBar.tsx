@@ -130,6 +130,7 @@ export const BottomTabBar: React.FC<Props> = ({ state, descriptors, navigation }
               style={{
                 color: isFocused ? colors.blue : colors.primary,
                 fontWeight: "500",
+                marginTop: "2%"
               }}
             >
               {typeof label === "string" && label}

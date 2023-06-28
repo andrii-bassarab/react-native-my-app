@@ -24,7 +24,7 @@ export const WorkOrder: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={5}>
+    <Screen backgroundColor={colors.layout} paddingTop={20}>
       <View style={styles.screenContainer}>
         <View style={styles.content}>
           <WelcomeBox
@@ -69,11 +69,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 55,
     padding: 25,
     paddingTop: 15,
+    paddingHorizontal: "7%",
   },
   title: {
     color: colors.primary,
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 24,
     marginTop: "10%",
     marginBottom: "15%",
   },
@@ -96,6 +97,6 @@ const styles = StyleSheet.create({
   modalText: {
     color: colors.primary,
     fontWeight: "500",
-    fontSize: 16,
+    fontSize: 20,
   },
 });

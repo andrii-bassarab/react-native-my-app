@@ -224,7 +224,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 25,
+    paddingHorizontal: "7%",
     paddingTop: "5%",
   },
   title: {

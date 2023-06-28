@@ -99,9 +99,9 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingDisplayComponent>
-      <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
+      <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
         <View style={styles.content}>
-          <View style={{ paddingHorizontal: 25 }}>
+          <View style={{ paddingHorizontal: "5%" }}>
             <SelectedInspection item={inspection} goBack={handleGoBack} />
           </View>
           {showModalUnsavedChanges && (

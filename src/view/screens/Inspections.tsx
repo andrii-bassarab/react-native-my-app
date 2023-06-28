@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { Text, StyleSheet, View, FlatList } from "react-native";
+import { Text, StyleSheet, View, FlatList, Platform } from "react-native";
 import { colors } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
@@ -194,7 +194,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   ]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
       <View style={styles.content}>
         <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
         <Text style={styles.title}>Inspections</Text>
@@ -204,7 +204,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
           <ContentLoader />
         </View>
         ) : visibleInspections.length > 0 ? (
-          <View style={{ marginBottom: "45%", marginTop: 10 }}>
+          <View style={{  marginBottom: "25%", marginTop: 10 }}>
             <FlatList
               data={visibleInspections}
               keyExtractor={(item) => item.id}
@@ -214,7 +214,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
                   onPress={() => navigation.navigate("InspectionItem", item)}
                 />
               )}
-              ListFooterComponent={() => <View style={{ height: 20 }} />}
+              ListFooterComponent={() => <View style={{ height: 10 }} />}
               ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
               showsVerticalScrollIndicator={false}
             />
@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 25,
+    paddingHorizontal: "7%",
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.primary,
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 24,
     marginTop: "3%",
     marginBottom: "3%",
   },

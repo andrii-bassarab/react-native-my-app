@@ -113,7 +113,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   }, [dataAmenitiesValues, loadingAmenitiesValues, errorAmenitiesValues]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={5} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={20} borderRadius={55}>
       <View style={styles.content}>
         <SelectedInspection
           item={inspection}
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    paddingHorizontal: 15,
+    paddingHorizontal: "7%",
     paddingTop: 25,
     paddingBottom: 0,
   },

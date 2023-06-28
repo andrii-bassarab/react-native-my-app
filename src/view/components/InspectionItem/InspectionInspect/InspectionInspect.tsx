@@ -130,7 +130,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.content}>
-      <View style={{ padding: 2 }}>
+      <View>
         <SearchForm
           query={query}
           setQuery={setQuery}
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     paddingTop: 5,
-    paddingHorizontal: 25,
+    paddingHorizontal: "7%",
   },
   loaderBox: {
     flex: 1,

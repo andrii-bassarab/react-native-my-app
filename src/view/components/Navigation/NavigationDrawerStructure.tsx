@@ -21,41 +21,16 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
 
   const { inspectionsSync } = useAppSelector((state) => state.inspections);
   const showWindow = useAppSelector((state) => state.showWindow);
-  const { unreadMessage } = useAppSelector((state) => state.notifications);
 
   const toggleDrawer = () => {
     dispatch(actionsShowWindow.setShowSwitchSite(false));
     navigationProps.dispatch(DrawerActions.openDrawer());
   };
 
-  const toggleNotifications = () => {
-    navigationProps.navigate("HomeScreen");
-    dispatch(actionsShowWindow.setShowSwitchSite(false));
-    dispatch(actionsShowWindow.setShowNotification(!showWindow.showNotification));
-  };
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const { loading } = useQuery(GET_ALL_INSPECTIONS, {
     notifyOnNetworkStatusChange: true,
-  });
-
-  const spinValue = new Animated.Value(0);
-
-  const spin = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "-360deg"],
-  });
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(spinValue, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    ).start();
   });
 
   useEffect(() => {
@@ -69,9 +44,12 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
   }, [loading]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={(event) => {
+      const {x, y, width, height} = event.nativeEvent.layout;
+      dispatch(actionsShowWindow.setTopNavigationHeight(height))
+    }}>
       <TouchableOpacity onPress={toggleDrawer}>
-        <DrawerToggleIcon color="#fff" height="20" />
+        <DrawerToggleIcon color="#fff" height="30" />
       </TouchableOpacity>
     </View>
   );
@@ -82,32 +60,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginLeft: 10,
-    paddingVertical: 5,
-  },
-  syncContent: {
-    height: "100%",
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 5,
-    borderRadius: 20,
-  },
-  unreadMessageText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: '700'
-  },
-  unreadIcon: {
-    height: 16,
-    width: 16,
-    backgroundColor: "#FEBB11",
-    position: "absolute",
-    left: "50%",
-    top: 0,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
+    marginLeft: 20,
+    paddingVertical: 10,
+    marginTop: 10,
   },
 });

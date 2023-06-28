@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   logo: {
-    marginBottom: 0,
+    marginTop: '20%',
     alignItems: "center",
   },
   formContainer: {
@@ -62,12 +62,13 @@ const styles = StyleSheet.create({
     padding: 30,
     justifyContent: "flex-start",
     alignItems: "stretch",
+    paddingHorizontal: '7%'
   },
   goBackButton: {
     borderWidth: 1,
     borderColor: colors.blue,
     alignSelf: "flex-start",
-    padding: 5,
+    padding: "2%",
     borderRadius: 5,
   },
   title: {

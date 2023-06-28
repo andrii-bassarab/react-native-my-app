@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 0.8,
     marginRight: 10,
-    fontSize: 13,
+    fontSize: 16,
   },
   label: {
     flexDirection: "row",
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#8E8E8E",
     fontWeight: "400",
-    fontSize: 13,
+    fontSize: 16,
     flex: 1,
   },
 });
