@@ -33,6 +33,7 @@ import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList"
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { ModalLoader } from "../components/Loader/ModalLoader";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   route: RouteProp<
@@ -55,7 +56,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { inspection, category, items, amenities } = route.params;
-  const { categoryApplyToInspection, categories, startUpdateInspectionCategoryView } = useAppSelector(
+  const { categoryApplyToInspection, categories, inspectionItem } = useAppSelector(
     (state) => state.inspectionItem
   );
 
@@ -145,7 +146,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
               loading={loadingAmenitiesValues}
               categoryApplyToInspection={categoryApplyToInspection}
             />
-            {
+            {inspectionItem?.status !== InspectionStatus.COMPLETE &&
               <TouchableOpacity style={styles.saveButton} onPress={goBack}>
                 <Text style={styles.saveButtonText}>Save and Go Back</Text>
               </TouchableOpacity>

@@ -53,7 +53,7 @@ const categoryTemplateSlice = createSlice({
             item.comment = {
               createdBy: itemValue.inspectedBy || "User not regognized",
               createdOn: itemValue.inspectedOn || "Created time not regognized",
-              commentBody: itemValue.comment,
+              commentBody: itemValue.comment || "Item comment",
             };
             item.result = itemValue.itemOptionId === null;
           }
@@ -87,7 +87,7 @@ const categoryTemplateSlice = createSlice({
             createdBy: amenitieValue.inspectedBy || "User not regognized",
             createdOn:
               amenitieValue.inspectedOn || "Created time not regognized",
-            commentBody: amenitieValue.comment || "",
+            commentBody: amenitieValue.comment || "Amenitie comment",
           };
           amenity.result = amenitieValue.value === "true";
         }

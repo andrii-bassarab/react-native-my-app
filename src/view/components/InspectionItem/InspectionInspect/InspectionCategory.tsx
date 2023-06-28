@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,10 +14,15 @@ import DotsIcon from "~/view/assets/icons/dots.svg";
 import DeleteIcon from "~/view/assets/icons/delete.svg";
 import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
 import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
-import { useAppSelector } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { useMutation } from "@apollo/client";
-import { DELETE_CATEGORY } from "~/services/api/GetInspectionCategory";
+import { ApolloCache, useMutation } from "@apollo/client";
+import {
+  DELETE_CATEGORY,
+  GET_ALL_INSPECTIONS_CATEGORY,
+} from "~/services/api/GetInspectionCategory";
+import { ModalLoader } from "../../Loader/ModalLoader";
+import { actionsToastNotification } from "~/modules/toastNotification";
 
 interface Props {
   category: {
@@ -32,34 +37,101 @@ interface Props {
 }
 
 export const InspectionCategory: React.FC<Props> = ({ category }) => {
+  const dispatch = useAppDispatch();
   const { title, status, result, items, photos, categoryAdded } = category;
   const [showDeleteLabel, setShowDeleteLabel] = useState(false);
   const [showDeleteModalWindow, setShowDeleteModalWindow] = useState(false);
-  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const { profile } = useAppSelector((state) => state.user);
 
   const itemColor = getColorCategoryByResult(result, status);
 
-  const [deleteCategory, { loading }] = useMutation(DELETE_CATEGORY);
+  const [deleteCategory, { loading, error }] = useMutation(DELETE_CATEGORY);
 
   const closeModalDeleteWindow = () => {
     setShowDeleteModalWindow(false);
     setShowDeleteLabel(false);
-  }
+  };
+
+  useEffect(() => {
+    console.log(loading, "loading");
+    console.log(error, "error");
+  }, [loading, error])
+
+  const updateStatusCache = () => {
+    return (cache: ApolloCache<any>, { data }: any) => {
+      console.log("start")
+      if (!data?.deleteInspectionCategory?.affectedEntity?.id) {
+        console.log("end")
+
+        return;
+      }
+
+      console.log("norm")
+
+
+      const deletedItem = data?.deleteInspectionCategory;
+      const { inspectionCategories } = cache.readQuery({
+        query: GET_ALL_INSPECTIONS_CATEGORY,
+        variables: {
+          ids: [inspectionItem?.templateId]
+        }
+      }) as {
+        inspectionCategories: any;
+      };
+
+      console.log("inspectionCategories.edges", inspectionCategories.edges.map((edge: any) => edge.node.id))
+      console.log("updatedItem?.affectedEntity?.id", deletedItem?.affectedEntity?.id)
+
+      const itemIndex = inspectionCategories.edges.findIndex(
+        (edge: any) => edge.node.id === deletedItem?.affectedEntity?.id
+      );
+
+      console.log("itemIndex", itemIndex)
+
+      if (itemIndex !== -1) {
+        // inspectionCategories.edges.splice(itemIndex, 1);
+
+        inspectionCategories.edges = inspectionCategories.edges.filter((edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id)
+
+        console.log("length", inspectionCategories)
+
+        cache.writeQuery({
+          query: GET_ALL_INSPECTIONS_CATEGORY,
+          data: { inspectionCategories },
+        });
+      }
+    };
+  };
+
+  useEffect(() => {
+    console.log("categories.length", categories.length)
+  }, [categories])
 
   const onContinue = async () => {
-    await deleteCategory({
-      variables: {
-        command: {
-          customerId: "pfdylv",
-          siteId: "pfdylv",
-          id: category.id,
-          deletedBy: profile?.email || "",
+    try {
+      await deleteCategory({
+        variables: {
+          command: {
+            customerId: "pfdylv",
+            siteId: "pfdylv",
+            id: category.id,
+            deletedBy: profile?.email || "",
+          },
         },
-      },
-    });
-
-    closeModalDeleteWindow()
+        // update: updateStatusCache(),
+        refetchQueries: [{
+          query: GET_ALL_INSPECTIONS_CATEGORY,
+          variables: {
+            ids: [inspectionItem?.templateId],
+          },
+        }],
+        awaitRefetchQueries: true,
+      });
+      dispatch(actionsToastNotification.showToastMessage("Success! Category was deleted."));
+    } finally {
+      closeModalDeleteWindow();
+    }
   };
 
   const handleClickOnDotsIcon = (event: GestureResponderEvent) => {
@@ -141,6 +213,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           Icon={DeleteModalIcon}
           onContinue={onContinue}
           onCancel={closeModalDeleteWindow}
+          loading={loading}
         />
       )}
     </View>

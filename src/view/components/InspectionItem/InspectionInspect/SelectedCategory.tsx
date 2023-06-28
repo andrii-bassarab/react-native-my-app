@@ -6,6 +6,7 @@ import { Category } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import CompletedIcon from "~/view/assets/icons/completed.svg";
 
 interface Props {
   category: Category;
@@ -21,9 +22,14 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
 
   return (
     <View style={styles.categoryBox}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <Text style={{ fontSize: 16, fontWeight: "700", color: colors.darkGrey }}>
         {category.title}
       </Text>
+      {status === "Complete" && result === "Passed" && (
+        <CompletedIcon color={"#96BF5B"} style={{marginLeft: '3%'}} height={20} width={20} />
+      )}
+      </View>
       <View style={styles.content}>
         <View style={{ flex: 1 }}>
           <View style={styles.label}>

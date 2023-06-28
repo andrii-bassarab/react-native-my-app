@@ -31,6 +31,7 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
               result={amenity.result}
               categoryApplyToInspection={categoryApplyToInspection}
               loading={loading}
+              comment={amenity.comment}
             />
           ))}
         </>

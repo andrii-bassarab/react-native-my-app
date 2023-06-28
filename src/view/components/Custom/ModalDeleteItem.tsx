@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Pressable, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 import { colors } from "~/view/theme";
+import { ModalLoader } from "../Loader/ModalLoader";
 
 interface Props {
   title: string;
@@ -9,9 +10,10 @@ interface Props {
   onContinue: () => void;
   onCancel: () => void;
   message?: string;
+  loading?: boolean;
 }
 
-export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCancel, message }) => {
+export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCancel, message, loading }) => {
   return (
     <Modal transparent={true}>
       <Pressable
@@ -49,6 +51,7 @@ export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCa
             </TouchableOpacity>
           </View>
         </View>
+        {loading && <ModalLoader/>}
       </Pressable>
     </Modal>
   );

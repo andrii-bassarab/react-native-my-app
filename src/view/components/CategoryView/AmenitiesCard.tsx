@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,8 @@ import { CustomRadioCheckbox } from "../Custom/CustomRadioCheckbox";
 import { ContentLoader } from "../Loader/Loader";
 import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
 import { IComment } from "~/types/Comment";
+import { useAppSelector } from "~/store/hooks";
+import { InspectionStatus } from "~/types/inspectionStatus";
 
 interface Props {
   title: string;
@@ -38,6 +40,7 @@ export const AmenitiesCard: React.FC<Props> = ({
   );
   const [visibleComment, setVisibleComment] = useState(comment);
   const [openMainInfo, setOpenMainInfo] = useState(false);
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
 
   const handleEditComment = (comment: string) => {
     setVisibleComment(
@@ -48,6 +51,10 @@ export const AmenitiesCard: React.FC<Props> = ({
         }
     );
   };
+
+  useEffect(() => {
+    setVisibleComment(comment)
+  }, [comment])
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -65,7 +72,7 @@ export const AmenitiesCard: React.FC<Props> = ({
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
-      {openMainInfo && (
+      {openMainInfo && (result !== undefined || visibleComment) && (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
@@ -77,41 +84,55 @@ export const AmenitiesCard: React.FC<Props> = ({
               </View>
             ) : (
               <View style={styles.mainInfo}>
-                {result && <View
-                  style={[
-                    styles.resultLabel,
-                    !categoryApplyToInspection && {
-                      justifyContent: "space-between",
-                    },
-                  ]}
-                >
-                  <Text style={styles.labelItemText}>Result:</Text>
-                  {categoryApplyToInspection ? (
-                    <CustomRadioCheckbox
-                      value={selectedResult}
-                      onValueChange={setSelectedResult}
-                      data={resultDropdownOptions}
-                    />
-                  ) : (
-                    <Text style={styles.noResultText}>N/A</Text>
-                  )}
-                </View>}
-                {visibleComment && (
+                {result !== undefined && (
                   <View
                     style={[
-                      styles.commentsLabel,
-                      !categoryApplyToInspection && styles.rowLabel,
+                      styles.resultLabel,
+                      !categoryApplyToInspection && {
+                        justifyContent: "space-between",
+                      },
                     ]}
                   >
+                    <Text style={styles.labelItemText}>Result:</Text>
+                    {categoryApplyToInspection ? (
+                      <>
+                        {inspectionItem?.status ===
+                        InspectionStatus.COMPLETE ? (
+                          <Text style={styles.labelItemText}>
+                            {selectedResult}
+                          </Text>
+                        ) : (
+                          <CustomRadioCheckbox
+                            value={selectedResult}
+                            onValueChange={setSelectedResult}
+                            data={resultDropdownOptions}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <Text style={styles.noResultText}>N/A</Text>
+                    )}
+                  </View>
+                )}
+                {visibleComment && (
+                  <View style={[styles.commentsLabel, (inspectionItem?.status ===
+                    InspectionStatus.COMPLETE || !categoryApplyToInspection) && styles.rowLabel]}>
                     <Text style={styles.labelItemText}>Comments:</Text>
                     {categoryApplyToInspection ? (
-                      <CommentItem
-                        comment={visibleComment}
-                        index={0}
-                        arrayLength={1}
-                        showEditComment
-                        saveEditedComment={handleEditComment}
-                      />
+                      <>
+                        {inspectionItem?.status ===
+                        InspectionStatus.COMPLETE ? (
+                          <Text style={styles.labelItemText}>{visibleComment.commentBody}</Text>
+                        ) : (
+                          <CommentItem
+                            comment={visibleComment}
+                            index={0}
+                            arrayLength={1}
+                            showEditComment
+                            saveEditedComment={handleEditComment}
+                          />
+                        )}
+                      </>
                     ) : (
                       <Text style={styles.noResultText}>N/A</Text>
                     )}
@@ -137,6 +158,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    flexWrap: 'wrap'
   },
   label: {
     flexDirection: "row",
