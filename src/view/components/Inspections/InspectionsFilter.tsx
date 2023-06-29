@@ -12,7 +12,7 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 import CustomCheckbox from "../Custom/CustomCheckbox";
@@ -21,6 +21,7 @@ import { CalendarRange } from "../Custom/CalendarRange";
 import { filterInspectionsActions } from "../../../modules/filterInspections";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { normalize } from "~/utils/getWindowHeight";
 
 export const InspectionsFilter = () => {
   const windowHeight = Dimensions.get('window').height;
@@ -152,7 +153,7 @@ export const InspectionsFilter = () => {
   return (
     <Modal transparent>
       <Pressable
-        style={{...styles.modalOverlay, paddingTop: insets.top + (topNavigationHeight * 1.3)}}
+        style={{...styles.modalOverlay, paddingTop: insets.top + (topNavigationHeight * 1.4)}}
         onPress={(event) => {
           event.stopPropagation();
           event.preventDefault();
@@ -166,6 +167,7 @@ export const InspectionsFilter = () => {
             position.getLayout(),
             { transform: [{ translateY: pan.y }], opacity },
           ]}
+          onStartShouldSetResponder={() => true}
         >
           <Pressable onPress={handleHideCalendar}>
             <Animated.View {...panResponder.panHandlers}>
@@ -200,7 +202,7 @@ export const InspectionsFilter = () => {
                 <Text style={styles.dataRangeText}>
                   {selectedDayByChange ? getDataToShow(selectedDayByChange) : "__/__/____"}
                 </Text>
-                <SelectIcon color={colors.primary} height={15} width={15} />
+                <SelectIcon color={colors.primary} height={normalize(25)} width={normalize(25)} />
               </TouchableOpacity>
             </View>
             <View style={styles.statusContainer}>
@@ -298,8 +300,8 @@ const styles = StyleSheet.create({
   title: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 28,
     marginTop: 10,
+    ...textStyles.xlarge,
   },
   closeLabel: {
     height: 5,
@@ -320,12 +322,12 @@ const styles = StyleSheet.create({
     zIndex: 2,
     position: "absolute",
     width: "100%",
-    top: 70,
+    top: normalize(70),
   },
   calendarTitle: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 20,
+    ...textStyles.medium,
     marginTop: 10,
     marginBottom: "3%",
   },
@@ -343,7 +345,7 @@ const styles = StyleSheet.create({
   dataRangeText: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 20,
+    ...textStyles.medium,
   },
   statusContainer: {
     marginVertical: 10,
@@ -351,11 +353,11 @@ const styles = StyleSheet.create({
   statusTitle: {
     color: colors.primary,
     fontWeight: "600",
-    fontSize: 24,
+    ...textStyles.large,
     marginBottom: '2%'
   },
   statusBox: {
-    paddingHorizontal: 15,
+    paddingHorizontal: "1%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -370,27 +372,27 @@ const styles = StyleSheet.create({
   clearFiltersButtton: {
     borderWidth: 1,
     borderColor: colors.blue,
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    borderRadius: normalize(30),
+    paddingVertical: "2%",
+    paddingHorizontal: "4%",
   },
   applyFiltersButtton: {
     borderWidth: 1,
     borderColor: colors.layout,
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    borderRadius: normalize(30),
+    paddingVertical: "2%",
+    paddingHorizontal: "4%",
     backgroundColor: colors.layout,
-    marginLeft: 10,
+    marginLeft: '2%',
   },
   clearButtonText: {
     fontWeight: "500",
-    fontSize: 20,
+    ...textStyles.medium,
     color: colors.blue,
   },
   applyButtonText: {
     fontWeight: "500",
-    fontSize: 20,
+    ...textStyles.medium,
     color: "#fff",
   },
 });

@@ -95,16 +95,12 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
         (edge: any) => edge.node.id === deletedItem?.affectedEntity?.id
       );
 
-      console.log("itemIndex", itemIndex);
-
       if (itemIndex !== -1) {
         // inspectionCategories.edges.splice(itemIndex, 1);
 
         inspectionCategories.edges = inspectionCategories.edges.filter(
           (edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id
         );
-
-        console.log("length", inspectionCategories);
 
         cache.writeQuery({
           query: GET_ALL_INSPECTIONS_CATEGORY,
@@ -113,10 +109,6 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
       }
     };
   };
-
-  useEffect(() => {
-    console.log("categories.length", categories.length);
-  }, [categories]);
 
   const onContinue = async () => {
     try {
@@ -177,15 +169,15 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
                     style={[styles.deleteLabel, styles.shadowProp]}
                     onPress={() => setShowDeleteModalWindow((prev) => !prev)}
                   >
-                    <DeleteIcon color={colors.layout} width={20} height={20} />
-                    <Text>Delete</Text>
+                    <DeleteIcon color={colors.layout} width={normalize(25)} height={normalize(25)} />
+                    <Text style={{marginLeft: normalize(5)}}>Delete</Text>
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   onPress={handleClickOnDotsIcon}
-                  style={{ paddingHorizontal: "30%", paddingVertical: "5%" }}
+                  style={{ paddingHorizontal: "30%", paddingVertical: "10%" }}
                 >
-                  <DotsIcon color={colors.primary} height={20} width={20} />
+                  <DotsIcon color={colors.primary} height={normalize(25)} width={normalize(25)} />
                 </TouchableOpacity>
               </View>
             )}

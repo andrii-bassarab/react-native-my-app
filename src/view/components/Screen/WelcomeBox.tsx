@@ -10,6 +10,7 @@ interface Props {
   padding?: number;
   height?: string;
   iconSize?: "large" | "small";
+  showText?: boolean;
 }
 
 export const WelcomeBox: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const WelcomeBox: React.FC<Props> = ({
   textColor,
   padding,
   iconSize,
+  showText = false,
 }) => {
   const { profile } = useAppSelector((state) => state.user);
 
@@ -40,8 +42,22 @@ export const WelcomeBox: React.FC<Props> = ({
             marginBottom: iconSize === "large" ? normalize(10) : 0,
           }}
         />
-        <Text style={{ ...styles.welcomeText, color: textColor }}>Welcome!</Text>
-        <Text style={{ ...styles.welcomeText, ...textStyles.large, color: textColor }}>{profile?.userName}</Text>
+        {showText && (
+          <>
+            <Text style={{ ...styles.welcomeText, color: textColor }}>
+              Welcome!
+            </Text>
+            <Text
+              style={{
+                ...styles.welcomeText,
+                ...textStyles.large,
+                color: textColor,
+              }}
+            >
+              {profile?.userName}
+            </Text>
+          </>
+        )}
       </View>
     </View>
   );

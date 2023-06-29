@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import CompleteIcon from "~/view/assets/icons/completed.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   position: string;
@@ -49,17 +50,17 @@ const styles = StyleSheet.create({
     padding: "5%",
     backgroundColor: "#fff",
     borderRadius: 10,
-    paddingRight: 10,
-    marginTop: "8%",
+    paddingRight: normalize(15),
+    marginTop: "5%",
   },
   responsible: {
     color: "#7F888D",
-    fontSize: 18,
     fontWeight: "500",
     letterSpacing: 1,
+    ...textStyles.medium,
   },
   name: {
-    fontSize: 14,
+    ...textStyles.regular,
     marginTop: "3%",
     letterSpacing: 0,
   },
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   signButtonText: {
     color: colors.blue,
     fontWeight: "600",
-    fontSize: 18,
+    ...textStyles.medium,
   },
   viewSignatureButton: {
     backgroundColor: colors.blue,

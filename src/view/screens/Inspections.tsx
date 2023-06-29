@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Text, StyleSheet, View, FlatList, Platform } from "react-native";
-import { colors, textStyles } from "../theme";
+import { colors, layout, textStyles } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
 import { useAppSelector } from "~/store/hooks";
@@ -195,9 +195,9 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   ]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
       <View style={styles.content}>
-        <WelcomeBox backgroundColor="transparant" textColor={colors.primary} />
+        <WelcomeBox backgroundColor="transparant" textColor={colors.primary} showText />
         <Text style={styles.title}>Inspections</Text>
         <SearchForm query={query} setQuery={setQuery} showFilterButton={true} />
         {visibleLoader && inspections.length === 0 ? (
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   noResultText: {
     color: colors.primary,
-    fontSize: 18,
+    ...textStyles.large,
     fontWeight: "600",
     marginBottom: 20,
   },

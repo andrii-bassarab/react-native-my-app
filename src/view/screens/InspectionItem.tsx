@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/native";
 import { View, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
-import { colors } from "../theme";
+import { colors, layout } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { TopTabBar } from "../components/Navigation/TopTabBar";
@@ -100,7 +100,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingDisplayComponent>
-      <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
+      <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
         <View style={styles.content}>
           <View style={{ paddingHorizontal: "5%" }}>
             <SelectedInspection item={inspection} goBack={handleGoBack} />
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    paddingTop: 25,
+    paddingTop: normalize(35),
     paddingBottom: 0,
   },
 });

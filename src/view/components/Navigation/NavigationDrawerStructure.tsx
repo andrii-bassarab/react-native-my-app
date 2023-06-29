@@ -49,7 +49,7 @@ export const NavigationDrawerStructure: React.FC<Props> = ({ navigationProps }) 
       const {x, y, width, height} = event.nativeEvent.layout;
       dispatch(actionsShowWindow.setTopNavigationHeight(height))
     }}>
-      <TouchableOpacity onPress={toggleDrawer}>
+      <TouchableOpacity onPress={toggleDrawer} style={styles.drawerButton}>
         <DrawerToggleIcon color="#fff" height={normalize(40)} />
       </TouchableOpacity>
     </View>
@@ -61,8 +61,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginLeft: normalize(20),
-    paddingVertical: normalize(10),
-    marginTop: normalize(20),
   },
+  drawerButton: {
+    paddingHorizontal: normalize(20),
+    paddingTop: normalize(20),
+  }
 });

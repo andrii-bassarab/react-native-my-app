@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { colors } from "~/view/theme";
+import { normalize } from "~/utils/getWindowHeight";
+import { colors, textStyles } from "~/view/theme";
 
 interface Props {
   value: string;
@@ -18,17 +19,22 @@ export const CustomRadioCheckbox: React.FC<Props> = ({
   return (
     <View style={[styles.container, containerStyle]}>
       {data.map((item, index) => (
-        <TouchableOpacity style={[styles.item]} onPress={() => onValueChange(item)} key={index}>
+        <TouchableOpacity
+          style={[styles.item]}
+          onPress={() => onValueChange(item)}
+          key={index}
+        >
           <Text style={styles.resultOption}>{item}</Text>
           {value === item ? (
             <View style={styles.selectedItem}>
-              <View
-                style={[styles.toggle, { backgroundColor: colors.blue }]}
-              />
+              <View style={[styles.toggle, { backgroundColor: colors.blue }]} />
             </View>
           ) : (
             <View
-              style={[styles.toggle, value === item && { backgroundColor: colors.blue }]}
+              style={[
+                styles.toggle,
+                value === item && { backgroundColor: colors.blue },
+              ]}
             />
           )}
         </TouchableOpacity>
@@ -50,27 +56,27 @@ const styles = StyleSheet.create({
   },
   toggle: {
     borderRadius: 100,
-    height: 12,
-    width: 12,
+    height: normalize(18),
+    width: normalize(18),
     backgroundColor: "#BDBDBD",
-    marginLeft: "3%",
-    alignSelf: 'center'
+    marginLeft: "5%",
+    alignSelf: "center",
   },
   selectedItem: {
-    height: 18,
-    width: 18,
+    height: normalize(25),
+    width: normalize(25),
     borderRadius: 100,
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: colors.blue,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
     marginLeft: "3%",
   },
   resultOption: {
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 14,
+    ...textStyles.small,
   },
 });

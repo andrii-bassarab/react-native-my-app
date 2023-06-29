@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { CustomSelect, OptionItem } from "../../Custom/CustomSelect";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { useMutation } from "@apollo/client";
@@ -18,6 +18,7 @@ import {
 } from "~/services/api/GetInspectionCategory";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   closeModal: () => void;
@@ -103,7 +104,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
           }}
         >
           <Text style={styles.title}>Add Inspection Category</Text>
-          <View style={{ height: 90 }}>
+          <View style={{ height: normalize(120) }}>
             <View style={styles.customSelectPosition}>
               <CustomSelect
                 data={categoryOptions}
@@ -171,10 +172,10 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.primary,
-    fontSize: 20,
+    ...textStyles.medium,
     fontWeight: "600",
     zIndex: -1,
-    marginBottom: '4%'
+    marginBottom: '3%'
   },
   customSelectPosition: {
     position: "absolute",
@@ -186,12 +187,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     zIndex: -2,
-    marginTop: '4%'
+    marginTop: '3%'
   },
   button: {
     borderRadius: 40,
     borderWidth: 1,
-    paddingVertical: 10,
+    paddingVertical: "1%",
     width: "48%",
     textAlign: "center",
     alignItems: "center",
@@ -201,12 +202,12 @@ const styles = StyleSheet.create({
     borderColor: colors.layout,
   },
   addText: {
-    fontSize: 18,
+    ...textStyles.regular,
     fontWeight: "600",
     color: "#fff",
   },
   cancelText: {
-    fontSize: 18,
+    ...textStyles.regular,
     fontWeight: "600",
     color: colors.blue,
   },
@@ -214,10 +215,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: normalize(15),
     borderColor: colors.primary,
     marginTop: 15,
     zIndex: -1,
+    ...textStyles.regular,
   },
   errorText: {
     color: colors.red,

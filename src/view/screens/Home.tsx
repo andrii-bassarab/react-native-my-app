@@ -6,7 +6,7 @@ import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { Notifications } from "./Notification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";
-import { colors, textStyles } from "../theme";
+import { colors, layout, textStyles } from "../theme";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { ContentLoader } from "../components/Loader/Loader";
 import { normalize } from "~/utils/getWindowHeight";
@@ -25,9 +25,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
       <View style={styles.content}>
-        <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} />
+        <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} showText />
         <View style={styles.activityBox}>
           <View>
             {visibleLoader && inspections.length === 0 ? (
@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
     marginTop: "2%",
   },
   activityTitle: {
-    fontSize: 24,
     color: "#7F888D",
     fontWeight: "700",
     marginBottom: 10,
+    ...textStyles.large,
   },
   contentLoaderContainer: {
     height: "90%",

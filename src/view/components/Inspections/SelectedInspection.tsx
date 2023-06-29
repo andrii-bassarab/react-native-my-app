@@ -208,7 +208,7 @@ export const SelectedInspection: React.FC<Props> = ({
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
-        <LeftErrow color={colors.primary} height={normalize(20)} width={normalize(20)} />
+        <LeftErrow color={colors.primary} height={normalize(25)} width={normalize(25)} />
       </TouchableOpacity>
       <View
         style={{
@@ -318,6 +318,7 @@ const styles = StyleSheet.create({
   textInfo: {
     ...textStyles.little,
     color: "#8E8E8E",
+    paddingRight: '2%'
   },
   dateLabel: {
     flexDirection: "row",
@@ -335,9 +336,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginTop: "5%",
     paddingVertical: normalize(5),
-    paddingHorizontal: 20,
+    paddingHorizontal: normalize(25),
     backgroundColor: colors.layout,
-    borderRadius: 20,
+    borderRadius: normalize(25),
     textAlign: "justify",
     justifyContent: "center",
     alignItems: "center",
@@ -354,7 +355,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   startSignatureButton: {
-    width: "100%",
+    width: "90%",
     backgroundColor: colors.green,
     alignSelf: "center",
     paddingVertical: '1.5%'

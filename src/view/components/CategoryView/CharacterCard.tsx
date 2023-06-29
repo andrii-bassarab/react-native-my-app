@@ -13,7 +13,7 @@ import {
   Image,
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 import PlusIcon from "~/view/assets/icons/plus.svg";
 import CameraIcon from "~/view/assets/icons/camera.svg";
@@ -37,6 +37,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   title: string;
@@ -184,7 +185,7 @@ export const CharacterCard: React.FC<Props> = ({
             !openMainInfo && { transform: [{ rotate: "-90deg" }] },
           ]}
         >
-          <ExpandIcon color={"#fff"} width={15} height={15} />
+          <ExpandIcon color={"#fff"} width={normalize(25)} height={normalize(25)} />
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
@@ -290,8 +291,8 @@ export const CharacterCard: React.FC<Props> = ({
                     </View>
                   )}
                   <View>
-                    {(categoryApplyToInspection &&
-                    inspectionItem?.status !== InspectionStatus.COMPLETE) ? (
+                    {categoryApplyToInspection &&
+                    inspectionItem?.status !== InspectionStatus.COMPLETE ? (
                       <View style={styles.commentsLabel}>
                         <Text style={styles.labelItemText}>Add Photos</Text>
                         <View style={styles.buttonsTakePhotoContainer}>
@@ -308,7 +309,7 @@ export const CharacterCard: React.FC<Props> = ({
                             </TouchableOpacity>
                             <Text style={styles.photoName}>From Gallery</Text>
                           </View>
-                          <View>
+                          <View style={{marginLeft: '2%'}}>
                             <TouchableOpacity
                               style={styles.takePhotoButton}
                               onPress={handleTakePhoto}
@@ -396,8 +397,8 @@ const styles = StyleSheet.create({
   expandBox: {
     borderRadius: 50,
     backgroundColor: colors.blue,
-    width: 25,
-    height: 25,
+    width: normalize(35),
+    height: normalize(35),
     justifyContent: "center",
     alignItems: "center",
   },
@@ -409,9 +410,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   title: {
-    marginLeft: 10,
+    marginLeft: "3%",
     fontWeight: "700",
-    fontSize: 20,
+    ...textStyles.medium,
     color: colors.textGrey,
   },
   mainInfo: {
@@ -422,7 +423,7 @@ const styles = StyleSheet.create({
   messageText: {
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 16
+    ...textStyles.regular,
   },
   resultLabel: {
     flexDirection: "row",
@@ -432,7 +433,7 @@ const styles = StyleSheet.create({
   },
   labelItemText: {
     fontWeight: "600",
-    fontSize: 16,
+    ...textStyles.regular,
     color: "#808080",
   },
   dropdownStyle: {
@@ -466,8 +467,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   takePhotoButton: {
-    width: 70,
-    height: 70,
+    width: normalize(120),
+    height: normalize(120),
     backgroundColor: "#D9D9D9",
     marginRight: 20,
     borderRadius: 10,
@@ -475,7 +476,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   photoName: {
-    fontSize: 16,
+    ...textStyles.small,
     marginTop: "5%",
     color: "#979797",
     fontWeight: "500",
@@ -484,25 +485,25 @@ const styles = StyleSheet.create({
     width: "50%",
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 16,
+    ...textStyles.regular,
   },
   photoLabel: {
     flexWrap: "wrap",
-    width: 70,
+    width: normalize(140),
     overflow: "hidden",
     marginTop: "5%",
-    marginRight: 20,
+    marginRight: normalize(30),
   },
   photoImage: {
-    width: 70,
-    height: 70,
+    width: normalize(120),
+    height: normalize(120),
     resizeMode: "cover",
     borderRadius: 10,
   },
   imageFileName: {
-    fontSize: 16,
+    ...textStyles.regular,
     flexWrap: "wrap",
-    width: 60,
+    width: "90%",
     alignSelf: "center",
     color: colors.textGrey,
     fontWeight: "400",
@@ -512,11 +513,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     position: "absolute",
     backgroundColor: "#BDBDBD",
-    width: 20,
-    height: 20,
+    width: normalize(30),
+    height: normalize(30),
     justifyContent: "center",
     alignItems: "center",
-    right: 5,
-    top: 5,
+    right: "20%",
+    top: "5%",
   },
 });

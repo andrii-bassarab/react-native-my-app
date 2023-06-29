@@ -11,13 +11,14 @@ import {
   Keyboard,
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { CustomRadioCheckbox } from "../Custom/CustomRadioCheckbox";
 import { ContentLoader } from "../Loader/Loader";
 import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
 import { IComment } from "~/types/Comment";
 import { useAppSelector } from "~/store/hooks";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   title: string;
@@ -56,6 +57,8 @@ export const AmenitiesCard: React.FC<Props> = ({
     setVisibleComment(comment)
   }, [comment])
 
+  const inspectionIsComplete = inspectionItem?.status === InspectionStatus.COMPLETE;
+
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <TouchableOpacity
@@ -68,7 +71,7 @@ export const AmenitiesCard: React.FC<Props> = ({
             !openMainInfo && { transform: [{ rotate: "-90deg" }] },
           ]}
         >
-          <ExpandIcon color={"#fff"} width={15} height={15} />
+          <ExpandIcon color={"#fff"} width={normalize(25)} height={normalize(25)} />
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
@@ -93,12 +96,11 @@ export const AmenitiesCard: React.FC<Props> = ({
                       },
                     ]}
                   >
-                    <Text style={styles.labelItemText}>Result:</Text>
+                    <Text style={[styles.labelItemText, inspectionIsComplete && {marginRight: 0, flex: 1}]}>Result:</Text>
                     {categoryApplyToInspection ? (
                       <>
-                        {inspectionItem?.status ===
-                        InspectionStatus.COMPLETE ? (
-                          <Text style={styles.labelItemText}>
+                        {inspectionIsComplete? (
+                          <Text style={[styles.labelItemText, {flex: 1.5}]}>
                             {selectedResult}
                           </Text>
                         ) : (
@@ -115,14 +117,13 @@ export const AmenitiesCard: React.FC<Props> = ({
                   </View>
                 )}
                 {visibleComment && (
-                  <View style={[styles.commentsLabel, (inspectionItem?.status ===
-                    InspectionStatus.COMPLETE || !categoryApplyToInspection) && styles.rowLabel]}>
-                    <Text style={styles.labelItemText}>Comments:</Text>
+                  <View style={[styles.commentsLabel, !categoryApplyToInspection && styles.rowLabel, inspectionItem?.status === InspectionStatus.COMPLETE && styles.rowComment]}>
+                    <Text style={{...styles.labelItemText, flex: 1, marginRight: 0}}>Comments:</Text>
                     {categoryApplyToInspection ? (
                       <>
                         {inspectionItem?.status ===
                         InspectionStatus.COMPLETE ? (
-                          <Text style={styles.labelItemText}>{visibleComment.commentBody}</Text>
+                          <Text style={{...styles.labelItemText, flex: 1.5}}>{visibleComment.commentBody}</Text>
                         ) : (
                           <CommentItem
                             comment={visibleComment}
@@ -168,8 +169,8 @@ const styles = StyleSheet.create({
   expandBox: {
     borderRadius: 50,
     backgroundColor: colors.blue,
-    width: 25,
-    height: 25,
+    width: normalize(35),
+    height: normalize(35),
     justifyContent: "center",
     alignItems: "center",
   },
@@ -183,9 +184,9 @@ const styles = StyleSheet.create({
   title: {
     marginLeft: 10,
     fontWeight: "700",
-    fontSize: 16,
     color: colors.textGrey,
     paddingRight: "2%",
+    ...textStyles.regular,
   },
   mainInfo: {
     borderTopWidth: 2,
@@ -204,9 +205,14 @@ const styles = StyleSheet.create({
   },
   labelItemText: {
     fontWeight: "600",
-    fontSize: 16,
+    ...textStyles.regular,
     color: "#808080",
     marginRight: "20%",
+  },
+  rowComment: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   dropdownStyle: {
     width: "100%",
@@ -249,7 +255,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   photoName: {
-    fontSize: 16,
+    ...textStyles.regular,
     marginTop: "5%",
     color: "#979797",
     fontWeight: "500",
@@ -257,12 +263,12 @@ const styles = StyleSheet.create({
   resultOption: {
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 16,
+    ...textStyles.regular,
   },
   noResultText: {
     width: "50%",
     color: colors.textGrey,
     fontWeight: "500",
-    fontSize: 16,
+    ...textStyles.regular,
   },
 });

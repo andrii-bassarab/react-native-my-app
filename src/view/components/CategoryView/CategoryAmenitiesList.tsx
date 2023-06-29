@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   amenitiesTitle: {
     marginBottom: '5%',
-    ...textStyles.regular,
+    ...textStyles.medium,
     fontWeight: '600',
     color: colors.textGrey
   }

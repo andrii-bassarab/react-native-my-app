@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native";
 import { normalize } from "~/utils/getWindowHeight";
 
 const colors = {
@@ -11,7 +12,7 @@ const colors = {
 };
 
 const layout = {
-  padding: 20,
+  screenPadding: normalize(40),
 };
 
 export const textStyles = {
@@ -39,7 +40,9 @@ export const textStyles = {
   xlarge: {
     fontSize: normalize(34),
   },
+  great: {
+    fontSize: normalize(50),
+  }
 };
-
 
 export { colors, layout };

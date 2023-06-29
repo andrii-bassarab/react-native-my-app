@@ -11,7 +11,7 @@ import {
 import { Asset } from "react-native-image-picker";
 import { normalize } from "~/utils/getWindowHeight";
 import CloseIcon from "~/view/assets/icons/failed.svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 
 interface Props {
   closeModalFunction: () => void;
@@ -92,5 +92,6 @@ const styles = StyleSheet.create({
     marginTop: "1%",
     color: colors.textGrey,
     fontWeight: "600",
+    ...textStyles.regular,
   },
 });

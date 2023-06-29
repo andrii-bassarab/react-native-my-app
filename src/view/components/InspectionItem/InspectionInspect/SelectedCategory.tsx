@@ -36,6 +36,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
             fontWeight: "700",
             color: colors.darkGrey,
             ...textStyles.regular,
+            marginBottom: '1%'
           }}
         >
           {category.title}
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     color: "#8E8E8E",
     fontWeight: "600",
     flex: 0.5,
-    ...textStyles.small,
+    ...textStyles.little,
   },
   label: {
     flexDirection: "row",
@@ -120,13 +121,14 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    ...textStyles.small,
+    ...textStyles.little,
   },
   categoryApplyText: {
-    ...textStyles.small,
+    ...textStyles.little,
     flex: 1,
     marginRight: 10,
     color: colors.darkGrey,
+    marginTop: '1%'
   },
   applyCategoryBox: {
     flexDirection: "row",

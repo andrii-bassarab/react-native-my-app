@@ -13,13 +13,14 @@ import {
   Platform,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { colors } from "../../theme";
+import { colors, textStyles } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 import { setSelectedSite } from "~/modules/user/actions";
 import { actionsShowWindow } from "~/modules/showWindow";
+import { normalize } from "~/utils/getWindowHeight";
 
 export const CustomerSite = () => {
-  const windowHeight = Dimensions.get('window').height;
+  const windowHeight = Dimensions.get("window").height;
   const currentUser = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [chosenSite, setChosenSite] = useState(
@@ -27,9 +28,13 @@ export const CustomerSite = () => {
   );
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const closeSwitchSite = () => dispatch(actionsShowWindow.setShowSwitchSite(false));
+  const closeSwitchSite = () =>
+    dispatch(actionsShowWindow.setShowSwitchSite(false));
 
-  const position = useMemo(() => new Animated.ValueXY({ x: 0, y: windowHeight * 0.15 }), []);
+  const position = useMemo(
+    () => new Animated.ValueXY({ x: 0, y: windowHeight * 0.15 }),
+    []
+  );
   const pan = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
@@ -46,7 +51,10 @@ export const CustomerSite = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (!currentUser.selectedSite && currentUser.availableSites.length > 1) {
+        if (
+          !currentUser.selectedSite &&
+          currentUser.availableSites.length > 1
+        ) {
           return;
         }
         if (gestureState.dy > windowHeight * 0.15) {
@@ -77,17 +85,31 @@ export const CustomerSite = () => {
           event.preventDefault();
           closeSwitchSite();
         }}
-        disabled={!currentUser.selectedSite && currentUser.availableSites.length > 1}
+        disabled={
+          !currentUser.selectedSite && currentUser.availableSites.length > 1
+        }
       >
         <Animated.View
-          style={[{ ...styles.switchBox, transform: [{ translateY: pan.y }] }, position.getLayout(),]}
+          style={[
+            { ...styles.switchBox, transform: [{ translateY: pan.y }] },
+            position.getLayout(),
+          ]}
           onStartShouldSetResponder={() => true}
           onTouchEnd={(event) => {
             event.stopPropagation();
           }}
         >
-          <Animated.View style={styles.switchSiteLabelBox} {...panResponder.panHandlers}>
-            <TouchableOpacity style={{ flex: 1, justifyContent: "center" }}>
+          <Animated.View
+            style={styles.switchSiteLabelBox}
+            {...panResponder.panHandlers}
+          >
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                paddingVertical: "5%",
+              }}
+            >
               <View style={styles.switchSiteLabel} />
             </TouchableOpacity>
           </Animated.View>
@@ -112,9 +134,11 @@ export const CustomerSite = () => {
                     key={site.code}
                     style={{
                       ...styles.dropdownOptionsLabel,
-                      backgroundColor: chosenSite.name === site.name ? colors.blue : "#fff",
+                      backgroundColor:
+                        chosenSite.name === site.name ? colors.blue : "#fff",
                       borderTopWidth: chosenSite.name === site.name ? 0.5 : 0,
-                      borderBottomWidth: chosenSite.name === site.name ? 0.5 : 0,
+                      borderBottomWidth:
+                        chosenSite.name === site.name ? 0.5 : 0,
                     }}
                     onPress={() => {
                       setChosenSite(site);
@@ -123,8 +147,11 @@ export const CustomerSite = () => {
                   >
                     <Text
                       style={{
-                        color: chosenSite.name === site.name ? "#fff" : colors.primary,
-                        fontSize: 16,
+                        color:
+                          chosenSite.name === site.name
+                            ? "#fff"
+                            : colors.primary,
+                        ...textStyles.regular,
                       }}
                     >
                       {site.name}
@@ -159,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   dropdownContainer: {
-    marginTop: '5%',
+    marginTop: "5%",
     borderColor: colors.primary,
     borderTopWidth: 0,
     zIndex: 2,
@@ -179,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectedText: {
-    fontSize: 16,
+    ...textStyles.regular,
     color: colors.primary,
     fontWeight: "500",
   },
@@ -205,18 +232,18 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 16,
+    ...textStyles.small,
   },
   switchSiteLabel: {
-    height: 5,
+    height: normalize(6),
     backgroundColor: "rgba(193, 188, 185, 1)",
     alignSelf: "center",
     width: "60%",
     borderRadius: 40,
   },
   switchSiteLabelBox: {
-    marginTop: 10,
-    height: 25,
+    marginTop: "3%",
+    height: normalize(25),
     justifyContent: "center",
   },
   switchBox: {
@@ -227,12 +254,12 @@ const styles = StyleSheet.create({
     padding: 30,
     paddingTop: 0,
     alignItems: "stretch",
-    paddingHorizontal: '12%'
+    paddingHorizontal: "12%",
   },
   switchSiteTitle: {
     alignSelf: "flex-start",
     marginTop: 10,
-    fontSize: 24,
+    ...textStyles.medium,
     fontWeight: "600",
     color: "#808080",
   },

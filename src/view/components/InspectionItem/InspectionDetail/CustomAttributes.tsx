@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { InspectionItem } from "~/types/InspectionItem";
+import { textStyles } from "~/view/theme";
 
 interface Props {
   inspection: InspectionItem;
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 0.8,
     marginRight: 10,
-    fontSize: 13,
+    ...textStyles.small,
   },
   label: {
     flexDirection: "row",
@@ -59,6 +60,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
     flex: 1,
-    fontSize: 13,
+    ...textStyles.small,
   },
 });

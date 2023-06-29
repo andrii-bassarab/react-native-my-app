@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { colors } from "../../theme";
 import { Calendar } from "react-native-calendars";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface DateObject {
   [key: string]: any;
@@ -87,8 +88,12 @@ export const CalendarRange: React.FC<Props> = ({
         textDisabledColor: colors.primary,
         todayBackgroundColor: "#fff",
         arrowColor: colors.primary,
-        weekVerticalMargin: 0,
+        weekVerticalMargin: normalize(10),
         textDayFontWeight: "600",
+        textDayFontSize: normalize(20),
+        textMonthFontSize: normalize(20),
+        textDayHeaderFontSize: normalize(14),
+        todayButtonFontSize: normalize(15),
         stylesheet: {
           calendar: {
             main: { borderRadius: 0 },

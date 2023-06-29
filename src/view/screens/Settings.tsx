@@ -6,18 +6,18 @@ import DocumentIcon from "../assets/icons/document.svg";
 import WorkIcon from "../assets/icons/work.svg";
 import SwitchIcon from "../assets/icons/switch.svg";
 import LogOutIcon from "../assets/icons/logout.svg";
-import { useAppDispatch } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { signOut } from "~/modules/user/actions";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors, textStyles } from "../theme";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { normalize } from "~/utils/getWindowHeight";
 
-interface Props extends DrawerContentComponentProps {
-}
+interface Props extends DrawerContentComponentProps {}
 
-export const Settings: React.FC<Props> = ({navigation}) => {
+export const Settings: React.FC<Props> = ({ navigation }) => {
   const dispatch = useAppDispatch();
+  const { profile } = useAppSelector((state) => state.user);
 
   const logOut = () => dispatch(signOut());
   const openSwitchSite = () => {
@@ -31,8 +31,27 @@ export const Settings: React.FC<Props> = ({navigation}) => {
   return (
     <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: "10%" }}>
-        <View style={{marginTop: normalize(30), marginLeft: normalize(10)}}>
-        <WelcomeBox backgroundColor="transparant" textColor="#fff" height="25%" padding={25} iconSize="large"/>
+        <View style={{ marginTop: normalize(30), marginLeft: normalize(10) }}>
+          <WelcomeBox
+            backgroundColor="transparant"
+            textColor="#fff"
+            height="15%"
+            padding={25}
+            iconSize="large"
+          />
+          <View style={{paddingTop: "25%", paddingLeft: '10%'}}>
+            <Text style={{ ...styles.welcomeText, color: "#fff" }}>
+              Welcome!
+            </Text>
+            <Text
+              style={{
+                ...styles.welcomeText,
+                color: "#fff",
+              }}
+            >
+              {profile?.userName}
+            </Text>
+          </View>
         </View>
         <Image
           source={require("../assets/images/settingsHeader.png")}
@@ -44,16 +63,25 @@ export const Settings: React.FC<Props> = ({navigation}) => {
           }}
         />
         <View style={styles.contentContainer}>
-          <View >
-            <TouchableOpacity style={styles.settingsItem} onPress={() => navigation.navigate('InspectionNavigation')}>
+          <View>
+            <TouchableOpacity
+              style={styles.settingsItem}
+              onPress={() => navigation.navigate("InspectionNavigation")}
+            >
               <DocumentIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Inspections</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsItem} onPress={() => navigation.navigate('WorkOrder')}>
+            <TouchableOpacity
+              style={styles.settingsItem}
+              onPress={() => navigation.navigate("WorkOrder")}
+            >
               <WorkIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Work Orders</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsItem} onPress={openSwitchSite}>
+            <TouchableOpacity
+              style={styles.settingsItem}
+              onPress={openSwitchSite}
+            >
               <SwitchIcon color={colors.primary} height="100%" />
               <Text style={styles.itemsText}>Switch Customer Site</Text>
             </TouchableOpacity>
@@ -72,10 +100,10 @@ export const Settings: React.FC<Props> = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  screenContainer: { 
-    flex: 1, 
-    backgroundColor: "#fff", 
-    paddingBottom: "10%" 
+  screenContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingBottom: "10%",
   },
   headerContainer: {
     backgroundColor: "rgba(35, 71, 99, 1)",
@@ -99,12 +127,11 @@ const styles = StyleSheet.create({
   itemsText: {
     color: "#7F878B",
     ...textStyles.regular,
-    marginLeft: '3%'
+    marginLeft: "3%",
   },
   contentContainer: {
     flex: 1,
     backgroundColor: "#fff",
-    marginTop: 55,
     justifyContent: "space-between",
   },
   settingsIconBox: {},
@@ -120,8 +147,8 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     color: "#fff",
-    fontSize: 20,
     marginTop: 10,
     fontWeight: "700",
+    ...textStyles.large,
   },
 });

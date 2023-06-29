@@ -1,8 +1,9 @@
 import React from "react";
 import { Modal, Pressable, View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { ModalLoader } from "../Loader/ModalLoader";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   title: string;
@@ -32,7 +33,7 @@ export const ModalDeleteItem: React.FC<Props> = ({ title, Icon, onContinue, onCa
           }}
         >
           <View style={styles.deleteContainer}>
-            <Icon color="#fff" width={90} height={90} />
+            <Icon color="#fff" width={normalize(100)} height={normalize(100)} />
           </View>
           <Text style={styles.title}>{title}</Text>
           {message && <Text style={styles.message}>{message}</Text>}
@@ -76,9 +77,9 @@ const styles = StyleSheet.create({
   },
   deleteContainer: {
     backgroundColor: colors.red,
-    borderRadius: 100,
-    height: 200,
-    width: 200,
+    borderRadius: normalize(100),
+    height: normalize(200),
+    width: normalize(200),
     justifyContent: "center",
     alignItems: "center",
     marginBottom: '5%'
@@ -87,8 +88,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     color: colors.blue,
-    fontSize: 22,
     fontWeight: "600",
+    ...textStyles.medium,
   },
   buttonsContainer: {
     width: "100%",
@@ -109,12 +110,12 @@ const styles = StyleSheet.create({
     borderColor: colors.layout,
   },
   addText: {
-    fontSize: 16,
     fontWeight: "600",
     color: "#fff",
+    ...textStyles.small,
   },
   cancelText: {
-    fontSize: 16,
+    ...textStyles.small,
     fontWeight: "600",
     color: colors.blue,
   },

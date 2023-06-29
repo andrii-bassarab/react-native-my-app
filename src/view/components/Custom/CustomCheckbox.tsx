@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import { colors } from '../../theme';
+import { colors, textStyles } from '../../theme';
+import { normalize } from '~/utils/getWindowHeight';
 
 interface Props {
   label?: string; 
@@ -27,25 +28,25 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     position: 'relative',
-    width: 28,
-    height: 28,
+    width: normalize(32),
+    height: normalize(32),
     borderWidth: 1,
     borderColor: colors.blue,
     backgroundColor: colors.blue,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    marginRight: '5%',
     borderRadius: 3
   },
   checkmark: {
     position: 'absolute',
-    fontSize: 20,
     fontWeight: '700',
     color: '#fff',
+    ...textStyles.regular,
   },
   label: {
-    fontSize: 20,
+    ...textStyles.regular,
     color: colors.primary,
     fontWeight: '500'
   },

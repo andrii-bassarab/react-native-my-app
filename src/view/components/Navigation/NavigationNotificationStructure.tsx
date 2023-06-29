@@ -90,12 +90,12 @@ export const NavigationNotificationStructure: React.FC<Props> = ({ navigationPro
         {!networkConnectivity && (
           <View style={styles.syncContent}>
             <View>
-              <NoInternetIcon color={colors.darkGrey} height={normalize(20)} width={normalize(20)} />
+              <NoInternetIcon color={colors.darkGrey} height={normalize(30)} width={normalize(30)} />
             </View>
             <Text style={styles.noInternetText}>No Network Connectivity</Text>
           </View>
         )}
-        <TouchableOpacity onPress={toggleNotifications}>
+        <TouchableOpacity onPress={toggleNotifications} style={{marginLeft: normalize(5)}}>
           <NotificationIcon color="#fff" height={normalize(45)} />
           {unreadMessage > 0 && (
             <View style={styles.unreadIcon}>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginRight: normalize(10),
+    marginRight: normalize(20),
     paddingVertical: normalize(10),
     marginTop: normalize(20),
   },
@@ -123,8 +123,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    padding: 5,
-    borderRadius: 20,
+    padding: normalize(10),
+    borderRadius: normalize(30),
   },
   unreadMessageText: {
     color: "#fff",
@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
     fontWeight: "600",
     marginLeft: "2%",
-    ...textStyles.small,
+    ...textStyles.little,
   },
 });

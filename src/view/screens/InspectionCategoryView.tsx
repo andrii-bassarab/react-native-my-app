@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Screen } from "../components/Screen/Screen";
-import { colors, textStyles } from "../theme";
+import { colors, layout, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
 import {
@@ -21,18 +21,14 @@ import {
   CategoryItemField,
 } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   GET_CATEGORY_AMENITY_VALUE,
-  GET_CATEGORY_ITEM_VALUE,
-  UPDATE_CATEGOTY_ITEM,
 } from "~/services/api/GetInspectionCategory";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { ContentLoader } from "../components/Loader/Loader";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
-import { actionsInspectionItem } from "~/modules/inspectionItem";
-import { ModalLoader } from "../components/Loader/ModalLoader";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 
@@ -114,7 +110,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   }, [dataAmenitiesValues, loadingAmenitiesValues, errorAmenitiesValues]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
       <View style={styles.content}>
         <SelectedInspection
           item={inspection}
@@ -166,7 +162,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     paddingHorizontal: "7%",
-    paddingTop: 25,
+    paddingTop: normalize(35),
     paddingBottom: 0,
   },
   label: {

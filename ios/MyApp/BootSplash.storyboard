@@ -16,8 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <imageView autoresizesSubviews="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" misplaced="YES" image="BootSplashLogo" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
-                                <rect key="frame" x="0.0" y="148" width="375" height="385"/>
+                            <imageView autoresizesSubviews="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="BootSplashLogo" translatesAutoresizingMaskIntoConstraints="NO" id="3lX-Ut-9ad">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -31,6 +31,7 @@
                         <constraints>
                             <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Fh9-Fy-1nT"/>
                             <constraint firstItem="3lX-Ut-9ad" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="nvB-Ic-PnI"/>
+                            <constraint firstItem="3lX-Ut-9ad" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" id="Wx7-0G-0L7"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -40,6 +41,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="BootSplashLogo" width="200" height="200"/>
+        <image name="BootSplashLogo" width="375" height="667"/>
     </resources>
 </document>

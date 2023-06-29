@@ -10,6 +10,7 @@ import { IComment } from "~/types/Comment";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { colors, textStyles } from "~/view/theme";
 import EditIcon from "~/view/assets/icons/edit.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   comment: IComment;
@@ -76,7 +77,7 @@ export const CommentItem: React.FC<Props> = ({
           style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
         >
           {showEditInput ? (
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, marginTop: '2%'}}>
               <TextInput
                 value={editedComment}
                 onChangeText={setEditedComment}
@@ -121,8 +122,8 @@ export const CommentItem: React.FC<Props> = ({
             </>
           )}
           {showIconEdit && (
-            <TouchableOpacity onPress={handleToggleEditComment}>
-              <EditIcon width={15} height={15} color={colors.blue} />
+            <TouchableOpacity onPress={handleToggleEditComment} style={{paddingVertical: '5%'}}>
+              <EditIcon width={normalize(25)} height={normalize(25)} color={colors.blue} />
             </TouchableOpacity>
           )}
         </View>
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     marginTop: "5%",
   },
   textInputButton: {
-    borderRadius: 20,
+    borderRadius: normalize(30),
     borderWidth: 1,
     borderColor: colors.layout,
     paddingHorizontal: "10%",

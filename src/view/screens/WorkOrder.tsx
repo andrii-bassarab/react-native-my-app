@@ -3,7 +3,7 @@ import { ParamListBase } from "@react-navigation/native";
 import React, { useEffect, useRef } from "react";
 import { Text, StyleSheet, View, Animated } from "react-native";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
-import { colors } from "../theme";
+import { colors, layout, textStyles } from "../theme";
 import BuilderIncon from "../assets/icons/build.svg";
 import SettingsDetail from "../assets/icons/settings.svg";
 import { Screen } from "../components/Screen/Screen";
@@ -25,22 +25,24 @@ export const WorkOrder: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={normalize(30)}>
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding}>
       <View style={styles.screenContainer}>
         <View style={styles.content}>
           <WelcomeBox
             backgroundColor="transparant"
             textColor={colors.primary}
+            showText
           />
           <Text style={styles.title}>Work Orders</Text>
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              flex: 1,
             }}
           >
-            <BuilderIncon color={colors.blue} height="100%" width="60%" />
+            <BuilderIncon color={colors.blue} height="80%" width="60%" />
             <SettingsDetail width="50%" color={colors.blue} />
           </View>
           <Animated.View
@@ -60,7 +62,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#2C4660",
   },
   screenContainer: {
-    paddingTop: 15,
     flex: 1,
   },
   content: {
@@ -69,21 +70,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
     padding: 25,
-    paddingTop: 15,
     paddingHorizontal: "7%",
   },
   title: {
     color: colors.primary,
     fontWeight: "700",
-    fontSize: 24,
-    marginTop: "10%",
+    marginTop: "4%",
     marginBottom: "15%",
+    ...textStyles.medium,
   },
   alert: {
     position: "absolute",
     top: "50%",
     left: "50%",
-    padding: 35,
+    padding: normalize(50),
     transform: [{ translateX: -60 }, { translateY: -40 }],
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -98,6 +98,6 @@ const styles = StyleSheet.create({
   modalText: {
     color: colors.primary,
     fontWeight: "500",
-    fontSize: 20,
+    ...textStyles.regular,
   },
 });

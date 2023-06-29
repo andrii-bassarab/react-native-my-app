@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     opacity: 1,
     borderTopRightRadius: 55,
     borderTopLeftRadius: 55,
-    padding: 30,
+    padding: "7%",
     paddingTop: 10,
   },
   shadowProp: {

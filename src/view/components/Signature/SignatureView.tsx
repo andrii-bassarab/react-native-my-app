@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Platform } from "react
 import { SignatureCard } from "./SignatureCard";
 import { ModalSwipeScreen } from "../Custom/ModalSwipeScreen";
 import SignatureCapture, { SaveEventParams } from "react-native-signature-capture";
-import { colors } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { useAppDispatch } from "~/store/hooks";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#7F888D",
-    fontSize: 20,
     fontWeight: "600",
+    ...textStyles.large,
   },
   modalContainer: {
     alignItems: "stretch",
@@ -239,12 +239,12 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     color: "#7F888D",
-    fontSize: 26,
+    ...textStyles.large,
     fontWeight: "600",
   },
   modalInfo: {
     color: "#7F888D",
-    fontSize: 18,
+    ...textStyles.medium,
     fontWeight: "600",
     marginTop: "5%",
     marginBottom: 5,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   buttonSignText: {
     color: "#fff",
-    fontSize: 16,
+    ...textStyles.regular,
     fontWeight: "600",
   },
   imageviewSignature: {

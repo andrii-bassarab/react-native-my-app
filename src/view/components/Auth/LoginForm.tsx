@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import EyeIcon from "~/view/assets/icons/eyeslash.svg";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { textStyles } from "~/view/theme";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   goToHome: () => void;
@@ -50,7 +52,6 @@ export const LoginForm: React.FC<Props> = ({
         <TextInput
           style={{
             ...styles.input,
-            paddingVertical: "3%",
             borderColor: errorLogin
               ? "rgba(219, 0, 28, 1)"
               : userName
@@ -67,23 +68,16 @@ export const LoginForm: React.FC<Props> = ({
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Password *</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            ...styles.input,
-            padding: 0,
-            height: "25%",
-            borderColor: errorLogin
-              ? "rgba(219, 0, 28, 1)"
-              : password
-              ? "rgba(37, 192, 220, 1)"
-              : "#B4BCC0",
-          }}
-        >
+        <View>
           <TextInput
-            style={{ paddingVertical: 10, flex: 1 }}
+            style={{
+              ...styles.input,
+              borderColor: errorLogin
+                ? "rgba(219, 0, 28, 1)"
+                : userName
+                ? "rgba(37, 192, 220, 1)"
+                : "#B4BCC0",
+            }}
             value={password}
             onChangeText={setPassword}
             secureTextEntry={hidePassword}
@@ -91,9 +85,16 @@ export const LoginForm: React.FC<Props> = ({
           />
           <TouchableOpacity
             onPress={() => setHidePassword((prevState) => !prevState)}
+            style={{
+              position: "absolute",
+              right: normalize(40),
+              top: "15%",
+              width: normalize(40),
+              height: normalize(40),
+            }}
           >
             <EyeIcon
-              height={"60%"}
+              height={"100%"}
               color={hidePassword ? "#2C4660" : "#D8DFE2"}
             />
           </TouchableOpacity>
@@ -129,10 +130,10 @@ const styles = StyleSheet.create({
     marginTop: "5%",
   },
   labelText: {
-    paddingBottom: 10,
+    paddingBottom: "2%",
     color: "rgba(127, 136, 141, 1)",
     fontWeight: "600",
-    fontSize: 20,
+    ...textStyles.regular,
   },
   formContainer: {
     backgroundColor: "#fff",
@@ -140,10 +141,10 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     borderTopRightRadius: 50,
     borderTopLeftRadius: 50,
-    padding: 30,
+    paddingVertical: "7%",
     justifyContent: "flex-start",
     alignItems: "stretch",
-    paddingHorizontal: '7%'
+    paddingHorizontal: "7%",
   },
   logo: {
     marginBottom: 0,
@@ -153,12 +154,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     borderColor: "#B4BCC0",
-    padding: 10,
-    height: 40,
-    paddingLeft: 15,
+    padding: normalize(15),
+    paddingLeft: normalize(20),
+    ...textStyles.small,
   },
   title: {
-    fontSize: 30,
+    ...textStyles.great,
     fontWeight: "600",
     color: "rgba(44, 70, 96, 1)",
   },
@@ -168,20 +169,20 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     color: "rgba(37, 192, 220, 1)",
-    fontSize: 20,
+    ...textStyles.medium,
   },
   signInButton: {
     paddingVertical: "3%",
     borderRadius: 50,
     backgroundColor: "#2C4660",
     alignSelf: "flex-end",
-    marginTop: 30,
+    marginTop: "15%",
     paddingHorizontal: "10%",
   },
   signIn: {
     color: "#fff",
     fontWeight: "600",
-    fontSize: 20,
+    ...textStyles.medium,
   },
   errorMessage: {
     color: "rgba(219, 0, 28, 1)",

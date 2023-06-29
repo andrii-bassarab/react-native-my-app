@@ -8,8 +8,9 @@ import {
   TouchableOpacity
 } from "react-native";
 import { Screen } from "../components/Screen/Screen";
-import { colors } from "../theme";
+import { colors, textStyles } from "../theme";
 import LeftErrow from "../assets/icons/leftArrow.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   children?: React.ReactNode;
@@ -29,7 +30,7 @@ export const ForgotPassword: React.FC<Props> = ({ route, navigation }) => {
         </View>
         <View style={styles.formContainer}>
           <TouchableOpacity style={styles.goBackButton} onPress={() => navigation.goBack()}>
-            <LeftErrow color={colors.primary} height={20} width={20} />
+            <LeftErrow color={colors.primary} height={normalize(30)} width={normalize(30)} />
           </TouchableOpacity>
           <Text style={styles.title}>Reset Password</Text>
           <Image
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     borderTopRightRadius: 50,
     borderTopLeftRadius: 50,
-    padding: 30,
+    padding: normalize(40),
     justifyContent: "flex-start",
     alignItems: "stretch",
     paddingHorizontal: '7%'
@@ -73,13 +74,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "700",
-    fontSize: 26,
     color: colors.layout,
     marginVertical: "5%",
+    ...textStyles.xlarge,
   },
   supportImage: {
-    width: 150,
-    height: 150,
+    width: normalize(250),
+    height: normalize(250),
     alignSelf: "center",
     resizeMode: "contain",
   },
@@ -87,8 +88,8 @@ const styles = StyleSheet.create({
     color: colors.primary,
     alignSelf: 'center',
     textAlign: 'center',
-    fontSize: 20,
     fontWeight: '500',
-    marginTop: 20
+    marginTop: "7%",
+    ...textStyles.medium
   }
 });
