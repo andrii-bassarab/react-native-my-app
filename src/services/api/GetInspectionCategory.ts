@@ -1,46 +1,48 @@
 import { gql } from "@apollo/client"
 
 export const GET_ALL_INSPECTIONS_CATEGORY = gql`
-  query GetInspectionCategories ($ids: [String!]) {
+  query GetInspectionCategories ($id: String){
     inspectionCategories (
-        first: 50
-        order: { createdOn: ASC } 
-        where: {      
-          inspectionTemplateId: {in: $ids}
-          deletedOn: { eq: null}
+      first: 50
+      order: { createdOn: ASC }
+      where: {      
+        inspectionTemplateId: { eq: $id }
+        deletedOn: { eq: null }
       }   
     ) {
-     edges {
-       node {
-        id
-        inspectionTemplateId       
-        name
-        isRequired
-        importKey
-        createdBy
-        amenities{
+      edges {
+        node {
           id
+          inspectionTemplateId       
           name
-        } 
-        items{
-          id
-          name
-          description
-          options{
+          isRequired   
+          importKey
+          amenities {
+            id
+            name
+          } 
+          items {
+            id
+            name
+            description  
+            itemsValues{  
+              id          
+              comment
+              value
+            }
+            options {
               name
               description
-          }
-        }          
-       }
-       cursor
-     } 
-  
-     pageInfo {
-       startCursor
-       endCursor
-       hasNextPage
-       hasPreviousPage
-     }
+            }                  
+          }          
+          createdOn
+          createdBy
+          modifiedOn
+          modifiedBy
+          deletedOn
+          deletedBy
+        }
+      } 
     }
   }
 `

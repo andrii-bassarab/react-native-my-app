@@ -18,19 +18,14 @@ export interface CategoryOptionField {
 
 export interface CategoryItemField {
   id: string;
-  inspectionItemId?: string;
-  name: string;
-  description: string;
-  options: CategoryOptionField[];
-  comment?: IComment;
-  result?: boolean;
+  value: string | null;
+  comment: string;
 }
 
 export interface CategoryAmenityField {
   id: string;
-  name: string;
-  comment?: IComment;
-  result?: boolean;
+  value: string;
+  comment: string;
 }
 
 export interface CategoryAmenityValue {
@@ -52,14 +47,22 @@ export interface CategoryItemValue {
   itemOptionId: null | string;
 }
 
+export interface CategoryItems {
+  id: string;
+  name: string;
+  description: string;
+  itemsValues: CategoryItemField[];
+}
+
 export interface CategoryType {
   id: string;
   inspectionTemplateId: string;
   name: string;
   isRequired: boolean;
-  importKey?: null | string;
+  importKey: null | string;
   createdBy: string | null;
   amenities: CategoryAmenityField[];
-  items: CategoryItemField[];
+  items: CategoryItems[];
+  status?: string;
   result?: string;
 }

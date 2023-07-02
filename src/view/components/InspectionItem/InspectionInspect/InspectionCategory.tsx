@@ -49,66 +49,47 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
 
   const itemColor = getColorCategoryByResult(result, status);
 
-  const [deleteCategory, { loading, error }] = useMutation(DELETE_CATEGORY);
+  const [deleteCategory, { loading, data }] = useMutation(DELETE_CATEGORY);
 
   const closeModalDeleteWindow = () => {
     setShowDeleteModalWindow(false);
     setShowDeleteLabel(false);
   };
 
-  useEffect(() => {
-    console.log(loading, "loading");
-    console.log(error, "error");
-  }, [loading, error]);
+  // const updateStatusCache = () => {
+  //   return (cache: ApolloCache<any>, { data }: any) => {
+  //     if (!data?.deleteInspectionCategory?.affectedEntity?.id) {
+  //       return;
+  //     }
 
-  const updateStatusCache = () => {
-    return (cache: ApolloCache<any>, { data }: any) => {
-      console.log("start");
-      if (!data?.deleteInspectionCategory?.affectedEntity?.id) {
-        console.log("end");
+  //     const deletedItem = data?.deleteInspectionCategory;
+  //     const { inspectionCategories } = cache.readQuery({
+  //       query: GET_ALL_INSPECTIONS_CATEGORY,
+  //       variables: {
+  //         ids: [inspectionItem?.templateId],
+  //       },
+  //     }) as {
+  //       inspectionCategories: any;
+  //     };
 
-        return;
-      }
+  //     const itemIndex = inspectionCategories.edges.findIndex(
+  //       (edge: any) => edge.node.id === deletedItem?.affectedEntity?.id
+  //     );
 
-      console.log("norm");
+  //     if (itemIndex !== -1) {
+  //       // inspectionCategories.edges.splice(itemIndex, 1);
 
-      const deletedItem = data?.deleteInspectionCategory;
-      const { inspectionCategories } = cache.readQuery({
-        query: GET_ALL_INSPECTIONS_CATEGORY,
-        variables: {
-          ids: [inspectionItem?.templateId],
-        },
-      }) as {
-        inspectionCategories: any;
-      };
+  //       inspectionCategories.edges = inspectionCategories.edges.filter(
+  //         (edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id
+  //       );
 
-      console.log(
-        "inspectionCategories.edges",
-        inspectionCategories.edges.map((edge: any) => edge.node.id)
-      );
-      console.log(
-        "updatedItem?.affectedEntity?.id",
-        deletedItem?.affectedEntity?.id
-      );
-
-      const itemIndex = inspectionCategories.edges.findIndex(
-        (edge: any) => edge.node.id === deletedItem?.affectedEntity?.id
-      );
-
-      if (itemIndex !== -1) {
-        // inspectionCategories.edges.splice(itemIndex, 1);
-
-        inspectionCategories.edges = inspectionCategories.edges.filter(
-          (edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id
-        );
-
-        cache.writeQuery({
-          query: GET_ALL_INSPECTIONS_CATEGORY,
-          data: { inspectionCategories },
-        });
-      }
-    };
-  };
+  //       cache.writeQuery({
+  //         query: GET_ALL_INSPECTIONS_CATEGORY,
+  //         data: { inspectionCategories },
+  //       });
+  //     }
+  //   };
+  // };
 
   const onContinue = async () => {
     try {
@@ -118,25 +99,26 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
             customerId: "pfdylv",
             siteId: "pfdylv",
             id: category.id,
-            deletedBy: profile?.email || "",
+            deletedBy: profile?.email || "test",
           },
         },
-        // update: updateStatusCache(),
         refetchQueries: [
           {
             query: GET_ALL_INSPECTIONS_CATEGORY,
             variables: {
-              ids: [inspectionItem?.templateId],
+              id: inspectionItem?.templateId,
             },
           },
         ],
         awaitRefetchQueries: true,
       });
-      dispatch(
-        actionsToastNotification.showToastMessage(
-          "Success! Category was deleted."
-        )
-      );
+      if (data?.affectedEntity) {
+        dispatch(
+          actionsToastNotification.showToastMessage(
+            "Success! Category was deleted."
+          )
+        );
+      }
     } finally {
       closeModalDeleteWindow();
     }
@@ -169,15 +151,23 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
                     style={[styles.deleteLabel, styles.shadowProp]}
                     onPress={() => setShowDeleteModalWindow((prev) => !prev)}
                   >
-                    <DeleteIcon color={colors.layout} width={normalize(25)} height={normalize(25)} />
-                    <Text style={{marginLeft: normalize(5)}}>Delete</Text>
+                    <DeleteIcon
+                      color={colors.layout}
+                      width={normalize(25)}
+                      height={normalize(25)}
+                    />
+                    <Text style={{ marginLeft: normalize(5) }}>Delete</Text>
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   onPress={handleClickOnDotsIcon}
                   style={{ paddingHorizontal: "30%", paddingVertical: "10%" }}
                 >
-                  <DotsIcon color={colors.primary} height={normalize(25)} width={normalize(25)} />
+                  <DotsIcon
+                    color={colors.primary}
+                    height={normalize(25)}
+                    width={normalize(25)}
+                  />
                 </TouchableOpacity>
               </View>
             )}
@@ -205,7 +195,11 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           </View>
           <View style={{ flex: 0.2, alignItems: "center" }}>
             {status === "Complete" && result === "Passed" && (
-              <CompletedIcon color={"#96BF5B"} height={30} width={30} />
+              <CompletedIcon
+                color={"#96BF5B"}
+                height={normalize(40)}
+                width={normalize(40)}
+              />
             )}
             {status === "Complete" && result === "Failed" && (
               <View style={styles.failedBox}>

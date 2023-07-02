@@ -121,25 +121,16 @@ export const Notifications: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.33)",
-  },
   content: {
     position: "absolute",
-    top: 0,
+    top: normalize(20),
     left: 0,
     right: 0,
     bottom: -10,
     flex: 1,
     backgroundColor: "#fff",
-    borderTopRightRadius: 55,
-    borderTopLeftRadius: 55,
+    borderTopRightRadius: normalize(100),
+    borderTopLeftRadius: normalize(100),
     paddingHorizontal: "7%",
   },
   notificationsLabel: {

@@ -5,19 +5,19 @@ import {
   StyleSheet,
 } from "react-native";
 import { colors, textStyles } from "../../theme";
-import { CategoryItemField } from "~/types/Category";
+import { CategoryItemField, CategoryItems } from "~/types/Category";
 import { CharacterCard } from "../../components/CategoryView/CharacterCard";
 
 interface Props {
-  categoryItemsValues: CategoryItemField[];
-  loading: boolean;
+  categoryItemsValues: CategoryItems[];
   categoryApplyToInspection: boolean;
+  categoryId: string;
 }
 
 export const CategoryItemsList: React.FC<Props> = ({
     categoryItemsValues,
-    loading,
     categoryApplyToInspection,
+    categoryId
 }) => {
   return (
     <>
@@ -28,12 +28,11 @@ export const CategoryItemsList: React.FC<Props> = ({
               key={item.id}
               title={item.name}
               message={item.description}
-              result={item.result}
-              categoryApplyToInspection={categoryApplyToInspection}
-              comment={item.comment}
-              inspectionItemId={item.inspectionItemId}
-              loading={loading}
+              result={item.itemsValues[0]?.value === undefined ? undefined : item.itemsValues[0]?.value === "true"}
+              comment={item.itemsValues[0]?.comment === undefined ? undefined : item.itemsValues[0]?.comment}
+              inspectionItemId={item.id}
               id={item.id}
+              categoryId={categoryId} 
             />
           ))}
         </>

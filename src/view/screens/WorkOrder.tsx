@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#fff",
-    borderTopRightRadius: 55,
-    borderTopLeftRadius: 55,
+    borderTopRightRadius: normalize(100),
+    borderTopLeftRadius: normalize(100),
     padding: 25,
     paddingHorizontal: "7%",
   },

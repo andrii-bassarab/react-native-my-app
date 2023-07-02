@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: "#fff",
-    paddingHorizontal: 20,
+    paddingHorizontal: "7%",
     paddingVertical: "7%",
     borderRadius: 10,
     width: "80%",
@@ -122,6 +122,8 @@ const styles = StyleSheet.create({
   message: {
     marginTop: 15,
     color: colors.darkGrey,
-    fontWeight: '500'
+    fontWeight: '500',
+    ...textStyles.small,
+    textAlign: 'center'
   }
 });

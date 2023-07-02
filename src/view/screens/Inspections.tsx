@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { Text, StyleSheet, View, FlatList, Platform } from "react-native";
+import { Text, StyleSheet, View, FlatList } from "react-native";
 import { colors, layout, textStyles } from "../theme";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { SearchForm } from "../components/Inspections/SearchForm";
@@ -205,7 +205,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
           <ContentLoader />
         </View>
         ) : visibleInspections.length > 0 ? (
-          <View style={{  marginBottom: normalize(300), marginTop: normalize(15) }}>
+          <View style={{  marginBottom: normalize(120), marginTop: "5%" }}>
             <FlatList
               data={visibleInspections}
               keyExtractor={(item) => item.id}
@@ -215,7 +215,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
                   onPress={() => navigation.navigate("InspectionItem", item)}
                 />
               )}
-              ListFooterComponent={() => <View style={{ height: normalize(15) }} />}
+              ListFooterComponent={() => <View style={{ height: normalize(180) }} />}
               ItemSeparatorComponent={() => <View style={{ height: normalize(15) }} />}
               showsVerticalScrollIndicator={false}
             />
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#fff",
-    borderTopRightRadius: 55,
-    borderTopLeftRadius: 55,
+    borderTopRightRadius: normalize(100),
+    borderTopLeftRadius: normalize(100),
     padding: 25,
     paddingHorizontal: "7%",
   },

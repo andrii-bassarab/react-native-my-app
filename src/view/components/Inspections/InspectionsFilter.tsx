@@ -284,8 +284,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     opacity: 1,
-    borderTopRightRadius: 55,
-    borderTopLeftRadius: 55,
+    borderTopRightRadius: normalize(100),
+    borderTopLeftRadius: normalize(100),
     padding: 30,
     paddingTop: 10,
     paddingHorizontal: '10%'

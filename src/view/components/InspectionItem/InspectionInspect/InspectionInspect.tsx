@@ -10,16 +10,14 @@ import { SearchForm } from "../../Inspections/SearchForm";
 import { InspecitonAddCategory } from "./InspectionAddCategory";
 import { ModalAddCategory } from "./ModalAddCategory";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import {
-  GET_ALL_INSPECTIONS_CATEGORY,
-  GET_CATEGORY_ITEM_VALUE,
-} from "~/services/api/GetInspectionCategory";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
+import { useQuery } from "@apollo/client";
 import { ContentLoader } from "../../Loader/Loader";
 import { CategoryList } from "./CategoryList";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
-import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { CategoryType } from "~/types/Category";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -30,68 +28,17 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const inspection = route.params;
 
-  const { inspectionItem, categories } = useAppSelector(
-    (state) => state.inspectionItem
-  );
+  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const [query, setQuery] = useState("");
   const [visibleCategories, setVisibleCategory] = useState(categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
   const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
-      ids: [route.params.templateId],
+      id: route.params.templateId,
     },
   });
-
-  const [
-    getCategoryItemsValues,
-    {
-      data: dataCategoryItems,
-      loading: loadingCategoryItems,
-      error: errorCategoryItems,
-    },
-  ] = useLazyQuery(GET_CATEGORY_ITEM_VALUE);
-
-  useEffect(() => {
-    if (categories.length > 0 && data) {
-      getCategoryItemsValues({
-        variables: {
-          ids: categories
-            .flatMap((category) => category.items.map((item) => item.id))
-            .filter((itemId) => itemId.length > 0)
-            .flat(),
-        },
-      });
-    }
-  }, [categories, data]);
-
-  useEffect(() => {
-    if (
-      dataCategoryItems &&
-      dataCategoryItems?.inspectionItemValues?.edges &&
-      Array.isArray(dataCategoryItems?.inspectionItemValues?.edges) &&
-      dataCategoryItems?.inspectionItemValues?.edges.every(
-        (edge: any) =>
-          typeof edge === "object" && edge.node && typeof edge.node === "object"
-      )
-    ) {
-      dataCategoryItems?.inspectionItemValues?.edges.forEach((edge: any) => {
-        const foundCategory = categories.find((category) =>
-          category.items.find((item) => item.id === edge.node.inspectionItemId)
-        );
-
-        if (foundCategory) {
-          dispatch(
-            actionsCategoryTemplate.addCategoryItemValue({
-              templateId: inspection.templateId,
-              categoryId: foundCategory?.id || "",
-              itemsValues: [edge.node],
-            })
-          );
-        }
-      });
-    }
-  }, [dataCategoryItems, loadingCategoryItems, errorCategoryItems]);
 
   useEffect(() => {
     setVisibleCategory(
@@ -113,16 +60,20 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
           typeof edge === "object" && edge.node && typeof edge.node === "object"
       )
     ) {
-      const responseCategories = data.inspectionCategories.edges.map(
+      const responseCategories: CategoryType[] = data.inspectionCategories.edges.map(
         (edge: any) => edge.node
       );
 
-      console.log("data was updated");
+      console.log("date was updated")
 
       dispatch(
         actionsCategoryTemplate.addCategoryTemplate({
           templateIdToAdd: route.params.templateId,
-          categories: responseCategories,
+          categories: responseCategories.map((category) => ({
+            ...category,
+            status: !category.isRequired ? "--" : category.items.length > 0 ? "Complete" : "Incomplete",
+            result: !category.isRequired ? "--" : (category.items.length > 0) ? category.items.every(({itemsValues}) => itemsValues[0]?.value === "true") ? "Passed" : "Failed" : "No results yet",
+          })),
         })
       );
     }
@@ -143,8 +94,8 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
           <InspecitonAddCategory />
         </TouchableOpacity>
       )}
-      <View style={{ height: 15 }} />
-      {(loadingCategoryItems || loading) && categories.length === 0 && !data ? (
+      <View style={{ height: normalize(15) }} />
+      {(loading) && categories.length === 0 ? (
         <View style={styles.loaderBox}>
           <ContentLoader />
         </View>
@@ -166,7 +117,7 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: "#fff",
     flex: 1,
-    paddingTop: 5,
+    paddingTop: normalize(10),
     paddingHorizontal: "7%",
   },
   loaderBox: {

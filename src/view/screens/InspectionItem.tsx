@@ -10,7 +10,7 @@ import { colors, layout } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { TopTabBar } from "../components/Navigation/TopTabBar";
-import { InspectionStatus, InspectionVisibleStatus } from "~/types/inspectionStatus";
+import { InspectionStatus } from "~/types/inspectionStatus";
 import { InspectionDetails } from "../components/InspectionItem/InspectionDetail/InspectionDetail";
 import { InspectionInspect } from "../components/InspectionItem/InspectionInspect/InspectionInspect";
 import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
@@ -36,11 +36,9 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const {
     startSignature,
-    visibleAssignedTo,
     visiblePhoneNumber,
     inspectionItem,
     assignedOption,
-    categoryApplyToInspection
   } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
@@ -95,6 +93,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    "setted to local store"
     dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []))
   }, [categoriesTemplates[inspection.templateId]]);
 
@@ -156,8 +155,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#fff",
-    borderTopRightRadius: 55,
-    borderTopLeftRadius: 55,
+    borderTopRightRadius: normalize(100),
+    borderTopLeftRadius: normalize(100),
     paddingTop: normalize(35),
     paddingBottom: 0,
   },

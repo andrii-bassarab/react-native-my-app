@@ -1,10 +1,9 @@
 import "react-native-gesture-handler";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Text, View, StyleSheet, FlatList } from "react-native";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
-import { Notifications } from "./Notification";
-import { useAppDispatch, useAppSelector } from "~/store/hooks";
+import { useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
@@ -16,16 +15,12 @@ interface Props {
 }
 
 export const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const dispatch = useAppDispatch();
-
   const { inspections, visibleLoader } = useAppSelector(
     (state) => state.inspections
   );
-  const showWindow = useAppSelector((state) => state.showWindow);
-
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={normalize(100)}>
       <View style={styles.content}>
         <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} showText />
         <View style={styles.activityBox}>
@@ -68,8 +63,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#fff",
-    borderTopRightRadius: 55,
-    borderTopLeftRadius: 55,
+    borderTopRightRadius: normalize(100),
+    borderTopLeftRadius: normalize(100),
     padding: 25,
     paddingHorizontal: "7%",
   },

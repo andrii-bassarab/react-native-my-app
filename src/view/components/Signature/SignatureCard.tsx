@@ -31,7 +31,7 @@ export const SignatureCard: React.FC<Props> = ({
           onPress={openShowViewSignature}
         >
           <Text style={[styles.signButtonText, styles.viewSignatureText]}>View Signature</Text>
-          <CompleteIcon color={"#fff"} width={20} height={20} />
+          <CompleteIcon color={"#fff"} width={normalize(30)} height={normalize(30)} />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity style={styles.signButton} onPress={openSignScreen}>

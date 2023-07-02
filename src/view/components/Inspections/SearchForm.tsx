@@ -22,7 +22,7 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
     <View style={styles.formContainer}>
       <View style={[styles.searchLabel, styles.shadowProp, !showFilterButton && {marginRight: 0}]}>
         <View style={styles.inputContainer}>
-          <SearchIcon color={colors.primary} width={normalize(20)} height={normalize(20)} />
+          <SearchIcon color={colors.primary} width={normalize(25)} height={normalize(25)} />
           <TextInput
             style={styles.searchInput}
             textAlignVertical="center"
@@ -32,8 +32,8 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
           />
         </View>
         {query && (
-          <TouchableOpacity onPress={() => setQuery("")}>
-            <CloseIcon size={24} />
+          <TouchableOpacity onPress={() => setQuery("")} style={{marginRight: '1%'}}>
+            <CloseIcon size={normalize(35)} />
           </TouchableOpacity>
         )}
       </View>

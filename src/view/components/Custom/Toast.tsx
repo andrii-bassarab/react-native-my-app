@@ -46,9 +46,9 @@ export const Toast = () => {
     <View style={styles.container}>
       <Animated.View style={[styles.toast, { opacity: fadeAnim, paddingTop: insets.top, minHeight: normalize(100) }]}>
         {toastMessage === "Success! Sync is complete." ? (
-          <SyncIcon width={30} height={30} color={"#fff"} style={{ marginRight: "10%" }} />
+          <SyncIcon width={normalize(40)} height={normalize(40)} color={"#fff"} style={{ marginRight: "10%" }} />
         ) : (
-          <CompletedIcon width={30} height={30} color={"#fff"} style={{ marginRight: "10%" }} />
+          <CompletedIcon width={normalize(40)} height={normalize(40)} color={"#fff"} style={{ marginRight: "10%" }} />
         )}
         <Text style={styles.text}>{toastMessage}</Text>
       </Animated.View>

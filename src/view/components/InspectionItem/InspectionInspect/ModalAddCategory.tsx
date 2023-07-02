@@ -26,12 +26,14 @@ interface Props {
 
 export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
   const dispatch = useAppDispatch();
-  const { profile }= useAppSelector((state) => state.user);
-  const { inspectionItem } = useAppSelector(state => state.inspectionItem)
+  const { profile } = useAppSelector((state) => state.user);
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
 
-  const [addCategory, {loading}] = useMutation(ADD_INSPECTION_CATEGORY);
+  const [addCategory, { loading }] = useMutation(ADD_INSPECTION_CATEGORY);
 
-  const [selectedCategory, setSelectedCategory] = useState<OptionItem>("Select Inspection Category");
+  const [selectedCategory, setSelectedCategory] = useState<OptionItem>(
+    "Select Inspection Category"
+  );
   const [categoryError, setCategoryError] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [displayNameError, setDisplayNameError] = useState("");
@@ -58,21 +60,37 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
   };
 
   const handleAddNewCategory = async () => {
-    await addCategory({
-      variables: {
-        command: newCategory,
-      },
-      refetchQueries: [{
-        query: GET_ALL_INSPECTIONS_CATEGORY,
-        variables: {
-          ids: [inspectionItem?.templateId],
-        },
-      }],
-      awaitRefetchQueries: true,
-    });
+    if (selectedCategory === "Select Inspection Category") {
+      setCategoryError("Inspection category required.");
+      return;
+    }
 
-    dispatch(actionsToastNotification.showToastMessage("Success! Category added."));
-    closeModal();
+    if (!displayName || !displayName.trim()) {
+      setDisplayNameError("Display Name required.");
+      return;
+    }
+
+    try {
+      await addCategory({
+        variables: {
+          command: newCategory,
+        },
+        refetchQueries: [
+          {
+            query: GET_ALL_INSPECTIONS_CATEGORY,
+            variables: {
+              id: inspectionItem?.templateId,
+            },
+          },
+        ],
+        awaitRefetchQueries: true,
+      });
+      dispatch(
+        actionsToastNotification.showToastMessage("Success! Category added.")
+      );
+    } finally {
+      closeModal();
+    }
   };
 
   useEffect(() => {
@@ -104,7 +122,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
           }}
         >
           <Text style={styles.title}>Add Inspection Category</Text>
-          <View style={{ height: normalize(120) }}>
+          <View style={{ height: categoryError ? normalize(160) : normalize(120) }}>
             <View style={styles.customSelectPosition}>
               <CustomSelect
                 data={categoryOptions}
@@ -117,7 +135,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
             </View>
           </View>
           {showDisplayNameInput && (
-            <View style={{ marginBottom: 40, zIndex: -1 }}>
+            <View style={{ marginBottom: normalize(50), zIndex: -1 }}>
               <Text style={styles.title}>Display name</Text>
               <TextInput
                 style={{
@@ -147,7 +165,7 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {loading && <ModalLoader/>}
+        {loading && <ModalLoader />}
       </Pressable>
     </Modal>
   );
@@ -168,14 +186,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "85%",
     minHeight: "25%",
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   title: {
     color: colors.primary,
     ...textStyles.medium,
     fontWeight: "600",
     zIndex: -1,
-    marginBottom: '3%'
+    marginBottom: "3%",
   },
   customSelectPosition: {
     position: "absolute",
@@ -187,7 +205,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     zIndex: -2,
-    marginTop: '3%'
+    marginTop: "3%",
   },
   button: {
     borderRadius: 40,
@@ -227,5 +245,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 5,
     zIndex: -1,
+    ...textStyles.small,
   },
 });

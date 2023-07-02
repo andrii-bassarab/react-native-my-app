@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
     color: colors.red,
     marginLeft: "5%",
     fontWeight: "600",
-    marginTop: 5,
+    marginTop: "2%",
+    ...textStyles.small,
   },
 });

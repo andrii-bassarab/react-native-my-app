@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryType } from "~/types/Category";
+import { CategoryItemValue, CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
 import { getInspectionStatus } from "~/utils/getInspectionStatus";
 
@@ -11,9 +11,9 @@ const initialState = {
   visibleAssignedTo: null as null | string,
   visiblePhoneNumber: null as null | string,
   assignedOption: {
-    name: '',
-    value: ''
-  } as { name: string; value: string; },
+    name: "",
+    value: "",
+  } as { name: string; value: string },
   categoryApplyToInspection: true,
   startUpdateInspectionCategoryView: false,
 };
@@ -28,32 +28,41 @@ const inspectionItemSlice = createSlice({
     setCategories: (state, action: PayloadAction<CategoryType[]>) => {
       state.categories = action.payload;
     },
-    setCategoryApplyToInspection: (state, action: PayloadAction<boolean>) => {
-      state.categoryApplyToInspection = action.payload;
+    setCategoryApplyToInspection: (
+      state,
+      action: PayloadAction<{
+        categoryId: string;
+        value: boolean;
+      }>
+    ) => {
+      const { categoryId, value } = action.payload;
+      const foundCategory = state.categories.find(
+        (category) => category.id === categoryId
+      );
+
+      if (foundCategory) {
+        foundCategory.isRequired = value;
+        foundCategory.status = !value ? "--" : foundCategory.items.length > 0 ? "Complete" : "Incomplete";
+        foundCategory.result = !value ? "--" : (foundCategory.items.length > 0) ? foundCategory.items.every(({itemsValues}) => itemsValues[0]?.value === "true") ? "Passed" : "Failed" : "No results yet";
+      }
     },
     setInspectionItem: (state, action: PayloadAction<InspectionItem>) => {
       state.inspectionItem = action.payload;
       state.assignedOption = {
         value: action.payload.assignedTo,
         name: action.payload.visibleAssignedTo,
-      }
+      };
     },
-    setInspectionStatus: (
-      state,
-      action: PayloadAction<string>
-    ) => {
+    setInspectionStatus: (state, action: PayloadAction<string>) => {
       if (state.inspectionItem) {
         state.inspectionItem.status = action.payload;
         state.inspectionItem.visibleStatus = getInspectionStatus(
           action.payload,
           state.inspectionItem.hasPassed
-        )
+        );
       }
     },
-    setInspectionAssigned: (
-      state,
-      action: PayloadAction<string>
-    ) => {
+    setInspectionAssigned: (state, action: PayloadAction<string>) => {
       if (state.inspectionItem) {
         state.inspectionItem.assignedTo = action.payload;
       }
@@ -61,9 +70,11 @@ const inspectionItemSlice = createSlice({
     setStartSignature: (state, action: PayloadAction<boolean>) => {
       state.startSignature = action.payload;
     },
-    setVisibleAssignedTo: (state, action: PayloadAction<string>) => {
-    },
-    setAssignedOption: (state, action: PayloadAction<{ name: string; value: string; }>) => {
+    setVisibleAssignedTo: (state, action: PayloadAction<string>) => {},
+    setAssignedOption: (
+      state,
+      action: PayloadAction<{ name: string; value: string }>
+    ) => {
       state.assignedOption = action.payload;
     },
     setVisiblePhoneNumber: (state, action: PayloadAction<string>) => {
@@ -72,8 +83,49 @@ const inspectionItemSlice = createSlice({
     setSignatureCount: (state, action: PayloadAction<number>) => {
       state.signatureCount = action.payload;
     },
-    setStartUpdateInspectionCategoryView: (state, action: PayloadAction<boolean>) => {
+    setStartUpdateInspectionCategoryView: (
+      state,
+      action: PayloadAction<boolean>
+    ) => {
       state.startUpdateInspectionCategoryView = action.payload;
+    },
+    setResultItem: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        categoryId: string;
+        itemsValue: {
+          id: string;
+          comment: string;
+          result: boolean;
+        };
+      }>
+    ) => {
+      const { categoryId, itemsValue } = payload;
+      const foundCategory = state.categories.find(
+        (category) => category.id === categoryId
+      );
+
+      if (foundCategory) {
+        const item = foundCategory?.items?.find(
+          (item) => item.id === itemsValue.id
+        );
+
+        if (item && item.itemsValues[0]) {
+          item.itemsValues[0].value = itemsValue.result ? "true" : "false";
+          item.itemsValues[0].comment = itemsValue.comment;
+
+          (foundCategory.result =
+            foundCategory.items.length > 0
+              ? foundCategory.items.every(
+                  ({ itemsValues }) => itemsValues[0].value === "true"
+                )
+                ? "Passed"
+                : "Failed"
+              : "No results yet")
+        }
+      }
     },
     clearInspectionItem: () => ({
       inspectionItem: null,
@@ -83,8 +135,8 @@ const inspectionItemSlice = createSlice({
       visibleAssignedTo: null,
       visiblePhoneNumber: null,
       assignedOption: {
-        name: '',
-        value: ''
+        name: "",
+        value: "",
       },
       categoryApplyToInspection: true,
       startUpdateInspectionCategoryView: false,

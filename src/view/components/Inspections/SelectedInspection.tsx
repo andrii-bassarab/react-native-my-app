@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
@@ -37,7 +37,7 @@ export const SelectedInspection: React.FC<Props> = ({
   const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
   const itemColor = getInspectionColorByStatus(inspectionItem?.visibleStatus || '');
 
-  const [updateInspection, { loading, data, error }] = useMutation(UPDATE_INSPECTION);
+  const [updateInspection, { loading }] = useMutation(UPDATE_INSPECTION);
 
   const updateStatusCache = (status: string) => {
     return (cache: ApolloCache<any>, { data }: any) => {
@@ -214,8 +214,8 @@ export const SelectedInspection: React.FC<Props> = ({
         style={{
           ...styles.mainInfo,
           borderColor: itemColor,
-          borderLeftWidth: includeCategory ? 0 : 3,
-          paddingLeft: includeCategory ? 0 : 10,
+          borderLeftWidth: includeCategory ? 0 : normalize(4),
+          paddingLeft: includeCategory ? 0 : normalize(15),
         }}
       >
         <View style={styles.content}>
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   textInfo: {
     ...textStyles.little,
     color: "#8E8E8E",
-    paddingRight: '2%'
+    paddingRight: '3%'
   },
   dateLabel: {
     flexDirection: "row",

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { CustomToggleInput } from "../../Custom/CustomToggleInput";
 import { Category } from "~/types/Category";
@@ -15,17 +15,17 @@ interface Props {
 
 export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
-  const [categoryIncludeInspection, setCategoryIncludeInspection] =
-    useState(true);
-  const { status, result, items, photos } = category;
-  const { categories, categoryApplyToInspection, inspectionItem } =
-    useAppSelector((state) => state.inspectionItem);
+  const { status, result, items, photos, id } = category;
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+
+  const dynamycCategoryApplyToInspection = categories.find(categoryToCheck => categoryToCheck.id === id)?.isRequired;
 
   const handleChangeCategoryApplyToInspection = () =>
     dispatch(
-      actionsInspectionItem.setCategoryApplyToInspection(
-        !categoryApplyToInspection
-      )
+      actionsInspectionItem.setCategoryApplyToInspection({
+        categoryId: category.id,
+        value: !dynamycCategoryApplyToInspection,
+      })
     );
 
   return (
@@ -83,7 +83,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
           Does this category apply to the inspection?
         </Text>
         <CustomToggleInput
-          value={categoryApplyToInspection}
+          value={Boolean(dynamycCategoryApplyToInspection)}
           onValueChange={handleChangeCategoryApplyToInspection}
           disabled={inspectionItem?.status === InspectionStatus.COMPLETE}
         />

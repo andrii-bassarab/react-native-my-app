@@ -1,23 +1,22 @@
-import React, { createElement, useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
-  ScrollView,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
   Image,
+  TextInput,
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors, textStyles } from "~/view/theme";
 import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 import PlusIcon from "~/view/assets/icons/plus.svg";
 import CameraIcon from "~/view/assets/icons/camera.svg";
-import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
+import EditIcon from "~/view/assets/icons/edit.svg";
 import {
   Asset,
   launchCamera,
@@ -25,16 +24,8 @@ import {
 } from "react-native-image-picker";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { ModalViewImage } from "./ModalViewImage";
-import { IComment } from "~/types/Comment";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { ContentLoader } from "../Loader/Loader";
-import { useMutation } from "@apollo/client";
-import {
-  GET_ALL_INSPECTIONS_CATEGORY,
-  GET_CATEGORY_ITEM_VALUE,
-  UPDATE_CATEGOTY_ITEM,
-} from "~/services/api/GetInspectionCategory";
-import { useNavigation } from "@react-navigation/native";
+import { GET_CATEGORY_ITEM_VALUE } from "~/services/api/GetInspectionCategory";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
@@ -43,24 +34,29 @@ interface Props {
   title: string;
   message: string;
   result?: boolean;
-  categoryApplyToInspection?: boolean;
-  comment?: IComment;
+  comment?: string;
   inspectionItemId?: string;
-  loading: boolean;
   id: string;
+  categoryId: string;
 }
 
 export const CharacterCard: React.FC<Props> = ({
   title,
   message,
   result,
-  categoryApplyToInspection = false,
   comment,
-  loading,
   inspectionItemId,
   id,
+  categoryId,
 }) => {
   const dispatch = useAppDispatch();
+  const { inspectionItem, categories } = useAppSelector(
+    (state) => state.inspectionItem
+  );
+  const isNotCompleted = useMemo(
+    () => inspectionItem?.status !== InspectionStatus.COMPLETE,
+    []
+  );
   const resultDropdownOptions = ["Fail", "Passed"];
   const [selectedResult, setSelectedResult] = useState<OptionItem>(
     result === true ? "Passed" : "Fail"
@@ -69,10 +65,31 @@ export const CharacterCard: React.FC<Props> = ({
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [images, setImages] = useState<Asset[]>([]);
   const [showModalImage, setShowModalImage] = useState(false);
-  const [visibleComment, setVisibleComment] = useState(comment);
-  const { inspectionItem, categories, startUpdateInspectionCategoryView } =
-    useAppSelector((state) => state.inspectionItem);
-  const navitation = useNavigation();
+  const [visibleComment, setVisibleComment] = useState(comment || "");
+  const [editedComment, setEditedComment] = useState(comment || "");
+  const [showEditInput, setShowEditInput] = useState(false);
+  const [showIconEdit, setShowIconEdit] = useState(isNotCompleted);
+
+  const handleStartEditComment = () => {
+    setShowIconEdit(false);
+    setShowEditInput(true);
+  };
+
+  const handleSaveCommentButton = () => {
+    setShowIconEdit(true);
+    setShowEditInput(false);
+    setVisibleComment(editedComment);
+  };
+
+  const handleResetCommentButton = () => {
+    setShowIconEdit(true);
+    setShowEditInput(false);
+    setEditedComment(visibleComment);
+  };
+
+  const categoryApplyToInspection = Boolean(
+    categories.find((category) => category.id === categoryId)?.isRequired
+  );
 
   const handleTakePhoto = async () => {
     try {
@@ -129,49 +146,20 @@ export const CharacterCard: React.FC<Props> = ({
     setShowModalImage(true);
   };
 
-  const handleEditComment = (comment: string) => {
-    setVisibleComment(
-      (prev) =>
-        prev && {
-          ...prev,
-          commentBody: comment,
-        }
-    );
-  };
-
-  const [updateCategoryItem, { loading: load, error }] =
-    useMutation(UPDATE_CATEGOTY_ITEM);
-
-  console.log("loading", load);
-  console.log("error", error);
-
-  const handleSaveAndGoBack = async () => {
-    await updateCategoryItem({
-      variables: {
-        command: {
-          customerId: "pfdylv",
-          siteId: "pfdylv",
-          id: id,
-          inspectionId: inspectionItem?.id,
-          inspectionItemId: inspectionItemId,
-          value: selectedResult === "Passed",
-          comment: visibleComment?.commentBody || "",
-        },
-      },
-      refetchQueries: [
-        {
-          query: GET_CATEGORY_ITEM_VALUE,
-          variables: {
-            ids: categories
-              .flatMap((category) => category.items.map((item) => item.id))
-              .filter((itemId) => itemId.length > 0)
-              .flat(),
+  useEffect(() => {
+    if (visibleComment && typeof selectedResult === "string") {
+      dispatch(
+        actionsInspectionItem.setResultItem({
+          categoryId,
+          itemsValue: {
+            id,
+            comment: visibleComment,
+            result: selectedResult === "Passed",
           },
-        },
-      ],
-      awaitRefetchQueries: true,
-    });
-  };
+        })
+      );
+    }
+  }, [selectedResult, visibleComment]);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -185,7 +173,11 @@ export const CharacterCard: React.FC<Props> = ({
             !openMainInfo && { transform: [{ rotate: "-90deg" }] },
           ]}
         >
-          <ExpandIcon color={"#fff"} width={normalize(25)} height={normalize(25)} />
+          <ExpandIcon
+            color={"#fff"}
+            width={normalize(25)}
+            height={normalize(25)}
+          />
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
@@ -197,177 +189,195 @@ export const CharacterCard: React.FC<Props> = ({
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.mainInfo}>
               <Text style={styles.messageText}>{message}</Text>
-              {loading ? (
-                <View>
-                  <ContentLoader size="medium" />
-                </View>
-              ) : (
-                <View>
-                  {typeof result === "boolean" && (
-                    <View
-                      style={[
-                        styles.resultLabel,
-                        !categoryApplyToInspection && {
-                          justifyContent: "flex-start",
-                        },
-                      ]}
-                    >
-                      <Text style={{ ...styles.labelItemText, flex: 1 }}>
-                        Result:
-                      </Text>
-                      {categoryApplyToInspection ? (
-                        <View
-                          style={{
-                            width: "60%",
-                            height: 40,
-                            backgroundColor: "#fff",
-                            justifyContent: "center",
-                          }}
-                        >
-                          {inspectionItem?.status ===
-                          InspectionStatus.COMPLETE ? (
-                            <Text style={styles.labelItemText}>
-                              {typeof selectedResult === "string" &&
-                                selectedResult}
-                            </Text>
-                          ) : (
-                            <CustomSelect
-                              data={resultDropdownOptions}
-                              selectedItem={selectedResult}
-                              setSelectedItem={setSelectedResult}
-                              dropdownStyle={styles.dropdownStyle}
-                              selectedItemStyle={styles.selectedResultItem}
+              <View>
+                {typeof result === 'boolean' && (
+                  <View
+                    style={[
+                      styles.resultLabel,
+                      !categoryApplyToInspection && {
+                        justifyContent: "flex-start",
+                      },
+                    ]}
+                  >
+                    <Text style={{ ...styles.labelItemText, flex: 1 }}>
+                      Result:
+                    </Text>
+                    {categoryApplyToInspection ? (
+                      <View style={styles.resultBox}>
+                        {inspectionItem?.status ===
+                        InspectionStatus.COMPLETE ? (
+                          <Text style={styles.labelItemText}>
+                            {typeof selectedResult === "string" &&
+                              selectedResult}
+                          </Text>
+                        ) : (
+                          <CustomSelect
+                            data={resultDropdownOptions}
+                            selectedItem={selectedResult}
+                            setSelectedItem={setSelectedResult}
+                            dropdownStyle={styles.dropdownStyle}
+                            selectedItemStyle={styles.selectedResultItem}
+                          />
+                        )}
+                      </View>
+                    ) : (
+                      <Text style={styles.noResultText}>N/A</Text>
+                    )}
+                  </View>
+                )}
+                {comment && (
+                  <View
+                    style={[
+                      styles.commentsLabel,
+                      !showEditInput && {
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                      },
+                      showEditInput && { flexDirection: "column" },
+                    ]}
+                  >
+                    <Text style={{ ...styles.labelItemText, flex: 1 }}>
+                      Comments:
+                    </Text>
+                    {categoryApplyToInspection ? (
+                      <>
+                        {showEditInput ? (
+                          <View
+                            style={{ flex: 1, marginTop: "2%", width: "100%" }}
+                          >
+                            <TextInput
+                              value={editedComment}
+                              onChangeText={setEditedComment}
+                              multiline
+                              style={[styles.commentTextInput]}
                             />
-                          )}
-                        </View>
-                      ) : (
-                        <Text style={styles.noResultText}>N/A</Text>
-                      )}
-                    </View>
-                  )}
-                  {visibleComment && (
-                    <View
-                      style={[
-                        styles.commentsLabel,
-                        (!categoryApplyToInspection ||
-                          inspectionItem?.status ===
-                            InspectionStatus.COMPLETE) && {
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          flexWrap: "wrap",
-                        },
-                      ]}
-                    >
-                      <Text style={{ ...styles.labelItemText, flex: 1 }}>
-                        Comments:
-                      </Text>
-                      {categoryApplyToInspection ? (
-                        <>
-                          {inspectionItem?.status ===
-                          InspectionStatus.COMPLETE ? (
+                            <View style={styles.inputButtonBox}>
+                              <TouchableOpacity
+                                style={styles.textInputButton}
+                                onPress={handleResetCommentButton}
+                              >
+                                <Text style={styles.inputButtonText}>
+                                  Reset
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.textInputButton}
+                                onPress={handleSaveCommentButton}
+                              >
+                                <Text style={styles.inputButtonText}>Save</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ) : (
+                          <>
                             <Text
-                              style={{ ...styles.labelItemText, flex: 1.5 }}
+                              style={{
+                                ...styles.labelItemText,
+                                flex: 1.5,
+                                ...textStyles.small,
+                              }}
                             >
-                              {visibleComment.commentBody}
+                              {visibleComment}
                             </Text>
-                          ) : (
-                            <ScrollView
-                              showsVerticalScrollIndicator={false}
-                              style={{ marginTop: 10 }}
-                            >
-                              <CommentItem
-                                comment={visibleComment}
-                                index={0}
-                                arrayLength={1}
-                                showEditComment
-                                saveEditedComment={handleEditComment}
-                              />
-                            </ScrollView>
-                          )}
-                        </>
-                      ) : (
-                        <Text style={styles.noResultText}>N/A</Text>
-                      )}
-                    </View>
-                  )}
-                  <View>
-                    {categoryApplyToInspection &&
-                    inspectionItem?.status !== InspectionStatus.COMPLETE ? (
-                      <View style={styles.commentsLabel}>
-                        <Text style={styles.labelItemText}>Add Photos</Text>
-                        <View style={styles.buttonsTakePhotoContainer}>
-                          <View>
+                            {showIconEdit && (
+                              <TouchableOpacity
+                                onPress={handleStartEditComment}
+                                style={{
+                                  paddingVertical: "1%",
+                                  paddingHorizontal: "1%",
+                                }}
+                              >
+                                <EditIcon
+                                  width={normalize(25)}
+                                  height={normalize(25)}
+                                  color={colors.blue}
+                                />
+                              </TouchableOpacity>
+                            )}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <Text style={styles.noResultText}>N/A</Text>
+                    )}
+                  </View>
+                )}
+                <View style={{ zIndex: -2 }}>
+                  {categoryApplyToInspection &&
+                  inspectionItem?.status !== InspectionStatus.COMPLETE ? (
+                    <View style={styles.commentsLabel}>
+                      <Text style={styles.labelItemText}>Add Photos</Text>
+                      <View style={styles.buttonsTakePhotoContainer}>
+                        <View>
+                          <TouchableOpacity
+                            style={styles.takePhotoButton}
+                            onPress={handleChoosePhoto}
+                          >
+                            <PlusIcon
+                              color={"rgba(51, 51, 51, 0.33)"}
+                              width={"40%"}
+                              height={"40%"}
+                            />
+                          </TouchableOpacity>
+                          <Text style={styles.photoName}>From Gallery</Text>
+                        </View>
+                        <View style={{ marginLeft: "2%" }}>
+                          <TouchableOpacity
+                            style={styles.takePhotoButton}
+                            onPress={handleTakePhoto}
+                          >
+                            <CameraIcon
+                              color={"rgba(51, 51, 51, 0.33)"}
+                              width={"60%"}
+                              height={"60%"}
+                            />
+                          </TouchableOpacity>
+                          <Text style={styles.photoName}>Take Photo</Text>
+                        </View>
+                      </View>
+                      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                        {images.map((photo) => (
+                          <View style={styles.photoLabel} key={photo.uri}>
                             <TouchableOpacity
-                              style={styles.takePhotoButton}
-                              onPress={handleChoosePhoto}
+                              onPress={() => handleOpenModalImage(photo)}
                             >
-                              <PlusIcon
-                                color={"rgba(51, 51, 51, 0.33)"}
-                                width={"40%"}
-                                height={"40%"}
+                              <Image
+                                source={{
+                                  uri: photo?.uri,
+                                }}
+                                style={styles.photoImage}
                               />
                             </TouchableOpacity>
-                            <Text style={styles.photoName}>From Gallery</Text>
-                          </View>
-                          <View style={{marginLeft: '2%'}}>
                             <TouchableOpacity
-                              style={styles.takePhotoButton}
-                              onPress={handleTakePhoto}
+                              style={styles.deletePhoto}
+                              onPress={() => handleDeleteImage(photo)}
                             >
-                              <CameraIcon
-                                color={"rgba(51, 51, 51, 0.33)"}
+                              <CloseIcon
+                                color={"#fff"}
                                 width={"60%"}
                                 height={"60%"}
                               />
                             </TouchableOpacity>
-                            <Text style={styles.photoName}>Take Photo</Text>
+                            <Text
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                              style={styles.imageFileName}
+                            >
+                              {photo.fileName}
+                            </Text>
                           </View>
-                        </View>
-                        <View
-                          style={{ flexDirection: "row", flexWrap: "wrap" }}
-                        >
-                          {images.map((photo) => (
-                            <View style={styles.photoLabel} key={photo.uri}>
-                              <TouchableOpacity
-                                onPress={() => handleOpenModalImage(photo)}
-                              >
-                                <Image
-                                  source={{
-                                    uri: photo?.uri,
-                                  }}
-                                  style={styles.photoImage}
-                                />
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={styles.deletePhoto}
-                                onPress={() => handleDeleteImage(photo)}
-                              >
-                                <CloseIcon
-                                  color={"#fff"}
-                                  width={"60%"}
-                                  height={"60%"}
-                                />
-                              </TouchableOpacity>
-                              <Text
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                                style={styles.imageFileName}
-                              >
-                                {photo.fileName}
-                              </Text>
-                            </View>
-                          ))}
-                        </View>
+                        ))}
                       </View>
-                    ) : (
-                      <View style={styles.resultLabel}>
-                        <Text style={styles.labelItemText}>Photos:</Text>
-                        <Text style={styles.noResultText}>N/A</Text>
-                      </View>
-                    )}
-                  </View>
+                    </View>
+                  ) : (
+                    <View style={styles.resultLabel}>
+                      <Text style={styles.labelItemText}>Photos:</Text>
+                      <Text style={styles.noResultText}>N/A</Text>
+                    </View>
+                  )}
                 </View>
-              )}
+              </View>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -413,6 +423,7 @@ const styles = StyleSheet.create({
     marginLeft: "3%",
     fontWeight: "700",
     ...textStyles.medium,
+    ...textStyles.medium,
     color: colors.textGrey,
   },
   mainInfo: {
@@ -424,6 +435,7 @@ const styles = StyleSheet.create({
     color: colors.textGrey,
     fontWeight: "500",
     ...textStyles.regular,
+    ...textStyles.regular,
   },
   resultLabel: {
     flexDirection: "row",
@@ -431,8 +443,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: "5%",
   },
+  resultBox: {
+    width: "60%",
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignSelf: "center",
+    height: normalize(60),
+    zIndex: 2,
+  },
   labelItemText: {
     fontWeight: "600",
+    ...textStyles.regular,
     ...textStyles.regular,
     color: "#808080",
   },
@@ -443,6 +464,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     borderRadius: 20,
     borderColor: colors.blue,
+    zIndex: 2,
   },
   commentsLabel: {
     marginTop: "5%",
@@ -477,6 +499,7 @@ const styles = StyleSheet.create({
   },
   photoName: {
     ...textStyles.small,
+    ...textStyles.small,
     marginTop: "5%",
     color: "#979797",
     fontWeight: "500",
@@ -485,6 +508,7 @@ const styles = StyleSheet.create({
     width: "50%",
     color: colors.textGrey,
     fontWeight: "500",
+    ...textStyles.regular,
     ...textStyles.regular,
   },
   photoLabel: {
@@ -502,6 +526,7 @@ const styles = StyleSheet.create({
   },
   imageFileName: {
     ...textStyles.regular,
+    ...textStyles.regular,
     flexWrap: "wrap",
     width: "90%",
     alignSelf: "center",
@@ -517,7 +542,35 @@ const styles = StyleSheet.create({
     height: normalize(30),
     justifyContent: "center",
     alignItems: "center",
-    right: "20%",
-    top: "5%",
+    right: 5,
+    top: 5,
+  },
+  commentTextInput: {
+    flex: 1,
+    color: "#000",
+    borderRadius: 5,
+    borderWidth: 1,
+    padding: 5,
+    borderColor: colors.primary,
+    alignSelf: 'stretch',
+  },
+  inputButtonBox: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: "5%",
+  },
+  textInputButton: {
+    borderRadius: normalize(30),
+    borderWidth: 1,
+    borderColor: colors.layout,
+    paddingHorizontal: "10%",
+    paddingVertical: "2%",
+    backgroundColor: colors.layout,
+  },
+  inputButtonText: {
+    ...textStyles.small,
+    fontWeight: "600",
+    color: "#fff",
   },
 });
