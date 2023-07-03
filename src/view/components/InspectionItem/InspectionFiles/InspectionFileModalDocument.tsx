@@ -42,8 +42,8 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
                   position: "absolute",
                   alignSelf: "center",
                   justifyContent: 'center',
-                  zIndex: 2
-                }}
+                  zIndex: 2,
+                  transform: [{ translateY: normalize(-30) }]                }}
               >
                 <ContentLoader />
               </View>

@@ -8,6 +8,7 @@ import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
 import { normalize } from "~/utils/getWindowHeight";
+import FailedIcon from "~/view/assets/icons/failed.svg";
 
 interface Props {
   category: Category;
@@ -48,6 +49,11 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
             height={normalize(20)}
             width={normalize(20)}
           />
+        )}
+        {status === "Complete" && result === "Failed" && (
+           <View style={styles.failedBox}>
+           <FailedIcon color={"#fff"} height={normalize(15)} width={normalize(15)} />
+         </View>
         )}
       </View>
       <View style={styles.content}>
@@ -94,8 +100,8 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
 
 const styles = StyleSheet.create({
   categoryBox: {
-    marginTop: 10,
-    borderTopWidth: 4,
+    marginTop: normalize(15),
+    borderTopWidth: normalize(4),
     borderColor: "#EBEBEB",
     paddingTop: 5,
   },
@@ -138,5 +144,14 @@ const styles = StyleSheet.create({
   },
   disabledApplyCategoryBox: {
     opacity: 0.7,
+  },
+  failedBox: {
+    width: normalize(25),
+    height: normalize(25),
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.red,
+    borderRadius: 100,
+    marginLeft: '2%',
   },
 });

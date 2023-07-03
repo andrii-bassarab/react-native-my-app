@@ -10,7 +10,6 @@ import {
   GestureResponderEvent,
   Modal,
   Dimensions,
-  Platform,
 } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -91,7 +90,7 @@ export const InspectionsFilter = () => {
   const pan = useRef(new Animated.ValueXY()).current;
   const opacity = pan.y.interpolate({
     inputRange: [windowHeight * 0.2, windowHeight * 0.4],
-    outputRange: [1, 0.5],
+    outputRange: [1, 0.4],
     extrapolate: 'clamp',
   });
   const panResponder = useRef(
@@ -153,7 +152,7 @@ export const InspectionsFilter = () => {
   return (
     <Modal transparent>
       <Pressable
-        style={{...styles.modalOverlay, paddingTop: insets.top + (topNavigationHeight * 1.4)}}
+        style={{...styles.modalOverlay, paddingTop: insets.top + (normalize(90))}}
         onPress={(event) => {
           event.stopPropagation();
           event.preventDefault();
@@ -304,7 +303,7 @@ const styles = StyleSheet.create({
     ...textStyles.xlarge,
   },
   closeLabel: {
-    height: 5,
+    height: normalize(8),
     backgroundColor: "rgba(193, 188, 185, 1)",
     alignSelf: "center",
     width: "60%",

@@ -284,8 +284,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
-    paddingVertical: 15,
-    paddingLeft: 15,
+    paddingVertical: normalize(15),
+    paddingLeft: normalize(15),
     width: "98%",
     flexWrap: "wrap",
   },
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   mainInfo: {
     flex: 1,
     borderLeftWidth: 3,
-    paddingLeft: 10,
+    paddingLeft: normalize(15),
     alignSelf: "stretch",
     width: "100%",
     paddingRight: 5,
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     padding: normalize(10),
     borderWidth: 1,
     borderColor: colors.blue,
-    marginRight: 10,
+    marginRight: normalize(20),
     borderRadius: 6,
   },
   startInspectionButton: {

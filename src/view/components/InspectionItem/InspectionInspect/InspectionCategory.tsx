@@ -56,41 +56,6 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
     setShowDeleteLabel(false);
   };
 
-  // const updateStatusCache = () => {
-  //   return (cache: ApolloCache<any>, { data }: any) => {
-  //     if (!data?.deleteInspectionCategory?.affectedEntity?.id) {
-  //       return;
-  //     }
-
-  //     const deletedItem = data?.deleteInspectionCategory;
-  //     const { inspectionCategories } = cache.readQuery({
-  //       query: GET_ALL_INSPECTIONS_CATEGORY,
-  //       variables: {
-  //         ids: [inspectionItem?.templateId],
-  //       },
-  //     }) as {
-  //       inspectionCategories: any;
-  //     };
-
-  //     const itemIndex = inspectionCategories.edges.findIndex(
-  //       (edge: any) => edge.node.id === deletedItem?.affectedEntity?.id
-  //     );
-
-  //     if (itemIndex !== -1) {
-  //       // inspectionCategories.edges.splice(itemIndex, 1);
-
-  //       inspectionCategories.edges = inspectionCategories.edges.filter(
-  //         (edge: any) => edge.node.id !== deletedItem?.affectedEntity?.id
-  //       );
-
-  //       cache.writeQuery({
-  //         query: GET_ALL_INSPECTIONS_CATEGORY,
-  //         data: { inspectionCategories },
-  //       });
-  //     }
-  //   };
-  // };
-
   const onContinue = async () => {
     try {
       await deleteCategory({
@@ -205,7 +170,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
             )}
             {status === "Complete" && result === "Failed" && (
               <View style={styles.failedBox}>
-                <FailedIcon color={"#fff"} height={15} width={15} />
+                <FailedIcon color={"#fff"} height={normalize(20)} width={normalize(20)} />
               </View>
             )}
           </View>
@@ -279,8 +244,8 @@ const styles = StyleSheet.create({
     ...textStyles.little,
   },
   failedBox: {
-    width: 30,
-    height: 30,
+    width: normalize(40),
+    height: normalize(40),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.red,

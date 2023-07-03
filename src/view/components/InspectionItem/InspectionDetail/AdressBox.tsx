@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  Keyboard,
 } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
-import { InspectionStatus, InspectionVisibleStatus } from "~/types/inspectionStatus";
+import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -29,6 +30,22 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const { visiblePhoneNumber, inspectionItem } = useAppSelector(
     (state) => state.inspectionItem
   );
+
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const formatPhoneNumber = (input: string) => {
     let phoneNumber = input.replace(/\D/g, "");
@@ -76,7 +93,11 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
             </Text>
             {inspectionItem?.status !== InspectionStatus.COMPLETE && (
               <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
-                <EditIcon color={colors.blue} height={normalize(20)} width={normalize(20)} />
+                <EditIcon
+                  color={colors.blue}
+                  height={normalize(20)}
+                  width={normalize(20)}
+                />
               </TouchableOpacity>
             )}
           </View>
@@ -147,13 +168,13 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
         {showModalPhoneNumber && (
           <ModalSwipeScreen
             closeModalFunction={handleCloseModalPhone}
-            height={"40%"}
+            height={keyboardStatus ? "60%" : "40%"}
             percentSwipeToClose={0.2}
           >
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>Edit Phone Number</Text>
               <View style={[styles.phoneLabel, styles.shadowProp]}>
-                <View style={{ paddingHorizontal: 20 }}>
+                <View style={{ paddingHorizontal: normalize(30) }}>
                   <Image
                     source={require("~/view/assets/images/flagUSA.png")}
                     style={styles.modalFlag}
@@ -228,7 +249,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     flex: 1,
     marginTop: "8%",
-    paddingHorizontal: '7%'
+    paddingHorizontal: "7%",
   },
   modalTitle: {
     color: colors.darkGrey,
