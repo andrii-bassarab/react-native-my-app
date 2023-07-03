@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   NavigationProp,
   ParamListBase,
@@ -26,6 +26,16 @@ import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList"
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  GET_ALL_INSPECTIONS_CATEGORY,
+  UPDATE_CATEGOTY_ITEM_VALUE,
+  UPDATE_INSPECTION_CATEGORY_MUTATION,
+} from "~/services/api/GetInspectionCategory";
+import { ModalLoader } from "../components/Loader/ModalLoader";
+import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
+import SaveIcon from "~/view/assets/icons/save.svg";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   route: RouteProp<
@@ -48,21 +58,145 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { inspection, category, items } = route.params;
-  const { categoryApplyToInspection, categories, inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { categoryApplyToInspection, categories, inspectionItem } =
+    useAppSelector((state) => state.inspectionItem);
   const { categoriesTemplates } = useAppSelector((state) => state);
+  const { profile } = useAppSelector((state) => state.user);
+  const [updateCategoryItemValue, { data, loading, error }] = useMutation(
+    UPDATE_CATEGOTY_ITEM_VALUE
+  );
+  const [updateInspectionCategory] = useMutation(
+    UPDATE_INSPECTION_CATEGORY_MUTATION
+  );
+  const [loader, setLoader] = useState(false);
+  const dynamycCategoryApplyToInspection = Boolean(
+    categories.find((categoryToCheck) => categoryToCheck.id === category.id)
+      ?.isRequired
+  );
+  const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
 
-  const goBack = () => {
-    const foundTemplateCategory = categoriesTemplates[inspection.templateId]?.find(categoryTemlate => categoryTemlate.id === category.id);
-    const foundDynamicCategory = categories.find(categoryToCheck => categoryToCheck.id === category.id);
+  const { refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+    variables: {
+      id: "",
+    },
+  });
 
-    foundDynamicCategory?.items?.forEach((item, index) => {
-      if ((item?.itemsValues[0]?.value !== foundTemplateCategory?.items[index]?.itemsValues[0]?.value) || (item?.itemsValues[0]?.comment !== foundTemplateCategory?.items[index]?.itemsValues[0]?.comment)) {
-        console.log("not equel");
-      }
-    });
+  const foundTemplateCategory = categoriesTemplates[
+    inspection.templateId
+  ]?.find((categoryTemlate) => categoryTemlate.id === category.id);
+  const foundDynamicCategory = categories.find(
+    (categoryToCheck) => categoryToCheck.id === category.id
+  );
+
+  const hasUnsavedChanges = useMemo(
+    () =>
+      (Number(foundDynamicCategory?.items?.length) > 0 &&
+        foundDynamicCategory?.items.some(
+          (item, index) =>
+            item?.itemsValues[0]?.value !==
+              foundTemplateCategory?.items[index]?.itemsValues[0]?.value ||
+            item?.itemsValues[0]?.comment !==
+              foundTemplateCategory?.items[index]?.itemsValues[0]?.comment ||
+            foundTemplateCategory?.isRequired !==
+              foundDynamicCategory?.isRequired
+        )) ||
+      foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired,
+    [foundDynamicCategory, foundTemplateCategory]
+  );
+
+  const handleGoBackWithoutSaving = () => {
+    if (hasUnsavedChanges) {
+      setShowModalUnsavedChanges(true);
+      return;
+    }
 
     navigation.goBack();
   };
+
+  const handleSaveGoBack = async () => {
+    let updatePromises = foundDynamicCategory?.items?.map((item, index) => {
+      if (
+        item?.itemsValues[0]?.value !==
+          foundTemplateCategory?.items[index]?.itemsValues[0]?.value ||
+        item?.itemsValues[0]?.comment !==
+          foundTemplateCategory?.items[index]?.itemsValues[0]?.comment ||
+        foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired
+      ) {
+        return updateCategoryItemValue({
+          variables: {
+            command: {
+              customerId: "pfdylv",
+              siteId: "pfdylv",
+              id: item?.itemsValues[0]?.id,
+              inspectionId: inspection.id,
+              inspectionItemId: item.id,
+              value: item?.itemsValues[0]?.value,
+              comment: item?.itemsValues[0]?.comment,
+            },
+          },
+        });
+      }
+    });
+
+    if (
+      foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired
+    ) {
+      updatePromises?.push(
+        updateInspectionCategory({
+          variables: {
+            command: {
+              customerId: "pfdylv",
+              siteId: "pfdylv",
+              id: category.id,
+              inspectionTemplateId: inspectionItem?.templateId,
+              name: category.title,
+              isRequired: dynamycCategoryApplyToInspection,
+              modifiedBy: profile?.email || "test",
+            },
+          },
+        })
+      );
+    }
+
+    if (
+      updatePromises &&
+      updatePromises.length > 0 &&
+      updatePromises.filter((promise) => promise).length > 0
+    ) {
+      try {
+        console.log("Waiting for updates to complete...");
+        setLoader(true);
+        await Promise.all(updatePromises);
+        await refetch({
+          id: inspection.templateId,
+        });
+        navigation.goBack();
+      } catch (e) {
+        console.log("error in update categoryItemValue: ", e);
+      } finally {
+        setLoader(false);
+        console.log("updates completed");
+      }
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  const handleOnContinueGoBackWithoutSaved = () => {
+    dispatch(
+      actionsInspectionItem.setCategories(
+        categoriesTemplates[inspection.templateId] || []
+      )
+    );
+    setShowModalUnsavedChanges(false);
+    navigation.goBack();
+  };
+
+  useEffect(() => {
+    console.log("data", data);
+    console.log("loading", loading);
+    console.log("error", error);
+  }, [data, loading, error]);
 
   const categoryAmenitiesValues = useMemo(
     () =>
@@ -112,9 +246,18 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
       borderRadius={55}
     >
       <View style={styles.content}>
+        {showModalUnsavedChanges && (
+          <ModalDeleteItem
+            title={"You have unsaved changes. Unsaved changes will be lost."}
+            Icon={SaveIcon}
+            onContinue={handleOnContinueGoBackWithoutSaved}
+            onCancel={() => setShowModalUnsavedChanges(false)}
+            message="Are you sure you want to leave without saving changes?"
+          />
+        )}
         <SelectedInspection
           item={inspection}
-          goBack={goBack}
+          goBack={handleGoBackWithoutSaving}
           includeCategory
           category={category}
         />
@@ -144,13 +287,17 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
               categoryApplyToInspection={categoryApplyToInspection}
             />
             {inspectionItem?.status !== InspectionStatus.COMPLETE && (
-              <TouchableOpacity style={styles.saveButton} onPress={goBack}>
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleSaveGoBack}
+              >
                 <Text style={styles.saveButtonText}>Save and Go Back</Text>
               </TouchableOpacity>
             )}
           </ScrollView>
         )}
       </View>
+      {loader && <ModalLoader />}
     </Screen>
   );
 };

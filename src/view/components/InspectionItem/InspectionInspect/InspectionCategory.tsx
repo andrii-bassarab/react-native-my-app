@@ -111,14 +111,16 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           },
         ],
         awaitRefetchQueries: true,
+        onCompleted(data) {
+          if (data?.deleteInspectionCategory?.affectedEntity) {
+            dispatch(
+              actionsToastNotification.showToastMessage(
+                "Success! Category was deleted."
+              )
+            );
+          }
+        },
       });
-      if (data?.affectedEntity) {
-        dispatch(
-          actionsToastNotification.showToastMessage(
-            "Success! Category was deleted."
-          )
-        );
-      }
     } finally {
       closeModalDeleteWindow();
     }

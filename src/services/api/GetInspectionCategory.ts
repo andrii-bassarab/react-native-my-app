@@ -128,7 +128,7 @@ export const DELETE_CATEGORY = gql`
   }
 `
 
-export const UPDATE_CATEGOTY_ITEM = gql`
+export const UPDATE_CATEGOTY_ITEM_VALUE = gql`
   mutation updateInspectionItemValueMutation($command: UpdateInspectionItemValueCommandInput!){
     updateInspectionItemValue(command: $command){
         commandName
@@ -142,6 +142,24 @@ export const UPDATE_CATEGOTY_ITEM = gql`
             id            
             comment
         }
+    }
+  }
+`
+
+export const UPDATE_INSPECTION_CATEGORY_MUTATION = gql`
+  mutation updateInspectionCategoryMutation($command: UpdateInspectionCategoryCommandInput!){
+    updateInspectionCategory(command: $command){
+      commandName
+          status
+          issuedOn
+          acceptedOn
+          succeededOn
+          failedOn
+          failureReason
+      affectedEntity{
+        id            
+              modifiedBy
+      }
     }
   }
 `

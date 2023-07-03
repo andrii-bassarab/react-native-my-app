@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { colors, textStyles } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
+import { normalize } from "~/utils/getWindowHeight";
 
 export type OptionItem = string | { name: string; value: string };
 
@@ -99,7 +100,7 @@ export const CustomSelect: React.FC<Props> = ({
               </Text>
             </TouchableOpacity>
           ))}
-          {data.length > 4 && <View style={{ height: 15 }}></View>}
+          {data.length > 4 && <View style={{ height: normalize(20) }}></View>}
         </ScrollView>
       )}
       {error && !showDropdown && <Text style={styles.errorText}>{error}</Text>}
@@ -111,15 +112,15 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     marginTop: 20,
     borderRadius: 20,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    borderTopLeftRadius: normalize(40),
+    borderTopRightRadius: normalize(40),
     borderColor: colors.primary,
     borderTopWidth: 0,
     zIndex: 2,
     backgroundColor: "#fff",
   },
   selectedLabel: {
-    borderRadius: 50,
+    borderRadius: normalize(50),
     borderWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -137,8 +138,8 @@ const styles = StyleSheet.create({
   },
   dropdownOptionsContainer: {
     paddingVertical: 10,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: normalize(20),
+    borderBottomRightRadius: normalize(20),
     maxHeight: 130,
   },
   dropdownOptionsLabel: {

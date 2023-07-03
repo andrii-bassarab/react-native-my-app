@@ -20,11 +20,11 @@ import { useQuery } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
 import { getAvailableUsers } from "~/services/api/GetUserById";
-import {
-  GET_ALL_INSPECTIONS_CATEGORY,
-} from "~/services/api/GetInspectionCategory";
+import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/GetInspectionCategory";
 import { setAvailableUsers } from "~/modules/user/actions";
 import { getVisibleAssignedTo } from "~/utils/getVisibleAssigned";
+import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
+import { CategoryType } from "~/types/Category";
 
 const Drawer = createDrawerNavigator();
 
@@ -55,13 +55,47 @@ export const HomeNavigation: React.FC = () => {
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
   const { data: inspectionTemplateInfo } = useQuery(GET_INSPECTION_TEMPLATES);
-  const { refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY);
+  const { refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+    variables: {
+      id: "",
+    },
+  });
 
   const handleRefetchCategories = async () => {
-    const promises = templateIds.map((id) => {
-      return refetch({
+    const promises = templateIds.map(async (id) => {
+      const result = await refetch({
         id,
       });
+
+      const responseCategories = result?.data?.inspectionCategories?.edges.map(
+        (edge: any) => edge?.node
+      ) as CategoryType[];
+
+      if (responseCategories) {
+        dispatch(
+          actionsCategoryTemplate.addCategoryTemplate({
+            templateIdToAdd: id,
+            categories: responseCategories.map((category) => ({
+              ...category,
+              status: !category.isRequired
+                ? "--"
+                : category.items.length > 0
+                ? "Complete"
+                : "Incomplete",
+              result: !category.isRequired
+                ? "--"
+                : category.items.length > 0
+                ? category.items.every(
+                    ({ itemsValues }) => itemsValues[0]?.value === "true"
+                  )
+                  ? "Passed"
+                  : "Failed"
+                : "No results yet",
+            })),
+          })
+        );
+      }
+      return result;
     });
 
     try {
@@ -80,7 +114,8 @@ export const HomeNavigation: React.FC = () => {
     }
 
     const arrayOfDataInspections = data.inspections.edges;
-    const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
+    const arrayOfInspectionTemplates: any[] =
+      inspectionTemplateInfo.inspectionTemplates.edges;
 
     const getVisibleInspectionForm = (templateIdToCheck: string) => {
       return (
@@ -205,6 +240,7 @@ export const HomeNavigation: React.FC = () => {
     headerTitle: () => null,
     headerShadowVisible: false,
     drawerType: "front",
+    drawerStyle: {},
   };
 
   if (Dimensions.get("window").width > 600) {

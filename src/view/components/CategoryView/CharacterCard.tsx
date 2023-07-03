@@ -25,7 +25,6 @@ import {
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { ModalViewImage } from "./ModalViewImage";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { GET_CATEGORY_ITEM_VALUE } from "~/services/api/GetInspectionCategory";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
@@ -462,7 +461,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     marginTop: 0,
-    borderRadius: 20,
+    borderRadius: normalize(20),
     borderColor: colors.blue,
     zIndex: 2,
   },
@@ -479,7 +478,7 @@ const styles = StyleSheet.create({
   },
   selectedResultItem: {
     borderColor: colors.blue,
-    borderRadius: 20,
+    borderRadius: normalize(50),
     paddingHorizontal: 15,
     paddingVertical: 8,
   },
@@ -553,6 +552,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderColor: colors.primary,
     alignSelf: 'stretch',
+    ...textStyles.small,
   },
   inputButtonBox: {
     flexDirection: "row",

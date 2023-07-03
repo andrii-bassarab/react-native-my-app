@@ -34,7 +34,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const [visibleCategories, setVisibleCategory] = useState(categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
-  const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+  const { data, loading, refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
       id: route.params.templateId,
     },
@@ -63,8 +63,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
       const responseCategories: CategoryType[] = data.inspectionCategories.edges.map(
         (edge: any) => edge.node
       );
-
-      console.log("date was updated")
 
       dispatch(
         actionsCategoryTemplate.addCategoryTemplate({

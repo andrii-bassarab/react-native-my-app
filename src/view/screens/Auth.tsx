@@ -1,12 +1,11 @@
 import "react-native-gesture-handler";
-import { NavigationProp, ParamListBase, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useState } from "react";
 import {
-  View,
-  StyleSheet,
-  Image,
-  Platform,
-} from "react-native";
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
+import { View, StyleSheet, Image, Platform } from "react-native";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { Screen } from "../components/Screen/Screen";
 import {
@@ -21,7 +20,12 @@ import { ModalLoader } from "../components/Loader/ModalLoader";
 import { colors } from "../theme";
 import { AsyncStatus } from "@appello/common/lib/constants";
 import { actionsShowWindow } from "~/modules/showWindow";
-import { PERMISSIONS, request, requestNotifications } from "react-native-permissions";
+import {
+  PERMISSIONS,
+  request,
+  requestNotifications,
+} from "react-native-permissions";
+import { KeyboardAvoidingDisplayComponent } from "../hoc/KeyboardAvoidingDisplayComponent";
 
 const mocksSites = [
   { name: "Kanso Industries", code: "Kanso Industries" },
@@ -44,23 +48,39 @@ export const AuthScreen: React.FC = () => {
   const currentUser = useAppSelector((state) => state.user);
 
   const handleRequestPermissions = async () => {
-    const resultRequestCamera = await request(Platform.OS === "ios" ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA)
+    const resultRequestCamera = await request(
+      Platform.OS === "ios"
+        ? PERMISSIONS.IOS.CAMERA
+        : PERMISSIONS.ANDROID.CAMERA
+    );
     console.log("requestCameraPermissions", resultRequestCamera);
 
-    const resultRequestNotifications = await requestNotifications(['alert', 'sound', 'badge'])
-    console.log("requestNotificationsPermissions", resultRequestNotifications)
+    const resultRequestNotifications = await requestNotifications([
+      "alert",
+      "sound",
+      "badge",
+    ]);
+    console.log("requestNotificationsPermissions", resultRequestNotifications);
   };
 
   const handleSubmit = useCallback(async () => {
     setLoader(true);
     try {
       setLoader(false);
-  
+
       if (currentUser.firstInit) {
         await handleRequestPermissions();
       }
 
-      dispatch(setUser({ id: 1, email: userName.toLocaleLowerCase().replace(/ /g, '.') + "@appitventures.com", userName: userName}));
+      dispatch(
+        setUser({
+          id: 1,
+          email:
+            userName.toLocaleLowerCase().replace(/ /g, ".") +
+            "@appitventures.com",
+          userName: userName,
+        })
+      );
       dispatch(setProfileStatus(AsyncStatus.SUCCESS));
       dispatch(setAuth({ access: "string", refresh: "string" }));
       dispatch(setFirstInit(false));
@@ -83,26 +103,28 @@ export const AuthScreen: React.FC = () => {
   // console.log("events", events);
 
   return (
-    <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
-      <View style={styles.screen}>
-        <View style={styles.logo}>
-          <Image
-            source={require("../assets/images/WhiteKansoLogo.png")}
-            style={{ width: "50%", resizeMode: "contain" }}
+    <KeyboardAvoidingDisplayComponent>
+      <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
+        <View style={styles.screen}>
+          <View style={styles.logo}>
+            <Image
+              source={require("../assets/images/WhiteKansoLogo.png")}
+              style={{ width: "50%", resizeMode: "contain" }}
+            />
+          </View>
+          <LoginForm
+            goToHome={handleSubmit}
+            navigation={navigation}
+            userName={userName}
+            setUserName={setUserName}
+            setPassword={setPassword}
+            password={password}
+            errorLogin={errorLogin}
           />
         </View>
-        <LoginForm
-          goToHome={handleSubmit}
-          navigation={navigation}
-          userName={userName}
-          setUserName={setUserName}
-          setPassword={setPassword}
-          password={password}
-          errorLogin={errorLogin}
-        />
-      </View>
-      {loader && <ModalLoader />}
-    </Screen>
+        {loader && <ModalLoader />}
+      </Screen>
+    </KeyboardAvoidingDisplayComponent>
   );
 };
 
