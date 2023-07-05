@@ -7,7 +7,7 @@ import {
   Text,
   PanResponder,
   Dimensions,
-  ScrollView
+  FlatList
 } from "react-native";
 import NotificationsIcon from "../assets/icons/notifications.svg";
 import SyncIcon from "../assets/icons/sync.svg";
@@ -38,7 +38,7 @@ export const Notifications: React.FC = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (gestureState.dy > windowHeight * 0.4) {
+        if (gestureState.dy > windowHeight * 0.35) {
           pan.extractOffset();
           dispatch(actionsShowWindow.setShowNotification(false));
         }
@@ -50,7 +50,7 @@ export const Notifications: React.FC = () => {
       },
       onPanResponderRelease: () => {
         Animated.spring(pan, {
-          toValue: { x: 0, y: normalize(20) },
+          toValue: { x: 0, y: normalize(0) },
           useNativeDriver: false,
         }).start();
       },
@@ -61,7 +61,7 @@ export const Notifications: React.FC = () => {
     pan.y.setValue(0);
 
     return Animated.timing(position, {
-      toValue: { x: 0, y: normalize(20) },
+      toValue: { x: 0, y: normalize(30) },
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -83,9 +83,14 @@ export const Notifications: React.FC = () => {
       </Animated.View>
       <Text style={styles.notificationsTitle}>Notifications</Text>
       {notifications.length > 0 ? (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {notifications.map((notification, index) => (
-            <View key={index} style={styles.notificationItem}>
+          <FlatList
+            data={notifications}
+            keyExtractor={(item, index) => `${index}`}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={() => <View style={{ height: normalize(30) }} />}
+            ItemSeparatorComponent={() => <View style={{height: normalize(30)}}/>}
+            renderItem={({item: notification, index}) => (
+              <View key={index} style={styles.notificationItem}>
               <SyncIcon color={colors.layout} width={normalize(40)} height={normalize(40)} />
               <View style={{ marginLeft: 10 }}>
                 <Text style={styles.notificationItemTitle}>{notification.title}</Text>
@@ -102,9 +107,8 @@ export const Notifications: React.FC = () => {
                 </Text>
               </View>
             </View>
-          ))}
-          <View style={{ height: 20 }} />
-        </ScrollView>
+            )}
+          />
       ) : (
         <>
           <NotificationsIcon
@@ -123,7 +127,6 @@ export const Notifications: React.FC = () => {
 const styles = StyleSheet.create({
   content: {
     position: "absolute",
-    top: normalize(20),
     left: 0,
     right: 0,
     bottom: -10,
@@ -147,7 +150,8 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     fontWeight: "600",
     color: colors.darkGrey,
-    ...textStyles.strong,
+    ...textStyles.large,
+    marginBottom: '5%',
   },
   noNotificationText: {
     alignSelf: "center",
@@ -163,7 +167,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   notificationItem: {
-    marginTop: 20,
     flexDirection: "row",
   },
   notificationItemTitle: {

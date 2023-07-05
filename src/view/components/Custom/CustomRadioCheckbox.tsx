@@ -27,7 +27,7 @@ export const CustomRadioCheckbox: React.FC<Props> = ({
           <Text style={styles.resultOption}>{item}</Text>
           {value === item ? (
             <View style={styles.selectedItem}>
-              <View style={[styles.toggle, { backgroundColor: colors.blue }]} />
+              <View style={[styles.toggle, { backgroundColor: colors.blue, marginRight: "5%" }]} />
             </View>
           ) : (
             <View

@@ -205,7 +205,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
           <ContentLoader />
         </View>
         ) : visibleInspections.length > 0 ? (
-          <View style={{  marginBottom: normalize(120), marginTop: "5%" }}>
+          <View style={{  marginBottom: normalize(120), marginTop: "3%" }}>
             <FlatList
               data={visibleInspections}
               keyExtractor={(item) => item.id}
@@ -215,6 +215,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
                   onPress={() => navigation.navigate("InspectionItem", item)}
                 />
               )}
+              ListHeaderComponent={() => <View style={{ height: normalize(5) }} />}
               ListFooterComponent={() => <View style={{ height: normalize(180) }} />}
               ItemSeparatorComponent={() => <View style={{ height: normalize(15) }} />}
               showsVerticalScrollIndicator={false}

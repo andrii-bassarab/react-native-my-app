@@ -54,7 +54,7 @@ export const CharacterCard: React.FC<Props> = ({
   );
   const isNotCompleted = useMemo(
     () => inspectionItem?.status !== InspectionStatus.COMPLETE,
-    []
+    [inspectionItem]
   );
   const resultDropdownOptions = ["Fail", "Passed"];
   const [selectedResult, setSelectedResult] = useState<OptionItem>(

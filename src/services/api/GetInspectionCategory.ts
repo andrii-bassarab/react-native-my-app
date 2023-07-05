@@ -20,6 +20,11 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
           amenities {
             id
             name
+              amenityValues{
+                  id
+                  value
+                  comment
+              }
           } 
           items {
             id

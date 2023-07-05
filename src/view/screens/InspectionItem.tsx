@@ -53,9 +53,7 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const hasUnsavedChanges = useMemo(
-    () =>
-      inspectionItem?.assignedTo !== assignedOption.value ||
-      visiblePhoneNumber !== (inspection.unit.landlord?.phoneNumber || ""),
+    () => inspectionItem?.assignedTo !== assignedOption.value,
     [assignedOption, visiblePhoneNumber, inspectionItem]
   );
 
@@ -93,7 +91,6 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    "setted to local store"
     dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []))
   }, [categoriesTemplates[inspection.templateId]]);
 

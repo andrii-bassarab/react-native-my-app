@@ -28,13 +28,12 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const inspection = route.params;
 
-  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
   const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const [query, setQuery] = useState("");
   const [visibleCategories, setVisibleCategory] = useState(categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
-  const { data, loading, refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+  const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
       id: route.params.templateId,
     },

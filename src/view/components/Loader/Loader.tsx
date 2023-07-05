@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Easing,
 } from "react-native";
+import { normalize } from "~/utils/getWindowHeight";
 import { colors } from "~/view/theme";
 
 interface Props {
@@ -29,9 +30,9 @@ export const ContentLoader: React.FC<Props> = ({size = 'large'}) => {
 
   const stylesSize = StyleSheet.create({
     size: {
-      width: size === 'large' ? 100 : size === 'medium' ? 60 : 40,
-      height: size === 'large' ? 100 : size === 'medium' ? 60 : 40,
-      borderWidth: size === 'large' ? 12 : size === 'medium' ? 8 : 6,
+      width: size === 'large' ? normalize(140) : size === 'medium' ? normalize(120) : normalize(100),
+      height: size === 'large' ? normalize(140) : size === 'medium' ? normalize(120) : normalize(100),
+      borderWidth: size === 'large' ? normalize(16) : size === 'medium' ? normalize(14) : normalize(12),
     },
   });
 
@@ -44,10 +45,10 @@ export const ContentLoader: React.FC<Props> = ({size = 'large'}) => {
 
 const styles = StyleSheet.create({
   loaderContainer: {
-    width: 100,
-    height: 100,
+    width: normalize(120),
+    height: normalize(120),
     borderRadius: 100,
-    borderWidth: 12,
+    borderWidth: normalize(15),
     backgroundColor: "transparent",
     borderColor: colors.primary,
     borderTopColor: "#2F3545",

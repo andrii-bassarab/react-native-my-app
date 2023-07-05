@@ -15,7 +15,7 @@ import { normalize } from "~/utils/getWindowHeight";
 interface Props {
   children?: React.ReactNode;
   closeModalFunction: () => void;
-  height: string | number;
+  height: string | number | Animated.AnimatedInterpolation;
   percentSwipeToClose: number;
 }
 

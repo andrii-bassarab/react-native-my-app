@@ -205,9 +205,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             : ["UTTypePDF", "UTTypeRTFD", "UTTypeFlatRTFD"],
       };
 
-      const arrayOfSelectedFile = await DocumentPicker.pick(
-        optionsDocumentPicker
-      );
+      const arrayOfSelectedFile = await DocumentPicker.pick();
 
       if (
         arrayOfSelectedFile &&
@@ -226,6 +224,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
             fileName: selectedFile.name || "",
             docFormat: selectedFile.type?.split("/")[1] || "",
             uploadTime: getInspectionDate(new Date(), true) || "",
+            uri: selectedFile.uri,
           },
         ]);
       }
@@ -246,6 +245,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
     switch (fileToOpen.docFormat) {
       case "png":
       case "jpg":
+      case "jpeg":
         setNewPhoto(fileToOpen);
         setShowModalImage(true);
         return;

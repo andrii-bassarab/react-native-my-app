@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
   selectedLabel: {
     borderRadius: normalize(50),
     borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: normalize(25),
+    paddingVertical: normalize(15),
     borderColor: colors.primary,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -143,8 +143,8 @@ const styles = StyleSheet.create({
     maxHeight: 130,
   },
   dropdownOptionsLabel: {
-    padding: 8,
-    paddingHorizontal: 20,
+    padding: normalize(10),
+    paddingHorizontal: normalize(25),
     borderColor: colors.layout,
   },
   errorText: {

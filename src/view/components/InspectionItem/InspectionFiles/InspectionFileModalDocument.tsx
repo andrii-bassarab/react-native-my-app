@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import Pdf, { Source } from "react-native-pdf";
 import { ContentLoader } from "../../Loader/Loader";
@@ -41,9 +36,10 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
                 style={{
                   position: "absolute",
                   alignSelf: "center",
-                  justifyContent: 'center',
+                  justifyContent: "center",
                   zIndex: 2,
-                  transform: [{ translateY: normalize(-30) }]                }}
+                  transform: [{ translateY: normalize(-30) }],
+                }}
               >
                 <ContentLoader />
               </View>

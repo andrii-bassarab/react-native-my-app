@@ -5,19 +5,17 @@ import {
   StyleSheet,
 } from "react-native";
 import { colors, textStyles } from "../../theme";
-import { CategoryAmenityField } from "~/types/Category";
+import { CategoryAmenities } from "~/types/Category";
 import { AmenitiesCard } from "./AmenitiesCard";
 
 interface Props {
-  categoryAmenitiesValues: CategoryAmenityField[];
-  loading: boolean;
-  categoryApplyToInspection: boolean;
+  categoryAmenitiesValues: CategoryAmenities[];
+  categoryId: string;
 }
 
 export const CategoryAmenitiesList: React.FC<Props> = ({
     categoryAmenitiesValues,
-    categoryApplyToInspection,
-    loading
+    categoryId,
 }) => {
   return (
     <>
@@ -28,10 +26,10 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
             <AmenitiesCard
               key={amenity.id}
               title={amenity.name}
-              result={amenity.result}
-              categoryApplyToInspection={categoryApplyToInspection}
-              loading={loading}
-              comment={amenity.comment}
+              result={amenity?.amenityValues ? amenity?.amenityValues[0]?.value === "true" : true}
+              comment={amenity?.amenityValues ? amenity?.amenityValues[0]?.comment : "amenitie comment"}
+              categoryId={categoryId}
+              id={amenity.id}
             />
           ))}
         </>

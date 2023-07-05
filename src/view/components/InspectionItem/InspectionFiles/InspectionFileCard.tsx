@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     width: normalize(50),
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
-    marginRight: 5,
+    borderRadius: normalize(10),
+    marginRight: "5%",
   },
   fileInfoText: {
     color: colors.darkGrey,

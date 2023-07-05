@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -13,51 +13,75 @@ import {
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors, textStyles } from "~/view/theme";
 import { CustomRadioCheckbox } from "../Custom/CustomRadioCheckbox";
-import { ContentLoader } from "../Loader/Loader";
-import { CommentItem } from "../InspectionItem/InspectionComments/CommentItem";
-import { IComment } from "~/types/Comment";
-import { useAppSelector } from "~/store/hooks";
+import EditIcon from "~/view/assets/icons/edit.svg";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
+import { actionsInspectionItem } from "~/modules/inspectionItem";
 
 interface Props {
   title: string;
   result?: boolean;
-  categoryApplyToInspection?: boolean;
-  loading: boolean;
-  comment?: IComment;
+  comment?: string | null;
+  categoryId: string;
+  id: string;
 }
 
 export const AmenitiesCard: React.FC<Props> = ({
   title,
   result,
-  categoryApplyToInspection = false,
-  loading,
   comment,
+  categoryId,
+  id,
 }) => {
+  const dispatch = useAppDispatch();
   const resultDropdownOptions = ["Yes", "No"];
-  const [selectedResult, setSelectedResult] = useState<string>(
-    result ? "Yes" : "No"
-  );
-  const [visibleComment, setVisibleComment] = useState(comment);
+  const [selectedResult, setSelectedResult] = useState<string>(result ? "Yes" : "No");
+  const [visibleComment, setVisibleComment] = useState(comment || "");
   const [openMainInfo, setOpenMainInfo] = useState(false);
-  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+  const inspectionIsCompleted = useMemo(
+    () => inspectionItem?.status === InspectionStatus.COMPLETE,
+    [inspectionItem]
+  );
+  const categoryApplyToInspection = Boolean(
+    categories.find((category) => category.id === categoryId)?.isRequired
+  );
+  const [editedComment, setEditedComment] = useState(comment || "");
+  const [showEditInput, setShowEditInput] = useState(false);
+  const [showIconEdit, setShowIconEdit] = useState(!inspectionIsCompleted);
 
-  const handleEditComment = (comment: string) => {
-    setVisibleComment(
-      (prev) =>
-        prev && {
-          ...prev,
-          commentBody: comment,
-        }
-    );
+  const handleStartEditComment = () => {
+    setShowIconEdit(false);
+    setShowEditInput(true);
+  };
+
+  const handleSaveCommentButton = () => {
+    setShowIconEdit(true);
+    setShowEditInput(false);
+    setVisibleComment(editedComment);
+  };
+
+  const handleResetCommentButton = () => {
+    setShowIconEdit(true);
+    setShowEditInput(false);
+    setEditedComment(visibleComment);
   };
 
   useEffect(() => {
-    setVisibleComment(comment)
-  }, [comment])
-
-  const inspectionIsComplete = inspectionItem?.status === InspectionStatus.COMPLETE;
+    if (visibleComment && typeof selectedResult === "string") {
+      dispatch(
+        actionsInspectionItem.setResultAmenitie({
+          categoryId,
+          amenitieValue: {
+            id,
+            comment: visibleComment,
+            result: selectedResult === "Yes",
+          },
+        })
+      );
+    }
+  }, [selectedResult, visibleComment]);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -68,10 +92,14 @@ export const AmenitiesCard: React.FC<Props> = ({
         <View
           style={[
             styles.expandBox,
-            !openMainInfo && { transform: [{ rotate: "-90deg" }] },
+            !openMainInfo && { transform: [{ rotate: "-92deg" }] },
           ]}
         >
-          <ExpandIcon color={"#fff"} width={normalize(25)} height={normalize(25)} />
+          <ExpandIcon
+            color={"#fff"}
+            width={normalize(25)}
+            height={normalize(25)}
+          />
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
@@ -81,66 +109,125 @@ export const AmenitiesCard: React.FC<Props> = ({
           style={{ flex: 1 }}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            {loading ? (
-              <View>
-                <ContentLoader size="medium" />
-              </View>
-            ) : (
-              <View style={styles.mainInfo}>
-                {result !== undefined && (
-                  <View
+            <View style={styles.mainInfo}>
+              {result !== undefined && (
+                <View
+                  style={[
+                    styles.resultLabel,
+                    !categoryApplyToInspection && {
+                      justifyContent: "space-between",
+                    },
+                  ]}
+                >
+                  <Text
                     style={[
-                      styles.resultLabel,
-                      !categoryApplyToInspection && {
-                        justifyContent: "space-between",
-                      },
+                      styles.labelItemText,
+                      inspectionIsCompleted && { marginRight: 0, flex: 1 },
                     ]}
                   >
-                    <Text style={[styles.labelItemText, inspectionIsComplete && {marginRight: 0, flex: 1}]}>Result:</Text>
-                    {categoryApplyToInspection ? (
+                    Result:
+                  </Text>
+                  {categoryApplyToInspection ? (
+                    <>
+                      {inspectionIsCompleted ? (
+                        <Text style={[styles.labelItemText, { flex: 1.5 }]}>
+                          {selectedResult}
+                        </Text>
+                      ) : (
+                        <CustomRadioCheckbox
+                          value={selectedResult}
+                          onValueChange={setSelectedResult}
+                          data={resultDropdownOptions}
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <Text style={styles.noResultText}>N/A</Text>
+                  )}
+                </View>
+              )}
+              {visibleComment && (
+                <View
+                  style={[
+                    styles.commentsLabel,
+                      !showEditInput && {
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                      },
+                      showEditInput && { flexDirection: "column" },
+                  ]}
+                >
+                  <Text
+                    style={{ ...styles.labelItemText, marginRight: '10%' }}
+                  >
+                    Comments:
+                  </Text>
+                  {categoryApplyToInspection ? (
                       <>
-                        {inspectionIsComplete? (
-                          <Text style={[styles.labelItemText, {flex: 1.5}]}>
-                            {selectedResult}
-                          </Text>
+                        {showEditInput ? (
+                          <View
+                            style={{ flex: 1, marginTop: "2%", width: "100%" }}
+                          >
+                            <TextInput
+                              value={editedComment}
+                              onChangeText={setEditedComment}
+                              multiline
+                              style={[styles.commentTextInput]}
+                            />
+                            <View style={styles.inputButtonBox}>
+                              <TouchableOpacity
+                                style={styles.textInputButton}
+                                onPress={handleResetCommentButton}
+                              >
+                                <Text style={styles.inputButtonText}>
+                                  Reset
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.textInputButton}
+                                onPress={handleSaveCommentButton}
+                              >
+                                <Text style={styles.inputButtonText}>Save</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
                         ) : (
-                          <CustomRadioCheckbox
-                            value={selectedResult}
-                            onValueChange={setSelectedResult}
-                            data={resultDropdownOptions}
-                          />
+                          <View style={{flex: 1, flexDirection: 'row'}}>
+                            <Text
+                              style={{
+                                ...styles.labelItemText,
+                                flex: 1.5,
+                                ...textStyles.small,
+                                marginRight: 0
+                              }}
+                            >
+                              {visibleComment}
+                            </Text>
+                            {showIconEdit && (
+                              <TouchableOpacity
+                                onPress={handleStartEditComment}
+                                style={{
+                                  paddingVertical: "1%",
+                                  paddingHorizontal: "3%",
+                                }}
+                              >
+                                <EditIcon
+                                  width={normalize(25)}
+                                  height={normalize(25)}
+                                  color={colors.blue}
+                                />
+                              </TouchableOpacity>
+                            )}
+                          </View>
                         )}
                       </>
                     ) : (
                       <Text style={styles.noResultText}>N/A</Text>
                     )}
-                  </View>
-                )}
-                {visibleComment && (
-                  <View style={[styles.commentsLabel, !categoryApplyToInspection && styles.rowLabel, inspectionItem?.status === InspectionStatus.COMPLETE && styles.rowComment]}>
-                    <Text style={{...styles.labelItemText, flex: 1, marginRight: 0}}>Comments:</Text>
-                    {categoryApplyToInspection ? (
-                      <>
-                        {inspectionItem?.status ===
-                        InspectionStatus.COMPLETE ? (
-                          <Text style={{...styles.labelItemText, flex: 1.5}}>{visibleComment.commentBody}</Text>
-                        ) : (
-                          <CommentItem
-                            comment={visibleComment}
-                            index={0}
-                            arrayLength={1}
-                            showEditComment
-                            saveEditedComment={handleEditComment}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <Text style={styles.noResultText}>N/A</Text>
-                    )}
-                  </View>
-                )}
-              </View>
-            )}
+                </View>
+              )}
+            </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       )}
@@ -159,7 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    flexWrap: 'wrap'
+    flexWrap: "wrap",
   },
   label: {
     flexDirection: "row",
@@ -173,6 +260,7 @@ const styles = StyleSheet.create({
     height: normalize(35),
     justifyContent: "center",
     alignItems: "center",
+    transform: [{ rotate: "-2deg"}]
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -210,9 +298,9 @@ const styles = StyleSheet.create({
     marginRight: "20%",
   },
   rowComment: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   dropdownStyle: {
     width: "100%",
@@ -270,5 +358,34 @@ const styles = StyleSheet.create({
     color: colors.textGrey,
     fontWeight: "500",
     ...textStyles.regular,
+  },
+  commentTextInput: {
+    flex: 1,
+    color: "#000",
+    borderRadius: 5,
+    borderWidth: 1,
+    padding: 5,
+    borderColor: colors.primary,
+    alignSelf: 'stretch',
+    ...textStyles.small,
+  },
+  inputButtonBox: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: "5%",
+  },
+  textInputButton: {
+    borderRadius: normalize(30),
+    borderWidth: 1,
+    borderColor: colors.layout,
+    paddingHorizontal: "10%",
+    paddingVertical: "2%",
+    backgroundColor: colors.layout,
+  },
+  inputButtonText: {
+    ...textStyles.small,
+    fontWeight: "600",
+    color: "#fff",
   },
 });

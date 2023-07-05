@@ -31,8 +31,7 @@ const Drawer = createDrawerNavigator();
 export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
   const dispatch = useAppDispatch();
-  const { inspectionsSync, syncError, inspections, visibleLoader } =
-    useAppSelector((state) => state.inspections);
+  const { inspectionsSync, syncError, inspections, visibleLoader } = useAppSelector((state) => state.inspections);
   const networkConnectivity = useAppSelector(
     (state) => state.networkConnectivity
   );

@@ -17,7 +17,7 @@ import { SelectedInspection } from "../components/Inspections/SelectedInspection
 import { InspectionItem } from "~/types/InspectionItem";
 import {
   Category,
-  CategoryAmenityField,
+  CategoryAmenities,
   CategoryItems,
 } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -44,7 +44,7 @@ interface Props {
         category: Category;
         inspection: InspectionItem;
         items: CategoryItems[];
-        amenities: CategoryAmenityField[];
+        amenities: CategoryAmenities[];
       };
     },
     "params"
@@ -57,17 +57,12 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   route,
 }) => {
   const dispatch = useAppDispatch();
-  const { inspection, category, items } = route.params;
-  const { categoryApplyToInspection, categories, inspectionItem } =
-    useAppSelector((state) => state.inspectionItem);
+  const { inspection, category, items, amenities } = route.params;
+  const { categories, inspectionItem } = useAppSelector((state) => state.inspectionItem);
   const { categoriesTemplates } = useAppSelector((state) => state);
   const { profile } = useAppSelector((state) => state.user);
-  const [updateCategoryItemValue, { data, loading, error }] = useMutation(
-    UPDATE_CATEGOTY_ITEM_VALUE
-  );
-  const [updateInspectionCategory] = useMutation(
-    UPDATE_INSPECTION_CATEGORY_MUTATION
-  );
+  const [updateCategoryItemValue, { data, loading, error }] = useMutation(UPDATE_CATEGOTY_ITEM_VALUE);
+  const [updateInspectionCategory] = useMutation(UPDATE_INSPECTION_CATEGORY_MUTATION);
   const [loader, setLoader] = useState(false);
   const dynamycCategoryApplyToInspection = Boolean(
     categories.find((categoryToCheck) => categoryToCheck.id === category.id)
@@ -198,13 +193,6 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     console.log("error", error);
   }, [data, loading, error]);
 
-  const categoryAmenitiesValues = useMemo(
-    () =>
-      categories.find((categoryTemplate) => categoryTemplate.id === category.id)
-        ?.amenities || [],
-    [categories, category]
-  );
-
   // const {
   //   data: dataAmenitiesValues,
   //   loading: loadingAmenitiesValues,
@@ -278,13 +266,11 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
           >
             <CategoryItemsList
               categoryItemsValues={items}
-              categoryApplyToInspection={categoryApplyToInspection}
               categoryId={category.id}
             />
             <CategoryAmenitiesList
-              categoryAmenitiesValues={categoryAmenitiesValues}
-              loading={false}
-              categoryApplyToInspection={categoryApplyToInspection}
+              categoryAmenitiesValues={amenities}
+              categoryId={category.id}
             />
             {inspectionItem?.status !== InspectionStatus.COMPLETE && (
               <TouchableOpacity

@@ -97,7 +97,7 @@ export const InspectionsFilter = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (gestureState.dy > windowHeight * 0.25) {
+        if (gestureState.dy > windowHeight * 0.3) {
           pan.extractOffset();
           closeInspectionFilterWindow();
         }

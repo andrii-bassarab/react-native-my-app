@@ -40,6 +40,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="BootSplashLogo" width="400" height="400"/>
+        <image name="BootSplashLogo" width="200" height="200"/>
     </resources>
 </document>

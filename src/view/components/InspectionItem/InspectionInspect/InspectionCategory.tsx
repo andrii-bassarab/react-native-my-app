@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   GestureResponderEvent,
+  Dimensions,
 } from "react-native";
 import { getColorCategoryByResult } from "~/utils/getInspectionColor";
 import { colors, textStyles } from "~/view/theme";

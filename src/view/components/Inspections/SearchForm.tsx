@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     paddingLeft: "5%",
     flex: 1,
-    paddingVertical: "2%",
+    paddingVertical: "1%",
     ...textStyles.little,
     textAlignVertical: 'center',
   },

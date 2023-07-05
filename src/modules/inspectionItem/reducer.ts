@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryItemValue, CategoryType } from "~/types/Category";
+import { CategoryType } from "~/types/Category";
 import { InspectionItem } from "~/types/InspectionItem";
 import { getInspectionStatus } from "~/utils/getInspectionStatus";
 
@@ -124,6 +124,35 @@ const inspectionItemSlice = createSlice({
                 ? "Passed"
                 : "Failed"
               : "No results yet")
+        }
+      }
+    },
+    setResultAmenitie: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        categoryId: string;
+        amenitieValue: {
+          id: string;
+          comment: string;
+          result: boolean;
+        };
+      }>
+    ) => {
+      const { categoryId, amenitieValue } = payload;
+      const foundCategory = state.categories.find(
+        (category) => category.id === categoryId
+      );
+
+      if (foundCategory) {
+        const amenitie = foundCategory?.amenities?.find(
+          (item) => item.id === amenitieValue.id
+        );
+
+        if (amenitie && amenitie.amenityValues && amenitie.amenityValues[0]) {
+          amenitie.amenityValues[0].value = amenitieValue.result ? "true" : "false";
+          amenitie.amenityValues[0].comment = amenitieValue.comment;
         }
       }
     },

@@ -36,7 +36,7 @@ export const getInspectionDate = (
 
   return showTimeDate
     ? `${dateString} at ${currentTime?.slice(0, -3)} ${
-        midDay ? midDay.toLocaleLowerCase() : ""
+        midDay ? midDay.toLocaleLowerCase("'en-US'") : ""
       }`
     : dateString;
 };

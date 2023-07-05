@@ -5,24 +5,22 @@ import {
   StyleSheet,
 } from "react-native";
 import { colors, textStyles } from "../../theme";
-import { CategoryItemField, CategoryItems } from "~/types/Category";
+import { CategoryItems } from "~/types/Category";
 import { CharacterCard } from "../../components/CategoryView/CharacterCard";
 
 interface Props {
   categoryItemsValues: CategoryItems[];
-  categoryApplyToInspection: boolean;
   categoryId: string;
 }
 
 export const CategoryItemsList: React.FC<Props> = ({
     categoryItemsValues,
-    categoryApplyToInspection,
     categoryId
 }) => {
   return (
     <>
       {categoryItemsValues.length > 0 ? (
-        <>
+        <View style={{paddingTop: "1%"}}>
           {categoryItemsValues.map((item) => (
             <CharacterCard
               key={item.id}
@@ -35,7 +33,7 @@ export const CategoryItemsList: React.FC<Props> = ({
               categoryId={categoryId} 
             />
           ))}
-        </>
+        </View>
       ) : (
         <View style={styles.noItemsBox}>
           <Text style={styles.noItemsText}>No category items</Text>

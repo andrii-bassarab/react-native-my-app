@@ -25,7 +25,13 @@ export interface CategoryItemField {
 export interface CategoryAmenityField {
   id: string;
   value: string;
-  comment: string;
+  comment: string | null;
+}
+
+export interface CategoryAmenities {
+  id: string;
+  name: string;
+  amenityValues: CategoryAmenityField[];
 }
 
 export interface CategoryAmenityValue {
@@ -61,7 +67,7 @@ export interface CategoryType {
   isRequired: boolean;
   importKey: null | string;
   createdBy: string | null;
-  amenities: CategoryAmenityField[];
+  amenities: CategoryAmenities[];
   items: CategoryItems[];
   status?: string;
   result?: string;

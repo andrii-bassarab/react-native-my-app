@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   Keyboard,
+  Animated,
 } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -33,11 +34,13 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
 
   const [keyboardStatus, setKeyboardStatus] = useState(false);
 
+  const [height, setHeight] = useState(new Animated.Value(0));
+
   useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+    const showSubscription = Keyboard.addListener('keyboardWillShow', () => {
       setKeyboardStatus(true);
     });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+    const hideSubscription = Keyboard.addListener("keyboardWillHide", () => {
       setKeyboardStatus(false);
     });
 
@@ -46,6 +49,29 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       hideSubscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (keyboardStatus) {
+      // Animate to "60%" height
+      Animated.timing(height, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      // Animate to "40%" height
+      Animated.timing(height, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [keyboardStatus]);
+
+  const animatedHeight = height.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["40%", "60%"],
+  });
 
   const formatPhoneNumber = (input: string) => {
     let phoneNumber = input.replace(/\D/g, "");
@@ -168,7 +194,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
         {showModalPhoneNumber && (
           <ModalSwipeScreen
             closeModalFunction={handleCloseModalPhone}
-            height={keyboardStatus ? "60%" : "40%"}
+            height={animatedHeight}
             percentSwipeToClose={0.2}
           >
             <View style={styles.modalContainer}>
