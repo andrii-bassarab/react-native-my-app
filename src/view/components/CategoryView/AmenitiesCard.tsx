@@ -83,6 +83,16 @@ export const AmenitiesCard: React.FC<Props> = ({
     }
   }, [selectedResult, visibleComment]);
 
+  useEffect(() => {
+    setVisibleComment(comment || "");
+    setSelectedResult(result ? "Yes" : "No")
+  }, [comment, result])
+
+  console.log("category", title)
+  console.log("id", id)
+  console.log("result", result)
+
+
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <TouchableOpacity
@@ -289,7 +299,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: "5%",
+    // marginTop: "5%",
   },
   labelItemText: {
     fontWeight: "600",

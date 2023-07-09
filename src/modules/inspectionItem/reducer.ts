@@ -119,7 +119,7 @@ const inspectionItemSlice = createSlice({
           (foundCategory.result =
             foundCategory.items.length > 0
               ? foundCategory.items.every(
-                  ({ itemsValues }) => itemsValues[0].value === "true"
+                  ({ itemsValues }) => itemsValues[0]?.value === "true"
                 )
                 ? "Passed"
                 : "Failed"
@@ -150,9 +150,9 @@ const inspectionItemSlice = createSlice({
           (item) => item.id === amenitieValue.id
         );
 
-        if (amenitie && amenitie.amenityValues && amenitie.amenityValues[0]) {
-          amenitie.amenityValues[0].value = amenitieValue.result ? "true" : "false";
-          amenitie.amenityValues[0].comment = amenitieValue.comment;
+        if (amenitie && amenitie.amenityValues && amenitie.amenityValues) {
+          amenitie.amenityValues.value = amenitieValue.result ? "true" : "false";
+          amenitie.amenityValues.comment = amenitieValue.comment;
         }
       }
     },

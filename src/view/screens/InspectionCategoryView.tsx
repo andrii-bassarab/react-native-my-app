@@ -15,11 +15,7 @@ import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
-import {
-  Category,
-  CategoryAmenities,
-  CategoryItems,
-} from "~/types/Category";
+import { Category, CategoryAmenities, CategoryItems } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { ContentLoader } from "../components/Loader/Loader";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
@@ -29,13 +25,16 @@ import { normalize } from "~/utils/getWindowHeight";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   GET_ALL_INSPECTIONS_CATEGORY,
-  UPDATE_CATEGOTY_ITEM_VALUE,
+  GET_CATEGORY_AMENITY_VALUE,
+  UPDATE_CATEGORY_AMENITY_VALUE,
+  UPDATE_CATEGORY_ITEM_VALUE,
   UPDATE_INSPECTION_CATEGORY_MUTATION,
 } from "~/services/api/GetInspectionCategory";
 import { ModalLoader } from "../components/Loader/ModalLoader";
 import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
 import SaveIcon from "~/view/assets/icons/save.svg";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 
 interface Props {
   route: RouteProp<
@@ -44,7 +43,6 @@ interface Props {
         category: Category;
         inspection: InspectionItem;
         items: CategoryItems[];
-        amenities: CategoryAmenities[];
       };
     },
     "params"
@@ -57,18 +55,33 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   route,
 }) => {
   const dispatch = useAppDispatch();
-  const { inspection, category, items, amenities } = route.params;
-  const { categories, inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { inspection, category, items } = route.params;
+  const { categories, inspectionItem } = useAppSelector(
+    (state) => state.inspectionItem
+  );
   const { categoriesTemplates } = useAppSelector((state) => state);
   const { profile } = useAppSelector((state) => state.user);
-  const [updateCategoryItemValue, { data, loading, error }] = useMutation(UPDATE_CATEGOTY_ITEM_VALUE);
-  const [updateInspectionCategory] = useMutation(UPDATE_INSPECTION_CATEGORY_MUTATION);
+  const [updateCategoryItemValue] = useMutation(UPDATE_CATEGORY_ITEM_VALUE);
+  const [updateCategoryAmenityValue] = useMutation(
+    UPDATE_CATEGORY_AMENITY_VALUE
+  );
+  const [updateInspectionCategory] = useMutation(
+    UPDATE_INSPECTION_CATEGORY_MUTATION
+  );
+  const { data, loading } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
+    variables: {
+      id: category.id,
+    },
+  });
   const [loader, setLoader] = useState(false);
   const dynamycCategoryApplyToInspection = Boolean(
     categories.find((categoryToCheck) => categoryToCheck.id === category.id)
       ?.isRequired
   );
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
+  const visibleAmenities =
+    categories.find((categoryToCheck) => categoryToCheck.id === category.id)
+      ?.amenities || [];
 
   const { refetch } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
@@ -83,6 +96,34 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     (categoryToCheck) => categoryToCheck.id === category.id
   );
 
+  useEffect(() => {
+    if (
+      data &&
+      data.inspectionCategories &&
+      data?.inspectionCategories?.edges.flatMap(
+        (edge: any) => edge?.node?.amenities
+      )
+    ) {
+      dispatch(
+        actionsCategoryTemplate.addCategoryAmenitieValue({
+          templateIdToCheck: inspection.templateId,
+          categoryId: category.id,
+          amenitiesValues: data?.inspectionCategories?.edges.flatMap(
+            (edge: any) => edge?.node?.amenities
+          ),
+        })
+      );
+    }
+  }, [data]);
+
+  useEffect(() => {
+    dispatch(
+      actionsInspectionItem.setCategories(
+        categoriesTemplates[inspection.templateId] || []
+      )
+    );
+  }, [categoriesTemplates[inspection.templateId]]);
+
   const hasUnsavedChanges = useMemo(
     () =>
       (Number(foundDynamicCategory?.items?.length) > 0 &&
@@ -91,9 +132,15 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
             item?.itemsValues[0]?.value !==
               foundTemplateCategory?.items[index]?.itemsValues[0]?.value ||
             item?.itemsValues[0]?.comment !==
-              foundTemplateCategory?.items[index]?.itemsValues[0]?.comment ||
-            foundTemplateCategory?.isRequired !==
-              foundDynamicCategory?.isRequired
+              foundTemplateCategory?.items[index]?.itemsValues[0]?.comment
+        )) ||
+      (Number(foundDynamicCategory?.amenities?.length) > 0 &&
+        foundDynamicCategory?.amenities.some(
+          (amenity, index) =>
+            amenity?.amenityValues?.value !==
+              foundTemplateCategory?.amenities[index]?.amenityValues?.value ||
+            amenity?.amenityValues?.comment !==
+            foundTemplateCategory?.amenities[index]?.amenityValues?.comment 
         )) ||
       foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired,
     [foundDynamicCategory, foundTemplateCategory]
@@ -114,8 +161,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
         item?.itemsValues[0]?.value !==
           foundTemplateCategory?.items[index]?.itemsValues[0]?.value ||
         item?.itemsValues[0]?.comment !==
-          foundTemplateCategory?.items[index]?.itemsValues[0]?.comment ||
-        foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired
+          foundTemplateCategory?.items[index]?.itemsValues[0]?.comment
       ) {
         return updateCategoryItemValue({
           variables: {
@@ -130,6 +176,31 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
             },
           },
         });
+      }
+    });
+
+    foundDynamicCategory?.amenities?.forEach((amenity, index) => {
+      if (
+        amenity?.amenityValues?.value !==
+          foundTemplateCategory?.amenities[index]?.amenityValues?.value ||
+        amenity?.amenityValues?.comment !==
+          foundTemplateCategory?.amenities[index]?.amenityValues?.comment
+      ) {
+        updatePromises?.push(
+          updateCategoryAmenityValue({
+            variables: {
+              command: {
+                customerId: "pfdylv",
+                siteId: "pfdylv",
+                id: amenity?.amenityValues?.id,
+                inspectionId: inspection.id,
+                inspectionAmenityId: amenity.id,
+                value: amenity?.amenityValues?.value,
+                comment: amenity?.amenityValues?.comment,
+              },
+            },
+          })
+        );
       }
     });
 
@@ -187,45 +258,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     navigation.goBack();
   };
 
-  useEffect(() => {
-    console.log("data", data);
-    console.log("loading", loading);
-    console.log("error", error);
-  }, [data, loading, error]);
-
-  // const {
-  //   data: dataAmenitiesValues,
-  //   loading: loadingAmenitiesValues,
-  //   error: errorAmenitiesValues,
-  // } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
-  //   variables: {
-  //     ids: amenities.map((item) => item.id),
-  //   },
-  //   skip: amenities.length === 0,
-  // });
-
-  // useEffect(() => {
-  //   if (
-  //     dataAmenitiesValues &&
-  //     dataAmenitiesValues?.inspectionAmenityValues?.edges &&
-  //     Array.isArray(dataAmenitiesValues?.inspectionAmenityValues?.edges) &&
-  //     dataAmenitiesValues?.inspectionAmenityValues?.edges.every(
-  //       (edge: any) =>
-  //         typeof edge === "object" && edge.node && typeof edge.node === "object"
-  //     )
-  //   ) {
-  //     dispatch(
-  //       actionsCategoryTemplate.addCategoryAmenitieValue({
-  //         templateId: inspection.templateId,
-  //         categoryId: category.id,
-  //         amenitiesValues:
-  //           dataAmenitiesValues?.inspectionAmenityValues?.edges.map(
-  //             (edge: any) => edge.node
-  //           ),
-  //       })
-  //     );
-  //   }
-  // }, [dataAmenitiesValues, loadingAmenitiesValues, errorAmenitiesValues]);
+  console.log("category", category.id);
 
   return (
     <Screen
@@ -269,7 +302,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
               categoryId={category.id}
             />
             <CategoryAmenitiesList
-              categoryAmenitiesValues={amenities}
+              categoryAmenitiesValues={visibleAmenities}
+              loading={loading}
               categoryId={category.id}
             />
             {inspectionItem?.status !== InspectionStatus.COMPLETE && (

@@ -33,7 +33,6 @@ export const CategoryList: React.FC<Props> = ({
       inspection,
       category: renderCategoryItem(category),
       items: category.items,
-      amenities: category.amenities,
     });
   };
 

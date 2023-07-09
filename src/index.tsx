@@ -13,6 +13,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { API_URL, X_API_KEY, X_SIDE_ID } from "~/constants/env";
+import { Loader } from "./view/navigation/App";
 
 const maintenanceHttpLink = createHttpLink({
   uri: `${API_URL}/maintenance/graphql`,
@@ -36,7 +37,7 @@ const client = new ApolloClient({
 
 const RootApp: React.FC = () => (
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
+    <PersistGate loading={<Loader/>} persistor={persistor}>
       <ApolloProvider client={client}>
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
           <App />

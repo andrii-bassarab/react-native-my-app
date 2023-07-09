@@ -33,7 +33,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const [visibleCategories, setVisibleCategory] = useState(categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
 
-  const { data, loading } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
+  const { data, loading, error } = useQuery(GET_ALL_INSPECTIONS_CATEGORY, {
     variables: {
       id: route.params.templateId,
     },
@@ -50,6 +50,10 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   }, [query, inspectionItem, categories]);
 
   useEffect(() => {
+    console.log(data?.inspectionCategories)
+    console.log("error", error)
+    console.log("loading", loading)
+
     if (
       data &&
       data.inspectionCategories?.edges &&
@@ -63,6 +67,8 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         (edge: any) => edge.node
       );
 
+      console.log("works")
+
       dispatch(
         actionsCategoryTemplate.addCategoryTemplate({
           templateIdToAdd: route.params.templateId,
@@ -74,7 +80,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         })
       );
     }
-  }, [data]);
+  }, [data, loading]);
 
   return (
     <View style={styles.content}>

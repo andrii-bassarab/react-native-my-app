@@ -17,9 +17,13 @@ interface Props {
 export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
   const { status, result, items, photos, id } = category;
-  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionItem, categories } = useAppSelector(
+    (state) => state.inspectionItem
+  );
 
-  const dynamycCategoryApplyToInspection = categories.find(categoryToCheck => categoryToCheck.id === id)?.isRequired;
+  const dynamycCategoryApplyToInspection = categories.find(
+    (categoryToCheck) => categoryToCheck.id === id
+  )?.isRequired;
 
   const handleChangeCategoryApplyToInspection = () =>
     dispatch(
@@ -37,7 +41,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
             fontWeight: "700",
             color: colors.darkGrey,
             ...textStyles.regular,
-            marginBottom: '1%'
+            marginBottom: "1%",
           }}
         >
           {category.title}
@@ -51,9 +55,13 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
           />
         )}
         {status === "Complete" && result === "Failed" && (
-           <View style={styles.failedBox}>
-           <FailedIcon color={"#fff"} height={normalize(15)} width={normalize(15)} />
-         </View>
+          <View style={styles.failedBox}>
+            <FailedIcon
+              color={"#fff"}
+              height={normalize(15)}
+              width={normalize(15)}
+            />
+          </View>
         )}
       </View>
       <View style={styles.content}>
@@ -88,11 +96,13 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
         <Text style={styles.categoryApplyText}>
           Does this category apply to the inspection?
         </Text>
-        <CustomToggleInput
-          value={Boolean(dynamycCategoryApplyToInspection)}
-          onValueChange={handleChangeCategoryApplyToInspection}
-          disabled={inspectionItem?.status === InspectionStatus.COMPLETE}
-        />
+        <View style={{marginLeft: 10}}>
+          <CustomToggleInput
+            value={Boolean(dynamycCategoryApplyToInspection)}
+            onValueChange={handleChangeCategoryApplyToInspection}
+            disabled={inspectionItem?.status === InspectionStatus.COMPLETE}
+          />
+        </View>
       </View>
     </View>
   );
@@ -131,10 +141,9 @@ const styles = StyleSheet.create({
   },
   categoryApplyText: {
     ...textStyles.little,
-    flex: 1,
     marginRight: 10,
     color: colors.darkGrey,
-    marginTop: '1%'
+    marginTop: "1%",
   },
   applyCategoryBox: {
     flexDirection: "row",
@@ -152,6 +161,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.red,
     borderRadius: 100,
-    marginLeft: '2%',
+    marginLeft: "2%",
   },
 });

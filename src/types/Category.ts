@@ -28,29 +28,16 @@ export interface CategoryAmenityField {
   comment: string | null;
 }
 
-export interface CategoryAmenities {
+export interface CategoryAmenitiesResponse {
   id: string;
   name: string;
   amenityValues: CategoryAmenityField[];
 }
 
-export interface CategoryAmenityValue {
+export interface CategoryAmenities {
   id: string;
-  inspectionId: string;
-  inspectionAmenityId: string;
-  value: "true" | "false";
-  comment: string | null;
-}
-
-export interface CategoryItemValue {
-  id: string;
-  inspectionId: string;
-  inspectionItemId: string;
-  comment: string;
-  inspectedBy: null | string;
-  inspectedOn: null | string;
-  value: "false" | "true";
-  itemOptionId: null | string;
+  name: string;
+  amenityValues: CategoryAmenityField | null;
 }
 
 export interface CategoryItems {

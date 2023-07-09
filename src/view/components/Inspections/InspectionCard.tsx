@@ -5,6 +5,7 @@ import { colors, textStyles } from "~/view/theme";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
 import { InspectionItem } from "~/types/InspectionItem";
+import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
   inspection: InspectionItem;
@@ -33,7 +34,7 @@ export const InspectionCard: React.FC<Props> = ({ inspection: item, onPress }) =
               : `Created on ${getInspectionDate(new Date(item.createdOn))}`}
           </Text>
         </View>
-        {item.household?.headOfHouseholdId && (
+        {item.household?.headOfHouseholdId && item.visibleHouseholdName &&  (
           <Text style={styles.textInfo}>{item.visibleHouseholdName}</Text>
         )}
         <Text style={styles.textInfo}>
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
-    paddingVertical: 20,
+    paddingVertical: normalize(30),
     paddingHorizontal: "3%",
     width: "98%",
     flexWrap: "wrap",

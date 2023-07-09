@@ -20,11 +20,6 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
           amenities {
             id
             name
-              amenityValues{
-                  id
-                  value
-                  comment
-              }
           } 
           items {
             id
@@ -95,22 +90,29 @@ export const GET_CATEGORY_ITEM_VALUE = gql`
 `
 
 export const GET_CATEGORY_AMENITY_VALUE = gql`
-  query GetInspectionAmenityValues ($ids: [String!]){
-    inspectionAmenityValues (
-        first: 50      
-        where: {      
-          inspectionAmenityId: {in: $ids}
+  query GetInspectionCategories ($id: String){
+    inspectionCategories (
+      first: 50
+      order: { createdOn: ASC }
+      where: {      
+        id: { eq: $id }
+        deletedOn: { eq: null }
       }   
     ) {
-    edges {
-      node {
-        id
-        inspectionId       
-        inspectionAmenityId
-        value
-        comment         
-      }
-    } 
+      edges {
+        node {
+          id
+          amenities {
+            id
+            name
+            amenityValues{
+              id
+              value
+              comment
+            }
+          }        
+        }
+      } 
     }
   }
 `
@@ -133,7 +135,7 @@ export const DELETE_CATEGORY = gql`
   }
 `
 
-export const UPDATE_CATEGOTY_ITEM_VALUE = gql`
+export const UPDATE_CATEGORY_ITEM_VALUE = gql`
   mutation updateInspectionItemValueMutation($command: UpdateInspectionItemValueCommandInput!){
     updateInspectionItemValue(command: $command){
         commandName
@@ -146,6 +148,24 @@ export const UPDATE_CATEGOTY_ITEM_VALUE = gql`
         affectedEntity {
             id            
             comment
+        }
+    }
+  }
+`
+
+export const UPDATE_CATEGORY_AMENITY_VALUE = gql`
+  mutation updateInspectionAmenityValueMutation($command: UpdateInspectionAmenityValueCommandInput!){
+    updateInspectionAmenityValue(command: $command){
+        commandName
+        status
+        issuedOn
+        acceptedOn
+        succeededOn
+        failedOn
+        failureReason
+        affectedEntity {
+            id            
+            value
         }
     }
   }

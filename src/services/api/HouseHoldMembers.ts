@@ -12,7 +12,6 @@ export const GET_HOUSEHOLD_NAME = gql`
       edges {
         node {
           firstName
-          middleName
           lastName
         }
         cursor
