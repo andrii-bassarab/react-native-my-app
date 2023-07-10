@@ -183,9 +183,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
         </View>
         <View style={styles.label}>
           <Text style={styles.labelText}>Landlord:</Text>
-          <Text style={styles.text}>{`${
-            inspection.unit.landlord?.firstName || ""
-          } ${inspection.unit.landlord?.lastName || ""}`}</Text>
+          <Text style={styles.text}>{inspection.visibleLandlordName}</Text>
         </View>
         <View style={styles.label}>
           <Text style={styles.labelText}>Phone:</Text>

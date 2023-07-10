@@ -88,11 +88,6 @@ export const AmenitiesCard: React.FC<Props> = ({
     setSelectedResult(result ? "Yes" : "No")
   }, [comment, result])
 
-  console.log("category", title)
-  console.log("id", id)
-  console.log("result", result)
-
-
   return (
     <View style={[styles.card, styles.shadowProp]}>
       <TouchableOpacity

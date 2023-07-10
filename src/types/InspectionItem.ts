@@ -21,6 +21,7 @@ export interface InspectionItem {
   visibleHouseholdName: string;
   visibleInspectionForm: string;
   visibleAssignedTo: string;
+  visibleLandlordName: string;
   inspectionComments: IComment[];
   isReinspection: boolean;
   unit: {
@@ -34,11 +35,6 @@ export interface InspectionItem {
     squareFootage: number | null;
     isHandicapAccessible: boolean;
     yearConstructed: number | null;
-    landlord: {
-      firstName: string;
-      lastName: string;
-      phoneNumber: string | null;
-    } | null;
   };
   household: {
     lastActionName: string;

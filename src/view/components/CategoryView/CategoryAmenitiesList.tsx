@@ -16,7 +16,6 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
   categoryId,
   loading,
 }) => {
-  console.log("categoryAmenitiesValues", categoryAmenitiesValues)
   return (
     <View>
       {loading ? (

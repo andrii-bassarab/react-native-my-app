@@ -51,3 +51,30 @@ export const getHouseHoldNameById = (id: string) => makeRequest("occupancy/graph
     }
   }
 `);
+
+export const getLandlordNameById = (id : string) => makeRequest("occupancy/graphql/", `
+  query QueryLandlords {
+    landlords(
+      first: 50
+      where: { 
+        id: {eq: "${id}"}
+      }
+    ) {
+    edges {
+      node {
+        id
+        firstName
+        lastName
+        phoneNumber
+      }
+      cursor
+    } 
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    }
+  }
+`)

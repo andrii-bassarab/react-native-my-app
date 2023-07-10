@@ -62,12 +62,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   const { categoriesTemplates } = useAppSelector((state) => state);
   const { profile } = useAppSelector((state) => state.user);
   const [updateCategoryItemValue] = useMutation(UPDATE_CATEGORY_ITEM_VALUE);
-  const [updateCategoryAmenityValue] = useMutation(
-    UPDATE_CATEGORY_AMENITY_VALUE
-  );
-  const [updateInspectionCategory] = useMutation(
-    UPDATE_INSPECTION_CATEGORY_MUTATION
-  );
+  const [updateCategoryAmenityValue] = useMutation(UPDATE_CATEGORY_AMENITY_VALUE);
+  const [updateInspectionCategory] = useMutation(UPDATE_INSPECTION_CATEGORY_MUTATION);
   const { data, loading } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
     variables: {
       id: category.id,
@@ -88,6 +84,10 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
       id: "",
     },
   });
+  const inspectionIsCompleted = useMemo(
+    () => inspectionItem?.status === InspectionStatus.COMPLETE,
+    [inspectionItem]
+  );
 
   const foundTemplateCategory = categoriesTemplates[
     inspection.templateId
@@ -146,8 +146,10 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     [foundDynamicCategory, foundTemplateCategory]
   );
 
+  console.log("hasUnsavedChanges", hasUnsavedChanges)
+
   const handleGoBackWithoutSaving = () => {
-    if (hasUnsavedChanges) {
+    if (hasUnsavedChanges && !inspectionIsCompleted) {
       setShowModalUnsavedChanges(true);
       return;
     }

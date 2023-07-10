@@ -19,10 +19,23 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     (state) => state.inspections
   );
 
+  console.log("inspections", inspections.map(item => ({
+    name: item.visibleLandlordName,
+    id: item.unit.streetAddress,
+  })))
+
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={normalize(100)}>
+    <Screen
+      backgroundColor={colors.layout}
+      paddingTop={layout.screenPadding}
+      borderRadius={normalize(100)}
+    >
       <View style={styles.content}>
-        <WelcomeBox backgroundColor="transparant" textColor={colors.darkGrey} showText />
+        <WelcomeBox
+          backgroundColor="transparant"
+          textColor={colors.darkGrey}
+          showText
+        />
         <View style={styles.activityBox}>
           <View>
             {visibleLoader && inspections.length === 0 ? (
@@ -37,17 +50,21 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                   <InspectionCard
                     onPress={() =>
                       navigation.navigate("InspectionNavigation", {
-                        navigate: "InspectionItem",
-                        item,
+                        screen: "InspectionItem",
+                        params: item,
                       })
                     }
                     inspection={item}
                   />
                 )}
                 ListHeaderComponent={() => (
-                  <Text style={[styles.activityTitle, textStyles.medium]}>Recent Activity</Text>
+                  <Text style={[styles.activityTitle, textStyles.medium]}>
+                    Recent Activity
+                  </Text>
                 )}
-                ListFooterComponent={() => <View style={{ height: normalize(180) }} />}
+                ListFooterComponent={() => (
+                  <View style={{ height: normalize(180) }} />
+                )}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 showsVerticalScrollIndicator={false}
               />

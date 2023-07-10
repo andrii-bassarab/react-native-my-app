@@ -65,16 +65,16 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
         categoriesTemplates[inspection.templateId] || []
       )
     );
-    dispatch(
-      actionsInspectionItem.setVisiblePhoneNumber(
-        inspection.unit.landlord?.phoneNumber || ""
-      )
-    );
+    // dispatch(
+    //   actionsInspectionItem.setVisiblePhoneNumber(
+    //     inspection.unit.landlord?.phoneNumber || ""
+    //   )
+    // );
 
     return () => {
       dispatch(actionsInspectionItem.clearInspectionItem());
     };
-  }, []);
+  }, [inspection]);
 
   const handleGoBack = () => {
     if (startSignature) {

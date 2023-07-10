@@ -11,7 +11,7 @@ import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NavigationDrawerStructure } from "../components/Navigation/NavigationDrawerStructure";
 import { colors } from "../theme";
 import { NavigationNotificationStructure } from "../components/Navigation/NavigationNotificationStructure";
-import { getHouseHoldNameById } from "~/services/api/HouseHoldMembers";
+import { getHouseHoldNameById, getLandlordNameById } from "~/services/api/HouseHoldMembers";
 import { getInspectionStatus } from "~/utils/getInspectionStatus";
 import { actionsInspections } from "~/modules/inspections";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -113,8 +113,7 @@ export const HomeNavigation: React.FC = () => {
     }
 
     const arrayOfDataInspections = data.inspections.edges;
-    const arrayOfInspectionTemplates: any[] =
-      inspectionTemplateInfo.inspectionTemplates.edges;
+    const arrayOfInspectionTemplates: any[] = inspectionTemplateInfo.inspectionTemplates.edges;
 
     const getVisibleInspectionForm = (templateIdToCheck: string) => {
       return (
@@ -132,6 +131,7 @@ export const HomeNavigation: React.FC = () => {
             item.node?.status,
             item.node?.hasPassed
           ),
+          visibleLandlordName: inspections[index].visibleLandlordName,
           visibleInspectionForm: getVisibleInspectionForm(item.node.templateId),
           visibleHouseholdName: inspections[index].visibleHouseholdName,
           visibleAssignedTo: getVisibleAssignedTo(
@@ -148,6 +148,20 @@ export const HomeNavigation: React.FC = () => {
 
     try {
       console.log("render before");
+
+      console.log("ids", arrayOfDataInspections.map(({node}: any) => (node?.unit?.landlordId)))
+
+      const responseLandlordName = await Promise.all(
+        arrayOfDataInspections.map(({node}: any) => getLandlordNameById(node?.unit?.landlordId))
+      );
+
+      const arrayOfLandlordsNames = responseLandlordName.map(({data}) => {
+        const node = data?.landlords?.edges?.[0]?.node;
+        
+        return (node?.firstName || "") + " " + (node?.lastName || "")
+      })
+
+      console.log("render landlordName", responseLandlordName.map(({data}) => data?.landlords?.edges?.[0]?.node));
 
       const responceOfHouseHoldName = await Promise.all(
         arrayOfDataInspections.map(({ node }: any) =>
@@ -182,6 +196,7 @@ export const HomeNavigation: React.FC = () => {
             item.node?.status,
             item.node?.hasPassed
           ),
+          visibleLandlordName: arrayOfLandlordsNames[index],
           visibleInspectionForm: getVisibleInspectionForm(item.node.templateId),
           visibleHouseholdName: getVisibleHouseHoldName(index),
           visibleAssignedTo: getVisibleAssignedTo(

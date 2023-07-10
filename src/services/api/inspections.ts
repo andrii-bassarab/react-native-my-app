@@ -37,10 +37,7 @@ export const GET_ALL_INSPECTIONS = gql`
             squareFootage
             isHandicapAccessible
             yearConstructed
-            landlord{
-                firstName
-                lastName
-            }
+            landlordId
         }
         household{
             lastActionName
