@@ -30,7 +30,7 @@ export const InspectionNavigation: React.FC<Props> = ({ navigation, route }) => 
   }, [route.params]);
 
   return (
-    <InspectionStack.Navigator screenOptions={{...screenOptions, contentStyle: {backgroundColor: colors.layout}}} initialRouteName="Inspections">
+    <InspectionStack.Navigator screenOptions={{...screenOptions, contentStyle: {backgroundColor: "#fff"}}} initialRouteName="Inspections">
       <InspectionStack.Screen name="Inspections" component={Inspections} />
       <InspectionStack.Screen name="InspectionItem" component={InspectionItem} />
       <InspectionStack.Screen name="InspectionCategory" component={InspectionCategoryScreen} />

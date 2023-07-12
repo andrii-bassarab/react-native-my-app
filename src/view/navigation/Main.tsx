@@ -17,7 +17,7 @@ import { colors } from "../theme";
 const screenOptions = {
   gestureEnabled: false,
   headerShown: false,
-  contentStyle: { backgroundColor: colors.layout },
+  contentStyle: { backgroundColor: "#fff" },
 };
 
 const BottomTabs = createBottomTabNavigator();

@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     height: "50%",
     justifyContent: "flex-end",
+    ...textStyles.small
   },
   commentButton: {
     alignSelf: "flex-end",

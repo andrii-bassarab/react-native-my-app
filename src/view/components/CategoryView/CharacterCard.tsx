@@ -461,9 +461,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     marginTop: 0,
-    borderRadius: normalize(20),
+    borderRadius: normalize(30),
     borderColor: colors.blue,
     zIndex: 2,
+    borderTopLeftRadius: normalize(30),
+    borderTopRightRadius: normalize(30),
   },
   commentsLabel: {
     marginTop: "5%",
@@ -478,9 +480,9 @@ const styles = StyleSheet.create({
   },
   selectedResultItem: {
     borderColor: colors.blue,
-    borderRadius: normalize(50),
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    borderRadius: normalize(40),
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(10),
   },
   buttonsTakePhotoContainer: {
     marginTop: "5%",

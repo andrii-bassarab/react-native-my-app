@@ -195,7 +195,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   ]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} >
       <View style={styles.content}>
         <WelcomeBox backgroundColor="transparant" textColor={colors.primary} showText />
         <Text style={styles.title}>Inspections</Text>

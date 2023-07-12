@@ -25,8 +25,8 @@ export const Screen: React.FC<Props> = ({ children, backgroundColor, paddingTop,
         paddingRight: insets.right,
         backgroundColor,
         flex: 1,
-        borderTopRightRadius: borderRadius,
-        borderTopLeftRadius: borderRadius,
+        // borderTopRightRadius: borderRadius,
+        // borderTopLeftRadius: borderRadius,
       }}
     >
       {children}

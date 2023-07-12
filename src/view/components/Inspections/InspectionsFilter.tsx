@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingTop: "10%",
+    paddingTop: "6%",
     paddingBottom: "30%",
   },
   clearFiltersButtton: {

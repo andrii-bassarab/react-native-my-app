@@ -15,9 +15,8 @@ import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
-import { Category, CategoryAmenities, CategoryItems } from "~/types/Category";
+import { Category, CategoryItems } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { ContentLoader } from "../components/Loader/Loader";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
 import { InspectionStatus } from "~/types/inspectionStatus";
@@ -60,6 +59,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     (state) => state.inspectionItem
   );
   const { categoriesTemplates } = useAppSelector((state) => state);
+  const { inspectionsSync } = useAppSelector((state) => state.inspections);
   const { profile } = useAppSelector((state) => state.user);
   const [updateCategoryItemValue] = useMutation(UPDATE_CATEGORY_ITEM_VALUE);
   const [updateCategoryAmenityValue] = useMutation(UPDATE_CATEGORY_AMENITY_VALUE);
@@ -68,6 +68,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     variables: {
       id: category.id,
     },
+    notifyOnNetworkStatusChange: true,
   });
   const [loader, setLoader] = useState(false);
   const dynamycCategoryApplyToInspection = Boolean(
@@ -95,6 +96,14 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   const foundDynamicCategory = categories.find(
     (categoryToCheck) => categoryToCheck.id === category.id
   );
+
+  useEffect(() => {
+    if (inspectionsSync) {
+      refetchCategoryAmenities({
+        id: category.id,
+      })
+    }
+  }, [inspectionsSync])
 
   useEffect(() => {
     if (
