@@ -5,7 +5,7 @@ export interface InspectionItem {
   id: string;
   scheduledOn: string | null;
   visitationRange: string | null;
-  assignedTo: string;
+  assignedTo: string | null;
   status: string;
   inspectionType: string;
   propertyType: string;
@@ -23,6 +23,7 @@ export interface InspectionItem {
   visibleAssignedTo: string;
   visibleLandlordName: string;
   inspectionComments: IComment[];
+  visibleLandlordPhoneNumber: string;
   isReinspection: boolean;
   unit: {
     id: string;

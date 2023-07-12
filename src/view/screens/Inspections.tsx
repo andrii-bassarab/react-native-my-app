@@ -73,7 +73,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   const makeRequest = () => {
     setVisibleInspections((prev) =>
       prev.filter((item) =>
-        item.unit.streetAddress.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
+        `Inspection ${item?.unit?.streetAddress}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
       )
     );
   };

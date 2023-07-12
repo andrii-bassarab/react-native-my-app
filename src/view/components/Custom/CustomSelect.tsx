@@ -12,7 +12,7 @@ import { colors, textStyles } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 import { normalize } from "~/utils/getWindowHeight";
 
-export type OptionItem = string | { name: string; value: string };
+export type OptionItem = string | { name: string; value: string | null };
 
 interface Props {
   data: OptionItem[];
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     zIndex: 2,
     backgroundColor: "#fff",
+    paddingBottom: normalize(10),
   },
   selectedLabel: {
     borderRadius: normalize(50),
@@ -137,10 +138,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   dropdownOptionsContainer: {
-    paddingVertical: 10,
+    paddingVertical: normalize(10),
     borderBottomLeftRadius: normalize(20),
     borderBottomRightRadius: normalize(20),
     maxHeight: 130,
+    zIndex: -3
   },
   dropdownOptionsLabel: {
     padding: normalize(10),

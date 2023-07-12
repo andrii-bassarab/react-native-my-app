@@ -39,8 +39,6 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
                   comment={
                     amenity?.amenityValues
                       ? amenity?.amenityValues?.comment
-                        ? amenity?.amenityValues?.comment
-                        : "amenitie comment"
                       : undefined
                   }
                   categoryId={categoryId}

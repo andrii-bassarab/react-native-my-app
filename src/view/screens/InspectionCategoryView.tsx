@@ -55,7 +55,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   route,
 }) => {
   const dispatch = useAppDispatch();
-  const { inspection, category, items } = route.params;
+  const { category, items } = route.params;
   const { categories, inspectionItem } = useAppSelector(
     (state) => state.inspectionItem
   );
@@ -64,7 +64,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   const [updateCategoryItemValue] = useMutation(UPDATE_CATEGORY_ITEM_VALUE);
   const [updateCategoryAmenityValue] = useMutation(UPDATE_CATEGORY_AMENITY_VALUE);
   const [updateInspectionCategory] = useMutation(UPDATE_INSPECTION_CATEGORY_MUTATION);
-  const { data, loading } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
+  const { data, loading, refetch: refetchCategoryAmenities, error } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
     variables: {
       id: category.id,
     },
@@ -90,7 +90,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   );
 
   const foundTemplateCategory = categoriesTemplates[
-    inspection.templateId
+    inspectionItem?.templateId || ""
   ]?.find((categoryTemlate) => categoryTemlate.id === category.id);
   const foundDynamicCategory = categories.find(
     (categoryToCheck) => categoryToCheck.id === category.id
@@ -106,7 +106,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     ) {
       dispatch(
         actionsCategoryTemplate.addCategoryAmenitieValue({
-          templateIdToCheck: inspection.templateId,
+          templateIdToCheck: inspectionItem?.templateId || "",
           categoryId: category.id,
           amenitiesValues: data?.inspectionCategories?.edges.flatMap(
             (edge: any) => edge?.node?.amenities
@@ -119,10 +119,10 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   useEffect(() => {
     dispatch(
       actionsInspectionItem.setCategories(
-        categoriesTemplates[inspection.templateId] || []
+        categoriesTemplates[inspectionItem?.templateId || ""] || []
       )
     );
-  }, [categoriesTemplates[inspection.templateId]]);
+  }, [categoriesTemplates[inspectionItem?.templateId || ""]]);
 
   const hasUnsavedChanges = useMemo(
     () =>
@@ -145,8 +145,6 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
       foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired,
     [foundDynamicCategory, foundTemplateCategory]
   );
-
-  console.log("hasUnsavedChanges", hasUnsavedChanges)
 
   const handleGoBackWithoutSaving = () => {
     if (hasUnsavedChanges && !inspectionIsCompleted) {
@@ -171,7 +169,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
               customerId: "pfdylv",
               siteId: "pfdylv",
               id: item?.itemsValues[0]?.id,
-              inspectionId: inspection.id,
+              inspectionId: inspectionItem?.id,
               inspectionItemId: item.id,
               value: item?.itemsValues[0]?.value,
               comment: item?.itemsValues[0]?.comment,
@@ -195,7 +193,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
                 customerId: "pfdylv",
                 siteId: "pfdylv",
                 id: amenity?.amenityValues?.id,
-                inspectionId: inspection.id,
+                inspectionId: inspectionItem?.id,
                 inspectionAmenityId: amenity.id,
                 value: amenity?.amenityValues?.value,
                 comment: amenity?.amenityValues?.comment,
@@ -236,7 +234,10 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
         setLoader(true);
         await Promise.all(updatePromises);
         await refetch({
-          id: inspection.templateId,
+          id: inspectionItem?.templateId,
+        });
+        await refetchCategoryAmenities({
+          id: category.id,
         });
         navigation.goBack();
       } catch (e) {
@@ -250,17 +251,15 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     }
   };
 
-  const handleOnContinueGoBackWithoutSaved = () => {
+  const handleGoBackWithoutSaved = () => {
     dispatch(
       actionsInspectionItem.setCategories(
-        categoriesTemplates[inspection.templateId] || []
+        categoriesTemplates[inspectionItem?.templateId || ""] || []
       )
     );
     setShowModalUnsavedChanges(false);
     navigation.goBack();
   };
-
-  console.log("category", category.id);
 
   return (
     <Screen
@@ -273,28 +272,18 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
           <ModalDeleteItem
             title={"You have unsaved changes. Unsaved changes will be lost."}
             Icon={SaveIcon}
-            onContinue={handleOnContinueGoBackWithoutSaved}
+            onContinue={handleGoBackWithoutSaved}
             onCancel={() => setShowModalUnsavedChanges(false)}
             message="Are you sure you want to leave without saving changes?"
           />
         )}
         <SelectedInspection
-          item={inspection}
+          item={inspectionItem}
           goBack={handleGoBackWithoutSaving}
           includeCategory
           category={category}
         />
         <View style={{ height: normalize(20) }}></View>
-        {false ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-            }}
-          >
-            <ContentLoader />
-          </View>
-        ) : (
           <ScrollView
             style={{ paddingHorizontal: 5, flex: 1 }}
             showsVerticalScrollIndicator={false}
@@ -317,7 +306,6 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
               </TouchableOpacity>
             )}
           </ScrollView>
-        )}
       </View>
       {loader && <ModalLoader />}
     </Screen>

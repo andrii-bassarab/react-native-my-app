@@ -138,6 +138,7 @@ export const HomeNavigation: React.FC = () => {
             availableUsers,
             item.node.assignedTo
           ).name,
+          visibleLandlordPhoneNumber: inspections[index].visibleLandlordPhoneNumber,
         })
       ) as InspectionItem[];
 
@@ -158,7 +159,10 @@ export const HomeNavigation: React.FC = () => {
       const arrayOfLandlordsNames = responseLandlordName.map(({data}) => {
         const node = data?.landlords?.edges?.[0]?.node;
         
-        return (node?.firstName || "") + " " + (node?.lastName || "")
+        return {
+          name: (node?.firstName || "") + " " + (node?.lastName || ""),
+          phoneNumber: node?.phoneNumber
+        }
       })
 
       console.log("render landlordName", responseLandlordName.map(({data}) => data?.landlords?.edges?.[0]?.node));
@@ -196,13 +200,14 @@ export const HomeNavigation: React.FC = () => {
             item.node?.status,
             item.node?.hasPassed
           ),
-          visibleLandlordName: arrayOfLandlordsNames[index],
+          visibleLandlordName: arrayOfLandlordsNames[index].name,
           visibleInspectionForm: getVisibleInspectionForm(item.node.templateId),
           visibleHouseholdName: getVisibleHouseHoldName(index),
           visibleAssignedTo: getVisibleAssignedTo(
             availableUsers,
             item.node.assignedTo
           ).name,
+          visibleLandlordPhoneNumber: arrayOfLandlordsNames[index].phoneNumber,
         })
       ) as InspectionItem[];
 

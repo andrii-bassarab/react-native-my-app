@@ -19,11 +19,6 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     (state) => state.inspections
   );
 
-  console.log("inspections", inspections.map(item => ({
-    name: item.visibleLandlordName,
-    id: item.unit.streetAddress,
-  })))
-
   return (
     <Screen
       backgroundColor={colors.layout}

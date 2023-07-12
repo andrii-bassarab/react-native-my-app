@@ -50,10 +50,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   }, [query, inspectionItem, categories]);
 
   useEffect(() => {
-    console.log(data?.inspectionCategories)
-    console.log("error", error)
-    console.log("loading", loading)
-
     if (
       data &&
       data.inspectionCategories?.edges &&
@@ -66,8 +62,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
       const responseCategories: CategoryType[] = data.inspectionCategories.edges.map(
         (edge: any) => edge.node
       );
-
-      console.log("works")
 
       dispatch(
         actionsCategoryTemplate.addCategoryTemplate({

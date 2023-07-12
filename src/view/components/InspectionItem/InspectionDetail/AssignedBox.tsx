@@ -39,7 +39,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
 
   const [updateInspection, { loading }] = useMutation(UPDATE_INSPECTION);
 
-  const updatDetailCache = (assignedTo: string) => {
+  const updatDetailCache = (assignedTo: string | null) => {
     return (cache: ApolloCache<any>, { data }: any) => {
       if (!data?.updateInspection?.affectedEntity?.id) {
         return;
@@ -68,7 +68,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
     };
   };
 
-  const handleChangeInspectionDetail = async (assignedTo: string, ) => {
+  const handleChangeInspectionDetail = async (assignedTo: string | null, ) => {
     await updateInspection({
       variables: {
         command: {

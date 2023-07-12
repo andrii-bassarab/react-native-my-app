@@ -65,15 +65,15 @@ export const MainStack: React.FC = () => {
   };
 
   async function getStorageSize() {
-    let keys = [];
+    let keys: any = [];
     let size = 0;
     try {
       keys = await AsyncStorage.getAllKeys();
       const result = await AsyncStorage.multiGet(keys);
-      result.forEach((item) => {
+      result.forEach((item: any) => {
         size += item[0].length + item[1].length;
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error.message);
     }
     console.log("Total size of storage:", size, "bytes");

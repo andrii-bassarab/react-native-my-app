@@ -36,10 +36,14 @@ export const AmenitiesCard: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const resultDropdownOptions = ["Yes", "No"];
-  const [selectedResult, setSelectedResult] = useState<string>(result ? "Yes" : "No");
+  const [selectedResult, setSelectedResult] = useState<string>(
+    result ? "Yes" : "No"
+  );
   const [visibleComment, setVisibleComment] = useState(comment || "");
   const [openMainInfo, setOpenMainInfo] = useState(false);
-  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionItem, categories } = useAppSelector(
+    (state) => state.inspectionItem
+  );
   const inspectionIsCompleted = useMemo(
     () => inspectionItem?.status === InspectionStatus.COMPLETE,
     [inspectionItem]
@@ -85,8 +89,8 @@ export const AmenitiesCard: React.FC<Props> = ({
 
   useEffect(() => {
     setVisibleComment(comment || "");
-    setSelectedResult(result ? "Yes" : "No")
-  }, [comment, result])
+    setSelectedResult(result ? "Yes" : "No");
+  }, [comment, result]);
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
@@ -151,85 +155,101 @@ export const AmenitiesCard: React.FC<Props> = ({
                   )}
                 </View>
               )}
-              {visibleComment && (
+              {comment !== undefined && (
                 <View
                   style={[
                     styles.commentsLabel,
-                      !showEditInput && {
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                      },
-                      showEditInput && { flexDirection: "column" },
+                    !showEditInput && {
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                    },
+                    showEditInput && { flexDirection: "column" },
                   ]}
                 >
-                  <Text
-                    style={{ ...styles.labelItemText, marginRight: '10%' }}
-                  >
+                  <Text style={{ ...styles.labelItemText, marginRight: "10%" }}>
                     Comments:
                   </Text>
                   {categoryApplyToInspection ? (
-                      <>
-                        {showEditInput ? (
-                          <View
-                            style={{ flex: 1, marginTop: "2%", width: "100%" }}
-                          >
-                            <TextInput
-                              value={editedComment}
-                              onChangeText={setEditedComment}
-                              multiline
-                              style={[styles.commentTextInput]}
-                            />
-                            <View style={styles.inputButtonBox}>
-                              <TouchableOpacity
-                                style={styles.textInputButton}
-                                onPress={handleResetCommentButton}
+                    <>
+                      {showEditInput ? (
+                        <View
+                          style={{ flex: 1, marginTop: "2%", width: "100%" }}
+                        >
+                          <TextInput
+                            value={editedComment}
+                            onChangeText={setEditedComment}
+                            multiline
+                            style={[styles.commentTextInput]}
+                          />
+                          <View style={styles.inputButtonBox}>
+                            <TouchableOpacity
+                              style={styles.textInputButton}
+                              onPress={handleResetCommentButton}
+                            >
+                              <Text style={styles.inputButtonText}>Reset</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={styles.textInputButton}
+                              onPress={handleSaveCommentButton}
+                            >
+                              <Text style={styles.inputButtonText}>Save</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      ) : (
+                        <>
+                          {visibleComment ? (
+                            <View style={{ flex: 1, flexDirection: "row" }}>
+                              <Text
+                                style={{
+                                  ...styles.labelItemText,
+                                  flex: 1.5,
+                                  ...textStyles.small,
+                                  marginRight: 0,
+                                }}
                               >
-                                <Text style={styles.inputButtonText}>
-                                  Reset
-                                </Text>
-                              </TouchableOpacity>
+                                {visibleComment}
+                              </Text>
+                              {showIconEdit && (
+                                <TouchableOpacity
+                                  onPress={handleStartEditComment}
+                                  style={{
+                                    paddingVertical: "1%",
+                                    paddingHorizontal: "3%",
+                                  }}
+                                >
+                                  <EditIcon
+                                    width={normalize(25)}
+                                    height={normalize(25)}
+                                    color={colors.blue}
+                                  />
+                                </TouchableOpacity>
+                              )}
+                            </View>
+                          ) : (
+                            <>
+                              <TextInput
+                                value={editedComment}
+                                onChangeText={setEditedComment}
+                                style={styles.writeCommentInput}
+                                placeholder="Write a comment..."
+                                multiline
+                              />
                               <TouchableOpacity
-                                style={styles.textInputButton}
+                                style={{...styles.textInputButton, marginTop: '5%'}}
                                 onPress={handleSaveCommentButton}
                               >
                                 <Text style={styles.inputButtonText}>Save</Text>
                               </TouchableOpacity>
-                            </View>
-                          </View>
-                        ) : (
-                          <View style={{flex: 1, flexDirection: 'row'}}>
-                            <Text
-                              style={{
-                                ...styles.labelItemText,
-                                flex: 1.5,
-                                ...textStyles.small,
-                                marginRight: 0
-                              }}
-                            >
-                              {visibleComment}
-                            </Text>
-                            {showIconEdit && (
-                              <TouchableOpacity
-                                onPress={handleStartEditComment}
-                                style={{
-                                  paddingVertical: "1%",
-                                  paddingHorizontal: "3%",
-                                }}
-                              >
-                                <EditIcon
-                                  width={normalize(25)}
-                                  height={normalize(25)}
-                                  color={colors.blue}
-                                />
-                              </TouchableOpacity>
-                            )}
-                          </View>
-                        )}
-                      </>
-                    ) : (
-                      <Text style={styles.noResultText}>N/A</Text>
-                    )}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <Text style={styles.noResultText}>N/A</Text>
+                  )}
                 </View>
               )}
             </View>
@@ -265,7 +285,7 @@ const styles = StyleSheet.create({
     height: normalize(35),
     justifyContent: "center",
     alignItems: "center",
-    transform: [{ rotate: "-2deg"}]
+    transform: [{ rotate: "-2deg" }],
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -371,8 +391,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderColor: colors.primary,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     ...textStyles.small,
+    paddingBottom: '10%'
   },
   inputButtonBox: {
     flexDirection: "row",
@@ -392,5 +413,17 @@ const styles = StyleSheet.create({
     ...textStyles.small,
     fontWeight: "600",
     color: "#fff",
+  },
+  writeCommentInput: {
+    width: "100%",
+    color: "#000",
+    borderRadius: normalize(15),
+    borderWidth: 1,
+    borderColor: "#BCBCBC",
+    alignSelf: "stretch",
+    ...textStyles.small,
+    padding: "3%",
+    marginTop: "5%",
+    paddingBottom: "20%",
   },
 });

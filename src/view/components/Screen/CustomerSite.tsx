@@ -219,8 +219,8 @@ const styles = StyleSheet.create({
     maxHeight: normalize(150),
   },
   dropdownOptionsLabel: {
-    padding: 5,
-    paddingHorizontal: 20,
+    padding: normalize(10),
+    paddingHorizontal: normalize(25),
     borderColor: colors.layout,
   },
   saveButton: {

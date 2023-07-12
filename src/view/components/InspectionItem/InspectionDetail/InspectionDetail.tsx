@@ -7,19 +7,22 @@ import { AssignedBox } from "./AssignedBox";
 import { AdressBox } from "./AdressBox";
 import { CustomAttributes } from "./CustomAttributes";
 import { normalize } from "~/utils/getWindowHeight";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
 }
 
 export const InspectionDetails: React.FC<Props> = ({ route }) => {
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+
   return (
     <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-      <StatusBox inspection={route.params} />
+      <StatusBox inspection={inspectionItem} />
       <View style={{ height: normalize(10) }} />
-      <AssignedBox inspection={route.params} />
+      <AssignedBox inspection={inspectionItem} />
       <View style={{ height: normalize(10) }} />
-      <AdressBox inspection={route.params} />
+      <AdressBox inspection={inspectionItem} />
       <View style={{ height: normalize(10) }} />
       {/* <CustomAttributes inspection={route.params} /> */}
       <View style={{ height: normalize(20) }} />

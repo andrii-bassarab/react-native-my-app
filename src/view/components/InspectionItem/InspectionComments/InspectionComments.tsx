@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -13,13 +13,15 @@ import { AddCommentBox } from "./AddCommentBox";
 import { CommentItem } from "./CommentItem";
 import { IComment } from "~/types/Comment";
 import { InspectionStatus } from "~/types/inspectionStatus";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
 }
 
 export const InspectionComments: React.FC<Props> = ({ route }) => {
-  const { inspectionComments, id: inspectionId, status } = route.params;
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionComments, id: inspectionId, status } = inspectionItem;
 
   const [input, setInput] = useState("");
   const [comments, setComments] = useState(
@@ -29,6 +31,10 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
       return dateB.getTime() - dateA.getTime();
     })
   );
+
+  useEffect(() => {
+    setComments(inspectionComments);
+  }, [inspectionComments])
 
   const handleAddNewComment = (newComment: IComment) => setComments((prev) => [newComment, ...prev]);
 

@@ -34,12 +34,7 @@ const Tab = createMaterialTopTabNavigator();
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const {
-    startSignature,
-    visiblePhoneNumber,
-    inspectionItem,
-    assignedOption,
-  } = useAppSelector((state) => state.inspectionItem);
+  const { startSignature, visiblePhoneNumber, inspectionItem, assignedOption } = useAppSelector((state) => state.inspectionItem);
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
   const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
@@ -47,7 +42,8 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const goBack = () => navigation.navigate("Inspections");
 
   const inspectOptions = {
-    tabBarLabel: inspectionItem?.status === InspectionStatus.COMPLETE
+    tabBarLabel:
+      inspectionItem?.status === InspectionStatus.COMPLETE
         ? "Results"
         : "Inspect",
   };
@@ -57,7 +53,6 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     [assignedOption, visiblePhoneNumber, inspectionItem]
   );
 
-
   useEffect(() => {
     dispatch(actionsInspectionItem.setInspectionItem(inspection));
     dispatch(
@@ -65,11 +60,12 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
         categoriesTemplates[inspection.templateId] || []
       )
     );
-    // dispatch(
-    //   actionsInspectionItem.setVisiblePhoneNumber(
-    //     inspection.unit.landlord?.phoneNumber || ""
-    //   )
-    // );
+    dispatch(actionsInspectionItem.setInspectionAssigned(inspection.assignedTo))
+    dispatch(
+      actionsInspectionItem.setVisiblePhoneNumber(
+        inspection.visibleLandlordPhoneNumber || ""
+      )
+    );
 
     return () => {
       dispatch(actionsInspectionItem.clearInspectionItem());
@@ -91,12 +87,20 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []))
+    dispatch(
+      actionsInspectionItem.setCategories(
+        categoriesTemplates[inspection.templateId] || []
+      )
+    );
   }, [categoriesTemplates[inspection.templateId]]);
 
   return (
     <KeyboardAvoidingDisplayComponent>
-      <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
+      <Screen
+        backgroundColor={colors.layout}
+        paddingTop={layout.screenPadding}
+        borderRadius={55}
+      >
         <View style={styles.content}>
           <View style={{ paddingHorizontal: "5%" }}>
             <SelectedInspection item={inspection} goBack={handleGoBack} />

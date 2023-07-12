@@ -21,6 +21,14 @@ interface Props {
 }
 
 export const InspectionNavigation: React.FC<Props> = ({ navigation, route }) => {
+  useEffect(() => {
+    console.log(route.params)
+    if (route.params?.navigate) {
+      const { navigate } = route.params;
+        navigation.navigate(navigate);
+    }
+  }, [route.params]);
+
   return (
     <InspectionStack.Navigator screenOptions={{...screenOptions, contentStyle: {backgroundColor: colors.layout}}} initialRouteName="Inspections">
       <InspectionStack.Screen name="Inspections" component={Inspections} />
