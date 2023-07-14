@@ -128,7 +128,7 @@ export const CustomerSite = () => {
               <SelectIcon height={10} width={20} color={colors.primary} />
             </TouchableOpacity>
             {showDropdown && (
-              <ScrollView style={styles.dropdownOptionsContainer}>
+              <ScrollView style={styles.dropdownOptionsContainer} showsVerticalScrollIndicator={false}>
                 {currentUser.availableSites.map((site) => (
                   <TouchableOpacity
                     key={site.code}
@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderTopWidth: 0,
     zIndex: 2,
-    borderTopRightRadius: normalize(33),
-    borderTopLeftRadius: normalize(33),
+    borderTopRightRadius: normalize(34),
+    borderTopLeftRadius: normalize(34),
     borderBottomLeftRadius: Platform.OS === "ios" ? normalize(20) : 0,
     borderBottomRightRadius: Platform.OS === "ios" ? normalize(20) : 0,
   },
@@ -214,9 +214,9 @@ const styles = StyleSheet.create({
   },
   dropdownOptionsContainer: {
     paddingVertical: 10,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    maxHeight: normalize(150),
+    borderBottomLeftRadius: normalize(20),
+    borderBottomRightRadius: normalize(20),
+    maxHeight: normalize(190),
   },
   dropdownOptionsLabel: {
     padding: normalize(10),

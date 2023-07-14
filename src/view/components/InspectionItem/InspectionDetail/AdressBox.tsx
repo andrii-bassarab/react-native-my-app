@@ -210,6 +210,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
                   style={styles.modalPhoneNumber}
                   placeholder="(123) 123-1234"
                   keyboardType="phone-pad"
+                  placeholderTextColor={"#979797"}
                 />
               </View>
               <TouchableOpacity

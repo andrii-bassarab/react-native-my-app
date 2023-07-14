@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import EyeIcon from "~/view/assets/icons/eyeslash.svg";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
-import { textStyles } from "~/view/theme";
+import { colors, textStyles } from "~/view/theme";
 import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
@@ -61,6 +61,7 @@ export const LoginForm: React.FC<Props> = ({
           value={userName}
           onChangeText={setUserName}
           placeholder="Username"
+          placeholderTextColor={"#979797"}
         />
         {errorLogin && (
           <Text style={styles.errorMessage}>*User does not exist.</Text>
@@ -82,6 +83,7 @@ export const LoginForm: React.FC<Props> = ({
             onChangeText={setPassword}
             secureTextEntry={hidePassword}
             placeholder="Password"
+            placeholderTextColor={"#979797"}
           />
           <TouchableOpacity
             onPress={() => setHidePassword((prevState) => !prevState)}
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
     borderColor: "#B4BCC0",
     padding: normalize(15),
     paddingLeft: normalize(20),
+    fontWeight: '500',
     ...textStyles.small,
   },
   title: {

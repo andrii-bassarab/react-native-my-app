@@ -36,7 +36,7 @@ export const Settings: React.FC<Props> = ({ navigation }) => {
             backgroundColor="transparant"
             textColor="#fff"
             height="15%"
-            padding={25}
+            padding={normalize(38)}
             iconSize="large"
           />
           <View style={{paddingTop: "25%", paddingLeft: '10%'}}>

@@ -235,6 +235,7 @@ export const AmenitiesCard: React.FC<Props> = ({
                                 style={styles.writeCommentInput}
                                 placeholder="Write a comment..."
                                 multiline
+                                placeholderTextColor={"#979797"}
                               />
                               <TouchableOpacity
                                 style={{...styles.textInputButton, marginTop: '5%'}}

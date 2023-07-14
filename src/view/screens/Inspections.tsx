@@ -136,6 +136,8 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
     }
 
     if (arrOFSelectedDates.length > 0) {
+      console.log("filteredInspections", filteredInspections.map(item => getCalendarVisibleDate(new Date(item.scheduledOn)).trim()).sort())
+      console.log("arrOFSelectedDates", arrOFSelectedDates.sort())
       filteredInspections = filteredInspections.filter((item) =>
           arrOFSelectedDates.includes(
             item.scheduledOn

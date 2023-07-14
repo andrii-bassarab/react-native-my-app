@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-} from "react-native";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -14,6 +9,7 @@ import { CommentItem } from "./CommentItem";
 import { IComment } from "~/types/Comment";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { useAppSelector } from "~/store/hooks";
+import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -34,46 +30,51 @@ export const InspectionComments: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     setComments(inspectionComments);
-  }, [inspectionComments])
+  }, [inspectionComments]);
 
-  const handleAddNewComment = (newComment: IComment) => setComments((prev) => [newComment, ...prev]);
+  const handleAddNewComment = (newComment: IComment) =>
+    setComments((prev) => [newComment, ...prev]);
 
   return (
-    <View style={styles.content}>
-      <View style={[styles.container, styles.shadowProp]}>
-        {comments.length > 0 ? (
-          <View style={{ flex: 2, marginBottom: 10 }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {comments.map((comment, index, array) => (
-                <CommentItem
-                  key={index}
-                  comment={comment}
-                  index={index}
-                  arrayLength={array.length}
-                  showDotPoint
-                />
-              ))}
-            </ScrollView>
-          </View>
-        ) : (
-          <View style={{ flex: 1.5 }}>
-            <CommentIcon
-              width={"100%"}
-              height={"70%"}
-              color={"#DADADA"}
-              style={{ alignSelf: "center" }}
+    <KeyboardAvoidingDisplayComponent>
+      <View style={styles.content}>
+        <View style={[styles.container, styles.shadowProp]}>
+          {comments.length > 0 ? (
+            <View style={{ flex: 2, marginBottom: 10 }}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {comments.map((comment, index, array) => (
+                  <CommentItem
+                    key={index}
+                    comment={comment}
+                    index={index}
+                    arrayLength={array.length}
+                    showDotPoint
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          ) : (
+            <View style={{ flex: 1.5 }}>
+              <CommentIcon
+                width={"100%"}
+                height={"70%"}
+                color={"#DADADA"}
+                style={{ alignSelf: "center" }}
+              />
+              <Text style={styles.noCommentText}>No comments</Text>
+            </View>
+          )}
+          {status !== InspectionStatus.COMPLETE && (
+            <AddCommentBox
+              inspectionId={inspectionId}
+              input={input}
+              setInput={setInput}
+              addNewComment={handleAddNewComment}
             />
-            <Text style={styles.noCommentText}>No comments</Text>
-          </View>
-        )}
-        {status !== InspectionStatus.COMPLETE && <AddCommentBox
-          inspectionId={inspectionId}
-          input={input}
-          setInput={setInput}
-          addNewComment={handleAddNewComment}
-        />}
+          )}
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingDisplayComponent>
   );
 };
 

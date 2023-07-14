@@ -29,6 +29,7 @@ export const SearchForm: React.FC<Props> = ({ query, setQuery, showFilterButton,
             placeholder={placeholder || "Search"}
             value={query}
             onChangeText={setQuery}
+            placeholderTextColor={"#979797"}
           />
         </View>
         {query && (
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
     paddingVertical: "1%",
     ...textStyles.little,
     textAlignVertical: 'center',
+    color: colors.textGrey,
   },
   shadowProp: {
     shadowColor: "#171717",

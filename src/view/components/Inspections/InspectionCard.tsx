@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
+    flex: 1
   },
   shadowProp: {
     shadowColor: "#171717",
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
   textInfo: {
     ...textStyles.mini,
     color: "#8E8E8E",
+    flex: 4,
   },
   dateLabel: {
     flexDirection: "row",

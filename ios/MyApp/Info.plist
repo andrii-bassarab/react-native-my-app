@@ -37,10 +37,14 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This will let you take photos and record video.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Allow the app to know your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Allow the app to know your location</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>NSMicrophoneUsageDescription</string>
+	<string>This app requires access to the photo library.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIMainStoryboardFile</key>
@@ -49,6 +53,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UIStatusBarStyle</key>
 	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
