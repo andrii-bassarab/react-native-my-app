@@ -263,10 +263,11 @@ export const AmenitiesCard: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: "100%",
+    width: "98%",
     backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: "5%",
+    marginHorizontal: '1%'
   },
   rowLabel: {
     flexDirection: "row",

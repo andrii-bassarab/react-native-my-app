@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { colors, textStyles } from "../../theme";
 import { CategoryAmenities } from "~/types/Category";
 import { AmenitiesCard } from "./AmenitiesCard";

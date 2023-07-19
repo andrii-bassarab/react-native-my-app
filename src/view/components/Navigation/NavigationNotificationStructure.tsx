@@ -130,6 +130,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     ...textStyles.mini,
     fontWeight: "700",
+    textAlignVertical: 'center',
+    justifyContent: 'center',
+    textAlign: 'center'
   },
   unreadIcon: {
     height: normalize(24),
