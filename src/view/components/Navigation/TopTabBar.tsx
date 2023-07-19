@@ -51,7 +51,7 @@ const BarButton: React.FC<BarButtonProps> = ({ state, descriptors, navigation, r
       testID={options.tabBarTestID}
       onPress={onPress}
       onLongPress={onLongPress}
-      style={[style.button, isFocused && style.active, index !== 0 && {borderLeftWidth: 1, borderColor: colors.blue}]}
+      style={[style.button, isFocused && style.active, index !== 0 && {borderLeftWidth: 1, borderColor: colors.blue}, isFocused && index === 0 && {borderRightWidth: 1, borderRightColor: colors.blue}]}
     >
       <Animated.Text style={[style.text, isFocused && style.activeText]}>{typeof label === 'string' ? label : ''}</Animated.Text>
     </TouchableOpacity>

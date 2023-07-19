@@ -35,6 +35,7 @@ export const getColorIconFileByFormat = (fileFormat: string) => {
   switch (true) {
     case fileFormat === "pdf":
       return colors.red;
+    case fileFormat === "docx":
     case fileFormat === "doc":
       return colors.blue;
     case fileFormat === "csv":

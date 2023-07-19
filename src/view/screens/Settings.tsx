@@ -1,6 +1,13 @@
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import React from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import DocumentIcon from "../assets/icons/document.svg";
 import WorkIcon from "../assets/icons/work.svg";
@@ -31,29 +38,34 @@ export const Settings: React.FC<Props> = ({ navigation }) => {
   return (
     <Screen backgroundColor={colors.layout} showNotificationScreen={false}>
       <View style={{ flex: 1, backgroundColor: "#fff", paddingBottom: "10%" }}>
-        <View style={{ marginTop: normalize(30), marginLeft: normalize(10) }}>
-          <WelcomeBox
-            backgroundColor="transparant"
-            textColor="#fff"
-            height="15%"
-            padding={normalize(38)}
-            iconSize="large"
-          />
-          <View style={{paddingTop: "25%", paddingLeft: '10%'}}>
-            <Text style={{ ...styles.welcomeText, color: "#fff" }}>
-              Welcome!
-            </Text>
-            <Text
-              style={{
-                ...styles.welcomeText,
-                color: "#fff",
-              }}
-            >
-              {profile?.userName}
-            </Text>
+        <ImageBackground
+          source={require("../assets/images/settingsHeader.png")}
+          resizeMode="cover"
+        >
+          <View style={{ marginTop: normalize(30), marginLeft: normalize(10) }}>
+            <WelcomeBox
+              backgroundColor="transparant"
+              textColor="#fff"
+              height="15%"
+              padding={normalize(38)}
+              iconSize="large"
+            />
+            <View style={{ paddingTop: "25%", paddingLeft: "10%" }}>
+              <Text style={{ ...styles.welcomeText, color: "#fff" }}>
+                Welcome!
+              </Text>
+              <Text
+                style={{
+                  ...styles.welcomeText,
+                  color: "#fff",
+                }}
+              >
+                {profile?.userName}
+              </Text>
+            </View>
           </View>
-        </View>
-        <Image
+        </ImageBackground>
+        {/* <Image
           source={require("../assets/images/settingsHeader.png")}
           style={{
             position: "absolute",
@@ -61,7 +73,7 @@ export const Settings: React.FC<Props> = ({ navigation }) => {
             width: "100%",
             zIndex: -1,
           }}
-        />
+        /> */}
         <View style={styles.contentContainer}>
           <View>
             <TouchableOpacity
@@ -133,17 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "space-between",
-  },
-  settingsIconBox: {},
-  settingsIcon: {
-    resizeMode: "cover",
-    height: 80,
-    alignSelf: "flex-start",
-    width: 80,
-    borderWidth: 1,
-    backgroundColor: "#fff",
-    borderRadius: 100,
-    borderColor: "#fff",
+    marginTop: '3%'
   },
   welcomeText: {
     color: "#fff",

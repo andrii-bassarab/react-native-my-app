@@ -1,6 +1,6 @@
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { ParamListBase } from "@react-navigation/native";
-import React, { useEffect, useRef } from "react";
+import { ParamListBase, useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useRef } from "react";
 import { Text, StyleSheet, View, Animated } from "react-native";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors, layout, textStyles } from "../theme";
@@ -16,13 +16,20 @@ interface Props {
 export const WorkOrder: React.FC<Props> = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+
+      return () => {
+        fadeAnim.setValue(0);
+        fadeAnim.setOffset(0);
+      };
+    }, [fadeAnim])
+  );
 
   return (
     <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding}>

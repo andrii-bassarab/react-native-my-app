@@ -1,21 +1,27 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, TouchableOpacity, Modal, Text } from "react-native";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import Pdf, { Source } from "react-native-pdf";
 import { ContentLoader } from "../../Loader/Loader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { normalize } from "~/utils/getWindowHeight";
+import { textStyles } from "~/view/theme";
+import { IFile } from "./InspectionFilesView";
+import FileViewer from "react-native-file-viewer";
 
 interface Props {
   closeModalFunction: () => void;
   uri: string;
+  selectedFile: IFile | null
 }
 
 export const InspectionFileModalDocument: React.FC<Props> = ({
   closeModalFunction,
   uri,
+  selectedFile
 }) => {
   const [loader, setLoader] = useState(true);
+  const [error, setError] = useState(false);
   const insets = useSafeAreaInsets();
 
   const source: Source = {
@@ -30,7 +36,9 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
     <Modal transparent={true}>
       {
         <View style={{ ...styles.content, marginTop: insets.top }}>
-          <View style={{ flex: 1, justifyContent: "center" }}>
+          <View
+            style={[{ flex: 1, justifyContent: "center" }, error && {alignItems: 'center'}]}
+          >
             {loader && (
               <View
                 style={{
@@ -44,15 +52,25 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
                 <ContentLoader />
               </View>
             )}
-            <Pdf
-              fitPolicy={0}
-              horizontal={false}
-              trustAllCerts={false}
-              style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 50 }}
-              source={source}
-              onLoadComplete={() => setLoader(false)}
-              onError={(error) => console.log("Cannot render PDF", error)}
-            />
+            {error ? (
+              <Text style={{ ...textStyles.xlarge, fontWeight: "600" }}>
+                Cannot render file
+              </Text>
+            ) : (
+              <Pdf
+                fitPolicy={0}
+                horizontal={false}
+                trustAllCerts={false}
+                style={{ flex: 1, backgroundColor: "#fff", paddingBottom: 50 }}
+                source={source}
+                onLoadComplete={() => (setLoader(false), setError(false))}
+                onError={(error) => (
+                  console.log("Cannot render PDF", error),
+                  setLoader(false),
+                  setError(true)
+                )}
+              />
+            )}
           </View>
           <TouchableOpacity
             style={styles.closeButton}

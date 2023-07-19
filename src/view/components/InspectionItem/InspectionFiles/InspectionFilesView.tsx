@@ -39,8 +39,10 @@ import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
 import { BASE_DOCUMENT_API } from "~/constants/env";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
+import { ModalLoader } from "../../Loader/ModalLoader";
+import FileViewer from "react-native-file-viewer";
 
-export interface File {
+export interface IFile {
   id: string;
   fileName: string;
   uploadTime: string;
@@ -48,7 +50,7 @@ export interface File {
   uri?: string;
 }
 
-const mocksFiles: File[] = [
+const mocksFiles: IFile[] = [
   {
     id: generateUniqueId(),
     fileName: "HUD-50058.pdf",
@@ -102,6 +104,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
 
+  const [loader, setLoader] = useState(false);
   const [query, setQuery] = useState("");
   const [visibleFiles, setVisibleFiles] = useState(mocksFiles);
   const [showModalAddFile, setShowModalAddFile] = useState(false);
@@ -109,7 +112,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const [newFile, setNewFile] = useState<DocumentPickerResponse | null>(null);
   const [showModalImage, setShowModalImage] = useState(false);
   const [showModalDocument, setShowModalDocument] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
 
   useEffect(() => {
     setVisibleFiles(
@@ -122,6 +125,25 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   }, [query, mocksFiles]);
 
   const handleCloseModalAddFile = () => setShowModalAddFile(false);
+
+  function getUrlExtension(url: string, name: string | number) {
+    return Platform.OS === 'ios' ? url.split(/[#?]/)[0].split(".").pop()?.trim() || "" : String(name).split(".")[1];
+  }
+
+  const handleFileViewerOpenFile = async (fileToOpen: IFile) => {
+    try {
+      setLoader(true)
+      await FileViewer.open(fileToOpen.uri || "", {
+        onDismiss: () => {
+          console.log("dismiss")
+        }
+      });
+    } catch (e) {
+      console.log("error display file", e)
+    } finally {
+      setLoader(false)
+    }
+  }
 
   const handleTakePhoto = async () => {
     try {
@@ -222,7 +244,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           {
             id: generateUniqueId(),
             fileName: selectedFile.name || "",
-            docFormat: selectedFile.type?.split("/")[1] || "",
+            docFormat: getUrlExtension(selectedFile.uri || "", selectedFile.name || ""),
             uploadTime: getInspectionDate(new Date(), true) || "",
             uri: selectedFile.uri,
           },
@@ -235,13 +257,13 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  const handleDeleteFile = (fileToDelete: File) => {
+  const handleDeleteFile = (fileToDelete: IFile) => {
     setVisibleFiles((prev) =>
       prev.filter((file) => file.id !== fileToDelete.id)
     );
   };
 
-  const handleOpenModalImage = (fileToOpen: File) => {
+  const handleOpenModalFile = (fileToOpen: IFile) => {
     switch (fileToOpen.docFormat) {
       case "png":
       case "jpg":
@@ -251,6 +273,9 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         return;
       case "pdf":
         setShowModalDocument(true);
+        return;
+      default:
+       handleFileViewerOpenFile(fileToOpen);
     }
   };
 
@@ -280,7 +305,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   key={file.id}
                   style={{ marginBottom: "4%" }}
                   onPress={() => {
-                    handleOpenModalImage(file);
+                    handleOpenModalFile(file);
                     setSelectedFile(file);
                   }}
                 >
@@ -382,9 +407,11 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       {showModalDocument && (
         <InspectionFileModalDocument
           uri={selectedFile?.uri || ""}
+          selectedFile={selectedFile}
           closeModalFunction={() => setShowModalDocument(false)}
         />
       )}
+      {loader && <ModalLoader/>}
     </View>
   );
 };

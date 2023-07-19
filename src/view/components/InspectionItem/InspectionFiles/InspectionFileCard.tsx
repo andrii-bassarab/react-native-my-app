@@ -6,12 +6,12 @@ import { colors, textStyles } from "~/view/theme";
 import DeleteIcon from "~/view/assets/icons/delete.svg";
 import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
 import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
-import { File } from "./InspectionFilesView";
+import { IFile } from "./InspectionFilesView";
 import { normalize } from "~/utils/getWindowHeight";
 
 interface Props {
-  file: File;
-  deleteFile: (fileToDeleter: File) => void;
+  file: IFile;
+  deleteFile: (fileToDeleter: IFile) => void;
   displayDeleteIcon?: boolean;
 }
 
