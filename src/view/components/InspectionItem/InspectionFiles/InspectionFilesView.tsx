@@ -41,6 +41,7 @@ import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import FileViewer from "react-native-file-viewer";
+import { uploadImage } from "~/services/api/uploadImage";
 
 export interface IFile {
   id: string;
@@ -103,6 +104,8 @@ interface Props {
 export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { profile } = useAppSelector((state) => state.user);
+
 
   const [loader, setLoader] = useState(false);
   const [query, setQuery] = useState("");
@@ -193,7 +196,11 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       ) {
         const asset = chosenImageFromGallery.assets[0];
 
-        setNewPhoto(chosenImageFromGallery.assets[0]);
+        setNewPhoto(asset);
+
+        setLoader(true)
+
+        const resultUpload = await uploadImage(asset, inspectionItem.id, profile?.email || "");
 
         setVisibleFiles((prev) => [
           ...prev,
@@ -210,6 +217,8 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       console.log("handleImageLibraryPhoto", chosenImageFromGallery);
     } catch (e) {
       console.log("ImageLibraryPhotoError", e);
+    } finally {
+      setLoader(false)
     }
   };
 

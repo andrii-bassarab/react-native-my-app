@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryAmenitiesResponse, CategoryType } from "~/types/Category";
+import { CategoryAmenitiesResponse, CategoryAmenityField, CategoryType } from "~/types/Category";
 
 interface CategoryTemplate {
   [templateId: string]: CategoryType[];
@@ -30,7 +30,7 @@ const categoryTemplateSlice = createSlice({
       }: PayloadAction<{
         templateIdToCheck: string;
         categoryId: string;
-        amenitiesValues: CategoryAmenitiesResponse[];
+        amenitiesValues: CategoryAmenityField[];
       }>
     ) => {
       const { templateIdToCheck, categoryId, amenitiesValues } = payload;
@@ -41,15 +41,12 @@ const categoryTemplateSlice = createSlice({
       );
 
       if (foundCategory) {
-        foundCategory.amenities = amenitiesValues.map((amenity) => {
-          return {
-            ...amenity,
-            amenityValues: amenity.amenityValues?.[0] ? {
-              ...amenity.amenityValues?.[0],
-              comment: amenity.amenityValues?.[0]?.comment || "amenity comment",
-            } : null, 
+        amenitiesValues.forEach(amenityValue => {
+          const foundCategoryAmenity = foundCategory.amenities.find(amenity => amenity.id === amenityValue.inspectionAmenityId);
+          if (foundCategoryAmenity && foundCategoryAmenity.amenityValues) {
+            foundCategoryAmenity.amenityValues[amenityValue.inspectionId] = amenityValue;
           }
-        });
+        })
       }
     },
   },

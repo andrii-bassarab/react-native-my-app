@@ -6,7 +6,11 @@ import { SearchForm } from "../components/Inspections/SearchForm";
 import { useAppSelector } from "~/store/hooks";
 import { InspectionsFilter } from "../components/Inspections/InspectionsFilter";
 import SearchIcon from "../assets/icons/search.svg";
-import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
+import {
+  NavigationProp,
+  ParamListBase,
+  RouteProp,
+} from "@react-navigation/native";
 import { Screen } from "../components/Screen/Screen";
 import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
@@ -21,7 +25,9 @@ interface Props {
 }
 
 export const Inspections: React.FC<Props> = ({ route, navigation }) => {
-  const { inspections, visibleLoader } = useAppSelector((state) => state.inspections);
+  const { inspections, visibleLoader } = useAppSelector(
+    (state) => state.inspections
+  );
 
   const [query, setQuery] = useState("");
   const [visibleInspections, setVisibleInspections] = useState(inspections);
@@ -45,27 +51,47 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
       setVisibleInspections((prev) =>
         prev.sort((current, next) => {
           if (current.scheduledOn && next.scheduledOn) {
-            return new Date(current.scheduledOn).getTime() - new Date(next.scheduledOn).getTime();
+            return (
+              new Date(current.scheduledOn).getTime() -
+              new Date(next.scheduledOn).getTime()
+            );
           } else if (current.scheduledOn) {
             return -1;
           } else if (next.scheduledOn) {
             return 1;
           } else {
-            return new Date(current.createdOn).getTime() - new Date(next.createdOn).getTime();
+            return (
+              new Date(current.createdOn).getTime() -
+              new Date(next.createdOn).getTime()
+            );
           }
         })
       );
     } else {
       setVisibleInspections((prev) => {
-        const newInspections = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.NEW);
-        const scheduled = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.SCHEDULED);
+        const newInspections = prev.filter(
+          (item) => item.visibleStatus === InspectionVisibleStatus.NEW
+        );
+        const scheduled = prev.filter(
+          (item) => item.visibleStatus === InspectionVisibleStatus.SCHEDULED
+        );
         const inProgress = prev.filter(
           (item) => item.visibleStatus === InspectionVisibleStatus.INPROGRESS
         );
-        const failed = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.FAILED);
-        const passed = prev.filter((item) => item.visibleStatus === InspectionVisibleStatus.PASSED);
+        const failed = prev.filter(
+          (item) => item.visibleStatus === InspectionVisibleStatus.FAILED
+        );
+        const passed = prev.filter(
+          (item) => item.visibleStatus === InspectionVisibleStatus.PASSED
+        );
 
-        return [...inProgress, ...scheduled, ...newInspections, ...passed, ...failed];
+        return [
+          ...inProgress,
+          ...scheduled,
+          ...newInspections,
+          ...passed,
+          ...failed,
+        ];
       });
     }
   };
@@ -73,7 +99,9 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
   const makeRequest = () => {
     setVisibleInspections((prev) =>
       prev.filter((item) =>
-        `Inspection ${item?.unit?.streetAddress}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
+        `Inspection ${item?.unit?.streetAddress}`
+          .toLocaleLowerCase()
+          .includes(query.trim().toLocaleLowerCase())
       )
     );
   };
@@ -136,15 +164,13 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
     }
 
     if (arrOFSelectedDates.length > 0) {
-      console.log("filteredInspections", filteredInspections.map(item => getCalendarVisibleDate(new Date(item.scheduledOn)).trim()).sort())
-      console.log("arrOFSelectedDates", arrOFSelectedDates.sort())
       filteredInspections = filteredInspections.filter((item) =>
-          arrOFSelectedDates.includes(
-            item.scheduledOn
-              ? getCalendarVisibleDate(new Date(item.scheduledOn)).trim()
-              : getCalendarVisibleDate(new Date(item.createdOn)).trim()
-          )
-        );
+        arrOFSelectedDates.includes(
+          item.scheduledOn
+            ? getCalendarVisibleDate(new Date(item.scheduledOn)).trim()
+            : getCalendarVisibleDate(new Date(item.createdOn)).trim()
+        )
+      );
     }
 
     setVisibleInspections(filteredInspections);
@@ -193,21 +219,25 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
     query,
     selectedDayStartFrom,
     selectedDayBy,
-    inspections
+    inspections,
   ]);
 
   return (
-    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} >
+    <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding}>
       <View style={styles.content}>
-        <WelcomeBox backgroundColor="transparant" textColor={colors.primary} showText />
+        <WelcomeBox
+          backgroundColor="transparant"
+          textColor={colors.primary}
+          showText
+        />
         <Text style={styles.title}>Inspections</Text>
         <SearchForm query={query} setQuery={setQuery} showFilterButton={true} />
         {visibleLoader && inspections.length === 0 ? (
           <View style={styles.contentLoaderContainer}>
-          <ContentLoader />
-        </View>
+            <ContentLoader />
+          </View>
         ) : visibleInspections.length > 0 ? (
-          <View style={{  marginBottom: normalize(120), marginTop: "3%" }}>
+          <View style={{ marginBottom: normalize(120), marginTop: "3%" }}>
             <FlatList
               data={visibleInspections}
               keyExtractor={(item) => item.id}
@@ -217,9 +247,15 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
                   onPress={() => navigation.navigate("InspectionItem", item)}
                 />
               )}
-              ListHeaderComponent={() => <View style={{ height: normalize(5) }} />}
-              ListFooterComponent={() => <View style={{ height: normalize(180) }} />}
-              ItemSeparatorComponent={() => <View style={{ height: normalize(15) }} />}
+              ListHeaderComponent={() => (
+                <View style={{ height: normalize(5) }} />
+              )}
+              ListFooterComponent={() => (
+                <View style={{ height: normalize(180) }} />
+              )}
+              ItemSeparatorComponent={() => (
+                <View style={{ height: normalize(15) }} />
+              )}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -260,7 +296,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginTop: "3%",
     marginBottom: "3%",
-    ...textStyles.medium
+    ...textStyles.medium,
   },
   noResultContainer: {
     flex: 1,

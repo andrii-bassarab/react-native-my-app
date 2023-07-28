@@ -24,20 +24,22 @@ export interface CategoryItemField {
 
 export interface CategoryAmenityField {
   id: string;
-  value: string;
-  comment: string | null;
+  inspectionId: string;
+  inspectionAmenityId: string;
+  value: "true" | "false";
+  comment: null | string;
 }
 
 export interface CategoryAmenitiesResponse {
-  id: string;
-  name: string;
-  amenityValues: CategoryAmenityField[];
+  [amenityTemplateIds: string]: Record<string, CategoryAmenityField>
 }
 
 export interface CategoryAmenities {
   id: string;
   name: string;
-  amenityValues: CategoryAmenityField | null;
+  amenityValues: {
+    [inspectionId: string]: CategoryAmenityField;
+  };
 }
 
 export interface CategoryItems {

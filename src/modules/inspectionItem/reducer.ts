@@ -181,9 +181,10 @@ const inspectionItemSlice = createSlice({
           comment: string;
           result: boolean;
         };
+        inspectionId: string;
       }>
     ) => {
-      const { categoryId, amenitieValue } = payload;
+      const { categoryId, amenitieValue, inspectionId } = payload;
       const foundCategory = state.categories.find(
         (category) => category.id === categoryId
       );
@@ -193,9 +194,9 @@ const inspectionItemSlice = createSlice({
           (item) => item.id === amenitieValue.id
         );
 
-        if (amenitie && amenitie.amenityValues && amenitie.amenityValues) {
-          amenitie.amenityValues.value = amenitieValue.result ? "true" : "false";
-          amenitie.amenityValues.comment = amenitieValue.comment;
+        if (amenitie && amenitie.amenityValues[inspectionId]) {
+          amenitie.amenityValues[inspectionId].value = amenitieValue.result ? "true" : "false";
+          amenitie.amenityValues[inspectionId].comment = amenitieValue.comment;
         }
       }
     },

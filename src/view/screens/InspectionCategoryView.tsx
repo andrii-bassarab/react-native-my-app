@@ -15,7 +15,7 @@ import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
 import { InspectionItem } from "~/types/InspectionItem";
-import { Category, CategoryItems } from "~/types/Category";
+import { Category, CategoryItems, CategoryAmenities } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
@@ -25,6 +25,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
   GET_ALL_INSPECTIONS_CATEGORY,
   GET_CATEGORY_AMENITY_VALUE,
+  GET_CATEGORY_AMENITY_VALUE_INSPECTION,
   UPDATE_CATEGORY_AMENITY_VALUE,
   UPDATE_CATEGORY_ITEM_VALUE,
   UPDATE_INSPECTION_CATEGORY_MUTATION,
@@ -34,6 +35,7 @@ import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
 import SaveIcon from "~/view/assets/icons/save.svg";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
+import { actionsCategoryAmenitiesActions } from "~/modules/categoryAmenitiesValues";
 
 interface Props {
   route: RouteProp<
@@ -42,6 +44,7 @@ interface Props {
         category: Category;
         inspection: InspectionItem;
         items: CategoryItems[];
+        amenities: CategoryAmenities[];
       };
     },
     "params"
@@ -54,7 +57,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   route,
 }) => {
   const dispatch = useAppDispatch();
-  const { category, items } = route.params;
+  const { category, items, amenities } = route.params;
   const { categories, inspectionItem } = useAppSelector(
     (state) => state.inspectionItem
   );
@@ -62,14 +65,21 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
   const { inspectionsSync } = useAppSelector((state) => state.inspections);
   const { profile } = useAppSelector((state) => state.user);
   const [updateCategoryItemValue] = useMutation(UPDATE_CATEGORY_ITEM_VALUE);
-  const [updateCategoryAmenityValue] = useMutation(UPDATE_CATEGORY_AMENITY_VALUE);
-  const [updateInspectionCategory] = useMutation(UPDATE_INSPECTION_CATEGORY_MUTATION);
-  const { data, loading, refetch: refetchCategoryAmenities, error } = useQuery(GET_CATEGORY_AMENITY_VALUE, {
-    variables: {
-      id: category.id,
-    },
-    notifyOnNetworkStatusChange: true,
-  });
+  const [updateCategoryAmenityValue] = useMutation(
+    UPDATE_CATEGORY_AMENITY_VALUE
+  );
+  const [updateInspectionCategory] = useMutation(
+    UPDATE_INSPECTION_CATEGORY_MUTATION
+  );
+  const { data: dataCategoryAmenitie, loading: loadingCategoryAmenitie } = useQuery(
+    GET_CATEGORY_AMENITY_VALUE_INSPECTION,
+    {
+      variables: {
+        ids: amenities.map((amenity) => amenity.id),
+        inspectionId: inspectionItem.id,
+      },
+    }
+  );
   const [loader, setLoader] = useState(false);
   const dynamycCategoryApplyToInspection = Boolean(
     categories.find((categoryToCheck) => categoryToCheck.id === category.id)
@@ -90,48 +100,48 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
     [inspectionItem]
   );
 
-  const foundTemplateCategory = categoriesTemplates[
-    inspectionItem?.templateId || ""
-  ]?.find((categoryTemlate) => categoryTemlate.id === category.id);
+  const foundTemplateCategory = categoriesTemplates[inspectionItem.templateId]?.find((categoryTemlate) => categoryTemlate.id === category.id);
   const foundDynamicCategory = categories.find(
     (categoryToCheck) => categoryToCheck.id === category.id
   );
 
   useEffect(() => {
-    if (inspectionsSync) {
-      refetchCategoryAmenities({
-        id: category.id,
-      })
-    }
-  }, [inspectionsSync])
+    // if (inspectionsSync) {
+    //   refetchCategoryAmenities({
+    //     id: category.id,
+    //   });
+    // }
+  }, [inspectionsSync]);
 
   useEffect(() => {
     if (
-      data &&
-      data.inspectionCategories &&
-      data?.inspectionCategories?.edges.flatMap(
-        (edge: any) => edge?.node?.amenities
+      dataCategoryAmenitie &&
+      dataCategoryAmenitie.inspectionAmenityValues &&
+      dataCategoryAmenitie?.inspectionAmenityValues?.edges.map(
+        (edge: any) => edge?.node
       )
     ) {
+
+      console.log("amenities", dataCategoryAmenitie?.inspectionAmenityValues?.edges.map(
+        (edge: any) => edge?.node
+      ),)
       dispatch(
-        actionsCategoryTemplate.addCategoryAmenitieValue({
-          templateIdToCheck: inspectionItem?.templateId || "",
-          categoryId: category.id,
-          amenitiesValues: data?.inspectionCategories?.edges.flatMap(
-            (edge: any) => edge?.node?.amenities
+        actionsCategoryAmenitiesActions.addCategoryAmenitiesValues({
+          categotyAmenitiesValues: dataCategoryAmenitie?.inspectionAmenityValues?.edges.map(
+            (edge: any) => edge?.node
           ),
         })
       );
     }
-  }, [data]);
+  }, [dataCategoryAmenitie]);
 
   useEffect(() => {
     dispatch(
       actionsInspectionItem.setCategories(
-        categoriesTemplates[inspectionItem?.templateId || ""] || []
+        categoriesTemplates[inspectionItem.templateId] || []
       )
     );
-  }, [categoriesTemplates[inspectionItem?.templateId || ""]]);
+  }, [categoriesTemplates[inspectionItem.templateId]]);
 
   const hasUnsavedChanges = useMemo(
     () =>
@@ -149,7 +159,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
             amenity?.amenityValues?.value !==
               foundTemplateCategory?.amenities[index]?.amenityValues?.value ||
             amenity?.amenityValues?.comment !==
-            foundTemplateCategory?.amenities[index]?.amenityValues?.comment 
+              foundTemplateCategory?.amenities[index]?.amenityValues?.comment
         )) ||
       foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired,
     [foundDynamicCategory, foundTemplateCategory]
@@ -245,9 +255,9 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
         await refetch({
           id: inspectionItem?.templateId,
         });
-        await refetchCategoryAmenities({
-          id: category.id,
-        });
+        // await refetchCategoryAmenities({
+        //   id: category.id,
+        // });
         navigation.goBack();
       } catch (e) {
         console.log("error in update categoryItemValue: ", e);
@@ -293,28 +303,28 @@ export const InspectionCategoryScreen: React.FC<Props> = ({
           category={category}
         />
         <View style={{ height: normalize(20) }}></View>
-          <ScrollView
-            style={{ paddingHorizontal: 5, flex: 1 }}
-            showsVerticalScrollIndicator={false}
-          >
-            <CategoryItemsList
-              categoryItemsValues={items}
-              categoryId={category.id}
-            />
-            <CategoryAmenitiesList
-              categoryAmenitiesValues={visibleAmenities}
-              loading={loading}
-              categoryId={category.id}
-            />
-            {inspectionItem?.status !== InspectionStatus.COMPLETE && (
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleSaveGoBack}
-              >
-                <Text style={styles.saveButtonText}>Save and Go Back</Text>
-              </TouchableOpacity>
-            )}
-          </ScrollView>
+        <ScrollView
+          style={{ paddingHorizontal: 5, flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <CategoryItemsList
+            categoryItemsValues={items}
+            categoryId={category.id}
+          />
+          <CategoryAmenitiesList
+            categoryAmenitiesValues={visibleAmenities}
+            loading={loadingCategoryAmenitie}
+            categoryId={category.id}
+          />
+          {inspectionItem?.status !== InspectionStatus.COMPLETE && (
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={handleSaveGoBack}
+            >
+              <Text style={styles.saveButtonText}>Save and Go Back</Text>
+            </TouchableOpacity>
+          )}
+        </ScrollView>
       </View>
       {loader && <ModalLoader />}
     </Screen>

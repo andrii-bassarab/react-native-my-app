@@ -89,6 +89,50 @@ export const GET_CATEGORY_ITEM_VALUE = gql`
   }
 `
 
+export const GET_CATEGORY_AMENITY_VALUE_INSPECTION = gql`
+  query GetInspectionAmenityValues ($ids: [String!], $inspectionId: String){
+    inspectionAmenityValues (
+        first: 50      
+        where: {      
+          inspectionAmenityId: {in: $ids},
+          inspectionId: {eq: $inspectionId}
+      }   
+    ) {
+    edges {
+      node {
+        id
+        inspectionId       
+        inspectionAmenityId
+        value
+        comment     
+      }
+    } 
+    }
+  }
+`
+
+export const GET_CATEGORY_AMENITIE_VALUE_INSPECTION = gql`
+  query GetInspectionAmenityValues ($ids: [String!], $inspectionId: String){
+    inspectionAmenityValues (
+        first: 50      
+        where: {      
+          inspectionAmenityId: {in: $ids},
+          inspectionId: {eq: $inspectionId}
+      }   
+    ) {
+    edges {
+      node {
+        id
+        inspectionId       
+        inspectionAmenityId
+        value
+        comment     
+      }
+    } 
+    }
+  }
+`
+
 export const GET_CATEGORY_AMENITY_VALUE = gql`
   query GetInspectionCategories ($id: String){
     inspectionCategories (

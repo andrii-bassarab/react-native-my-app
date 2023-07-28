@@ -28,7 +28,9 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const inspection = route.params;
 
-  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+  const { inspectionItem, categories } = useAppSelector(
+    (state) => state.inspectionItem
+  );
   const [query, setQuery] = useState("");
   const [visibleCategories, setVisibleCategory] = useState(categories);
   const [showModalAddCategory, setShowModalAddCategory] = useState(false);
@@ -59,17 +61,32 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
           typeof edge === "object" && edge.node && typeof edge.node === "object"
       )
     ) {
-      const responseCategories: CategoryType[] = data.inspectionCategories.edges.map(
-        (edge: any) => edge.node
-      );
+      const responseCategories: CategoryType[] =
+        data.inspectionCategories.edges.map((edge: any) => edge.node);
 
       dispatch(
         actionsCategoryTemplate.addCategoryTemplate({
           templateIdToAdd: route.params.templateId,
           categories: responseCategories.map((category) => ({
             ...category,
-            status: !category.isRequired ? "--" : category.items.length > 0 ? "Complete" : "Incomplete",
-            result: !category.isRequired ? "--" : (category.items.length > 0) ? category.items.every(({itemsValues}) => itemsValues[0]?.value === "true") ? "Passed" : "Failed" : "No results yet",
+            amenities: category.amenities.map((amenity) => ({
+              ...amenity,
+              amenityValues: {},
+            })),
+            status: !category.isRequired
+              ? "--"
+              : category.items.length > 0
+              ? "Complete"
+              : "Incomplete",
+            result: !category.isRequired
+              ? "--"
+              : category.items.length > 0
+              ? category.items.every(
+                  ({ itemsValues }) => itemsValues[0]?.value === "true"
+                )
+                ? "Passed"
+                : "Failed"
+              : "No results yet",
           })),
         })
       );
@@ -92,7 +109,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
       <View style={{ height: normalize(15) }} />
-      {(loading) && categories.length === 0 ? (
+      {loading && categories.length === 0 ? (
         <View style={styles.loaderBox}>
           <ContentLoader />
         </View>

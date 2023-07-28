@@ -13,6 +13,7 @@ import toastNotificationReducer from '~/modules/toastNotification';
 import showWindowReducer from '~/modules/showWindow';
 import networkConnectivityReducer from '~/modules/networkConnectivity';
 import categoryTemplateReducer from '~/modules/categoriesTemplates';
+import categoryAmenitiesValuesReducer from '~/modules/categoryAmenitiesValues';
 
 const transforms = [
   createTransform(
@@ -44,6 +45,7 @@ const appReducer = combineReducers({
   showWindow: showWindowReducer,
   networkConnectivity: networkConnectivityReducer,
   categoriesTemplates: categoryTemplateReducer,
+  categoryAmenitiesValues: categoryAmenitiesValuesReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

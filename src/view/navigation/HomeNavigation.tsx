@@ -76,6 +76,10 @@ export const HomeNavigation: React.FC = () => {
             templateIdToAdd: id,
             categories: responseCategories.map((category) => ({
               ...category,
+              amenities: category.amenities.map((amenity) => ({
+                ...amenity,
+                amenityValues: {},
+              })),
               status: !category.isRequired
                 ? "--"
                 : category.items.length > 0

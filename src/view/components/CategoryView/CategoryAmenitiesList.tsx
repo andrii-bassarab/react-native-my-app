@@ -4,6 +4,7 @@ import { colors, textStyles } from "../../theme";
 import { CategoryAmenities } from "~/types/Category";
 import { AmenitiesCard } from "./AmenitiesCard";
 import { ContentLoader } from "../Loader/Loader";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
   categoryAmenitiesValues: CategoryAmenities[];
@@ -16,6 +17,8 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
   categoryId,
   loading,
 }) => {
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+
   return (
     <View>
       {loading ? (
@@ -27,24 +30,24 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
           {categoryAmenitiesValues.length > 0 ? (
             <>
               <Text style={styles.amenitiesTitle}>Amenities</Text>
-              {categoryAmenitiesValues.map((amenity) => (
-                <AmenitiesCard
+              {categoryAmenitiesValues.map((amenity) => {            
+                return <AmenitiesCard
                   key={amenity.id}
                   title={amenity.name}
                   result={
-                    amenity?.amenityValues
-                      ? amenity?.amenityValues?.value === "true"
+                    amenity?.amenityValues?.[inspectionItem.id]
+                      ? amenity?.amenityValues[inspectionItem.id]?.value === "true"
                       : undefined
                   }
                   comment={
-                    amenity?.amenityValues
-                      ? amenity?.amenityValues?.comment
+                    amenity?.amenityValues?.[inspectionItem.id]
+                      ? amenity?.amenityValues[inspectionItem.id]?.comment
                       : undefined
                   }
                   categoryId={categoryId}
                   id={amenity.id}
                 />
-              ))}
+                })}
             </>
           ) : (
             <View style={styles.noItemsBox}>

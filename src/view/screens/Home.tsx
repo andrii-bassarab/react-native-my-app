@@ -18,6 +18,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const { inspections, visibleLoader } = useAppSelector(
     (state) => state.inspections
   );
+  const categoryAmenitiesValues = useAppSelector(
+    (state) => state.categoryAmenitiesValues
+  );
 
   return (
     <Screen
