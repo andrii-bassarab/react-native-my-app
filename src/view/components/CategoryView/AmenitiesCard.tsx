@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { actionsCategoryItem } from "~/modules/categoryItem";
 
 interface Props {
   title: string;
@@ -27,23 +28,13 @@ interface Props {
   id: string;
 }
 
-export const AmenitiesCard: React.FC<Props> = ({
-  title,
-  result,
-  comment,
-  categoryId,
-  id,
-}) => {
+export const AmenitiesCard: React.FC<Props> = ({ title, result, comment, categoryId, id }) => {
   const dispatch = useAppDispatch();
   const resultDropdownOptions = ["Yes", "No"];
-  const [selectedResult, setSelectedResult] = useState<string>(
-    result ? "Yes" : "No"
-  );
+  const [selectedResult, setSelectedResult] = useState<string>(result ? "Yes" : "No");
   const [visibleComment, setVisibleComment] = useState(comment || "");
   const [openMainInfo, setOpenMainInfo] = useState(false);
-  const { inspectionItem, categories } = useAppSelector(
-    (state) => state.inspectionItem
-  );
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const inspectionIsCompleted = useMemo(
     () => inspectionItem?.status === InspectionStatus.COMPLETE,
     [inspectionItem]
@@ -75,13 +66,11 @@ export const AmenitiesCard: React.FC<Props> = ({
   useEffect(() => {
     if (visibleComment && typeof selectedResult === "string") {
       dispatch(
-        actionsInspectionItem.setResultAmenitie({
-          categoryId,
-          amenitieValue: {
-            id,
-            comment: visibleComment,
-            result: selectedResult === "Yes",
-          },
+        actionsCategoryItem.setCategoryAmenitiesValues({
+          amenityId: id,
+          inspectionId: inspectionItem.id,
+          amenitieComment: visibleComment,
+          amenitieResult: selectedResult === "Yes",
         })
       );
     }
@@ -94,21 +83,9 @@ export const AmenitiesCard: React.FC<Props> = ({
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
-      <TouchableOpacity
-        style={styles.label}
-        onPress={() => setOpenMainInfo((prev) => !prev)}
-      >
-        <View
-          style={[
-            styles.expandBox,
-            !openMainInfo && { transform: [{ rotate: "-92deg" }] },
-          ]}
-        >
-          <ExpandIcon
-            color={"#fff"}
-            width={normalize(25)}
-            height={normalize(25)}
-          />
+      <TouchableOpacity style={styles.label} onPress={() => setOpenMainInfo((prev) => !prev)}>
+        <View style={[styles.expandBox, !openMainInfo && { transform: [{ rotate: "-92deg" }] }]}>
+          <ExpandIcon color={"#fff"} width={normalize(25)} height={normalize(25)} />
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
@@ -139,9 +116,7 @@ export const AmenitiesCard: React.FC<Props> = ({
                   {categoryApplyToInspection ? (
                     <>
                       {inspectionIsCompleted ? (
-                        <Text style={[styles.labelItemText, { flex: 1.5 }]}>
-                          {selectedResult}
-                        </Text>
+                        <Text style={[styles.labelItemText, { flex: 1.5 }]}>{selectedResult}</Text>
                       ) : (
                         <CustomRadioCheckbox
                           value={selectedResult}
@@ -167,15 +142,11 @@ export const AmenitiesCard: React.FC<Props> = ({
                     showEditInput && { flexDirection: "column" },
                   ]}
                 >
-                  <Text style={{ ...styles.labelItemText, marginRight: "10%" }}>
-                    Comments:
-                  </Text>
+                  <Text style={{ ...styles.labelItemText, marginRight: "10%" }}>Comments:</Text>
                   {categoryApplyToInspection ? (
                     <>
                       {showEditInput ? (
-                        <View
-                          style={{ flex: 1, marginTop: "2%", width: "100%" }}
-                        >
+                        <View style={{ flex: 1, marginTop: "2%", width: "100%" }}>
                           <TextInput
                             value={editedComment}
                             onChangeText={setEditedComment}
@@ -238,7 +209,7 @@ export const AmenitiesCard: React.FC<Props> = ({
                                 placeholderTextColor={"#979797"}
                               />
                               <TouchableOpacity
-                                style={{...styles.textInputButton, marginTop: '5%'}}
+                                style={{ ...styles.textInputButton, marginTop: "5%" }}
                                 onPress={handleSaveCommentButton}
                               >
                                 <Text style={styles.inputButtonText}>Save</Text>
@@ -267,7 +238,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: "5%",
-    marginHorizontal: '1%'
+    marginHorizontal: "1%",
   },
   rowLabel: {
     flexDirection: "row",
@@ -395,7 +366,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     alignSelf: "stretch",
     ...textStyles.small,
-    paddingBottom: '10%'
+    paddingBottom: "10%",
   },
   inputButtonBox: {
     flexDirection: "row",

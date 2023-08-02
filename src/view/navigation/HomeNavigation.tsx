@@ -25,6 +25,7 @@ import { setAvailableUsers } from "~/modules/user/actions";
 import { getVisibleAssignedTo } from "~/utils/getVisibleAssigned";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { CategoryType } from "~/types/Category";
+import { getCategoryResult } from "~/utils/storeCategoryTemplate";
 
 const Drawer = createDrawerNavigator();
 
@@ -32,24 +33,28 @@ export const HomeNavigation: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
   const dispatch = useAppDispatch();
   const { inspectionsSync, syncError, inspections, visibleLoader } = useAppSelector((state) => state.inspections);
-  const networkConnectivity = useAppSelector(
-    (state) => state.networkConnectivity
-  );
-  const categoriesTemplates = useAppSelector(
-    (state) => state.categoriesTemplates
-  );
+  const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
+  const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
   const { availableUsers } = useAppSelector((state) => state.user);
   const templateIds = Object.keys(categoriesTemplates);
 
   useEffect(() => {
-    getAvailableUsers().then((usersResponse) => {
+    const storeAvailableUsers = async () => {
+      try {
+      const usersResponse = await getAvailableUsers();
+
       const availableUsers = usersResponse.map((user: any) => ({
         _id: user._id,
         fullName: `${user.firstName} ${user.lastName}`,
       }));
 
       dispatch(setAvailableUsers(availableUsers));
-    });
+    } catch (e) {
+      console.log("error available users", e)
+    }
+
+    };
+    storeAvailableUsers()
   }, []);
 
   const { data } = useQuery(GET_ALL_INSPECTIONS);
@@ -70,34 +75,14 @@ export const HomeNavigation: React.FC = () => {
         (edge: any) => edge?.node
       ) as CategoryType[];
 
-      if (responseCategories) {
-        dispatch(
-          actionsCategoryTemplate.addCategoryTemplate({
-            templateIdToAdd: id,
-            categories: responseCategories.map((category) => ({
-              ...category,
-              amenities: category.amenities.map((amenity) => ({
-                ...amenity,
-                amenityValues: {},
-              })),
-              status: !category.isRequired
-                ? "--"
-                : category.items.length > 0
-                ? "Complete"
-                : "Incomplete",
-              result: !category.isRequired
-                ? "--"
-                : category.items.length > 0
-                ? category.items.every(
-                    ({ itemsValues }) => itemsValues[0]?.value === "true"
-                  )
-                  ? "Passed"
-                  : "Failed"
-                : "No results yet",
-            })),
-          })
-        );
-      }
+      // if (responseCategories) {
+      //   dispatch(
+      //     actionsCategoryTemplate.addCategoryTemplate({
+      //       templateIdToAdd: id,
+      //       categories: getCategoryResult(responseCategories),
+      //     })
+      //   );
+      // }
       return result;
     });
 
@@ -154,8 +139,6 @@ export const HomeNavigation: React.FC = () => {
     try {
       console.log("render before");
 
-      console.log("ids", arrayOfDataInspections.map(({node}: any) => (node?.unit?.landlordId)))
-
       const responseLandlordName = await Promise.all(
         arrayOfDataInspections.map(({node}: any) => getLandlordNameById(node?.unit?.landlordId))
       );
@@ -168,8 +151,6 @@ export const HomeNavigation: React.FC = () => {
           phoneNumber: node?.phoneNumber
         }
       })
-
-      console.log("render landlordName", responseLandlordName.map(({data}) => data?.landlords?.edges?.[0]?.node));
 
       const responceOfHouseHoldName = await Promise.all(
         arrayOfDataInspections.map(({ node }: any) =>
@@ -216,8 +197,8 @@ export const HomeNavigation: React.FC = () => {
       ) as InspectionItem[];
 
       dispatch(actionsInspections.setInspections(inspectionsFromServer));
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log("Failed to sync", error);
     } finally {
       dispatch(actionsInspections.setLoading(false));
       dispatch(actionsInspections.setVisibleLoading(false));

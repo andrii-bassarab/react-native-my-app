@@ -18,7 +18,7 @@ export const StatusBox: React.FC<Props> = ({ inspection }) => {
       <View style={styles.label}>
         <Text style={styles.labelText}>Status:</Text>
         <Text style={styles.text}>{`${
-          (inspectionItem?.status[0].toLocaleUpperCase() || "") +
+          (inspectionItem?.status?.[0]?.toLocaleUpperCase() || "") +
           (inspectionItem?.status?.slice(1) || "")
         }`}</Text>
       </View>

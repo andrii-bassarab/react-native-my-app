@@ -5,18 +5,25 @@ import { ModalSwipeScreen } from "../Custom/ModalSwipeScreen";
 import SignatureCapture, { SaveEventParams } from "react-native-signature-capture";
 import { colors, textStyles } from "~/view/theme";
 import { actionsToastNotification } from "~/modules/toastNotification";
-import { useAppDispatch } from "~/store/hooks";
+import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionItem } from "~/types/InspectionItem";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
+import { uploadFile } from "~/services/api/uploadFile";
+import { Asset } from "react-native-image-picker";
+import { getVisibleDate } from "~/utils/visibleDate";
+import { ModalLoader } from "../Loader/ModalLoader";
 
 interface Props {
-  inspection: InspectionItem
+  inspection: InspectionItem;
 }
 
-export const SignatureView: React.FC<Props> = ({inspection}) => {
+export const SignatureView: React.FC<Props> = ({ inspection }) => {
   const ref = useRef<SignatureCapture>(null);
   const dispatch = useAppDispatch();
 
+  const { profile } = useAppSelector((state) => state.user);
+
+  const [loader, setLoader] = useState(false);
   const [showSignModalScreen, setShowSignModalScreen] = useState(false);
   const [pathSignInspector, setPathSignInspector] = useState("");
   const [pathSignLandlord, setPathSignLandlord] = useState("");
@@ -25,35 +32,60 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
   const [startSignatureDraw, setStartSignatureDraw] = useState(false);
   const [showViewSignature, setShowViewSignature] = useState(false);
 
+  console.log("loader", loader)
 
   useEffect(() => {
     if (pathSignTenant && pathSignLandlord && pathSignInspector) {
-      dispatch(actionsInspectionItem.setSignatureCount(3))
+      dispatch(actionsInspectionItem.setSignatureCount(3));
     } else {
-      dispatch(actionsInspectionItem.setSignatureCount(0))
+      dispatch(actionsInspectionItem.setSignatureCount(0));
     }
-  }, [pathSignInspector, pathSignLandlord, pathSignTenant])
+  }, [pathSignInspector, pathSignLandlord, pathSignTenant]);
 
   // console.log("pathSignInspector",pathSignInspector)
 
-  const onSaveEvent = (result: SaveEventParams) => {
-    setStartSignatureDraw(false);
-    setShowSignModalScreen(false);
-    dispatch(actionsToastNotification.showToastMessage("Success! Signature saved."));
+  const onSaveEvent = async (result: SaveEventParams) => {
+    try {
+      setLoader(true);
+      await uploadFile({
+        singleFile: {
+          fileName: `Signature ${getVisibleDate(new Date())}.png`,
+          uri: `data:image/png;base64,${result.encoded}`,
+          type: "image/png",
+        } as Asset,
+        inspectionId: inspection.id,
+        email: profile?.email || "",
+        documentType: "Signature",
+        signaturePosition: "Tenant",
+      });
+      setStartSignatureDraw(false);
+      setShowSignModalScreen(false);
+      dispatch(actionsToastNotification.showToastMessage("Success! Signature saved."));
 
-    //result.encoded - for the base64 encoded png
-    //result.pathName - for the file path name
+      //result.encoded - for the base64 encoded png
+      //result.pathName - for the file path name
 
-    switch (currentPathNumber) {
-      case 0:
-        setPathSignInspector(Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`)
-        return;
-      case 1:
-        setPathSignLandlord(Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`);
-        return;
-      case 2:
-        setPathSignTenant(Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`);
-        return;
+      switch (currentPathNumber) {
+        case 0:
+          setPathSignInspector(
+            Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`
+          );
+          return;
+        case 1:
+          setPathSignLandlord(
+            Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`
+          );
+          return;
+        case 2:
+          setPathSignTenant(
+            Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`
+          );
+          return;
+      }
+    } catch (e) {
+      console.log("error upload signature", e);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -61,7 +93,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
     ref?.current?.resetImage();
   };
 
-  const handleSaveSign = () => {
+  const handleSaveSign = async () => {
     ref?.current?.saveImage();
   };
 
@@ -135,7 +167,9 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
       />
       <SignatureCard
         position={"Landlord"}
-        name={`Tim O’Reilly${inspection.unit.landlord?.firstName || ""} ${inspection.unit.landlord?.lastName || ""}`}
+        name={`Tim O’Reilly${inspection.unit.landlord?.firstName || ""} ${
+          inspection.unit.landlord?.lastName || ""
+        }`}
         openSignScreen={() => handleOpenSignatureCapture(1)}
         signaturePath={pathSignLandlord}
         openShowViewSignature={() => setShowViewSignature(true)}
@@ -217,6 +251,7 @@ export const SignatureView: React.FC<Props> = ({inspection}) => {
           </View>
         </ModalSwipeScreen>
       )}
+      {loader && <ModalLoader/>}
     </View>
   );
 };

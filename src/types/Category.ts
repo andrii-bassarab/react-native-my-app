@@ -30,16 +30,28 @@ export interface CategoryAmenityField {
   comment: null | string;
 }
 
+export interface CategoryItemValueField {
+  id: string;
+  inspectionId: string;
+  inspectionItemId: string;
+  value: "true" | "false";
+  comment: null | string;
+  inspectedBy: string | null;
+  inspectedOn: string | null;
+  itemOptionId: string | null;
+}
+
 export interface CategoryAmenitiesResponse {
-  [amenityTemplateIds: string]: Record<string, CategoryAmenityField>
+  [amenityTemplateIds: string]: Record<string, CategoryAmenityField>;
+}
+
+export interface CategoryItemsValues {
+  [inspectionId: string]: Record<string, CategoryItemValueField>;
 }
 
 export interface CategoryAmenities {
   id: string;
   name: string;
-  amenityValues: {
-    [inspectionId: string]: CategoryAmenityField;
-  };
 }
 
 export interface CategoryItems {
@@ -58,6 +70,6 @@ export interface CategoryType {
   createdBy: string | null;
   amenities: CategoryAmenities[];
   items: CategoryItems[];
-  status?: string;
-  result?: string;
+  status?: any;
+  result?: any;
 }

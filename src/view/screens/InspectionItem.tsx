@@ -43,7 +43,6 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
     // setTimeout(() => {
       // navigation.goBack();
     // }, 0);
-    console.log("navigation", navigation.isFocused())
     navigation.navigate("Inspections");
   };
 

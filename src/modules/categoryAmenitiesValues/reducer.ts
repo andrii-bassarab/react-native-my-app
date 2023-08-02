@@ -1,11 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CategoryAmenitiesResponse, CategoryAmenityField } from "~/types/Category";
 
-type CategoryTemplate = CategoryAmenitiesResponse;
-
-const initialState = {} as CategoryTemplate;
-
-console.log("initialState", initialState)
+const initialState = {} as CategoryAmenitiesResponse;
 
 const categoryAmenitiesValuesSlice = createSlice({
   name: "categoryAmenitiesValues",
@@ -20,8 +16,11 @@ const categoryAmenitiesValuesSlice = createSlice({
       }>
     ) => {
       const { categotyAmenitiesValues } = payload;
-      console.log("categotyAmenitiesValues", categotyAmenitiesValues)
       categotyAmenitiesValues.forEach(categoryAmenity => {
+        if (!state[categoryAmenity.inspectionAmenityId] || typeof state[categoryAmenity.inspectionAmenityId] !== 'object') {
+          state[categoryAmenity.inspectionAmenityId] = {};
+        }
+
         state[categoryAmenity.inspectionAmenityId][categoryAmenity.inspectionId] = categoryAmenity;
       });
     },

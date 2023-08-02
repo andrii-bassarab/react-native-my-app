@@ -111,24 +111,27 @@ export const GET_CATEGORY_AMENITY_VALUE_INSPECTION = gql`
   }
 `
 
-export const GET_CATEGORY_AMENITIE_VALUE_INSPECTION = gql`
-  query GetInspectionAmenityValues ($ids: [String!], $inspectionId: String){
-    inspectionAmenityValues (
-        first: 50      
-        where: {      
-          inspectionAmenityId: {in: $ids},
+export const GET_CATEGORY_ITEM_VALUE_INSPECTION = gql`
+  query GetInspectionItemValues ($ids: [String!], $inspectionId: String){
+    inspectionItemValues (
+        first: 50
+        where: {
+          inspectionItemId: {in: $ids},
           inspectionId: {eq: $inspectionId}
-      }   
+      }
     ) {
     edges {
       node {
         id
-        inspectionId       
-        inspectionAmenityId
+        inspectionId
+        inspectionItemId
+        comment
+        inspectedBy
+        inspectedOn
         value
-        comment     
+        itemOptionId
       }
-    } 
+    }
     }
   }
 `

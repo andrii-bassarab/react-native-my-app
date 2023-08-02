@@ -26,6 +26,9 @@ export const MainStack: React.FC = () => {
   const dispatch = useAppDispatch();
   const { inspections, visibleLoader, inspectionsSync, syncError } = useAppSelector((state) => state.inspections);
   const { notifications } = useAppSelector((state) => state.notifications);
+  const categoryAmenitiesValues = useAppSelector(
+    (state) => state.categoryAmenitiesValues
+  );
 
   const showToastNotification = () =>
     dispatch(

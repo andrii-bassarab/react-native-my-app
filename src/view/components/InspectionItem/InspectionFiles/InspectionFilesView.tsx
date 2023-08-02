@@ -41,7 +41,7 @@ import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import FileViewer from "react-native-file-viewer";
-import { uploadImage } from "~/services/api/uploadImage";
+import { uploadFile } from "~/services/api/uploadFile";
 
 export interface IFile {
   id: string;
@@ -55,21 +55,21 @@ const mocksFiles: IFile[] = [
   {
     id: generateUniqueId(),
     fileName: "HUD-50058.pdf",
-    uri: `${BASE_DOCUMENT_API}/68`,
+    uri: `${BASE_DOCUMENT_API}/files/68`,
     uploadTime: "May 16, 2023 at 5:00pm",
     docFormat: "pdf",
   },
   {
     id: generateUniqueId(),
     fileName: "Interim Recertification-02/16/2021.pdf",
-    uri: `${BASE_DOCUMENT_API}/213`,
+    uri: `${BASE_DOCUMENT_API}/files/213`,
     uploadTime: "May 19, 2023 at 11:00am",
     docFormat: "pdf",
   },
   {
     id: generateUniqueId(),
     fileName: "Assignment-01/26/2021.pdf",
-    uri: `${BASE_DOCUMENT_API}/193`,
+    uri: `${BASE_DOCUMENT_API}/files/193`,
     uploadTime: "May 21, 2023 at 2:00pm",
     docFormat: "pdf",
   },
@@ -105,7 +105,6 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
   const { profile } = useAppSelector((state) => state.user);
-
 
   const [loader, setLoader] = useState(false);
   const [query, setQuery] = useState("");
@@ -200,7 +199,12 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
 
         setLoader(true)
 
-        const resultUpload = await uploadImage(asset, inspectionItem.id, profile?.email || "");
+        await uploadFile({
+          singleFile: asset,
+          inspectionId: inspectionItem.id,
+          email: profile?.email || "",
+          documentType: 'Image',
+        });
 
         setVisibleFiles((prev) => [
           ...prev,
@@ -218,7 +222,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
     } catch (e) {
       console.log("ImageLibraryPhotoError", e);
     } finally {
-      setLoader(false)
+      // setLoader(false)
     }
   };
 
@@ -245,6 +249,13 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       ) {
         handleCloseModalAddFile();
         const selectedFile = arrayOfSelectedFile[0];
+
+        await uploadFile({
+          singleFile: selectedFile,
+          inspectionId: inspectionItem.id,
+          email: profile?.email || "",
+          documentType: 'Document',
+        });
 
         setNewFile(selectedFile);
 
@@ -420,7 +431,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           closeModalFunction={() => setShowModalDocument(false)}
         />
       )}
-      {loader && <ModalLoader/>}
+      {false && <ModalLoader/>}
     </View>
   );
 };

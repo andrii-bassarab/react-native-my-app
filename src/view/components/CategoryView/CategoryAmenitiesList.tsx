@@ -7,17 +7,18 @@ import { ContentLoader } from "../Loader/Loader";
 import { useAppSelector } from "~/store/hooks";
 
 interface Props {
-  categoryAmenitiesValues: CategoryAmenities[];
+  categoryAmenities: CategoryAmenities[];
   categoryId: string;
   loading: boolean;
 }
 
 export const CategoryAmenitiesList: React.FC<Props> = ({
-  categoryAmenitiesValues,
+  categoryAmenities,
   categoryId,
   loading,
 }) => {
   const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { categoryAmenitiesValues } = useAppSelector((state) => state);
 
   return (
     <View>
@@ -27,27 +28,27 @@ export const CategoryAmenitiesList: React.FC<Props> = ({
         </View>
       ) : (
         <>
-          {categoryAmenitiesValues.length > 0 ? (
+          {categoryAmenities.length > 0 ? (
             <>
               <Text style={styles.amenitiesTitle}>Amenities</Text>
-              {categoryAmenitiesValues.map((amenity) => {            
-                return <AmenitiesCard
+              {categoryAmenities.map((amenity) => (
+              <AmenitiesCard
                   key={amenity.id}
                   title={amenity.name}
                   result={
-                    amenity?.amenityValues?.[inspectionItem.id]
-                      ? amenity?.amenityValues[inspectionItem.id]?.value === "true"
+                    categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id]
+                      ? categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id]?.value === "true"
                       : undefined
                   }
                   comment={
-                    amenity?.amenityValues?.[inspectionItem.id]
-                      ? amenity?.amenityValues[inspectionItem.id]?.comment
+                    categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id]
+                      ? categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id]?.comment
                       : undefined
                   }
                   categoryId={categoryId}
                   id={amenity.id}
                 />
-                })}
+                ))}
             </>
           ) : (
             <View style={styles.noItemsBox}>

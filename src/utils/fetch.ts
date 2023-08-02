@@ -2,7 +2,7 @@ import { API_URL, X_API_KEY, X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 type RequestMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
-export const makeRequest = (
+export const makeRequest = async (
   url: string,
   query: string | null = null,
   method: RequestMethod = "POST",
@@ -23,7 +23,13 @@ export const makeRequest = (
     options.body = JSON.stringify({ query });
   }
 
-  return fetch(`${API_URL}/${url}`, options)
-    .then((res) => res.json())
-    .catch((e) => console.log("error fetch ", e));
+  try {
+    const res = await fetch(`${API_URL}/${url}`, options);
+    if (!res.ok) {
+      throw new Error("error fetch")
+    }
+    return await res.json();
+  } catch (e) {
+    return console.log("error fetch ", e);
+  }
 };

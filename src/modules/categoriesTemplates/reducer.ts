@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryAmenitiesResponse, CategoryAmenityField, CategoryType } from "~/types/Category";
+import { CategoryAmenityField, CategoryType } from "~/types/Category";
 
 interface CategoryTemplate {
   [templateId: string]: CategoryType[];
@@ -23,32 +23,32 @@ const categoryTemplateSlice = createSlice({
       const { templateIdToAdd, categories } = payload;
       state[templateIdToAdd] = categories;
     },
-    addCategoryAmenitieValue: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        templateIdToCheck: string;
-        categoryId: string;
-        amenitiesValues: CategoryAmenityField[];
-      }>
-    ) => {
-      const { templateIdToCheck, categoryId, amenitiesValues } = payload;
+    // addCategoryAmenitieValue: (
+    //   state,
+    //   {
+    //     payload,
+    //   }: PayloadAction<{
+    //     templateIdToCheck: string;
+    //     categoryId: string;
+    //     amenitiesValues: CategoryAmenityField[];
+    //   }>
+    // ) => {
+    //   const { templateIdToCheck, categoryId, amenitiesValues } = payload;
 
-      const fountTemplate = state[templateIdToCheck];
-      const foundCategory = fountTemplate.find(
-        (templateCategory) => templateCategory.id === categoryId
-      );
+    //   const fountTemplate = state[templateIdToCheck];
+    //   const foundCategory = fountTemplate.find(
+    //     (templateCategory) => templateCategory.id === categoryId
+    //   );
 
-      if (foundCategory) {
-        amenitiesValues.forEach(amenityValue => {
-          const foundCategoryAmenity = foundCategory.amenities.find(amenity => amenity.id === amenityValue.inspectionAmenityId);
-          if (foundCategoryAmenity && foundCategoryAmenity.amenityValues) {
-            foundCategoryAmenity.amenityValues[amenityValue.inspectionId] = amenityValue;
-          }
-        })
-      }
-    },
+    //   if (foundCategory) {
+    //     amenitiesValues.forEach(amenityValue => {
+    //       const foundCategoryAmenity = foundCategory.amenities.find(amenity => amenity.id === amenityValue.inspectionAmenityId);
+    //       if (foundCategoryAmenity && foundCategoryAmenity.amenityValues) {
+    //         foundCategoryAmenity.amenityValues[amenityValue.inspectionId] = amenityValue;
+    //       }
+    //     })
+    //   }
+    // },
   },
 });
 

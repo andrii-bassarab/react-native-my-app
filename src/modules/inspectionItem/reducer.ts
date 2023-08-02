@@ -170,36 +170,6 @@ const inspectionItemSlice = createSlice({
         }
       }
     },
-    setResultAmenitie: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        categoryId: string;
-        amenitieValue: {
-          id: string;
-          comment: string;
-          result: boolean;
-        };
-        inspectionId: string;
-      }>
-    ) => {
-      const { categoryId, amenitieValue, inspectionId } = payload;
-      const foundCategory = state.categories.find(
-        (category) => category.id === categoryId
-      );
-
-      if (foundCategory) {
-        const amenitie = foundCategory?.amenities?.find(
-          (item) => item.id === amenitieValue.id
-        );
-
-        if (amenitie && amenitie.amenityValues[inspectionId]) {
-          amenitie.amenityValues[inspectionId].value = amenitieValue.result ? "true" : "false";
-          amenitie.amenityValues[inspectionId].comment = amenitieValue.comment;
-        }
-      }
-    },
     clearInspectionItem: () => ({
       inspectionItem: initialInspectionItem,
       categories: [],
