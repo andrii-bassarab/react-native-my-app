@@ -26,6 +26,7 @@ export const CategoryList: React.FC<Props> = ({
     photos: "No",
     categoryApplyToInspection: category.isRequired,
     categoryAdded: true,
+    isRequired: category.isRequired,
   });
 
   const handleNavigate = (category: CategoryType) => {

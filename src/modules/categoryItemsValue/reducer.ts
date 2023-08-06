@@ -21,7 +21,7 @@ const categoryItemsValuesSlice = createSlice({
     ) => {
       payload.forEach(categoryItemsValues => {
         const categoryId = Object.keys(categoryItemsValues)?.[0];
-        const categotyItemsValuesObject: CategoryItemValueField[] =  Object.values(categoryItemsValues)?.[0];
+        const categotyItemsValuesObject: CategoryItemValueField[] = Object.values(categoryItemsValues)?.[0];
 
         if (!state[categoryId]) {
           state[categoryId] = {};
@@ -32,7 +32,7 @@ const categoryItemsValuesSlice = createSlice({
             state[categoryId][categoryItemValue?.inspectionId] = {};
           }
 
-          state[categoryId][categoryItemValue?.inspectionId][categoryItemValue.inspectionItemId] = categoryItemValue;
+          state[categoryId][categoryItemValue?.inspectionId][categoryItemValue.inspectionItemId.trim()] = categoryItemValue;
         })
       });
     },

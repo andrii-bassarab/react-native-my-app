@@ -28,6 +28,10 @@ export const getCategoryResult = (
     return {
       ...category,
       amenities: category.amenities,
+      items: category.items.map((item) => ({
+        ...item,
+        id: item.id.trim(),
+      })),
       status,
       result,
     };

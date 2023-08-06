@@ -17,9 +17,9 @@ interface Props {
 export const SelectedCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
   const { status, result, items, photos, id } = category;
-  const { inspectionItem, categories } = useAppSelector(
-    (state) => state.inspectionItem
-  );
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+
+  const { categoryItemsValues } = useAppSelector((state) => state);
 
   const categoryInspectionStatus = status[inspectionItem.id] || "Incomplete";
   const categoryInspectionResult = result[inspectionItem.id] || "Not result yet";
@@ -33,6 +33,8 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
       actionsInspectionItem.setCategoryApplyToInspection({
         categoryId: category.id,
         value: !dynamycCategoryApplyToInspection,
+        inspectionId: inspectionItem.id,
+        categoryItemsValues: categoryItemsValues,
       })
     );
 
@@ -59,11 +61,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
         )}
         {categoryInspectionStatus === "Complete" && categoryInspectionResult === "Failed" && (
           <View style={styles.failedBox}>
-            <FailedIcon
-              color={"#fff"}
-              height={normalize(15)}
-              width={normalize(15)}
-            />
+            <FailedIcon color={"#fff"} height={normalize(15)} width={normalize(15)} />
           </View>
         )}
       </View>
@@ -92,14 +90,11 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
       <View
         style={[
           styles.applyCategoryBox,
-          inspectionItem?.status === InspectionStatus.COMPLETE &&
-            styles.disabledApplyCategoryBox,
+          inspectionItem?.status === InspectionStatus.COMPLETE && styles.disabledApplyCategoryBox,
         ]}
       >
-        <Text style={styles.categoryApplyText}>
-          Does this category apply to the inspection?
-        </Text>
-        <View style={{marginLeft: 10}}>
+        <Text style={styles.categoryApplyText}>Does this category apply to the inspection?</Text>
+        <View style={{ marginLeft: 10 }}>
           <CustomToggleInput
             value={Boolean(dynamycCategoryApplyToInspection)}
             onValueChange={handleChangeCategoryApplyToInspection}

@@ -17,6 +17,7 @@ const categoryItemSlice = createSlice({
       state,
       action: PayloadAction<CategoryAmenitiesResponse>
     ) => {
+      state.amenitiesValues = {};
       for (const amenityId in action.payload) {
         state.amenitiesValues[amenityId] = action.payload[amenityId]
       }
@@ -25,13 +26,10 @@ const categoryItemSlice = createSlice({
       state,
       action: PayloadAction<CategoryItemsValues>
     ) => {
-      console.log("action.payload", action.payload)
+      state.itemsValues = {};
       for (const inspectionId in action.payload) {
-        console.log("inspectionId", action.payload[inspectionId])
         state.itemsValues[inspectionId] = action.payload[inspectionId]
       }
-
-      console.log("state", state)
     },
     setChangeCategoryAmenitiesValues: (
       state,

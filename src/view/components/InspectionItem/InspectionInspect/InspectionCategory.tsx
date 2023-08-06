@@ -35,20 +35,21 @@ interface Props {
     items: number;
     photos: string;
     categoryAdded?: boolean;
+    isRequired: boolean;
   };
 }
 
 export const InspectionCategory: React.FC<Props> = ({ category }) => {
   const dispatch = useAppDispatch();
-  const { title, status, result, items, photos, categoryAdded } = category;
+  const { title, status, result, items, photos, categoryAdded, isRequired } = category;
   const [showDeleteLabel, setShowDeleteLabel] = useState(false);
   const [showDeleteModalWindow, setShowDeleteModalWindow] = useState(false);
-  const { inspectionItem, categories } = useAppSelector(
-    (state) => state.inspectionItem
-  );
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const { profile } = useAppSelector((state) => state.user);
-  const categoryInspectionStatus = status[inspectionItem.id] || "Incomplete";
-  const categoryInspectionResult = result[inspectionItem.id] || "Not result yet";
+  const categoryInspectionStatus =
+    status[inspectionItem.id] || (!category.isRequired ? "--" : "Incomplete");
+  const categoryInspectionResult =
+    result[inspectionItem.id] || (!category.isRequired ? "--" : "Not result yet");
 
   const itemColor = getColorCategoryByResult(categoryInspectionResult, categoryInspectionStatus);
 
@@ -81,11 +82,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
         awaitRefetchQueries: true,
         onCompleted(data) {
           if (data?.deleteInspectionCategory?.affectedEntity) {
-            dispatch(
-              actionsToastNotification.showToastMessage(
-                "Success! Category was deleted."
-              )
-            );
+            dispatch(actionsToastNotification.showToastMessage("Success! Category was deleted."));
           }
         },
       });
@@ -103,9 +100,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
     <View style={[styles.card, styles.shadowProp, { borderColor: itemColor }]}>
       <View style={{ ...styles.mainInfo, borderColor: itemColor }}>
         <View style={styles.titleLabel}>
-          <Text style={{ ...styles.cardTitle, color: itemColor, flex: 1.5 }}>
-            {title}
-          </Text>
+          <Text style={{ ...styles.cardTitle, color: itemColor, flex: 1.5 }}>{title}</Text>
           {categoryAdded &&
             categoryInspectionStatus !== "Complete" &&
             inspectionItem?.status !== InspectionStatus.COMPLETE && (
@@ -133,11 +128,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
                   onPress={handleClickOnDotsIcon}
                   style={{ paddingHorizontal: "30%", paddingVertical: "10%" }}
                 >
-                  <DotsIcon
-                    color={colors.primary}
-                    height={normalize(25)}
-                    width={normalize(25)}
-                  />
+                  <DotsIcon color={colors.primary} height={normalize(25)} width={normalize(25)} />
                 </TouchableOpacity>
               </View>
             )}
@@ -165,11 +156,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           </View>
           <View style={{ flex: 0.2, alignItems: "center" }}>
             {categoryInspectionStatus === "Complete" && result[inspectionItem.id] === "Passed" && (
-              <CompletedIcon
-                color={"#96BF5B"}
-                height={normalize(40)}
-                width={normalize(40)}
-              />
+              <CompletedIcon color={"#96BF5B"} height={normalize(40)} width={normalize(40)} />
             )}
             {categoryInspectionStatus === "Complete" && result[inspectionItem.id] === "Failed" && (
               <View style={styles.failedBox}>

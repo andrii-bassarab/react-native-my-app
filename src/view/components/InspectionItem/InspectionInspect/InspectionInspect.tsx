@@ -131,7 +131,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
       <View style={{ height: normalize(15) }} />
-      {(loading || loadingCategoryItems) && categories.length === 0 ? (
+      {(loading && !data) || loadingCategoryItems? (
         <View style={styles.loaderBox}>
           <ContentLoader />
         </View>

@@ -25,18 +25,18 @@ export const CategoryItemsList: React.FC<Props> = ({
     <>
       {categoryItems.length > 0 ? (
         <View style={{paddingTop: "1%"}}>
-          {categoryItems.map((item) => (
-            <CharacterCard
+          {categoryItems.map((item) => {
+            return <CharacterCard
               key={item.id}
               title={item.name}
               message={item.description}
-              result={categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.value === undefined ? undefined : categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.value === "true"}
-              comment={categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.comment}
+              result={categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id?.trim()]?.value === undefined ? undefined : categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.value === "true"}
+              comment={categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id?.trim()]?.comment}
               inspectionItemId={item.id}
               id={item.id}
               categoryId={categoryId} 
             />
-          ))}
+})}
         </View>
       ) : (
         <View style={styles.noItemsBox}>

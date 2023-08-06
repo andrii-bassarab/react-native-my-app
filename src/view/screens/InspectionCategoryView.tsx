@@ -11,6 +11,7 @@ import {
   CategoryAmenities,
   CategoryAmenitiesResponse,
   CategoryItemsValues,
+  CategoryItemValueField,
 } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
@@ -33,6 +34,7 @@ import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { actionsCategoryAmenitiesActions } from "~/modules/categoryAmenitiesValues";
 import { actionsCategoryItem } from "~/modules/categoryItem";
+import { actionsCategoryItemsValuesActions } from "~/modules/categoryItemsValue";
 
 interface Props {
   route: RouteProp<
@@ -73,13 +75,18 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
       ids: amenities.map((amenity) => amenity.id),
       inspectionId: inspectionItem.id,
     },
+    notifyOnNetworkStatusChange: true,
   });
-  const [getCategoryItemsValues] = useLazyQuery(GET_CATEGORY_ITEM_VALUE_INSPECTION, {
+  const [
+    getCategoryItemsValues,
+    { refetch: refetchGetCategoryItemsValues, data: dataCategoryItemsValues },
+  ] = useLazyQuery(GET_CATEGORY_ITEM_VALUE_INSPECTION, {
     variables: {
       ids: [] as string[],
       inspectionId: inspectionItem.id,
     },
   });
+
   const [loader, setLoader] = useState(false);
   const dynamycCategoryApplyToInspection = Boolean(
     categories.find((categoryToCheck) => categoryToCheck.id === category.id)?.isRequired
@@ -91,6 +98,15 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
       id: "",
     },
   });
+
+  useEffect(() => {
+    if (!dataCategoryAmenitie) {
+      refetchCategoryAmenities({
+        ids: amenities.map((amenity) => amenity.id),
+        inspectionId: inspectionItem.id,
+      })
+    }
+  }, [category])
 
   useEffect(() => {
     const currentCategoryAmenitiesValues: CategoryAmenitiesResponse = {};
@@ -122,7 +138,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
     }
 
     dispatch(actionsCategoryItem.addDynamicCategoryItemsValues(currentCategoryItemsValues));
-  }, [items, categoryItemsValues]);
+  }, [items, categoryItemsValues, category]);
 
   const inspectionIsCompleted = useMemo(
     () => inspectionItem?.status === InspectionStatus.COMPLETE,
@@ -158,6 +174,23 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
     );
   }, [categoriesTemplates[inspectionItem.templateId]]);
 
+  useEffect(() => {
+    if (
+      dataCategoryItemsValues?.inspectionItemValues?.edges &&
+      dataCategoryItemsValues?.inspectionItemValues?.edges?.every((edge: any) => edge?.node)
+    ) {
+      const categoryItemsValuesArray: any[] = [
+        {
+          [category.id]: dataCategoryItemsValues?.inspectionItemValues?.edges.map(
+            (edge: any) => edge.node
+          ),
+        },
+      ];
+
+      dispatch(actionsCategoryItemsValuesActions.addCategoryItemsValues(categoryItemsValuesArray));
+    }
+  }, [dataCategoryItemsValues]);
+
   const categoryItemsValueWasChanged = useMemo(() => {
     return (
       Object.keys(dynamicItemsValues[inspectionItem.id] || {}).length > 0 &&
@@ -182,7 +215,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
             categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment
       )
     );
-  }, []);
+  }, [dynamicAmenitiesValues, categoryAmenitiesValues]);
 
   const hasUnsavedChanges = useMemo(
     () =>
@@ -196,9 +229,6 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
       categoryAmenitiesValueWasChanged,
     ]
   );
-
-  console.log("categoryItemsValues", categoryAmenitiesValues);
-  console.log("dynamicAmenitiesValues", dynamicAmenitiesValues);
 
   const handleGoBackWithoutSaving = () => {
     if (hasUnsavedChanges && !inspectionIsCompleted) {
@@ -281,9 +311,9 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
     }
 
     if (
-      updatePromises &&
-      updatePromises.length > 0 &&
-      updatePromises.filter((promise) => promise).length > 0
+      (updatePromises &&
+        updatePromises.length > 0 &&
+        updatePromises.filter((promise) => promise).length > 0)
     ) {
       try {
         console.log("Waiting for updates to complete...");
@@ -294,14 +324,14 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
             id: inspectionItem?.templateId,
           });
         }
+
         if (categoryItemsValueWasChanged) {
-          await getCategoryItemsValues({
-            variables: {
-              ids: items.map((item) => item.id),
-              inspectionId: inspectionItem.id,
-            },
+          await refetchGetCategoryItemsValues({
+            ids: items.map((item) => item.id),
+            inspectionId: inspectionItem.id,
           });
         }
+
         if (categoryAmenitiesValueWasChanged) {
           await refetchCategoryAmenities({
             ids: amenities.map((amenity) => amenity.id),
