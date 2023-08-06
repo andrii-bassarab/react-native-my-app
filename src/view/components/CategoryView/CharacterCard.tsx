@@ -28,12 +28,13 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
+import { actionsCategoryItem } from "~/modules/categoryItem";
 
 interface Props {
   title: string;
   message: string;
   result?: boolean;
-  comment?: string;
+  comment?: string | null;
   inspectionItemId?: string;
   id: string;
   categoryId: string;
@@ -146,15 +147,13 @@ export const CharacterCard: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (visibleComment && typeof selectedResult === "string") {
+    if (comment !== undefined && typeof selectedResult === "string") {
       dispatch(
-        actionsInspectionItem.setResultItem({
-          categoryId,
-          itemsValue: {
-            id,
-            comment: visibleComment,
-            result: selectedResult === "Passed",
-          },
+        actionsCategoryItem.setChangeCategoryItemsValues({
+          inspectionItemId: id,
+          inspectionId: inspectionItem.id,
+          itemComment: visibleComment,
+          itemResult: selectedResult === "Passed",
         })
       );
     }

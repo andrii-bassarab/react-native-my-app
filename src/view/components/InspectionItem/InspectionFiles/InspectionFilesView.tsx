@@ -111,7 +111,6 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const [visibleFiles, setVisibleFiles] = useState(mocksFiles);
   const [showModalAddFile, setShowModalAddFile] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
-  const [newFile, setNewFile] = useState<DocumentPickerResponse | null>(null);
   const [showModalImage, setShowModalImage] = useState(false);
   const [showModalDocument, setShowModalDocument] = useState(false);
   const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
@@ -256,8 +255,6 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           email: profile?.email || "",
           documentType: 'Document',
         });
-
-        setNewFile(selectedFile);
 
         setVisibleFiles((prev) => [
           ...prev,
@@ -431,7 +428,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           closeModalFunction={() => setShowModalDocument(false)}
         />
       )}
-      {false && <ModalLoader/>}
+      {loader && <ModalLoader/>}
     </View>
   );
 };

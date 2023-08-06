@@ -25,11 +25,6 @@ export const GET_ALL_INSPECTIONS_CATEGORY = gql`
             id
             name
             description  
-            itemsValues{  
-              id          
-              comment
-              value
-            }
             options {
               name
               description

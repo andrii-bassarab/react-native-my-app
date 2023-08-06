@@ -66,7 +66,7 @@ export const AmenitiesCard: React.FC<Props> = ({ title, result, comment, categor
   useEffect(() => {
     if (visibleComment && typeof selectedResult === "string") {
       dispatch(
-        actionsCategoryItem.setCategoryAmenitiesValues({
+        actionsCategoryItem.setChangeCategoryAmenitiesValues({
           amenityId: id,
           inspectionId: inspectionItem.id,
           amenitieComment: visibleComment,

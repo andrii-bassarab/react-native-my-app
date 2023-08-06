@@ -21,6 +21,9 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
     (state) => state.inspectionItem
   );
 
+  const categoryInspectionStatus = status[inspectionItem.id] || "Incomplete";
+  const categoryInspectionResult = result[inspectionItem.id] || "Not result yet";
+
   const dynamycCategoryApplyToInspection = categories.find(
     (categoryToCheck) => categoryToCheck.id === id
   )?.isRequired;
@@ -46,7 +49,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
         >
           {category.title}
         </Text>
-        {status === "Complete" && result === "Passed" && (
+        {categoryInspectionStatus === "Complete" && categoryInspectionResult === "Passed" && (
           <CompletedIcon
             color={"#96BF5B"}
             style={{ marginLeft: "2%" }}
@@ -54,7 +57,7 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
             width={normalize(20)}
           />
         )}
-        {status === "Complete" && result === "Failed" && (
+        {categoryInspectionStatus === "Complete" && categoryInspectionResult === "Failed" && (
           <View style={styles.failedBox}>
             <FailedIcon
               color={"#fff"}
@@ -68,11 +71,11 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
         <View style={{ flex: 1 }}>
           <View style={styles.label}>
             <Text style={styles.labelText}>Status:</Text>
-            <Text style={styles.text}>{status}</Text>
+            <Text style={styles.text}>{categoryInspectionStatus}</Text>
           </View>
           <View style={styles.label}>
             <Text style={styles.labelText}>Result:</Text>
-            <Text style={styles.text}>{result}</Text>
+            <Text style={styles.text}>{categoryInspectionResult}</Text>
           </View>
         </View>
         <View style={{ flex: 0.6 }}>

@@ -32,7 +32,7 @@ const transforms = [
 const rootPersistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user', 'notifications', 'inspections', 'categoriesTemplates', 'categoryAmenitiesValuesReducer'],
+  whitelist: ['user', 'notifications', 'inspections', 'categoriesTemplates', 'categoryAmenitiesValues', 'categoryItemsValues'],
   transforms,
 };
 

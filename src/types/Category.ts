@@ -3,8 +3,8 @@ import { IComment } from "./Comment";
 export interface Category {
   id: string;
   title: string;
-  status: string;
-  result: string;
+  status: Record<string, string>;
+  result: Record<string, string>;
   items: number;
   photos: string;
   categoryAdded?: boolean;
@@ -58,7 +58,6 @@ export interface CategoryItems {
   id: string;
   name: string;
   description: string;
-  itemsValues: CategoryItemField[];
 }
 
 export interface CategoryType {
@@ -70,6 +69,6 @@ export interface CategoryType {
   createdBy: string | null;
   amenities: CategoryAmenities[];
   items: CategoryItems[];
-  status?: any;
-  result?: any;
+  status?: Record<string, string>;
+  result?: Record<string, string>;
 }

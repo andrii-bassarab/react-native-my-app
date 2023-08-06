@@ -20,8 +20,8 @@ export const CategoryList: React.FC<Props> = ({
   const renderCategoryItem = (category: CategoryType) => ({
     id: category.id,
     title: category.name,
-    status: category.status || "Incomplete",
-    result: category.result || "No results yet",
+    status: category.status || {},
+    result: category.result || {},
     items: category.items?.length,
     photos: "No",
     categoryApplyToInspection: category.isRequired,

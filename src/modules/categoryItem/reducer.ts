@@ -1,7 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryAmenitiesResponse } from "~/types/Category";
+import { CategoryAmenitiesResponse, CategoryItemsValues } from "~/types/Category";
 
-const initialState = {} as CategoryAmenitiesResponse;
+const initialState = {
+  itemsValues: {},
+  amenitiesValues: {}
+} as {
+  itemsValues: CategoryItemsValues,
+  amenitiesValues: CategoryAmenitiesResponse
+};
 
 const categoryItemSlice = createSlice({
   name: "categoryItem",
@@ -12,10 +18,22 @@ const categoryItemSlice = createSlice({
       action: PayloadAction<CategoryAmenitiesResponse>
     ) => {
       for (const amenityId in action.payload) {
-        state[amenityId] = action.payload[amenityId]
+        state.amenitiesValues[amenityId] = action.payload[amenityId]
       }
     },
-    setCategoryAmenitiesValues: (
+    addDynamicCategoryItemsValues: (
+      state,
+      action: PayloadAction<CategoryItemsValues>
+    ) => {
+      console.log("action.payload", action.payload)
+      for (const inspectionId in action.payload) {
+        console.log("inspectionId", action.payload[inspectionId])
+        state.itemsValues[inspectionId] = action.payload[inspectionId]
+      }
+
+      console.log("state", state)
+    },
+    setChangeCategoryAmenitiesValues: (
       state,
       action: PayloadAction<{
         amenityId: string;
@@ -26,9 +44,25 @@ const categoryItemSlice = createSlice({
     ) => {
       const { amenityId, inspectionId, amenitieComment, amenitieResult } = action.payload;
 
-      if (state?.[amenityId]?.[inspectionId]) {
-        state[amenityId][inspectionId].comment = amenitieComment;
-        state[amenityId][inspectionId].value = amenitieResult ? "true" : "false";
+      if (state.amenitiesValues?.[amenityId]?.[inspectionId]) {
+        state.amenitiesValues[amenityId][inspectionId].comment = amenitieComment;
+        state.amenitiesValues[amenityId][inspectionId].value = amenitieResult ? "true" : "false";
+      }
+    },
+    setChangeCategoryItemsValues: (
+      state,
+      action: PayloadAction<{
+        inspectionItemId: string;
+        inspectionId: string;
+        itemComment: string;
+        itemResult: boolean;
+      }>
+    ) => {
+      const { inspectionItemId, inspectionId, itemComment, itemResult } = action.payload;
+
+      if (state.itemsValues?.[inspectionId]?.[inspectionItemId]) {
+        state.itemsValues[inspectionId][inspectionItemId].comment = itemComment;
+        state.itemsValues[inspectionId][inspectionItemId].value = itemResult ? "true" : "false";
       }
     },
   },

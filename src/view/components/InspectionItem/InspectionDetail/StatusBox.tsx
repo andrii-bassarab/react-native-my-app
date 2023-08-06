@@ -17,10 +17,7 @@ export const StatusBox: React.FC<Props> = ({ inspection }) => {
     <View style={[styles.card, styles.shadowProp]}>
       <View style={styles.label}>
         <Text style={styles.labelText}>Status:</Text>
-        <Text style={styles.text}>{`${
-          (inspectionItem?.status?.[0]?.toLocaleUpperCase() || "") +
-          (inspectionItem?.status?.slice(1) || "")
-        }`}</Text>
+        <Text style={{...styles.text, textTransform: 'capitalize'}}>{inspectionItem?.status}</Text>
       </View>
       <View style={styles.label}>
         <Text style={styles.labelText}>Date Completed:</Text>

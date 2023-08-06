@@ -30,8 +30,8 @@ interface Props {
   category: {
     id: string;
     title: string;
-    status: string;
-    result: string;
+    status: Record<string, string>;
+    result: Record<string, string>;
     items: number;
     photos: string;
     categoryAdded?: boolean;
@@ -47,8 +47,10 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
     (state) => state.inspectionItem
   );
   const { profile } = useAppSelector((state) => state.user);
+  const categoryInspectionStatus = status[inspectionItem.id] || "Incomplete";
+  const categoryInspectionResult = result[inspectionItem.id] || "Not result yet";
 
-  const itemColor = getColorCategoryByResult(result, status);
+  const itemColor = getColorCategoryByResult(categoryInspectionResult, categoryInspectionStatus);
 
   const [deleteCategory, { loading, data }] = useMutation(DELETE_CATEGORY);
 
@@ -105,7 +107,7 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
             {title}
           </Text>
           {categoryAdded &&
-            status !== "Complete" &&
+            categoryInspectionStatus !== "Complete" &&
             inspectionItem?.status !== InspectionStatus.COMPLETE && (
               <View
                 style={{
@@ -144,11 +146,11 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
           <View style={{ flex: 1 }}>
             <View style={styles.label}>
               <Text style={styles.labelText}>Status:</Text>
-              <Text style={styles.text}>{status}</Text>
+              <Text style={styles.text}>{categoryInspectionStatus}</Text>
             </View>
             <View style={styles.label}>
               <Text style={styles.labelText}>Result:</Text>
-              <Text style={styles.text}>{result}</Text>
+              <Text style={styles.text}>{categoryInspectionResult}</Text>
             </View>
           </View>
           <View style={{ flex: 0.6 }}>
@@ -162,14 +164,14 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
             </View>
           </View>
           <View style={{ flex: 0.2, alignItems: "center" }}>
-            {status === "Complete" && result === "Passed" && (
+            {categoryInspectionStatus === "Complete" && result[inspectionItem.id] === "Passed" && (
               <CompletedIcon
                 color={"#96BF5B"}
                 height={normalize(40)}
                 width={normalize(40)}
               />
             )}
-            {status === "Complete" && result === "Failed" && (
+            {categoryInspectionStatus === "Complete" && result[inspectionItem.id] === "Failed" && (
               <View style={styles.failedBox}>
                 <FailedIcon color={"#fff"} height={normalize(20)} width={normalize(20)} />
               </View>

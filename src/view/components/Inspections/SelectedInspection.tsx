@@ -68,7 +68,7 @@ export const SelectedInspection: React.FC<Props> = ({
     };
   };
 
-  const updatDetailCache = (assignedTo: string) => {
+  const updatDetailCache = (assignedTo: string | null) => {
     return (cache: ApolloCache<any>, { data }: any) => {
       if (!data?.updateInspection?.affectedEntity?.id) {
         return;
@@ -152,7 +152,7 @@ export const SelectedInspection: React.FC<Props> = ({
     dispatch(actionsInspectionItem.setInspectionStatus(status))
   };
 
-  const handleChangeInspectionDetail = async (assignedTo: string, ) => {
+  const handleChangeInspectionDetail = async (assignedTo: string | null ) => {
     await updateInspection({
       variables: {
         command: {

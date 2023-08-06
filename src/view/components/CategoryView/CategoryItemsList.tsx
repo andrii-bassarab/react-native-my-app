@@ -7,27 +7,31 @@ import {
 import { colors, textStyles } from "../../theme";
 import { CategoryItems } from "~/types/Category";
 import { CharacterCard } from "../../components/CategoryView/CharacterCard";
+import { useAppSelector } from "~/store/hooks";
 
 interface Props {
-  categoryItemsValues: CategoryItems[];
+  categoryItems: CategoryItems[];
   categoryId: string;
 }
 
 export const CategoryItemsList: React.FC<Props> = ({
-    categoryItemsValues,
+    categoryItems,
     categoryId
 }) => {
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { categoryItemsValues } = useAppSelector((state) => state);
+
   return (
     <>
-      {categoryItemsValues.length > 0 ? (
+      {categoryItems.length > 0 ? (
         <View style={{paddingTop: "1%"}}>
-          {categoryItemsValues.map((item) => (
+          {categoryItems.map((item) => (
             <CharacterCard
               key={item.id}
               title={item.name}
               message={item.description}
-              result={item.itemsValues[0]?.value === undefined ? undefined : item.itemsValues[0]?.value === "true"}
-              comment={item.itemsValues[0]?.comment === undefined ? undefined : item.itemsValues[0]?.comment}
+              result={categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.value === undefined ? undefined : categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.value === "true"}
+              comment={categoryItemsValues?.[categoryId]?.[inspectionItem.id]?.[item.id]?.comment}
               inspectionItemId={item.id}
               id={item.id}
               categoryId={categoryId} 

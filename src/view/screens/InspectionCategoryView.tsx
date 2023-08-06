@@ -10,16 +10,18 @@ import {
   CategoryItems,
   CategoryAmenities,
   CategoryAmenitiesResponse,
+  CategoryItemsValues,
 } from "~/types/Category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   GET_ALL_INSPECTIONS_CATEGORY,
   GET_CATEGORY_AMENITY_VALUE_INSPECTION,
+  GET_CATEGORY_ITEM_VALUE_INSPECTION,
   UPDATE_CATEGORY_AMENITY_VALUE,
   UPDATE_CATEGORY_ITEM_VALUE,
   UPDATE_INSPECTION_CATEGORY_MUTATION,
@@ -51,9 +53,12 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
   const dispatch = useAppDispatch();
   const { category, items, amenities } = route.params;
   const { categories, inspectionItem } = useAppSelector((state) => state.inspectionItem);
-  const { categoriesTemplates, categoryAmenitiesValues, categoryItem } = useAppSelector(
-    (state) => state
-  );
+  const {
+    categoriesTemplates,
+    categoryAmenitiesValues,
+    categoryItemsValues,
+    categoryItem: { amenitiesValues: dynamicAmenitiesValues, itemsValues: dynamicItemsValues },
+  } = useAppSelector((state) => state);
   const { inspectionsSync } = useAppSelector((state) => state.inspections);
   const { profile } = useAppSelector((state) => state.user);
   const [updateCategoryItemValue] = useMutation(UPDATE_CATEGORY_ITEM_VALUE);
@@ -69,6 +74,12 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
       inspectionId: inspectionItem.id,
     },
   });
+  const [getCategoryItemsValues] = useLazyQuery(GET_CATEGORY_ITEM_VALUE_INSPECTION, {
+    variables: {
+      ids: [] as string[],
+      inspectionId: inspectionItem.id,
+    },
+  });
   const [loader, setLoader] = useState(false);
   const dynamycCategoryApplyToInspection = Boolean(
     categories.find((categoryToCheck) => categoryToCheck.id === category.id)?.isRequired
@@ -81,20 +92,37 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
     },
   });
 
-  console.log("inspection", categoryAmenitiesValues)
-  console.log("category", categoryItem)
-
   useEffect(() => {
     const currentCategoryAmenitiesValues: CategoryAmenitiesResponse = {};
 
     for (const amenity of amenities) {
       currentCategoryAmenitiesValues[amenity.id] = {};
 
-      currentCategoryAmenitiesValues[amenity.id][inspectionItem.id] = categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id];
+      if (categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id]) {
+        currentCategoryAmenitiesValues[amenity.id][inspectionItem.id] =
+          categoryAmenitiesValues?.[amenity.id]?.[inspectionItem.id];
+      }
     }
 
     dispatch(actionsCategoryItem.addCategoryAmenities(currentCategoryAmenitiesValues));
   }, [amenities, categoryAmenitiesValues]);
+
+  useEffect(() => {
+    const currentCategoryItemsValues: CategoryItemsValues = {};
+
+    for (const categoryInspectionItem of items) {
+      if (!currentCategoryItemsValues[inspectionItem.id]) {
+        currentCategoryItemsValues[inspectionItem.id] = {};
+      }
+
+      if (categoryItemsValues?.[category.id]?.[inspectionItem.id]?.[categoryInspectionItem.id]) {
+        currentCategoryItemsValues[inspectionItem.id][categoryInspectionItem.id] =
+          categoryItemsValues?.[category.id]?.[inspectionItem.id]?.[categoryInspectionItem.id];
+      }
+    }
+
+    dispatch(actionsCategoryItem.addDynamicCategoryItemsValues(currentCategoryItemsValues));
+  }, [items, categoryItemsValues]);
 
   const inspectionIsCompleted = useMemo(
     () => inspectionItem?.status === InspectionStatus.COMPLETE,
@@ -130,29 +158,47 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
     );
   }, [categoriesTemplates[inspectionItem.templateId]]);
 
+  const categoryItemsValueWasChanged = useMemo(() => {
+    return (
+      Object.keys(dynamicItemsValues[inspectionItem.id] || {}).length > 0 &&
+      Object.keys(dynamicItemsValues[inspectionItem.id] || {}).some(
+        (itemId) =>
+          dynamicItemsValues?.[inspectionItem.id]?.[itemId]?.value !==
+            categoryItemsValues?.[category.id]?.[inspectionItem.id]?.[itemId]?.value ||
+          dynamicItemsValues?.[inspectionItem.id]?.[itemId]?.comment !==
+            categoryItemsValues?.[category.id]?.[inspectionItem.id]?.[itemId]?.comment
+      )
+    );
+  }, [dynamicItemsValues, categoryItemsValues]);
+
+  const categoryAmenitiesValueWasChanged = useMemo(() => {
+    return (
+      Object.keys(dynamicAmenitiesValues).length > 0 &&
+      Object.keys(dynamicAmenitiesValues).some(
+        (amenityId) =>
+          dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.value !==
+            categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.value ||
+          dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment !==
+            categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment
+      )
+    );
+  }, []);
+
   const hasUnsavedChanges = useMemo(
     () =>
-      (Number(foundDynamicCategory?.items?.length) > 0 &&
-        foundDynamicCategory?.items.some(
-          (item, index) =>
-            item?.itemsValues[0]?.value !==
-              foundTemplateCategory?.items[index]?.itemsValues[0]?.value ||
-            item?.itemsValues[0]?.comment !==
-              foundTemplateCategory?.items[index]?.itemsValues[0]?.comment
-        )) ||
-      (Object.keys(categoryItem).length > 0 &&
-        Object.keys(categoryItem).some(
-          (amenityId) =>
-            (categoryItem?.[amenityId]?.[inspectionItem.id]?.value !==
-              categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.value) ||
-            (categoryItem?.[amenityId]?.[inspectionItem.id]?.comment !==
-              categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment)
-        )) ||
+      categoryItemsValueWasChanged ||
+      categoryAmenitiesValueWasChanged ||
       foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired,
-    [foundDynamicCategory, foundTemplateCategory, categoryAmenitiesValues, categoryItem]
+    [
+      foundDynamicCategory,
+      foundTemplateCategory,
+      categoryItemsValueWasChanged,
+      categoryAmenitiesValueWasChanged,
+    ]
   );
 
-  console.log("hasUnsavedChanges", hasUnsavedChanges)
+  console.log("categoryItemsValues", categoryAmenitiesValues);
+  console.log("dynamicAmenitiesValues", dynamicAmenitiesValues);
 
   const handleGoBackWithoutSaving = () => {
     if (hasUnsavedChanges && !inspectionIsCompleted) {
@@ -164,47 +210,51 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
   };
 
   const handleSaveGoBack = async () => {
-    let updatePromises = foundDynamicCategory?.items?.map((item, index) => {
+    let updatePromises = [];
+
+    Object.keys(dynamicItemsValues[inspectionItem.id] || {}).forEach((inspectionItemId) => {
       if (
-        item?.itemsValues[0]?.value !==
-          foundTemplateCategory?.items[index]?.itemsValues[0]?.value ||
-        item?.itemsValues[0]?.comment !==
-          foundTemplateCategory?.items[index]?.itemsValues[0]?.comment
+        dynamicItemsValues?.[inspectionItem.id]?.[inspectionItemId]?.value !==
+          categoryItemsValues?.[category.id]?.[inspectionItem.id]?.[inspectionItemId]?.value ||
+        dynamicItemsValues?.[inspectionItem.id]?.[inspectionItemId]?.comment !==
+          categoryItemsValues?.[category.id]?.[inspectionItem.id]?.[inspectionItemId]?.comment
       ) {
-        return updateCategoryItemValue({
-          variables: {
-            command: {
-              customerId: "pfdylv",
-              siteId: "pfdylv",
-              id: item?.itemsValues[0]?.id,
-              inspectionId: inspectionItem?.id,
-              inspectionItemId: item.id,
-              value: item?.itemsValues[0]?.value,
-              comment: item?.itemsValues[0]?.comment,
+        updatePromises.push(
+          updateCategoryItemValue({
+            variables: {
+              command: {
+                customerId: "pfdylv",
+                siteId: "pfdylv",
+                id: dynamicItemsValues?.[inspectionItem.id]?.[inspectionItemId]?.id,
+                inspectionId: inspectionItem?.id,
+                inspectionItemId,
+                value: dynamicItemsValues?.[inspectionItem.id]?.[inspectionItemId]?.value,
+                comment: dynamicItemsValues?.[inspectionItem.id]?.[inspectionItemId]?.comment,
+              },
             },
-          },
-        });
+          })
+        );
       }
     });
 
-    Object.keys(categoryItem).forEach((amenityId) => {
+    Object.keys(dynamicAmenitiesValues).forEach((amenityId) => {
       if (
-        categoryItem?.[amenityId]?.[inspectionItem.id]?.value !==
+        dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.value !==
           categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.value ||
-        categoryItem?.[amenityId]?.[inspectionItem.id]?.comment !==
+        dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment !==
           categoryAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment
       ) {
-        updatePromises?.push(
+        updatePromises.push(
           updateCategoryAmenityValue({
             variables: {
               command: {
                 customerId: "pfdylv",
                 siteId: "pfdylv",
-                id: categoryItem?.[amenityId]?.[inspectionItem.id]?.id,
+                id: dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.id,
                 inspectionId: inspectionItem?.id,
                 inspectionAmenityId: amenityId,
-                value: categoryItem?.[amenityId]?.[inspectionItem.id]?.value,
-                comment: categoryItem?.[amenityId]?.[inspectionItem.id]?.comment,
+                value: dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.value,
+                comment: dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.comment,
               },
             },
           })
@@ -239,19 +289,31 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
         console.log("Waiting for updates to complete...");
         setLoader(true);
         await Promise.all(updatePromises);
-        // await refetch({
-        //   id: inspectionItem?.templateId,
-        // });
-        await refetchCategoryAmenities({
-          ids: amenities.map((amenity) => amenity.id),
-          inspectionId: inspectionItem.id,
-        });
+        if (foundTemplateCategory?.isRequired !== foundDynamicCategory?.isRequired) {
+          await refetch({
+            id: inspectionItem?.templateId,
+          });
+        }
+        if (categoryItemsValueWasChanged) {
+          await getCategoryItemsValues({
+            variables: {
+              ids: items.map((item) => item.id),
+              inspectionId: inspectionItem.id,
+            },
+          });
+        }
+        if (categoryAmenitiesValueWasChanged) {
+          await refetchCategoryAmenities({
+            ids: amenities.map((amenity) => amenity.id),
+            inspectionId: inspectionItem.id,
+          });
+        }
         navigation.goBack();
+        console.log("updates completed");
       } catch (e) {
         console.log("error in update categoryItemValue: ", e);
       } finally {
         setLoader(false);
-        console.log("updates completed");
       }
     } else {
       navigation.goBack();
@@ -288,7 +350,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
         />
         <View style={{ height: normalize(20) }}></View>
         <ScrollView style={{ paddingHorizontal: 5, flex: 1 }} showsVerticalScrollIndicator={false}>
-          <CategoryItemsList categoryItemsValues={items} categoryId={category.id} />
+          <CategoryItemsList categoryItems={items} categoryId={category.id} />
           <CategoryAmenitiesList
             categoryAmenities={amenities}
             loading={loadingCategoryAmenitie}
