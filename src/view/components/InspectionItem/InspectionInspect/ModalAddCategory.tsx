@@ -19,6 +19,7 @@ import {
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { normalize } from "~/utils/getWindowHeight";
+import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
   closeModal: () => void;
@@ -51,8 +52,8 @@ export const ModalAddCategory: React.FC<Props> = ({ closeModal }) => {
   ];
 
   const newCategory = {
-    customerId: "pfdylv",
-    siteId: "pfdylv",
+    customerId: X_CUSTOMER_ID,
+    siteId: X_SIDE_ID,
     inspectionTemplateId: inspectionItem?.templateId,
     name: displayName,
     isRequired: true,

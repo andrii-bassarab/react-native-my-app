@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
@@ -14,6 +14,7 @@ import { ApolloCache, useMutation } from "@apollo/client";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { normalize } from "~/utils/getWindowHeight";
+import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
   inspection: InspectionItem;
@@ -29,8 +30,9 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
     name: user.fullName,
   }));
   const [assignedTo, setAssignedTo] = useState<OptionItem>(assignedOption);
-  const { profile }= useAppSelector((state) => state.user);
-  const showToast = (message: string) => dispatch(actionsToastNotification.showToastMessage(message));
+  const { profile } = useAppSelector((state) => state.user);
+  const showToast = (message: string) =>
+    dispatch(actionsToastNotification.showToastMessage(message));
 
   const closeModalAssigned = () => {
     setShowModalAssigned(false);
@@ -68,36 +70,43 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
     };
   };
 
-  const handleChangeInspectionDetail = async (assignedTo: string | null, ) => {
-    await updateInspection({
-      variables: {
-        command: {
-          id: inspection.id,
-          customerId: "pfdylv",
-          siteId: "pfdylv",
-          templateId: inspection.templateId,
-          unitId: inspection.unit?.id,
-          assignedTo,
-          houseHoldId: inspection.household?.headOfHouseholdId || "5f6e70c53ddf6a0016378dbf",
-          status: inspectionItem?.status,
-          hasPassed: false,
-          hasPermissionToEnter: inspection.hasPermissionToEnter,
-          inspectionType: inspection.inspectionType,
-          propertyType: inspection.propertyType,
-          isReInspection: inspection.isReinspection,
-          modifiedBy: profile?.email || "",
+  const handleChangeInspectionDetail = async (assignedTo: string | null) => {
+    try {
+      const { data } = await updateInspection({
+        variables: {
+          command: {
+            id: inspection.id,
+            customerId: X_CUSTOMER_ID,
+            siteId: X_SIDE_ID,
+            templateId: inspection.templateId,
+            unitId: inspection.unit?.id,
+            assignedTo,
+            houseHoldId: inspection.household?.headOfHouseholdId || "5f6e70c53ddf6a0016378dbf",
+            status: inspectionItem?.status,
+            hasPassed: false,
+            hasPermissionToEnter: inspection.hasPermissionToEnter,
+            inspectionType: inspection.inspectionType,
+            propertyType: inspection.propertyType,
+            isReInspection: inspection.isReinspection,
+            modifiedBy: profile?.email || "",
+          },
         },
-      },
-      update: updatDetailCache(assignedTo),
-    });
-    dispatch(actionsInspectionItem.setInspectionAssigned(assignedTo));
-    showToast("Success! Inspection saved.")
+        update: updatDetailCache(assignedTo),
+      });
+      if (data?.updateInspection?.status === "FAILURE") {
+        throw new Error();
+      }
+
+      dispatch(actionsInspectionItem.setInspectionAssigned(assignedTo));
+      showToast("Success! Inspection saved.");
+    } catch (e) {
+      Alert.alert("Failed to update inspection details");
+    }
   };
 
   const saveAssignedTo = async () => {
     if (inspectionItem?.status !== InspectionStatus.INCOMPLETE && typeof assignedTo === "object") {
-      console.log("render")
-      await handleChangeInspectionDetail(assignedTo.value)
+      await handleChangeInspectionDetail(assignedTo.value);
     }
 
     setShowModalAssigned(false);
@@ -122,9 +131,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
         <Text style={styles.text}>
           {inspection.scheduledOn
             ? `${getInspectionDate(new Date(inspection.scheduledOn))} ${
-                inspection.visitationRange
-                  ? `from ${inspection.visitationRange}`
-                  : ""
+                inspection.visitationRange ? `from ${inspection.visitationRange}` : ""
               }`
             : "--"}
         </Text>
@@ -150,10 +157,7 @@ export const AssignedBox: React.FC<Props> = ({ inspection }) => {
               selectedItem={assignedTo}
               setSelectedItem={setAssignedTo}
             />
-            <TouchableOpacity
-              style={styles.modalSaveButton}
-              onPress={saveAssignedTo}
-            >
+            <TouchableOpacity style={styles.modalSaveButton} onPress={saveAssignedTo}>
               <Text style={styles.modalSaveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
@@ -213,7 +217,7 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     flex: 1,
     marginTop: "5%",
-    paddingHorizontal: '7%',
+    paddingHorizontal: "7%",
   },
   modalTitle: {
     color: colors.darkGrey,

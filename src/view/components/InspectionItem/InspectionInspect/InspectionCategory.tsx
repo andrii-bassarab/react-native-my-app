@@ -25,6 +25,7 @@ import {
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { normalize } from "~/utils/getWindowHeight";
+import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
   category: {
@@ -65,8 +66,8 @@ export const InspectionCategory: React.FC<Props> = ({ category }) => {
       await deleteCategory({
         variables: {
           command: {
-            customerId: "pfdylv",
-            siteId: "pfdylv",
+            customerId: X_CUSTOMER_ID,
+            siteId: X_SIDE_ID,
             id: category.id,
             deletedBy: profile?.email || "test",
           },

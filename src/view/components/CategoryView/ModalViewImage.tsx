@@ -1,24 +1,20 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Modal,
-  Pressable,
-} from "react-native";
-import { Asset } from "react-native-image-picker";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, Pressable } from "react-native";
+import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
 import { normalize } from "~/utils/getWindowHeight";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { colors, textStyles } from "~/view/theme";
+import { ContentLoader } from "../Loader/Loader";
+import { InspectionFile } from "~/types/InspectionFile";
 
 interface Props {
   closeModalFunction: () => void;
-  image: Asset | null;
+  image: InspectionFile | null;
 }
 
 export const ModalViewImage: React.FC<Props> = ({ closeModalFunction, image }) => {
+  const [loader, setLoader] = useState(false);
+
   return (
     <Modal transparent={true}>
       <Pressable
@@ -40,8 +36,31 @@ export const ModalViewImage: React.FC<Props> = ({ closeModalFunction, image }) =
             <TouchableOpacity style={styles.closeButton} onPress={closeModalFunction}>
               <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
             </TouchableOpacity>
-            <Image source={{ uri: image.uri }} style={styles.image} />
-            <Text style={styles.fileNameText}>{image.fileName}</Text>
+            <View>
+              <View
+                style={{
+                  ...styles.image,
+                  position: "absolute",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {loader && <ContentLoader size="medium" />}
+              </View>
+              <Image
+                source={{
+                  uri: `${BASE_DOCUMENT_API}/files/${image.id}`,
+                  headers: {
+                    "x-api-key": FILEROOM_API_KEY,
+                  },
+                }}
+                style={styles.image}
+                onLoadStart={() => setLoader(true)}
+                onLoad={() => setLoader(false)}
+              ></Image>
+            </View>
+
+            <Text style={styles.fileNameText}>{image.name}</Text>
           </View>
         )}
       </Pressable>

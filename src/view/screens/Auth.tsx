@@ -75,9 +75,7 @@ export const AuthScreen: React.FC = () => {
       dispatch(
         setUser({
           id: 1,
-          email:
-            userName.toLocaleLowerCase().replace(/ /g, ".") +
-            "@appitventures.com",
+          email: userName.toLocaleLowerCase().replace(/ /g, ".") + "@gmail.com",
           userName: userName,
         })
       );

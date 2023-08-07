@@ -6,23 +6,22 @@ import { ContentLoader } from "../../Loader/Loader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { normalize } from "~/utils/getWindowHeight";
 import { textStyles } from "~/view/theme";
-import { IFile } from "./InspectionFilesView";
 import FileViewer from "react-native-file-viewer";
 
 interface Props {
   closeModalFunction: () => void;
   uri: string;
-  selectedFile: IFile | null
 }
 
 export const InspectionFileModalDocument: React.FC<Props> = ({
   closeModalFunction,
   uri,
-  selectedFile
 }) => {
   const [loader, setLoader] = useState(true);
   const [error, setError] = useState(false);
   const insets = useSafeAreaInsets();
+
+  console.log("uri", uri)
 
   const source: Source = {
     uri,

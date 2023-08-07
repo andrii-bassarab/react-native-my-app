@@ -31,7 +31,8 @@ export const getColorCategoryByResult = (result: string, status: string) => {
   }
 }
 
-export const getColorIconFileByFormat = (fileFormat: string) => {
+export const getColorIconFileByFormat = (fileType: string) => {
+  const fileFormat = fileType.toLocaleLowerCase();
   switch (true) {
     case fileFormat === "pdf":
       return colors.red;

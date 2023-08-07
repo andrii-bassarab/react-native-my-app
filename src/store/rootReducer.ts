@@ -16,6 +16,8 @@ import categoryTemplateReducer from '~/modules/categoriesTemplates';
 import categoryAmenitiesValuesReducer from '~/modules/categoryAmenitiesValues'; 
 import categoryItemsValuesReducer from '~/modules/categoryItemsValue'; 
 import categoryItemReducer from '~/modules/categoryItem'; 
+import inspectionFilesReducer from '~/modules/inspectionFiles'; 
+
 
 const transforms = [
   createTransform(
@@ -50,6 +52,7 @@ const appReducer = combineReducers({
   categoryAmenitiesValues: categoryAmenitiesValuesReducer,
   categoryItem: categoryItemReducer,
   categoryItemsValues: categoryItemsValuesReducer,
+  inspectionFiles: inspectionFilesReducer,
 });
 
 const reducer: typeof appReducer = (state, action) => {

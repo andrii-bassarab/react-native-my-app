@@ -27,13 +27,15 @@ const categoryItemsValuesSlice = createSlice({
           state[categoryId] = {};
         }
 
-        categotyItemsValuesObject.forEach(categoryItemValue => {
-          if (!state[categoryId]?.[categoryItemValue?.inspectionId]) {
-            state[categoryId][categoryItemValue?.inspectionId] = {};
-          }
-
-          state[categoryId][categoryItemValue?.inspectionId][categoryItemValue.inspectionItemId.trim()] = categoryItemValue;
-        })
+        if (Array.isArray(categotyItemsValuesObject)) {
+          categotyItemsValuesObject.forEach(categoryItemValue => {
+            if (!state[categoryId]?.[categoryItemValue?.inspectionId]) {
+              state[categoryId][categoryItemValue?.inspectionId] = {};
+            }
+  
+            state[categoryId][categoryItemValue?.inspectionId][categoryItemValue.inspectionItemId.trim()] = categoryItemValue;
+          })
+        }
       });
     },
   },

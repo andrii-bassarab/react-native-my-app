@@ -1,9 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-} from "@react-navigation/native";
+import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { View, StyleSheet } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors, layout } from "../theme";
@@ -23,6 +19,7 @@ import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionFilesView } from "../components/InspectionItem/InspectionFiles/InspectionFilesView";
 import { KeyboardAvoidingDisplayComponent } from "../hoc/KeyboardAvoidingDisplayComponent";
 import { normalize } from "~/utils/getWindowHeight";
+import { openFile } from "~/utils/readDocument";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;
@@ -34,23 +31,22 @@ const Tab = createMaterialTopTabNavigator();
 export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   const inspection = route.params;
   const dispatch = useAppDispatch();
-  const { startSignature, visiblePhoneNumber, inspectionItem, assignedOption } = useAppSelector((state) => state.inspectionItem);
+  const { startSignature, visiblePhoneNumber, inspectionItem, assignedOption } = useAppSelector(
+    (state) => state.inspectionItem
+  );
 
   const [showModalUnsavedChanges, setShowModalUnsavedChanges] = useState(false);
   const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
 
   const goBack = () => {
     // setTimeout(() => {
-      // navigation.goBack();
+    // navigation.goBack();
     // }, 0);
     navigation.navigate("Inspections");
   };
 
   const inspectOptions = {
-    tabBarLabel:
-      inspectionItem?.status === InspectionStatus.COMPLETE
-        ? "Results"
-        : "Inspect",
+    tabBarLabel: inspectionItem?.status === InspectionStatus.COMPLETE ? "Results" : "Inspect",
   };
 
   const hasUnsavedChanges = useMemo(
@@ -60,16 +56,10 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
 
   useEffect(() => {
     dispatch(actionsInspectionItem.setInspectionItem(inspection));
+    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []));
+    dispatch(actionsInspectionItem.setInspectionAssigned(inspection.assignedTo));
     dispatch(
-      actionsInspectionItem.setCategories(
-        categoriesTemplates[inspection.templateId] || []
-      )
-    );
-    dispatch(actionsInspectionItem.setInspectionAssigned(inspection.assignedTo))
-    dispatch(
-      actionsInspectionItem.setVisiblePhoneNumber(
-        inspection.visibleLandlordPhoneNumber || ""
-      )
+      actionsInspectionItem.setVisiblePhoneNumber(inspection.visibleLandlordPhoneNumber || "")
     );
 
     return () => {
@@ -92,20 +82,12 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    dispatch(
-      actionsInspectionItem.setCategories(
-        categoriesTemplates[inspection.templateId] || []
-      )
-    );
+    dispatch(actionsInspectionItem.setCategories(categoriesTemplates[inspection.templateId] || []));
   }, [categoriesTemplates[inspection.templateId]]);
 
   return (
     <KeyboardAvoidingDisplayComponent>
-      <Screen
-        backgroundColor={colors.layout}
-        paddingTop={layout.screenPadding}
-        borderRadius={55}
-      >
+      <Screen backgroundColor={colors.layout} paddingTop={layout.screenPadding} borderRadius={55}>
         <View style={styles.content}>
           <View style={{ paddingHorizontal: "5%" }}>
             <SelectedInspection item={inspection} goBack={handleGoBack} />
@@ -133,21 +115,13 @@ export const InspectionItem: React.FC<Props> = ({ navigation, route }) => {
                 options={inspectOptions}
                 initialParams={inspection}
               />
-              <Tab.Screen
-                name="Details"
-                component={InspectionDetails}
-                initialParams={inspection}
-              />
+              <Tab.Screen name="Details" component={InspectionDetails} initialParams={inspection} />
               <Tab.Screen
                 name="Comments"
                 component={InspectionComments}
                 initialParams={inspection}
               />
-              <Tab.Screen
-                name="Files"
-                component={InspectionFilesView}
-                initialParams={inspection}
-              />
+              <Tab.Screen name="Files" component={InspectionFilesView} initialParams={inspection} />
             </Tab.Navigator>
           )}
           {startSignature && <SignatureView inspection={inspection} />}

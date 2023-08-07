@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { IComment } from "~/types/Comment";
 import { colors, textStyles } from "~/view/theme";
 import { ModalLoader } from "../../Loader/ModalLoader";
+import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
   input: string;
@@ -62,8 +63,8 @@ export const AddCommentBox: React.FC<Props> = ({
     updateInspection({
       variables: {
         command: {
-          customerId: "pfdylv",
-          siteId: "pfdylv",
+          customerId: X_CUSTOMER_ID,
+          siteId: X_SIDE_ID,
           inspectionId: inspectionId,
           commentBody: input,
           createdBy: profile?.email || "",

@@ -1,4 +1,4 @@
-import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
+import { BASE_DOCUMENT_API, FILEROOM_API_KEY, X_SIDE_ID } from "~/constants/env";
 import { Asset } from "react-native-image-picker";
 import { Platform } from "react-native";
 import { getUploadFileDate } from "~/utils/visibleDate";
@@ -16,14 +16,14 @@ interface IParams {
   signaturePosition?: "Inspector" | "Landlord" | "Tenant";
 }
 
-interface IMetadata {
+export interface IMetadata {
   user: string;
   createdOn: string;
   department: string;
   documentType: string;
-  documentFormat: string;
+  documentFormat: "image" | "document" | "signature";
   inspectionId: string;
-  signaturePosition?: string;
+  signaturePosition?: "Inspector" | "Landlord" | "Tenant";
 }
 
 export const uploadFile = async ({
@@ -50,7 +50,7 @@ export const uploadFile = async ({
 
   const isAsset = isAssetType(singleFile);
 
-  data.append("Authority", "pfdylv");
+  data.append("Authority", X_SIDE_ID);
   data.append("Name", isAsset ? singleFile.fileName! : singleFile.name!);
   data.append("IsGlobal", "false");
   data.append("Version", "1");

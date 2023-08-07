@@ -54,7 +54,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     const fetchCategoryItemsValues = async () => {
       try {
-        console.log("start loading");
         const responseCategoryItemsValues = await Promise.all(
           categories.map((category) =>
             getCategoryItemsValues({
@@ -65,7 +64,6 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
             })
           )
         );
-        console.log("end loading");
 
         const categoryItemsValuesArray = responseCategoryItemsValues.flatMap((item, index) => {
             const categoryId = categories?.[index]?.id;

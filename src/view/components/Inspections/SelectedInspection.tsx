@@ -16,6 +16,7 @@ import { ApolloCache, useMutation } from "@apollo/client";
 import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections";
 import { ModalLoader } from "../Loader/ModalLoader";
 import { normalize } from "~/utils/getWindowHeight";
+import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
   item: InspectionItem;
@@ -132,8 +133,8 @@ export const SelectedInspection: React.FC<Props> = ({
       variables: {
         command: {
           id: item.id,
-          customerId: "pfdylv",
-          siteId: "pfdylv",
+          customerId: X_CUSTOMER_ID,
+          siteId: X_SIDE_ID,
           templateId: item.templateId,
           unitId: item.unit?.id,
           assignedTo: item.assignedTo || "5e94b7f0fa86cf0016c4d92c",
@@ -157,8 +158,8 @@ export const SelectedInspection: React.FC<Props> = ({
       variables: {
         command: {
           id: item.id,
-          customerId: "pfdylv",
-          siteId: "pfdylv",
+          customerId: X_CUSTOMER_ID,
+          siteId: X_SIDE_ID,
           templateId: item.templateId,
           unitId: item.unit?.id,
           assignedTo,
@@ -183,8 +184,8 @@ export const SelectedInspection: React.FC<Props> = ({
       variables: {
         command: {
           id: item.id,
-          customerId: "pfdylv",
-          siteId: "pfdylv",
+          customerId: X_CUSTOMER_ID,
+          siteId: X_SIDE_ID,
           templateId: item.templateId,
           unitId: item.unit?.id,
           assignedTo: inspectionItem?.assignedTo || "5e94b7f0fa86cf0016c4d92c",

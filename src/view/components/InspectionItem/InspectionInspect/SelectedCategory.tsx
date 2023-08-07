@@ -21,8 +21,10 @@ export const SelectedCategory: React.FC<Props> = ({ category }) => {
 
   const { categoryItemsValues } = useAppSelector((state) => state);
 
-  const categoryInspectionStatus = status[inspectionItem.id] || "Incomplete";
-  const categoryInspectionResult = result[inspectionItem.id] || "Not result yet";
+  const categoryInspectionStatus =
+    status[inspectionItem.id] || (!category.categoryApplyToInspection ? "--" : "Incomplete");
+  const categoryInspectionResult =
+    result[inspectionItem.id] || (!category.categoryApplyToInspection ? "--" : "Not result yet");
 
   const dynamycCategoryApplyToInspection = categories.find(
     (categoryToCheck) => categoryToCheck.id === id

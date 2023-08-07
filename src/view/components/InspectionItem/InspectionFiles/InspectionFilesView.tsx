@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  Platform,
-} from "react-native";
-import {
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-} from "@react-navigation/native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform } from "react-native";
+import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionFilesAddButton } from "./InspectionFilesAddButton";
@@ -22,79 +11,27 @@ import TakePhotoIcon from "~/view/assets/icons/takePhoto.svg";
 import ImageGallery from "~/view/assets/icons/gallery.svg";
 import { colors, textStyles } from "~/view/theme";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
-import {
-  Asset,
-  launchCamera,
-  launchImageLibrary,
-} from "react-native-image-picker";
-import { getInspectionDate } from "~/utils/visibleDate";
+import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import DocumentPicker, {
   DocumentPickerOptions,
-  DocumentPickerResponse,
 } from "react-native-document-picker";
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes";
-import { generateUniqueId } from "~/utils/genereteUniqueId";
 import { ModalViewImage } from "../../CategoryView/ModalViewImage";
-import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
-import { BASE_DOCUMENT_API } from "~/constants/env";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import FileViewer from "react-native-file-viewer";
 import { uploadFile } from "~/services/api/uploadFile";
-
-export interface IFile {
-  id: string;
-  fileName: string;
-  uploadTime: string;
-  docFormat: string;
-  uri?: string;
-}
-
-const mocksFiles: IFile[] = [
-  {
-    id: generateUniqueId(),
-    fileName: "HUD-50058.pdf",
-    uri: `${BASE_DOCUMENT_API}/files/68`,
-    uploadTime: "May 16, 2023 at 5:00pm",
-    docFormat: "pdf",
-  },
-  {
-    id: generateUniqueId(),
-    fileName: "Interim Recertification-02/16/2021.pdf",
-    uri: `${BASE_DOCUMENT_API}/files/213`,
-    uploadTime: "May 19, 2023 at 11:00am",
-    docFormat: "pdf",
-  },
-  {
-    id: generateUniqueId(),
-    fileName: "Assignment-01/26/2021.pdf",
-    uri: `${BASE_DOCUMENT_API}/files/193`,
-    uploadTime: "May 21, 2023 at 2:00pm",
-    docFormat: "pdf",
-  },
-];
-
-const mocksSignatures = [
-  {
-    id: generateUniqueId(),
-    fileName: "Inspector.png",
-    uploadTime: "May 30, 2023 at 3:00pm",
-    docFormat: "png",
-  },
-  {
-    id: generateUniqueId(),
-    fileName: "Landlord.png",
-    uploadTime: "May 25, 2023 at 3:00pm",
-    docFormat: "png",
-  },
-  {
-    id: generateUniqueId(),
-    fileName: "Tenant.png",
-    uploadTime: "May 24, 2023 at 3:00pm",
-    docFormat: "png",
-  },
-];
+import { getInspectionFiles } from "~/services/api/getInspectionFiles";
+import {
+  fetchInspectionFiles,
+} from "~/modules/inspectionFiles";
+import { ContentLoader } from "../../Loader/Loader";
+import { actionsToastNotification } from "~/modules/toastNotification";
+import { openFile } from "~/utils/readDocument";
+import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
+import { BASE_DOCUMENT_API } from "~/constants/env";
+import { InspectionFile } from "~/types/InspectionFile";
 
 interface Props {
   route: RouteProp<{ params: InspectionItem }, "params">;
@@ -104,47 +41,61 @@ interface Props {
 export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
   const dispatch = useAppDispatch();
   const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { [inspectionItem.id]: currentInspectionFiles } = useAppSelector(
+    (state) => state.inspectionFiles
+  );
+
+  const currentDocuments = (currentInspectionFiles?.files || []).filter(file => file?.metadata?.documentFormat === "image" || file?.metadata?.documentFormat === "document");
+  const currentSignatures = (currentInspectionFiles?.files || []).filter(file => file?.metadata?.documentFormat === "signature");
+
   const { profile } = useAppSelector((state) => state.user);
 
   const [loader, setLoader] = useState(false);
   const [query, setQuery] = useState("");
-  const [visibleFiles, setVisibleFiles] = useState(mocksFiles);
+  const [visibleFiles, setVisibleFiles] = useState(currentDocuments);
   const [showModalAddFile, setShowModalAddFile] = useState(false);
-  const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
+  const [newPhoto, setNewPhoto] = useState<InspectionFile | null>(null);
   const [showModalImage, setShowModalImage] = useState(false);
   const [showModalDocument, setShowModalDocument] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
+  const [selectedPDFFile, setSelectedPDFFile] = useState<InspectionFile | null>(null);
 
   useEffect(() => {
     setVisibleFiles(
-      mocksFiles.filter((file) =>
-        file.fileName
-          .toLocaleLowerCase()
-          .includes(query.toLocaleLowerCase().trim())
+      currentInspectionFiles?.files?.filter((file) =>
+        file.name.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
       )
     );
-  }, [query, mocksFiles]);
+  }, [query, inspectionItem.id, currentInspectionFiles?.files]);
+
+  // @ts-ignore
+  const callFetchInspectionFiles = async () => dispatch(fetchInspectionFiles(inspectionItem.id));
+
+  useEffect(() => {
+    if (inspectionItem.id && !currentInspectionFiles) {
+      callFetchInspectionFiles();
+    }
+  }, [inspectionItem.id]);
+
+  useEffect(() => {
+    console.log("currentInspectionFiles", currentInspectionFiles);
+  }, [currentInspectionFiles]);
 
   const handleCloseModalAddFile = () => setShowModalAddFile(false);
 
   function getUrlExtension(url: string, name: string | number) {
-    return Platform.OS === 'ios' ? url.split(/[#?]/)[0].split(".").pop()?.trim() || "" : String(name).split(".")[1];
+    return Platform.OS === "ios"
+      ? url.split(/[#?]/)[0].split(".").pop()?.trim() || ""
+      : String(name).split(".")[1];
   }
 
-  const handleFileViewerOpenFile = async (fileToOpen: IFile) => {
+  const handleFileViewerOpenFile = async (fileToOpen: InspectionFile) => {
     try {
-      setLoader(true)
-      await FileViewer.open(fileToOpen.uri || "", {
-        onDismiss: () => {
-          console.log("dismiss")
-        }
-      });
+      setLoader(true);
+      await openFile(fileToOpen, () => setLoader(false));
     } catch (e) {
-      console.log("error display file", e)
-    } finally {
-      setLoader(false)
+      console.log("error display file", e);
     }
-  }
+  };
 
   const handleTakePhoto = async () => {
     try {
@@ -159,18 +110,20 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       ) {
         const asset = takenPhoto.assets[0];
 
-        setNewPhoto(takenPhoto.assets[0]);
+        setLoader(true);
 
-        setVisibleFiles((prev) => [
-          ...prev,
-          {
-            id: generateUniqueId(),
-            fileName: asset.fileName || "",
-            docFormat: asset.fileName?.split(".")[1] || "",
-            uploadTime: getInspectionDate(new Date(), true) || "",
-            uri: asset.uri,
-          },
-        ]);
+        await uploadFile({
+          singleFile: asset,
+          inspectionId: inspectionItem.id,
+          email: profile?.email || "",
+          documentType: "Image",
+        });
+
+        await callFetchInspectionFiles();
+
+        dispatch(
+          actionsToastNotification.showToastMessage("Success! File uploaded")
+        )
       }
 
       console.log("handleTakePhoto:", takenPhoto);
@@ -194,34 +147,25 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       ) {
         const asset = chosenImageFromGallery.assets[0];
 
-        setNewPhoto(asset);
-
-        setLoader(true)
+        setLoader(true);
 
         await uploadFile({
           singleFile: asset,
           inspectionId: inspectionItem.id,
           email: profile?.email || "",
-          documentType: 'Image',
+          documentType: "Image",
         });
 
-        setVisibleFiles((prev) => [
-          ...prev,
-          {
-            id: generateUniqueId(),
-            fileName: asset.fileName || "",
-            docFormat: asset.fileName?.split(".")[1] || "",
-            uploadTime: getInspectionDate(new Date(), true) || "",
-            uri: asset.uri,
-          },
-        ]);
-      }
+        await callFetchInspectionFiles();
 
-      console.log("handleImageLibraryPhoto", chosenImageFromGallery);
+        dispatch(
+          actionsToastNotification.showToastMessage("Success! Image uploaded")
+        )
+      }
     } catch (e) {
       console.log("ImageLibraryPhotoError", e);
     } finally {
-      // setLoader(false)
+      setLoader(false)
     }
   };
 
@@ -249,39 +193,34 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         handleCloseModalAddFile();
         const selectedFile = arrayOfSelectedFile[0];
 
+        setLoader(true);
+
         await uploadFile({
           singleFile: selectedFile,
           inspectionId: inspectionItem.id,
           email: profile?.email || "",
-          documentType: 'Document',
+          documentType: "Document",
         });
 
-        setVisibleFiles((prev) => [
-          ...prev,
-          {
-            id: generateUniqueId(),
-            fileName: selectedFile.name || "",
-            docFormat: getUrlExtension(selectedFile.uri || "", selectedFile.name || ""),
-            uploadTime: getInspectionDate(new Date(), true) || "",
-            uri: selectedFile.uri,
-          },
-        ]);
-      }
+        await callFetchInspectionFiles();
 
-      console.log("chosenFile", arrayOfSelectedFile);
+        dispatch(
+          actionsToastNotification.showToastMessage("Success! File uploaded")
+        )
+      }
     } catch (e) {
       console.log("DocumentPickerError", e);
+    } finally {
+      setLoader(false);
     }
   };
 
-  const handleDeleteFile = (fileToDelete: IFile) => {
-    setVisibleFiles((prev) =>
-      prev.filter((file) => file.id !== fileToDelete.id)
-    );
+  const handleDeleteFile = (fileToDelete: InspectionFile) => {
+    setVisibleFiles((prev) => prev.filter((file) => file.id !== fileToDelete.id));
   };
 
-  const handleOpenModalFile = (fileToOpen: IFile) => {
-    switch (fileToOpen.docFormat) {
+  const handleOpenModalFile = (fileToOpen: InspectionFile) => {
+    switch (fileToOpen.extension.toLocaleLowerCase()) {
       case "png":
       case "jpg":
       case "jpeg":
@@ -289,21 +228,18 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
         setShowModalImage(true);
         return;
       case "pdf":
+        setSelectedPDFFile(fileToOpen);
         setShowModalDocument(true);
         return;
       default:
-       handleFileViewerOpenFile(fileToOpen);
+        handleFileViewerOpenFile(fileToOpen);
     }
   };
 
   return (
     <View style={styles.content}>
       <View style={{ padding: 2 }}>
-        <SearchForm
-          query={query}
-          setQuery={setQuery}
-          placeholder="Search File"
-        />
+        <SearchForm query={query} setQuery={setQuery} placeholder="Search File" />
       </View>
       <View style={{ height: "2%" }} />
       {inspectionItem?.status !== InspectionStatus.COMPLETE && (
@@ -314,7 +250,8 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       <View style={{ height: 15 }} />
       <View style={[styles.filesContainer, styles.shadowProp]}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {visibleFiles.length > 0 ? (
+          {currentInspectionFiles?.loading && <ContentLoader size="large" />}
+          {currentInspectionFiles?.files && !currentInspectionFiles?.loading && visibleFiles.length > 0 && (
             <>
               <Text style={styles.fileTitle}>Files</Text>
               {visibleFiles.map((file) => (
@@ -323,7 +260,6 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   style={{ marginBottom: "4%" }}
                   onPress={() => {
                     handleOpenModalFile(file);
-                    setSelectedFile(file);
                   }}
                 >
                   <InspectionFileCard
@@ -334,7 +270,8 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                 </TouchableOpacity>
               ))}
             </>
-          ) : (
+          )}
+          {currentInspectionFiles?.files && !currentInspectionFiles?.loading && visibleFiles.length === 0 && (
             <View style={styles.noFilesFindContainer}>
               <FileIcon
                 color={"rgba(142, 142, 142, 0.33)"}
@@ -347,18 +284,17 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           )}
           <View style={styles.separator} />
           <Text style={styles.fileTitle}>Signatures</Text>
-          {mocksSignatures.length === 0 ? (
+          {currentInspectionFiles?.loading && <ContentLoader size="large" />}
+          {currentSignatures.length > 0 && !currentInspectionFiles?.loading && (
             <>
-              {mocksSignatures.map((file, index) => (
+              {currentSignatures.map((file, index) => (
                 <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>
-                  <InspectionFileCard
-                    file={file}
-                    deleteFile={handleDeleteFile}
-                  />
+                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} />
                 </TouchableOpacity>
               ))}
             </>
-          ) : (
+          )}  
+          {currentSignatures.length === 0 && !currentInspectionFiles?.loading && (
             <Text style={[styles.fileTitle, styles.noSignatureFoundText]}>
               No Signatures Found.
             </Text>
@@ -379,11 +315,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   style={[styles.fileButton, styles.shadowProp]}
                   onPress={handleTakePhoto}
                 >
-                  <TakePhotoIcon
-                    width={"60%"}
-                    height={"60%"}
-                    color={"#D7D7D7"}
-                  />
+                  <TakePhotoIcon width={"60%"} height={"60%"} color={"#D7D7D7"} />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Take photo</Text>
               </View>
@@ -392,11 +324,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                   style={[styles.fileButton, styles.shadowProp]}
                   onPress={handleChoosePhoto}
                 >
-                  <ImageGallery
-                    width={"60%"}
-                    height={"60%"}
-                    color={"#D7D7D7"}
-                  />
+                  <ImageGallery width={"60%"} height={"60%"} color={"#D7D7D7"} />
                 </TouchableOpacity>
                 <Text style={styles.fileButtonText}>Choose from Gallery</Text>
               </View>
@@ -407,28 +335,22 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                 >
                   <FileIcon width={normalize(50)} height={normalize(50)} color={"#D7D7D7"} />
                 </TouchableOpacity>
-                <Text style={styles.fileButtonText}>
-                  Add File From Documents
-                </Text>
+                <Text style={styles.fileButtonText}>Add File From Documents</Text>
               </View>
             </View>
           </View>
         </ModalSwipeScreen>
       )}
       {showModalImage && (
-        <ModalViewImage
-          closeModalFunction={() => setShowModalImage(false)}
-          image={newPhoto}
-        />
+        <ModalViewImage closeModalFunction={() => setShowModalImage(false)} image={newPhoto} />
       )}
       {showModalDocument && (
         <InspectionFileModalDocument
-          uri={selectedFile?.uri || ""}
-          selectedFile={selectedFile}
+          uri={`${BASE_DOCUMENT_API}/files/${selectedPDFFile?.id || ''}`}
           closeModalFunction={() => setShowModalDocument(false)}
         />
       )}
-      {loader && <ModalLoader/>}
+      {loader && <ModalLoader />}
     </View>
   );
 };
@@ -455,7 +377,7 @@ const styles = StyleSheet.create({
     color: "#7F888D",
     marginBottom: "3%",
     fontWeight: "600",
-    ...textStyles.medium
+    ...textStyles.medium,
   },
   filesContainer: {
     flex: 1,
@@ -478,7 +400,7 @@ const styles = StyleSheet.create({
     color: "#7F888D",
     fontWeight: "600",
     marginTop: "5%",
-    ...textStyles.regular
+    ...textStyles.regular,
   },
   noFilesFindContainer: {
     flex: 1,
@@ -490,12 +412,12 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     flex: 1,
     marginTop: "10%",
-    paddingHorizontal: normalize(20)
+    paddingHorizontal: normalize(20),
   },
   modalTitle: {
     color: colors.darkGrey,
     fontWeight: "600",
-    ...textStyles.large
+    ...textStyles.large,
   },
   modalPhotoButtons: {
     flexDirection: "row",
@@ -516,7 +438,7 @@ const styles = StyleSheet.create({
     color: colors.textGrey,
     fontWeight: "400",
     marginTop: "7%",
-    ...textStyles.little
+    ...textStyles.little,
   },
   fileButtonContainer: {
     flex: 1,

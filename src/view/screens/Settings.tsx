@@ -19,6 +19,7 @@ import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors, textStyles } from "../theme";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { normalize } from "~/utils/getWindowHeight";
+import { CUSTOMER_NAME } from "~/constants/env";
 
 interface Props extends DrawerContentComponentProps {}
 
@@ -60,7 +61,7 @@ export const Settings: React.FC<Props> = ({ navigation }) => {
                   color: "#fff",
                 }}
               >
-                {profile?.userName}
+                {CUSTOMER_NAME}
               </Text>
             </View>
           </View>

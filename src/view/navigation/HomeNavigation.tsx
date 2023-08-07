@@ -143,8 +143,8 @@ export const HomeNavigation: React.FC = () => {
         arrayOfDataInspections.map(({node}: any) => getLandlordNameById(node?.unit?.landlordId))
       );
 
-      const arrayOfLandlordsNames = responseLandlordName.map(({data}) => {
-        const node = data?.landlords?.edges?.[0]?.node;
+      const arrayOfLandlordsNames = responseLandlordName.map((res) => {
+        const node = res?.data?.landlords?.edges?.[0]?.node;
         
         return {
           name: (node?.firstName || "") + " " + (node?.lastName || ""),

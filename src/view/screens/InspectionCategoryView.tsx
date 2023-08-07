@@ -35,6 +35,7 @@ import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { actionsCategoryAmenitiesActions } from "~/modules/categoryAmenitiesValues";
 import { actionsCategoryItem } from "~/modules/categoryItem";
 import { actionsCategoryItemsValuesActions } from "~/modules/categoryItemsValue";
+import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
   route: RouteProp<
@@ -98,6 +99,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
       id: "",
     },
   });
+
+  console.log("category", category.id)
 
   useEffect(() => {
     if (!dataCategoryAmenitie) {
@@ -253,8 +256,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
           updateCategoryItemValue({
             variables: {
               command: {
-                customerId: "pfdylv",
-                siteId: "pfdylv",
+                customerId: X_CUSTOMER_ID,
+                siteId: X_SIDE_ID,
                 id: dynamicItemsValues?.[inspectionItem.id]?.[inspectionItemId]?.id,
                 inspectionId: inspectionItem?.id,
                 inspectionItemId,
@@ -278,8 +281,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
           updateCategoryAmenityValue({
             variables: {
               command: {
-                customerId: "pfdylv",
-                siteId: "pfdylv",
+                customerId: X_CUSTOMER_ID,
+                siteId: X_SIDE_ID,
                 id: dynamicAmenitiesValues?.[amenityId]?.[inspectionItem.id]?.id,
                 inspectionId: inspectionItem?.id,
                 inspectionAmenityId: amenityId,
@@ -297,8 +300,8 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
         updateInspectionCategory({
           variables: {
             command: {
-              customerId: "pfdylv",
-              siteId: "pfdylv",
+              customerId: X_CUSTOMER_ID,
+              siteId: X_SIDE_ID,
               id: category.id,
               inspectionTemplateId: inspectionItem?.templateId,
               name: category.title,

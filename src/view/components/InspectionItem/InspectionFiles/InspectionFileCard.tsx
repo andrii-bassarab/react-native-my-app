@@ -6,12 +6,13 @@ import { colors, textStyles } from "~/view/theme";
 import DeleteIcon from "~/view/assets/icons/delete.svg";
 import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
 import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
-import { IFile } from "./InspectionFilesView";
 import { normalize } from "~/utils/getWindowHeight";
+import { getInspectionDate } from "~/utils/visibleDate";
+import { InspectionFile } from "~/types/InspectionFile";
 
 interface Props {
-  file: IFile;
-  deleteFile: (fileToDeleter: IFile) => void;
+  file: InspectionFile;
+  deleteFile: (fileToDeleter: InspectionFile) => void;
   displayDeleteIcon?: boolean;
 }
 
@@ -44,15 +45,15 @@ export const InspectionFileCard: React.FC<Props> = ({
         <View
           style={{
             ...styles.docFileIcon,
-            backgroundColor: getColorIconFileByFormat(file.docFormat),
+            backgroundColor: getColorIconFileByFormat(file.extension),
           }}
         >
-          <Text style={styles.docIconText}>{file.docFormat}</Text>
+          <Text style={styles.docIconText}>{file.extension}</Text>
         </View>
-        <Text style={[styles.fileInfoText, styles.fileNameText]}>{file.fileName}</Text>
+        <Text style={[styles.fileInfoText, styles.fileNameText]}>{file.name}</Text>
       </View>
       <View style={{ ...styles.label, width: "52%", justifyContent: "space-between" }}>
-        <Text style={{...styles.fileInfoText, flex: 1}}>{file.uploadTime}</Text>
+        <Text style={{...styles.fileInfoText, flex: 1}}>{getInspectionDate(new Date(file.createdOn), true)}</Text>
         {showDeleteLabel && (
           <TouchableOpacity
             style={[styles.deleteLabel, styles.shadowProp]}
@@ -70,7 +71,7 @@ export const InspectionFileCard: React.FC<Props> = ({
       </View>
       {showDeleteModalWindow && (
         <ModalDeleteItem
-          title={`Are you sure you want to delete “${file.fileName}?”`}
+          title={`Are you sure you want to delete “${file.name}?”`}
           Icon={DeleteModalIcon}
           onContinue={handleDeleteFile}
           onCancel={handleCancelDeleteFile}
