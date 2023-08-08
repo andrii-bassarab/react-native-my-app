@@ -3,12 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import CompleteIcon from "~/view/assets/icons/completed.svg";
 import { normalize } from "~/utils/getWindowHeight";
+import { InspectionFile } from "~/types/InspectionFile";
 
 interface Props {
   position: string;
   name: string;
   openSignScreen: () => void;
-  signaturePath: string;
+  signaturePath: InspectionFile | undefined;
   openShowViewSignature?: () => void
 }
 

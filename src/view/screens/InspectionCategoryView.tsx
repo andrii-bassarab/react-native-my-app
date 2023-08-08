@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
@@ -99,8 +99,6 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
       id: "",
     },
   });
-
-  console.log("category", category.id)
 
   useEffect(() => {
     if (!dataCategoryAmenitie) {
@@ -345,6 +343,7 @@ export const InspectionCategoryScreen: React.FC<Props> = ({ navigation, route })
         console.log("updates completed");
       } catch (e) {
         console.log("error in update categoryItemValue: ", e);
+        Alert.alert("Failed to update inspection category");
       } finally {
         setLoader(false);
       }

@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Platform } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Platform, Alert } from "react-native";
 import { SignatureCard } from "./SignatureCard";
 import { ModalSwipeScreen } from "../Custom/ModalSwipeScreen";
 import SignatureCapture, { SaveEventParams } from "react-native-signature-capture";
@@ -12,6 +12,9 @@ import { uploadFile } from "~/services/api/uploadFile";
 import { Asset } from "react-native-image-picker";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { ModalLoader } from "../Loader/ModalLoader";
+import { ContentLoader } from "../Loader/Loader";
+import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
+import { fetchInspectionFiles } from "~/modules/inspectionFiles";
 
 interface Props {
   inspection: InspectionItem;
@@ -22,17 +25,39 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
   const dispatch = useAppDispatch();
 
   const { profile } = useAppSelector((state) => state.user);
+  const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
+
+  const { [inspectionItem.id]: currentInspectionFiles } = useAppSelector(
+    (state) => state.inspectionFiles
+  );
+
+  // @ts-ignore
+  const callFetchInspectionFiles = async () => dispatch(fetchInspectionFiles(inspectionItem.id));
+
+  const currentSignatures = (currentInspectionFiles?.files || []).filter(
+    (file) => file?.metadata?.documentFormat === "signature"
+  );
 
   const [loader, setLoader] = useState(false);
+  const [loaderImage, setImageLoader] = useState(false);
   const [showSignModalScreen, setShowSignModalScreen] = useState(false);
-  const [pathSignInspector, setPathSignInspector] = useState("");
-  const [pathSignLandlord, setPathSignLandlord] = useState("");
-  const [pathSignTenant, setPathSignTenant] = useState("");
   const [currentPathNumber, setCurrentPathNumber] = useState<number | null>(null);
   const [startSignatureDraw, setStartSignatureDraw] = useState(false);
   const [showViewSignature, setShowViewSignature] = useState(false);
 
-  console.log("loader", loader)
+  useEffect(() => {
+    callFetchInspectionFiles();
+  }, []);
+
+  const pathSignInspector = currentSignatures.find(
+    (file) => file.metadata?.signaturePosition === "Inspector"
+  );
+  const pathSignLandlord = currentSignatures.find(
+    (file) => file.metadata?.signaturePosition === "Landlord"
+  );
+  const pathSignTenant = currentSignatures.find(
+    (file) => file.metadata?.signaturePosition === "Tenant"
+  );
 
   useEffect(() => {
     if (pathSignTenant && pathSignLandlord && pathSignInspector) {
@@ -42,48 +67,32 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
     }
   }, [pathSignInspector, pathSignLandlord, pathSignTenant]);
 
-  // console.log("pathSignInspector",pathSignInspector)
-
   const onSaveEvent = async (result: SaveEventParams) => {
     try {
+      setShowSignModalScreen(false);
+      setStartSignatureDraw(false);
+
       setLoader(true);
       await uploadFile({
         singleFile: {
           fileName: `Signature ${getVisibleDate(new Date())}.png`,
-          uri: `data:image/png;base64,${result.encoded}`,
+          uri: result.pathName,
           type: "image/png",
         } as Asset,
         inspectionId: inspection.id,
         email: profile?.email || "",
         documentType: "Signature",
-        signaturePosition: "Tenant",
+        signaturePosition:
+          currentPathNumber === 0 ? "Inspector" : currentPathNumber === 1 ? "Landlord" : "Tenant",
       });
-      setStartSignatureDraw(false);
-      setShowSignModalScreen(false);
+      await callFetchInspectionFiles();
       dispatch(actionsToastNotification.showToastMessage("Success! Signature saved."));
 
       //result.encoded - for the base64 encoded png
       //result.pathName - for the file path name
-
-      switch (currentPathNumber) {
-        case 0:
-          setPathSignInspector(
-            Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`
-          );
-          return;
-        case 1:
-          setPathSignLandlord(
-            Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`
-          );
-          return;
-        case 2:
-          setPathSignTenant(
-            Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`
-          );
-          return;
-      }
     } catch (e) {
       console.log("error upload signature", e);
+      Alert.alert("failed to upload signature");
     } finally {
       setLoader(false);
     }
@@ -100,6 +109,11 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
   const handleOpenSignatureCapture = (currentNum: number) => {
     setShowSignModalScreen(true);
 
+    setCurrentPathNumber(currentNum);
+  };
+
+  const handleOpenModalSignature = (currentNum: number) => {
+    setShowViewSignature(true);
     setCurrentPathNumber(currentNum);
   };
 
@@ -127,8 +141,13 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
 
     return (
       <Image
-        source={{ uri: pathSignInspector }}
-        style={[styles.imageviewSignature, { display: currentPathNumber === 0 ? "flex" : "none" }]}
+        source={{
+          uri: `${BASE_DOCUMENT_API}/files/${pathSignInspector.id || ""}`,
+          headers: {
+            "x-api-key": FILEROOM_API_KEY,
+          },
+        }}
+        style={[styles.imageviewSignature]}
       />
     );
   });
@@ -138,8 +157,13 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
 
     return (
       <Image
-        source={{ uri: pathSignLandlord }}
-        style={[styles.imageviewSignature, { display: currentPathNumber === 1 ? "flex" : "none" }]}
+        source={{
+          uri: `${BASE_DOCUMENT_API}/files/${pathSignLandlord.id || ""}`,
+          headers: {
+            "x-api-key": FILEROOM_API_KEY,
+          },
+        }}
+        style={[styles.imageviewSignature]}
       />
     );
   });
@@ -149,8 +173,13 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
 
     return (
       <Image
-        source={{ uri: pathSignTenant }}
-        style={[styles.imageviewSignature, { display: currentPathNumber === 2 ? "flex" : "none" }]}
+        source={{
+          uri: `${BASE_DOCUMENT_API}/files/${pathSignTenant.id || ""}`,
+          headers: {
+            "x-api-key": FILEROOM_API_KEY,
+          },
+        }}
+        style={[styles.imageviewSignature]}
       />
     );
   });
@@ -158,49 +187,33 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Signatures & Approvals</Text>
-      <SignatureCard
-        position={"Inspector"}
-        name={"Mildred Jones"}
-        openSignScreen={() => handleOpenSignatureCapture(0)}
-        signaturePath={pathSignInspector}
-        openShowViewSignature={() => setShowViewSignature(true)}
-      />
-      <SignatureCard
-        position={"Landlord"}
-        name={`Tim O’Reilly${inspection.unit.landlord?.firstName || ""} ${
-          inspection.unit.landlord?.lastName || ""
-        }`}
-        openSignScreen={() => handleOpenSignatureCapture(1)}
-        signaturePath={pathSignLandlord}
-        openShowViewSignature={() => setShowViewSignature(true)}
-      />
-      <SignatureCard
-        position={"Tenant"}
-        name={inspection.visibleHouseholdName}
-        openSignScreen={() => handleOpenSignatureCapture(2)}
-        signaturePath={pathSignTenant}
-        openShowViewSignature={() => setShowViewSignature(true)}
-      />
-      {/* <View style={{ flex: 1, flexDirection: "row" }}>
-        {pathSignInspector && (
-          <Image
-            source={{ uri: pathSignInspector }}
-            style={{ width: 100, height: 100, backgroundColor: "red" }}
+      {currentInspectionFiles.loading && !loader ? (
+        <ContentLoader size="large" />
+      ) : (
+        <>
+          <SignatureCard
+            position={"Inspector"}
+            name={inspection.visibleAssignedTo}
+            openSignScreen={() => handleOpenSignatureCapture(0)}
+            signaturePath={pathSignInspector}
+            openShowViewSignature={() => handleOpenModalSignature(0)}
           />
-        )}
-        {pathSignLandlord && (
-          <Image
-            source={{ uri: pathSignLandlord }}
-            style={{ width: 100, height: 100, backgroundColor: "green" }}
+          <SignatureCard
+            position={"Landlord"}
+            name={`Tim O’Reilly`}
+            openSignScreen={() => handleOpenSignatureCapture(1)}
+            signaturePath={pathSignLandlord}
+            openShowViewSignature={() => handleOpenModalSignature(1)}
           />
-        )}
-        {pathSignTenant && (
-          <Image
-            source={{ uri: pathSignTenant }}
-            style={{ width: 100, height: 100, backgroundColor: "blue" }}
+          <SignatureCard
+            position={"Tenant"}
+            name={inspection.visibleHouseholdName}
+            openSignScreen={() => handleOpenSignatureCapture(2)}
+            signaturePath={pathSignTenant}
+            openShowViewSignature={() => handleOpenModalSignature(2)}
           />
-        )}
-      </View> */}
+        </>
+      )}
       {showSignModalScreen && (
         <ModalSwipeScreen
           closeModalFunction={() => setShowSignModalScreen(false)}
@@ -244,14 +257,10 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
           height={"70%"}
           percentSwipeToClose={0.2}
         >
-          <View style={styles.modalContainer}>
-            <ImageInspector />
-            <ImageLandlord />
-            <ImageTenant />
-          </View>
+          <View style={styles.modalContainer}>{detectCurrentImagePath()}</View>
         </ModalSwipeScreen>
       )}
-      {loader && <ModalLoader/>}
+      {loader && <ModalLoader />}
     </View>
   );
 };

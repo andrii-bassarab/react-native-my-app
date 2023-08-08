@@ -21,8 +21,6 @@ export const InspectionFileModalDocument: React.FC<Props> = ({
   const [error, setError] = useState(false);
   const insets = useSafeAreaInsets();
 
-  console.log("uri", uri)
-
   const source: Source = {
     uri,
     cache: true,

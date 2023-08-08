@@ -45,7 +45,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
     (state) => state.inspectionFiles
   );
 
-  const currentDocuments = (currentInspectionFiles?.files || []).filter(file => file?.metadata?.documentFormat === "image" || file?.metadata?.documentFormat === "document");
+  const currentDocuments = (currentInspectionFiles?.files || []).filter(file => (file?.metadata?.documentFormat === "image" || file?.metadata?.documentFormat === "document" && !file?.metadata?.fileRelatedToCategoryInspection));
   const currentSignatures = (currentInspectionFiles?.files || []).filter(file => file?.metadata?.documentFormat === "signature");
 
   const { profile } = useAppSelector((state) => state.user);
@@ -61,7 +61,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
 
   useEffect(() => {
     setVisibleFiles(
-      currentInspectionFiles?.files?.filter((file) =>
+      currentDocuments?.filter((file) =>
         file.name.toLocaleLowerCase().includes(query.toLocaleLowerCase().trim())
       )
     );
@@ -75,10 +75,6 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       callFetchInspectionFiles();
     }
   }, [inspectionItem.id]);
-
-  useEffect(() => {
-    console.log("currentInspectionFiles", currentInspectionFiles);
-  }, [currentInspectionFiles]);
 
   const handleCloseModalAddFile = () => setShowModalAddFile(false);
 
@@ -258,9 +254,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                 <TouchableOpacity
                   key={file.id}
                   style={{ marginBottom: "4%" }}
-                  onPress={() => {
-                    handleOpenModalFile(file);
-                  }}
+                  onPress={() => handleOpenModalFile(file)}
                 >
                   <InspectionFileCard
                     file={file}
@@ -288,8 +282,8 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
           {currentSignatures.length > 0 && !currentInspectionFiles?.loading && (
             <>
               {currentSignatures.map((file, index) => (
-                <TouchableOpacity key={index} style={{ marginBottom: "4%" }}>
-                  <InspectionFileCard file={file} deleteFile={handleDeleteFile} />
+                <TouchableOpacity key={index} style={{ marginBottom: "4%" }} onPress={() => handleOpenModalFile(file)} >
+                  <InspectionFileCard file={file} deleteFile={handleDeleteFile}  />
                 </TouchableOpacity>
               ))}
             </>
@@ -377,7 +371,7 @@ const styles = StyleSheet.create({
     color: "#7F888D",
     marginBottom: "3%",
     fontWeight: "600",
-    ...textStyles.medium,
+    ...textStyles.strong,
   },
   filesContainer: {
     flex: 1,

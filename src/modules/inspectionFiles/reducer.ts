@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getInspectionFiles } from '~/services/api/getInspectionFiles';
+import { InspectionFile } from '~/types/InspectionFile';
 
 
 interface InspectionFilesState {

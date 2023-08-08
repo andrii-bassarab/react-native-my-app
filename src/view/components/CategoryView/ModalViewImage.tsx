@@ -6,14 +6,25 @@ import CloseIcon from "~/view/assets/icons/failed.svg";
 import { colors, textStyles } from "~/view/theme";
 import { ContentLoader } from "../Loader/Loader";
 import { InspectionFile } from "~/types/InspectionFile";
+import { Asset } from "react-native-image-picker";
 
 interface Props {
   closeModalFunction: () => void;
-  image: InspectionFile | null;
+  image: InspectionFile | Asset | null;
 }
 
 export const ModalViewImage: React.FC<Props> = ({ closeModalFunction, image }) => {
   const [loader, setLoader] = useState(false);
+
+  if (!image) {
+    return null;
+  }
+
+  const isAssetType = (file: Asset | InspectionFile): file is Asset => {
+    return "uri" in file && "fileName" in file && "type" in file;
+  };
+
+  const isImageAsset = isAssetType(image);
 
   return (
     <Modal transparent={true}>
@@ -49,7 +60,7 @@ export const ModalViewImage: React.FC<Props> = ({ closeModalFunction, image }) =
               </View>
               <Image
                 source={{
-                  uri: `${BASE_DOCUMENT_API}/files/${image.id}`,
+                  uri: isImageAsset ? image.uri : `${BASE_DOCUMENT_API}/files/${image.id}`,
                   headers: {
                     "x-api-key": FILEROOM_API_KEY,
                   },
@@ -60,7 +71,7 @@ export const ModalViewImage: React.FC<Props> = ({ closeModalFunction, image }) =
               ></Image>
             </View>
 
-            <Text style={styles.fileNameText}>{image.name}</Text>
+            <Text style={styles.fileNameText}>{isImageAsset ? image.fileName : image.name}</Text>
           </View>
         )}
       </Pressable>

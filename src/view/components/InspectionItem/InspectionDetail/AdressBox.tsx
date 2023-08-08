@@ -8,6 +8,7 @@ import {
   Image,
   Keyboard,
   Animated,
+  Alert,
 } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { InspectionItem } from "~/types/InspectionItem";
@@ -19,6 +20,9 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
 import { normalize } from "~/utils/getWindowHeight";
+import { updateHouseHoldPhoneNumber } from "~/services/api/UpdateHouseholdLandlord";
+import { ModalLoader } from "../../Loader/ModalLoader";
+import { actionsInspections } from "~/modules/inspections";
 
 interface Props {
   inspection: InspectionItem;
@@ -28,16 +32,18 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const dispatch = useAppDispatch();
   const [showModalPhoneNumber, setShowModalPhoneNumber] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { visiblePhoneNumber, inspectionItem } = useAppSelector(
-    (state) => state.inspectionItem
-  );
+  const { visiblePhoneNumber, inspectionItem } = useAppSelector((state) => state.inspectionItem);
+  const { profile } = useAppSelector((state) => state.user);
+  const { inspections } = useAppSelector((state) => state.inspections);
 
+
+  const [loader, setLoader] = useState(false);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
 
   const [height, setHeight] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardWillShow', () => {
+    const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
       setKeyboardStatus(true);
     });
     const hideSubscription = Keyboard.addListener("keyboardWillHide", () => {
@@ -80,10 +86,9 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
 
     const phoneNumberLength = phoneNumber.length;
     if (phoneNumberLength > 6) {
-      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
-        3,
+      phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(
         6
-      )}-${phoneNumber.slice(6)}`;
+      )}`;
     } else if (phoneNumberLength > 3) {
       phoneNumber = `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
     } else {
@@ -98,9 +103,28 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
     setPhoneNumber(formattedPhoneNumber);
   };
 
-  const handleSavePhoneNumber = () => {
-    dispatch(actionsInspectionItem.setVisiblePhoneNumber(phoneNumber));
-    setShowModalPhoneNumber(false);
+  const handleSavePhoneNumber = async () => {
+    try {
+      setLoader(true);
+      const response = await updateHouseHoldPhoneNumber(
+        inspection.unit?.landlordId || "",
+        phoneNumber,
+        profile?.email || ""
+      );
+      const foundInspection = inspections.find(inspection => inspection.id === inspectionItem.id);
+      if (foundInspection?.visibleLandlordPhoneNumber) {
+        foundInspection.visibleLandlordPhoneNumber = phoneNumber;
+        dispatch(actionsInspections.setInspections([...inspections, {...foundInspection}]));
+
+      }
+      dispatch(actionsInspectionItem.setVisiblePhoneNumber(phoneNumber));
+    } catch (e) {
+      console.log("error change houseHold phoneNumber", e);
+      Alert.alert(`Failed to update phone number Landlord, who doesn't exist`);
+    } finally {
+      setLoader(false);
+      setShowModalPhoneNumber(false);
+    }
   };
 
   const handleCloseModalPhone = () => {
@@ -119,11 +143,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
             </Text>
             {inspectionItem?.status !== InspectionStatus.COMPLETE && (
               <TouchableOpacity onPress={() => setShowModalPhoneNumber(true)}>
-                <EditIcon
-                  color={colors.blue}
-                  height={normalize(20)}
-                  width={normalize(20)}
-                />
+                <EditIcon color={colors.blue} height={normalize(20)} width={normalize(20)} />
               </TouchableOpacity>
             )}
           </View>
@@ -142,42 +162,30 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
         </View>
         <View style={styles.label}>
           <Text style={styles.labelText}>Permission to Enter:</Text>
-          <Text style={styles.text}>
-            {inspection.hasPermissionToEnter ? "Yes" : "No"}
-          </Text>
+          <Text style={styles.text}>{inspection.hasPermissionToEnter ? "Yes" : "No"}</Text>
         </View>
         <View style={styles.label}>
           <Text style={styles.labelText}>Details:</Text>
           <View style={{ flex: 1 }}>
             <View style={styles.detailBox}>
               <Text style={styles.text}>Bedrooms:</Text>
-              <Text style={styles.text}>
-                {inspection.unit.numberOfBedrooms}
-              </Text>
+              <Text style={styles.text}>{inspection.unit.numberOfBedrooms}</Text>
             </View>
             <View style={styles.detailBox}>
               <Text style={styles.text}>Bathroom:</Text>
-              <Text style={styles.text}>
-                {inspection.unit.numberOfBathrooms}
-              </Text>
+              <Text style={styles.text}>{inspection.unit.numberOfBathrooms}</Text>
             </View>
             <View style={styles.detailBox}>
               <Text style={styles.text}>Sq. ft:</Text>
-              <Text style={styles.text}>
-                {inspection.unit.squareFootage || "--"}
-              </Text>
+              <Text style={styles.text}>{inspection.unit.squareFootage || "--"}</Text>
             </View>
             <View style={styles.detailBox}>
               <Text style={styles.text}>Handicap:</Text>
-              <Text style={styles.text}>
-                {inspection.unit.isHandicapAccessible ? "Yes" : "No"}
-              </Text>
+              <Text style={styles.text}>{inspection.unit.isHandicapAccessible ? "Yes" : "No"}</Text>
             </View>
             <View style={styles.detailBox}>
               <Text style={styles.text}>Year Built:</Text>
-              <Text style={styles.text}>
-                {inspection.unit.yearConstructed || "--"}
-              </Text>
+              <Text style={styles.text}>{inspection.unit.yearConstructed || "--"}</Text>
             </View>
           </View>
         </View>
@@ -195,6 +203,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
             height={animatedHeight}
             percentSwipeToClose={0.2}
           >
+            {loader && <ModalLoader />}
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>Edit Phone Number</Text>
               <View style={[styles.phoneLabel, styles.shadowProp]}>
@@ -213,10 +222,7 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
                   placeholderTextColor={"#979797"}
                 />
               </View>
-              <TouchableOpacity
-                style={styles.modalSaveButton}
-                onPress={handleSavePhoneNumber}
-              >
+              <TouchableOpacity style={styles.modalSaveButton} onPress={handleSavePhoneNumber}>
                 <Text style={styles.modalSaveButtonText}>Save</Text>
               </TouchableOpacity>
             </View>

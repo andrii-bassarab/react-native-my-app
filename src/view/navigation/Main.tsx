@@ -30,8 +30,6 @@ export const MainStack: React.FC = () => {
     (state) => state.categoryAmenitiesValues
   );
 
-  console.log("6109f72cf431916e4b658442", inspections.find(item => item.id === "6109f72cf431916e4b658442")?.unit.streetAddress)
-
   const showToastNotification = () =>
     dispatch(
       actionsToastNotification.showToastMessage("Success! Sync is complete.")

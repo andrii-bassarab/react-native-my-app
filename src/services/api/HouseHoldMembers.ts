@@ -26,7 +26,7 @@ export const GET_HOUSEHOLD_NAME = gql`
   }
 `
 
-export const getHouseHoldNameById = (id: string) => makeRequest("occupancy/graphql/", `
+export const getHouseHoldNameById = (id: string) => makeRequest({url: "occupancy/graphql/", query: `
   query {
     householdMembers(
       first: 10
@@ -50,9 +50,9 @@ export const getHouseHoldNameById = (id: string) => makeRequest("occupancy/graph
       }
     }
   }
-`);
+`});
 
-export const getLandlordNameById = (id : string) => makeRequest("occupancy/graphql/", `
+export const getLandlordNameById = (id : string) => makeRequest({url: "occupancy/graphql/", query: `
   query QueryLandlords {
     landlords(
       first: 50
@@ -77,4 +77,4 @@ export const getLandlordNameById = (id : string) => makeRequest("occupancy/graph
     }
     }
   }
-`)
+`})

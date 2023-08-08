@@ -36,6 +36,7 @@ export interface InspectionItem {
     squareFootage: number | null;
     isHandicapAccessible: boolean;
     yearConstructed: number | null;
+    landlordId: string | null;
   };
   household: {
     lastActionName: string;

@@ -14,6 +14,9 @@ interface IParams {
   email: string;
   documentType: "Image" | "Document" | "Signature";
   signaturePosition?: "Inspector" | "Landlord" | "Tenant";
+  fileRelatedToCategoryInspection?: boolean;
+  categoryIdRelation?: string
+  inspectionItemIdRelation?: string;
 }
 
 export interface IMetadata {
@@ -24,6 +27,9 @@ export interface IMetadata {
   documentFormat: "image" | "document" | "signature";
   inspectionId: string;
   signaturePosition?: "Inspector" | "Landlord" | "Tenant";
+  fileRelatedToCategoryInspection?: boolean;
+  categoryIdRelation?: string
+  inspectionItemIdRelation?: string;
 }
 
 export const uploadFile = async ({
@@ -32,6 +38,9 @@ export const uploadFile = async ({
   email,
   documentType,
   signaturePosition,
+  fileRelatedToCategoryInspection,
+  categoryIdRelation,
+  inspectionItemIdRelation
 }: IParams) => {
   const metadata: IMetadata = {
     user: email,
@@ -44,6 +53,12 @@ export const uploadFile = async ({
 
   if (documentType === "Signature" && signaturePosition) {
     metadata.signaturePosition = signaturePosition;
+  }
+
+  if (fileRelatedToCategoryInspection && categoryIdRelation && inspectionItemIdRelation) {
+    metadata.fileRelatedToCategoryInspection = fileRelatedToCategoryInspection;
+    metadata.categoryIdRelation = categoryIdRelation;
+    metadata.inspectionItemIdRelation = inspectionItemIdRelation;
   }
 
   const data = new FormData();

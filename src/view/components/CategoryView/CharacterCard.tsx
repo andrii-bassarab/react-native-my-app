@@ -10,6 +10,7 @@ import {
   Keyboard,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors, textStyles } from "~/view/theme";
@@ -17,11 +18,7 @@ import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 import PlusIcon from "~/view/assets/icons/plus.svg";
 import CameraIcon from "~/view/assets/icons/camera.svg";
 import EditIcon from "~/view/assets/icons/edit.svg";
-import {
-  Asset,
-  launchCamera,
-  launchImageLibrary,
-} from "react-native-image-picker";
+import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { ModalViewImage } from "./ModalViewImage";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -29,6 +26,8 @@ import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { actionsCategoryItem } from "~/modules/categoryItem";
+import { uploadFile } from "~/services/api/uploadFile";
+import { ModalLoader } from "../Loader/ModalLoader";
 
 interface Props {
   title: string;
@@ -50,9 +49,9 @@ export const CharacterCard: React.FC<Props> = ({
   categoryId,
 }) => {
   const dispatch = useAppDispatch();
-  const { inspectionItem, categories } = useAppSelector(
-    (state) => state.inspectionItem
-  );
+  const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
+  const { profile } = useAppSelector((state) => state.user);
+
   const isNotCompleted = useMemo(
     () => inspectionItem?.status !== InspectionStatus.COMPLETE,
     [inspectionItem]
@@ -61,6 +60,7 @@ export const CharacterCard: React.FC<Props> = ({
   const [selectedResult, setSelectedResult] = useState<OptionItem>(
     result === true ? "Passed" : "Fail"
   );
+  const [loader, setLoader] = useState(false);
   const [openMainInfo, setOpenMainInfo] = useState(false);
   const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
   const [images, setImages] = useState<Asset[]>([]);
@@ -103,12 +103,27 @@ export const CharacterCard: React.FC<Props> = ({
       ) {
         const asset = takenPhoto.assets[0];
 
+        setLoader(true);
+
+        await uploadFile({
+          singleFile: asset,
+          inspectionId: inspectionItem.id,
+          email: profile?.email || "",
+          documentType: "Image",
+          fileRelatedToCategoryInspection: true,
+          categoryIdRelation: categoryId,
+          inspectionItemIdRelation: inspectionItemId || "",
+        });
+
         setNewPhoto(asset);
 
         setImages((prev) => [...prev, asset]);
       }
     } catch (e) {
       console.log("TakenPhotoError: ", e);
+      Alert.alert("Failed to upload photo")
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -126,19 +141,32 @@ export const CharacterCard: React.FC<Props> = ({
       ) {
         const asset = chosenImageFromGallery.assets[0];
 
-        setNewPhoto(chosenImageFromGallery.assets[0]);
+        setLoader(true);
+
+        await uploadFile({
+          singleFile: asset,
+          inspectionId: inspectionItem.id,
+          email: profile?.email || "",
+          documentType: "Image",
+          fileRelatedToCategoryInspection: true,
+          categoryIdRelation: categoryId,
+          inspectionItemIdRelation: inspectionItemId || "",
+        });
+
+        setNewPhoto(asset);
 
         setImages((prev) => [...prev, asset]);
       }
     } catch (e) {
       console.log("ImageLibraryPhotoError: ", e);
+      Alert.alert("Failed to upload photo")
+    } finally {
+      setLoader(false);
     }
   };
 
   const handleDeleteImage = (imageToDelete: Asset) => {
-    setImages((prev) =>
-      prev.filter((photo) => photo.fileName !== imageToDelete.fileName)
-    );
+    setImages((prev) => prev.filter((photo) => photo.fileName !== imageToDelete.fileName));
   };
 
   const handleOpenModalImage = (imageToSet: Asset) => {
@@ -161,21 +189,9 @@ export const CharacterCard: React.FC<Props> = ({
 
   return (
     <View style={[styles.card, styles.shadowProp]}>
-      <TouchableOpacity
-        style={styles.label}
-        onPress={() => setOpenMainInfo((prev) => !prev)}
-      >
-        <View
-          style={[
-            styles.expandBox,
-            !openMainInfo && { transform: [{ rotate: "-90deg" }] },
-          ]}
-        >
-          <ExpandIcon
-            color={"#fff"}
-            width={normalize(25)}
-            height={normalize(25)}
-          />
+      <TouchableOpacity style={styles.label} onPress={() => setOpenMainInfo((prev) => !prev)}>
+        <View style={[styles.expandBox, !openMainInfo && { transform: [{ rotate: "-90deg" }] }]}>
+          <ExpandIcon color={"#fff"} width={normalize(25)} height={normalize(25)} />
         </View>
         <Text style={styles.title}>{title}</Text>
       </TouchableOpacity>
@@ -188,7 +204,7 @@ export const CharacterCard: React.FC<Props> = ({
             <View style={styles.mainInfo}>
               <Text style={styles.messageText}>{message}</Text>
               <View>
-                {typeof result === 'boolean' && (
+                {typeof result === "boolean" && (
                   <View
                     style={[
                       styles.resultLabel,
@@ -197,16 +213,12 @@ export const CharacterCard: React.FC<Props> = ({
                       },
                     ]}
                   >
-                    <Text style={{ ...styles.labelItemText, flex: 1 }}>
-                      Result:
-                    </Text>
+                    <Text style={{ ...styles.labelItemText, flex: 1 }}>Result:</Text>
                     {categoryApplyToInspection ? (
                       <View style={styles.resultBox}>
-                        {inspectionItem?.status ===
-                        InspectionStatus.COMPLETE ? (
+                        {inspectionItem?.status === InspectionStatus.COMPLETE ? (
                           <Text style={styles.labelItemText}>
-                            {typeof selectedResult === "string" &&
-                              selectedResult}
+                            {typeof selectedResult === "string" && selectedResult}
                           </Text>
                         ) : (
                           <CustomSelect
@@ -235,15 +247,11 @@ export const CharacterCard: React.FC<Props> = ({
                       showEditInput && { flexDirection: "column" },
                     ]}
                   >
-                    <Text style={{ ...styles.labelItemText, flex: 1 }}>
-                      Comments:
-                    </Text>
+                    <Text style={{ ...styles.labelItemText, flex: 1 }}>Comments:</Text>
                     {categoryApplyToInspection ? (
                       <>
                         {showEditInput ? (
-                          <View
-                            style={{ flex: 1, marginTop: "2%", width: "100%" }}
-                          >
+                          <View style={{ flex: 1, marginTop: "2%", width: "100%" }}>
                             <TextInput
                               value={editedComment}
                               onChangeText={setEditedComment}
@@ -255,9 +263,7 @@ export const CharacterCard: React.FC<Props> = ({
                                 style={styles.textInputButton}
                                 onPress={handleResetCommentButton}
                               >
-                                <Text style={styles.inputButtonText}>
-                                  Reset
-                                </Text>
+                                <Text style={styles.inputButtonText}>Reset</Text>
                               </TouchableOpacity>
                               <TouchableOpacity
                                 style={styles.textInputButton}
@@ -337,9 +343,7 @@ export const CharacterCard: React.FC<Props> = ({
                       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                         {images.map((photo) => (
                           <View style={styles.photoLabel} key={photo.uri}>
-                            <TouchableOpacity
-                              onPress={() => handleOpenModalImage(photo)}
-                            >
+                            <TouchableOpacity onPress={() => handleOpenModalImage(photo)}>
                               <Image
                                 source={{
                                   uri: photo?.uri,
@@ -351,11 +355,7 @@ export const CharacterCard: React.FC<Props> = ({
                               style={styles.deletePhoto}
                               onPress={() => handleDeleteImage(photo)}
                             >
-                              <CloseIcon
-                                color={"#fff"}
-                                width={"60%"}
-                                height={"60%"}
-                              />
+                              <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
                             </TouchableOpacity>
                             <Text
                               numberOfLines={1}
@@ -381,11 +381,9 @@ export const CharacterCard: React.FC<Props> = ({
         </KeyboardAvoidingView>
       )}
       {showModalImage && (
-        <ModalViewImage
-          closeModalFunction={() => setShowModalImage(false)}
-          image={newPhoto}
-        />
+        <ModalViewImage closeModalFunction={() => setShowModalImage(false)} image={newPhoto} />
       )}
+      {loader && <ModalLoader />}
     </View>
   );
 };
@@ -396,7 +394,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: "5%",
-    marginHorizontal: '1%'
+    marginHorizontal: "1%",
   },
   label: {
     flexDirection: "row",
@@ -553,7 +551,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderColor: colors.primary,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     ...textStyles.small,
   },
   inputButtonBox: {
