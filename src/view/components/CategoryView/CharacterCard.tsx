@@ -26,8 +26,13 @@ import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { actionsCategoryItem } from "~/modules/categoryItem";
-import { uploadFile } from "~/services/api/uploadFile";
+import { uploadFile } from "~/services/api/files/uploadFile";
 import { ModalLoader } from "../Loader/ModalLoader";
+import { InspectionFile } from "~/types/InspectionFile";
+import { requestDeleteFile } from "~/services/api/files/deleteFile";
+import { fetchInspectionFiles } from "~/modules/inspectionFiles";
+import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
+import { ContentLoader } from "../Loader/Loader";
 
 interface Props {
   title: string;
@@ -37,6 +42,8 @@ interface Props {
   inspectionItemId?: string;
   id: string;
   categoryId: string;
+  itemImages: InspectionFile[];
+  loaderImages: boolean;
 }
 
 export const CharacterCard: React.FC<Props> = ({
@@ -47,10 +54,15 @@ export const CharacterCard: React.FC<Props> = ({
   inspectionItemId,
   id,
   categoryId,
+  itemImages,
+  loaderImages,
 }) => {
   const dispatch = useAppDispatch();
   const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const { profile } = useAppSelector((state) => state.user);
+
+  //  @ts-ignore
+  const callFetchInspectionFiles = async () => dispatch(fetchInspectionFiles(inspectionItem.id));
 
   const isNotCompleted = useMemo(
     () => inspectionItem?.status !== InspectionStatus.COMPLETE,
@@ -62,8 +74,7 @@ export const CharacterCard: React.FC<Props> = ({
   );
   const [loader, setLoader] = useState(false);
   const [openMainInfo, setOpenMainInfo] = useState(false);
-  const [newPhoto, setNewPhoto] = useState<Asset | null>(null);
-  const [images, setImages] = useState<Asset[]>([]);
+  const [newPhoto, setNewPhoto] = useState<InspectionFile | null>(null);
   const [showModalImage, setShowModalImage] = useState(false);
   const [visibleComment, setVisibleComment] = useState(comment || "");
   const [editedComment, setEditedComment] = useState(comment || "");
@@ -115,14 +126,13 @@ export const CharacterCard: React.FC<Props> = ({
           inspectionItemIdRelation: inspectionItemId || "",
         });
 
-        setNewPhoto(asset);
+        setLoader(false);
 
-        setImages((prev) => [...prev, asset]);
+        await callFetchInspectionFiles();
       }
     } catch (e) {
       console.log("TakenPhotoError: ", e);
-      Alert.alert("Failed to upload photo")
-    } finally {
+      Alert.alert("Failed to upload photo");
       setLoader(false);
     }
   };
@@ -153,23 +163,25 @@ export const CharacterCard: React.FC<Props> = ({
           inspectionItemIdRelation: inspectionItemId || "",
         });
 
-        setNewPhoto(asset);
+        setLoader(false);
 
-        setImages((prev) => [...prev, asset]);
+        await callFetchInspectionFiles();
       }
     } catch (e) {
       console.log("ImageLibraryPhotoError: ", e);
-      Alert.alert("Failed to upload photo")
-    } finally {
+      Alert.alert("Failed to upload photo");
       setLoader(false);
     }
   };
 
-  const handleDeleteImage = (imageToDelete: Asset) => {
-    setImages((prev) => prev.filter((photo) => photo.fileName !== imageToDelete.fileName));
+  const handleDeleteImage = async (imageToDelete: InspectionFile) => {
+    setLoader(true);
+    await requestDeleteFile(imageToDelete.id);
+    setLoader(false);
+    await callFetchInspectionFiles();
   };
 
-  const handleOpenModalImage = (imageToSet: Asset) => {
+  const handleOpenModalImage = (imageToSet: InspectionFile) => {
     setNewPhoto(imageToSet);
     setShowModalImage(true);
   };
@@ -340,32 +352,44 @@ export const CharacterCard: React.FC<Props> = ({
                           <Text style={styles.photoName}>Take Photo</Text>
                         </View>
                       </View>
-                      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                        {images.map((photo) => (
-                          <View style={styles.photoLabel} key={photo.uri}>
-                            <TouchableOpacity onPress={() => handleOpenModalImage(photo)}>
-                              <Image
-                                source={{
-                                  uri: photo?.uri,
-                                }}
-                                style={styles.photoImage}
-                              />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={styles.deletePhoto}
-                              onPress={() => handleDeleteImage(photo)}
-                            >
-                              <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
-                            </TouchableOpacity>
-                            <Text
-                              numberOfLines={1}
-                              ellipsizeMode="tail"
-                              style={styles.imageFileName}
-                            >
-                              {photo.fileName}
-                            </Text>
+                      <View>
+                        {!loaderImages ? (
+                          <View style={{flexDirection: "row", flexWrap: "wrap" }}>
+                            {itemImages.map((photo) => (
+                              <View style={styles.photoLabel} key={photo.id}>
+                                <TouchableOpacity onPress={() => handleOpenModalImage(photo)}>
+                                  <Image
+                                    source={{
+                                      uri: `${BASE_DOCUMENT_API}/files/${photo.id}`,
+                                      headers: {
+                                        "x-api-key": FILEROOM_API_KEY,
+                                      },
+                                    }}
+                                    loadingIndicatorSource={require("../../assets/svg/spinner.svg")}
+                                    style={styles.photoImage}
+                                  />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  style={styles.deletePhoto}
+                                  onPress={() => handleDeleteImage(photo)}
+                                >
+                                  <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
+                                </TouchableOpacity>
+                                <Text
+                                  numberOfLines={1}
+                                  ellipsizeMode="tail"
+                                  style={styles.imageFileName}
+                                >
+                                  {photo.name}
+                                </Text>
+                              </View>
+                            ))}
                           </View>
-                        ))}
+                        ) : (
+                          <View style={{ flex: 1 }}>
+                            <ContentLoader />
+                          </View>
+                        )}
                       </View>
                     </View>
                   ) : (

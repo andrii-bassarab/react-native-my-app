@@ -26,7 +26,7 @@ import {
   UPDATE_CATEGORY_AMENITY_VALUE,
   UPDATE_CATEGORY_ITEM_VALUE,
   UPDATE_INSPECTION_CATEGORY_MUTATION,
-} from "~/services/api/GetInspectionCategory";
+} from "~/services/api/category/GetInspectionCategory";
 import { ModalLoader } from "../components/Loader/ModalLoader";
 import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
 import SaveIcon from "~/view/assets/icons/save.svg";

@@ -133,6 +133,11 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    // compileOptions {
+    //     sourceCompatibility JavaVersion.VERSION_1_8
+    //     targetCompatibility JavaVersion.VERSION_1_8
+    // }
+
     packagingOptions {
         pickFirst 'lib/x86/libc++_shared.so'
         pickFirst 'lib/x86_64/libjsc.so'
@@ -166,7 +171,7 @@ android {
                     // src/main/jni/Android.mk file for the `LOCAL_MODULE` variable.
                     targets "myapp_appmodules"
                     // Fix for windows limit on number of character in file paths and in command lines
-                    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    if (System.properties['os.name'].toLowerCase().contains('windows')) {
                         arguments "NDK_APP_SHORT_COMMANDS=true"
                     }
                 }

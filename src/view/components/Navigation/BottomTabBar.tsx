@@ -11,7 +11,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { CustomerSite } from "../Screen/CustomerSite";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import { GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import { actionsInspections } from "~/modules/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 

@@ -9,7 +9,7 @@ import { getInspectionDate } from "~/utils/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections";
+import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections/inspections";
 import { ApolloCache, useMutation } from "@apollo/client";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { ModalLoader } from "../../Loader/ModalLoader";

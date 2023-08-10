@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
 import { normalize } from "~/utils/getWindowHeight";
-import { updateHouseHoldPhoneNumber } from "~/services/api/UpdateHouseholdLandlord";
+import { updateHouseHoldPhoneNumber } from "~/services/api/houseHold/UpdateHouseholdLandlord";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsInspections } from "~/modules/inspections";
 

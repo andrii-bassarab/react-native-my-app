@@ -7,7 +7,7 @@ import DrawerToggleIcon from "../../assets/icons/drawerToggle.svg";
 import NotificationIcon from "../../assets/icons/notification.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import { GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import SyncIcon from "~/view/assets/icons/sync.svg";
 import { colors } from "~/view/theme";
 import { actionsShowWindow } from "~/modules/showWindow";

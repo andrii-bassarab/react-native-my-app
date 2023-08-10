@@ -15,7 +15,7 @@ import { useMutation } from "@apollo/client";
 import {
   ADD_INSPECTION_CATEGORY,
   GET_ALL_INSPECTIONS_CATEGORY,
-} from "~/services/api/GetInspectionCategory";
+} from "~/services/api/category/GetInspectionCategory";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { normalize } from "~/utils/getWindowHeight";

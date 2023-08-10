@@ -2,7 +2,7 @@ import { ApolloCache, useMutation } from "@apollo/client";
 import React from "react";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { actionsToastNotification } from "~/modules/toastNotification";
-import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import { CREATE_INSPECTION_COMMENT, GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { IComment } from "~/types/Comment";
 import { colors, textStyles } from "~/view/theme";

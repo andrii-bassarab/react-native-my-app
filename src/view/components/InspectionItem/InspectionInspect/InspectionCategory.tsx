@@ -21,7 +21,7 @@ import { ApolloCache, useMutation } from "@apollo/client";
 import {
   DELETE_CATEGORY,
   GET_ALL_INSPECTIONS_CATEGORY,
-} from "~/services/api/GetInspectionCategory";
+} from "~/services/api/category/GetInspectionCategory";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { normalize } from "~/utils/getWindowHeight";

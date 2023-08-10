@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import {
   GET_ALL_INSPECTIONS_CATEGORY,
   GET_CATEGORY_ITEM_VALUE_INSPECTION,
-} from "~/services/api/GetInspectionCategory";
+} from "~/services/api/category/GetInspectionCategory";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { ContentLoader } from "../../Loader/Loader";
 import { CategoryList } from "./CategoryList";
@@ -32,6 +32,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
   const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
   const { categoryItemsValues, categoriesTemplates } = useAppSelector((state) => state);
   const { inspections } = useAppSelector((state) => state.inspections);
+  const [loader, setLoader] = useState(false);
 
   const [query, setQuery] = useState("");
   const [visibleCategories, setVisibleCategory] = useState(categories);
@@ -50,12 +51,17 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         inspectionId: inspectionItem.id,
       },
     });
-
+  
   useEffect(() => {
     const fetchCategoryItemsValues = async () => {
       try {
+        setLoader(true);
+        const responseCategories: CategoryType[] = data.inspectionCategories.edges.map(
+          (edge: any) => edge.node
+        );
+      
         const responseCategoryItemsValues = await Promise.all(
-          categories.map((category) =>
+          (categories.length > 0 ? categories : responseCategories).map((category) =>
             getCategoryItemsValues({
               variables: {
                 ids: category?.items?.map((item) => item?.id) || [],
@@ -66,19 +72,22 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         );
 
         const categoryItemsValuesArray = responseCategoryItemsValues.flatMap((item, index) => {
-            const categoryId = categories?.[index]?.id;
+            const categoryId = (categories.length > 0 ? categories : responseCategories)?.[index]?.id;
             return {
               [categoryId]: item.data?.inspectionItemValues?.edges?.map((edge: any) => edge?.node),
             };
           });
 
-        dispatch(actionsCategoryItemsValuesActions.addCategoryItemsValues(categoryItemsValuesArray))
+        dispatch(actionsCategoryItemsValuesActions.addCategoryItemsValues(categoryItemsValuesArray));
+        setLoader(false);
       } catch (error) {
         console.error("Error fetching category items values:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
-    if (data && data.inspectionCategories?.edges) {
+    if (data && data?.inspectionCategories?.edges) {
       fetchCategoryItemsValues();
     }
   }, [inspectionItem, data]);
@@ -98,8 +107,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
       Array.isArray(data.inspectionCategories?.edges) &&
       data.inspectionCategories?.edges.every(
         (edge: any) => typeof edge === "object" && edge.node && typeof edge.node === "object"
-      ) &&
-      resultData
+      )
     ) {
       const responseCategories: CategoryType[] = data.inspectionCategories.edges.map(
         (edge: any) => edge.node
@@ -129,7 +137,7 @@ export const InspectionInspect: React.FC<Props> = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
       <View style={{ height: normalize(15) }} />
-      {(loading && !data) || loadingCategoryItems? (
+      {(loading || loader) && (!data || !resultData)? (
         <View style={styles.loaderBox}>
           <ContentLoader />
         </View>

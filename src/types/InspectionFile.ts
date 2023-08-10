@@ -1,4 +1,4 @@
-import { IMetadata } from "~/services/api/uploadFile";
+import { IMetadata } from "~/services/api/files/uploadFile";
 
 export interface InspectionFile {
   id: number;

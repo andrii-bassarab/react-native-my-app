@@ -8,7 +8,7 @@ import { actionsToastNotification } from "~/modules/toastNotification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionItem } from "~/types/InspectionItem";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
-import { uploadFile } from "~/services/api/uploadFile";
+import { uploadFile } from "~/services/api/files/uploadFile";
 import { Asset } from "react-native-image-picker";
 import { getVisibleDate } from "~/utils/visibleDate";
 import { ModalLoader } from "../Loader/ModalLoader";
@@ -76,7 +76,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
       await uploadFile({
         singleFile: {
           fileName: `Signature ${getVisibleDate(new Date())}.png`,
-          uri: result.pathName,
+          uri: Platform.OS === 'ios' ? result.pathName : `data:image/png;base64,${result.encoded}`,
           type: "image/png",
         } as Asset,
         inspectionId: inspection.id,
@@ -92,7 +92,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
       //result.pathName - for the file path name
     } catch (e) {
       console.log("error upload signature", e);
-      Alert.alert("failed to upload signature");
+      Alert.alert("Failed to upload signature");
     } finally {
       setLoader(false);
     }
@@ -200,7 +200,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
           />
           <SignatureCard
             position={"Landlord"}
-            name={`Tim O’Reilly`}
+            name={inspection.visibleLandlordName}
             openSignScreen={() => handleOpenSignatureCapture(1)}
             signaturePath={pathSignLandlord}
             openShowViewSignature={() => handleOpenModalSignature(1)}

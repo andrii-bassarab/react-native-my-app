@@ -9,7 +9,7 @@ import { actionsNotifications } from "../../modules/notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NotificationItem } from "~/types/NotificationItem";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_INSPECTIONS } from "~/services/api/inspections";
+import { GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import { getPreviousValue } from "~/utils/getPreviousValue";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { colors } from "../theme";

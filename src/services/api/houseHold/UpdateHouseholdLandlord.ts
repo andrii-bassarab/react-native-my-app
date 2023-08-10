@@ -7,7 +7,7 @@ export const updateHouseHoldPhoneNumber = (id: string, phoneNumber: string, emai
     mutation: `
     mutation UpdateVendor {
         updateVendor(
-            command: {modifiedBy: "${email}", customerId: "${X_CUSTOMER_ID}", siteId: "${X_SIDE_ID}", id: "${id}", phoneNumber: "${phoneNumber}"}
+            command: {modifiedBy: ${email}, customerId: ${X_CUSTOMER_ID}, siteId: ${X_SIDE_ID}, id: ${id}, phoneNumber: ${phoneNumber}}
         ) {
             commandName
             status

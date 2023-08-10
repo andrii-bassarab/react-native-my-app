@@ -13,7 +13,7 @@ import { InspectionItem } from "~/types/InspectionItem";
 import { getInspectionDate } from "~/utils/visibleDate";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { ApolloCache, useMutation } from "@apollo/client";
-import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections";
+import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections/inspections";
 import { ModalLoader } from "../Loader/ModalLoader";
 import { normalize } from "~/utils/getWindowHeight";
 import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
