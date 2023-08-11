@@ -35,7 +35,7 @@ export const HomeNavigation: React.FC = () => {
   const { inspectionsSync, syncError, inspections, visibleLoader } = useAppSelector((state) => state.inspections);
   const networkConnectivity = useAppSelector((state) => state.networkConnectivity);
   const categoriesTemplates = useAppSelector((state) => state.categoriesTemplates);
-  const { availableUsers } = useAppSelector((state) => state.user);
+  const { availableUsers, selectedSite } = useAppSelector((state) => state.user);
   const templateIds = Object.keys(categoriesTemplates);
 
   useEffect(() => {

@@ -33,9 +33,8 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
   const [showModalPhoneNumber, setShowModalPhoneNumber] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const { visiblePhoneNumber, inspectionItem } = useAppSelector((state) => state.inspectionItem);
-  const { profile } = useAppSelector((state) => state.user);
+  const { profile, selectedSite } = useAppSelector((state) => state.user);
   const { inspections } = useAppSelector((state) => state.inspections);
-
 
   const [loader, setLoader] = useState(false);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
@@ -109,13 +108,12 @@ export const AdressBox: React.FC<Props> = ({ inspection }) => {
       const response = await updateHouseHoldPhoneNumber(
         inspection.unit?.landlordId || "",
         phoneNumber,
-        profile?.email || ""
+        profile?.email || "",
       );
       const foundInspection = inspections.find(inspection => inspection.id === inspectionItem.id);
       if (foundInspection?.visibleLandlordPhoneNumber) {
         foundInspection.visibleLandlordPhoneNumber = phoneNumber;
         dispatch(actionsInspections.setInspections([...inspections, {...foundInspection}]));
-
       }
       dispatch(actionsInspectionItem.setVisiblePhoneNumber(phoneNumber));
     } catch (e) {

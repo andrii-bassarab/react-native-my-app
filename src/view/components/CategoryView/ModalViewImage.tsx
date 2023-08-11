@@ -7,6 +7,7 @@ import { colors, textStyles } from "~/view/theme";
 import { ContentLoader } from "../Loader/Loader";
 import { InspectionFile } from "~/types/InspectionFile";
 import { Asset } from "react-native-image-picker";
+import { FILE_ROOM_API_HEADERS } from "~/models/fileRoom";
 
 interface Props {
   closeModalFunction: () => void;
@@ -61,9 +62,7 @@ export const ModalViewImage: React.FC<Props> = ({ closeModalFunction, image }) =
               <Image
                 source={{
                   uri: isImageAsset ? image.uri : `${BASE_DOCUMENT_API}/files/${image.id}`,
-                  headers: {
-                    "x-api-key": FILEROOM_API_KEY,
-                  },
+                  headers: FILE_ROOM_API_HEADERS,
                 }}
                 style={styles.image}
                 onLoadStart={() => setLoader(true)}

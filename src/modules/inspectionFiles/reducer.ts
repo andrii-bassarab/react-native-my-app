@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getInspectionFiles } from '~/services/api/files/getInspectionFiles';
-import { InspectionFile } from '~/types/InspectionFile';
-
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getInspectionFiles } from "~/services/api/files/getInspectionFiles";
+import { RootState } from "~/store/types";
+import { InspectionFile } from "~/types/InspectionFile";
 
 interface InspectionFilesState {
   [inspectionId: string]: {
@@ -14,7 +14,7 @@ interface InspectionFilesState {
 const initialState: InspectionFilesState = {};
 
 const inspectionFilesSlice = createSlice({
-  name: 'inspectionFiles',
+  name: "inspectionFiles",
   initialState,
   reducers: {
     fetchInspectionFilesStart(state, action: PayloadAction<string>) {
@@ -22,18 +22,24 @@ const inspectionFilesSlice = createSlice({
       state[inspectionId] = {
         files: [],
         loading: true,
-        error: '',
+        error: "",
       };
     },
-    fetchInspectionFilesSuccess(state, action: PayloadAction<{ inspectionId: string; files: InspectionFile[] }>) {
+    fetchInspectionFilesSuccess(
+      state,
+      action: PayloadAction<{ inspectionId: string; files: InspectionFile[] }>
+    ) {
       const { inspectionId, files } = action.payload;
       state[inspectionId] = {
         files,
         loading: false,
-        error: '',
+        error: "",
       };
     },
-    fetchInspectionFilesFailure(state, action: PayloadAction<{ inspectionId: string; error: string }>) {
+    fetchInspectionFilesFailure(
+      state,
+      action: PayloadAction<{ inspectionId: string; error: string }>
+    ) {
       const { inspectionId, error } = action.payload;
       state[inspectionId] = {
         files: [],
@@ -50,14 +56,19 @@ export const {
   fetchInspectionFilesFailure,
 } = inspectionFilesSlice.actions;
 
-export const fetchInspectionFiles = (inspectionId: string) => async (dispatch: any) => {
-  try {
-    dispatch(fetchInspectionFilesStart(inspectionId));
-    const response = await getInspectionFiles(inspectionId);
-    dispatch(fetchInspectionFilesSuccess({ inspectionId, files: response }));
-  } catch (error) {
-    dispatch(fetchInspectionFilesFailure({ inspectionId, error: "failed to fetch inspection files" }));
-  }
-};
+export const fetchInspectionFiles =
+  (inspectionId: string) => async (dispatch: any, getState: () => RootState) => {
+    try {
+      dispatch(fetchInspectionFilesStart(inspectionId));
+      const { sideId } = getState().user.selectedSite;
+
+      const response = await getInspectionFiles(inspectionId, sideId);
+      dispatch(fetchInspectionFilesSuccess({ inspectionId, files: response }));
+    } catch (error) {
+      dispatch(
+        fetchInspectionFilesFailure({ inspectionId, error: "failed to fetch inspection files" })
+      );
+    }
+  };
 
 export default inspectionFilesSlice.reducer;

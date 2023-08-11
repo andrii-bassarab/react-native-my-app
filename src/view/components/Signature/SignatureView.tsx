@@ -15,6 +15,7 @@ import { ModalLoader } from "../Loader/ModalLoader";
 import { ContentLoader } from "../Loader/Loader";
 import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
 import { fetchInspectionFiles } from "~/modules/inspectionFiles";
+import { FILE_ROOM_API_HEADERS } from "~/models/fileRoom";
 
 interface Props {
   inspection: InspectionItem;
@@ -24,7 +25,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
   const ref = useRef<SignatureCapture>(null);
   const dispatch = useAppDispatch();
 
-  const { profile } = useAppSelector((state) => state.user);
+  const { profile, selectedSite } = useAppSelector((state) => state.user);
   const { inspectionItem } = useAppSelector((state) => state.inspectionItem);
 
   const { [inspectionItem.id]: currentInspectionFiles } = useAppSelector(
@@ -76,7 +77,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
       await uploadFile({
         singleFile: {
           fileName: `Signature ${getVisibleDate(new Date())}.png`,
-          uri: Platform.OS === 'ios' ? result.pathName : `data:image/png;base64,${result.encoded}`,
+          uri: Platform.OS === "ios" ? result.pathName : `data:image/png;base64,${result.encoded}`,
           type: "image/png",
         } as Asset,
         inspectionId: inspection.id,
@@ -143,9 +144,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
       <Image
         source={{
           uri: `${BASE_DOCUMENT_API}/files/${pathSignInspector.id || ""}`,
-          headers: {
-            "x-api-key": FILEROOM_API_KEY,
-          },
+          headers: FILE_ROOM_API_HEADERS,
         }}
         style={[styles.imageviewSignature]}
       />
@@ -159,9 +158,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
       <Image
         source={{
           uri: `${BASE_DOCUMENT_API}/files/${pathSignLandlord.id || ""}`,
-          headers: {
-            "x-api-key": FILEROOM_API_KEY,
-          },
+          headers: FILE_ROOM_API_HEADERS,
         }}
         style={[styles.imageviewSignature]}
       />
@@ -175,9 +172,7 @@ export const SignatureView: React.FC<Props> = ({ inspection }) => {
       <Image
         source={{
           uri: `${BASE_DOCUMENT_API}/files/${pathSignTenant.id || ""}`,
-          headers: {
-            "x-api-key": FILEROOM_API_KEY,
-          },
+          headers: FILE_ROOM_API_HEADERS,
         }}
         style={[styles.imageviewSignature]}
       />

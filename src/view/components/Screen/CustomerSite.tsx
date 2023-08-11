@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import {
   Text,
   TouchableOpacity,
   View,
   StyleSheet,
-  ScrollView,
   Animated,
   PanResponder,
   Pressable,
@@ -14,27 +13,23 @@ import {
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors, textStyles } from "../../theme";
-import SelectIcon from "~/view/assets/icons/selectArrow.svg";
 import { setSelectedSite } from "~/modules/user/actions";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { normalize } from "~/utils/getWindowHeight";
+import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 
 export const CustomerSite = () => {
   const windowHeight = Dimensions.get("window").height;
   const currentUser = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  const [chosenSite, setChosenSite] = useState(
-    currentUser.selectedSite || currentUser.availableSites[0]
-  );
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [chosenSite, setChosenSite] = useState({
+    name: currentUser.selectedSite.customerId,
+    value: currentUser.selectedSite.customerId,
+  });
 
-  const closeSwitchSite = () =>
-    dispatch(actionsShowWindow.setShowSwitchSite(false));
+  const closeSwitchSite = () => dispatch(actionsShowWindow.setShowSwitchSite(false));
 
-  const position = useMemo(
-    () => new Animated.ValueXY({ x: 0, y: windowHeight * 0.15 }),
-    []
-  );
+  const position = useMemo(() => new Animated.ValueXY({ x: 0, y: windowHeight * 0.15 }), []);
   const pan = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
@@ -51,10 +46,7 @@ export const CustomerSite = () => {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (
-          !currentUser.selectedSite &&
-          currentUser.availableSites.length > 1
-        ) {
+        if (!currentUser.selectedSite && currentUser.availableSites.length > 1) {
           return;
         }
         if (gestureState.dy > windowHeight * 0.15) {
@@ -85,9 +77,7 @@ export const CustomerSite = () => {
           event.preventDefault();
           closeSwitchSite();
         }}
-        disabled={
-          !currentUser.selectedSite && currentUser.availableSites.length > 1
-        }
+        disabled={!currentUser.selectedSite && currentUser.availableSites.length > 1}
       >
         <Animated.View
           style={[
@@ -99,10 +89,7 @@ export const CustomerSite = () => {
             event.stopPropagation();
           }}
         >
-          <Animated.View
-            style={styles.switchSiteLabelBox}
-            {...panResponder.panHandlers}
-          >
+          <Animated.View style={styles.switchSiteLabelBox} {...panResponder.panHandlers}>
             <TouchableOpacity
               style={{
                 flex: 1,
@@ -114,58 +101,23 @@ export const CustomerSite = () => {
             </TouchableOpacity>
           </Animated.View>
           <Text style={styles.switchSiteTitle}>Choose Your Customer Site</Text>
-          <View
-            style={{
-              ...styles.dropdownContainer,
-              borderWidth: showDropdown ? 1 : 0,
-            }}
-          >
-            <TouchableOpacity
-              style={styles.selectedLabel}
-              onPress={() => setShowDropdown((prev) => !prev)}
-            >
-              <Text style={styles.selectedText}>{chosenSite.name}</Text>
-              <SelectIcon height={10} width={20} color={colors.primary} />
-            </TouchableOpacity>
-            {showDropdown && (
-              <ScrollView style={styles.dropdownOptionsContainer} showsVerticalScrollIndicator={false}>
-                {currentUser.availableSites.map((site) => (
-                  <TouchableOpacity
-                    key={site.code}
-                    style={{
-                      ...styles.dropdownOptionsLabel,
-                      backgroundColor:
-                        chosenSite.name === site.name ? colors.blue : "#fff",
-                      borderTopWidth: chosenSite.name === site.name ? 0.5 : 0,
-                      borderBottomWidth:
-                        chosenSite.name === site.name ? 0.5 : 0,
-                    }}
-                    onPress={() => {
-                      setChosenSite(site);
-                      setShowDropdown(false);
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color:
-                          chosenSite.name === site.name
-                            ? "#fff"
-                            : colors.primary,
-                        ...textStyles.regular,
-                      }}
-                    >
-                      {site.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-                <View style={{ height: 15 }}></View>
-              </ScrollView>
-            )}
-          </View>
+          <CustomSelect
+            data={currentUser.availableSites.map((site) => ({
+              name: site.name,
+              value: site.code,
+            }))}
+            selectedItem={chosenSite}
+            setSelectedItem={setChosenSite as Dispatch<SetStateAction<OptionItem>>}
+          />
           <TouchableOpacity
             style={styles.saveButton}
             onPress={() => {
-              dispatch(setSelectedSite(chosenSite));
+              // dispatch(
+              //   setSelectedSite({
+              //     sideId: chosenSite.value,
+              //     customerId: chosenSite.value,
+              //   })
+              // );
               closeSwitchSite();
             }}
           >
@@ -205,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     zIndex: 3,
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   selectedText: {
     ...textStyles.regular,

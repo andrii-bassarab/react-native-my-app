@@ -1,31 +1,32 @@
-import { AsyncStatus } from '@appello/common/lib/constants';
-import { createReducer } from '@reduxjs/toolkit';
+import { AsyncStatus } from "@appello/common/lib/constants";
+import { createReducer } from "@reduxjs/toolkit";
 
-import { 
-  setAuth, 
-  setFirstInit, 
-  setCameraPermission, 
-  setProfileStatus, 
-  setUser, signOut, 
-  setNotificationPermission,
-  setSelectedSite, 
+import {
+  setAuth,
+  setFirstInit,
+  setProfileStatus,
+  setUser,
+  signOut,
+  setSelectedSite,
   setAvailableSites,
-  setAvailableUsers, 
-} from './actions';
-import { UserState } from './types';
+  setAvailableUsers,
+} from "./actions";
+import { UserState } from "./types";
 
 export const initialState: UserState = {
   profileStatus: AsyncStatus.IDLE,
   profile: null,
   auth: null,
   firstInit: true,
-  permissions: { camera: false, notification: false },
-  selectedSite: null,
+  selectedSite: {
+    sideId: "vzmdyk",
+    customerId: "vzmdyk",
+  },
   availableSites: [],
-  availableUsers: [] 
+  availableUsers: [],
 };
 
-export const userReducer = createReducer(initialState, builder =>
+export const userReducer = createReducer(initialState, (builder) =>
   builder
     .addCase(setUser, (state, { payload }) => {
       state.profile = payload;
@@ -45,13 +46,10 @@ export const userReducer = createReducer(initialState, builder =>
       state.auth = null;
       state.firstInit = true;
       state.availableSites = [];
-      state.selectedSite = null;
-    })
-    .addCase(setCameraPermission, (state, { payload }) => {
-      state.permissions.camera = payload
-    })
-    .addCase(setNotificationPermission, (state, { payload }) => {
-      state.permissions.notification = payload
+      state.selectedSite = {
+        sideId: "vzmdyk",
+        customerId: "vzmdyk",
+      };
     })
     .addCase(setSelectedSite, (state, { payload }) => {
       state.selectedSite = payload;

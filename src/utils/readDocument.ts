@@ -2,6 +2,7 @@ import RNFS, { DownloadResult } from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import { FILEROOM_API_KEY, BASE_DOCUMENT_API } from '~/constants/env';
 import { Alert } from 'react-native';
+import { FILE_ROOM_API_HEADERS } from '~/models/fileRoom';
 
 export async function openFile(fileToRead: any, closeLoader: any) {
   try {
@@ -10,9 +11,7 @@ export async function openFile(fileToRead: any, closeLoader: any) {
     const response: DownloadResult = await RNFS.downloadFile({
       fromUrl: `${BASE_DOCUMENT_API}/files/${fileToRead.id}`,
       toFile: localFile,
-      headers: {
-        "x-api-key": FILEROOM_API_KEY
-      }
+      headers: FILE_ROOM_API_HEADERS
     }).promise;
 
     if (response.statusCode === 200) {

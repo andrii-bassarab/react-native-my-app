@@ -28,7 +28,6 @@ import { normalize } from "~/utils/getWindowHeight";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import FileViewer from "react-native-file-viewer";
 import { uploadFile } from "~/services/api/files/uploadFile";
-import { getInspectionFiles } from "~/services/api/files/getInspectionFiles";
 import { fetchInspectionFiles } from "~/modules/inspectionFiles";
 import { ContentLoader } from "../../Loader/Loader";
 import { actionsToastNotification } from "~/modules/toastNotification";
@@ -60,7 +59,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
     (file) => file?.metadata?.documentFormat === "signature"
   );
 
-  const { profile } = useAppSelector((state) => state.user);
+  const { profile, selectedSite } = useAppSelector((state) => state.user);
 
   const [loader, setLoader] = useState(false);
   const [query, setQuery] = useState("");

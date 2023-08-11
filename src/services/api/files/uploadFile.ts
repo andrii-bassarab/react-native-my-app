@@ -1,8 +1,9 @@
-import { BASE_DOCUMENT_API, FILEROOM_API_KEY, X_SIDE_ID } from "~/constants/env";
+import { BASE_DOCUMENT_API, X_API_KEY, X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 import { Asset } from "react-native-image-picker";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import { getUploadFileDate } from "~/utils/visibleDate";
 import { DocumentPickerResponse } from "react-native-document-picker";
+import { FILE_ROOM_API_HEADERS } from "~/models/fileRoom";
 
 const isAssetType = (file: Asset | DocumentPickerResponse): file is Asset => {
   return "uri" in file && "fileName" in file && "type" in file;
@@ -47,7 +48,7 @@ export const uploadFile = async ({
     createdOn: getUploadFileDate(new Date()),
     department: "Maintenance",
     documentType: "inspection",
-    documentFormat: documentType.toLocaleLowerCase(),
+    documentFormat: documentType.toLocaleLowerCase() as "image" | "document" | "signature",
     inspectionId,
   };
 
@@ -89,7 +90,7 @@ export const uploadFile = async ({
   const uploadResponse: Response = await fetch(`${BASE_DOCUMENT_API}/files`, {
     method: "POST",
     headers: {
-      "x-api-key": FILEROOM_API_KEY,
+      ...FILE_ROOM_API_HEADERS,
       "Content-Type": "multipart/form-data",
       accept: "text/plain",
     },

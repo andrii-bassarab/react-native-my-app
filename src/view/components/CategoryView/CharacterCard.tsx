@@ -8,21 +8,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
-  Image,
   TextInput,
   Alert,
 } from "react-native";
 import ExpandIcon from "~/view/assets/icons/expand.svg";
 import { colors, textStyles } from "~/view/theme";
 import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
-import PlusIcon from "~/view/assets/icons/plus.svg";
-import CameraIcon from "~/view/assets/icons/camera.svg";
 import EditIcon from "~/view/assets/icons/edit.svg";
-import { Asset, launchCamera, launchImageLibrary } from "react-native-image-picker";
-import CloseIcon from "~/view/assets/icons/failed.svg";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { ModalViewImage } from "./ModalViewImage";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { normalize } from "~/utils/getWindowHeight";
 import { actionsCategoryItem } from "~/modules/categoryItem";
@@ -31,8 +26,7 @@ import { ModalLoader } from "../Loader/ModalLoader";
 import { InspectionFile } from "~/types/InspectionFile";
 import { requestDeleteFile } from "~/services/api/files/deleteFile";
 import { fetchInspectionFiles } from "~/modules/inspectionFiles";
-import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
-import { ContentLoader } from "../Loader/Loader";
+import { ItemImageList } from "./ItemImageList";
 
 interface Props {
   title: string;
@@ -59,7 +53,7 @@ export const CharacterCard: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { inspectionItem, categories } = useAppSelector((state) => state.inspectionItem);
-  const { profile } = useAppSelector((state) => state.user);
+  const { profile, selectedSite } = useAppSelector((state) => state.user);
 
   //  @ts-ignore
   const callFetchInspectionFiles = async () => dispatch(fetchInspectionFiles(inspectionItem.id));
@@ -320,83 +314,22 @@ export const CharacterCard: React.FC<Props> = ({
                   </View>
                 )}
                 <View style={{ zIndex: -2 }}>
-                  {categoryApplyToInspection &&
-                  inspectionItem?.status !== InspectionStatus.COMPLETE ? (
-                    <View style={styles.commentsLabel}>
-                      <Text style={styles.labelItemText}>Add Photos</Text>
-                      <View style={styles.buttonsTakePhotoContainer}>
-                        <View>
-                          <TouchableOpacity
-                            style={styles.takePhotoButton}
-                            onPress={handleChoosePhoto}
-                          >
-                            <PlusIcon
-                              color={"rgba(51, 51, 51, 0.33)"}
-                              width={"40%"}
-                              height={"40%"}
-                            />
-                          </TouchableOpacity>
-                          <Text style={styles.photoName}>From Gallery</Text>
-                        </View>
-                        <View style={{ marginLeft: "2%" }}>
-                          <TouchableOpacity
-                            style={styles.takePhotoButton}
-                            onPress={handleTakePhoto}
-                          >
-                            <CameraIcon
-                              color={"rgba(51, 51, 51, 0.33)"}
-                              width={"60%"}
-                              height={"60%"}
-                            />
-                          </TouchableOpacity>
-                          <Text style={styles.photoName}>Take Photo</Text>
-                        </View>
-                      </View>
-                      <View>
-                        {!loaderImages ? (
-                          <View style={{flexDirection: "row", flexWrap: "wrap" }}>
-                            {itemImages.map((photo) => (
-                              <View style={styles.photoLabel} key={photo.id}>
-                                <TouchableOpacity onPress={() => handleOpenModalImage(photo)}>
-                                  <Image
-                                    source={{
-                                      uri: `${BASE_DOCUMENT_API}/files/${photo.id}`,
-                                      headers: {
-                                        "x-api-key": FILEROOM_API_KEY,
-                                      },
-                                    }}
-                                    loadingIndicatorSource={require("../../assets/svg/spinner.svg")}
-                                    style={styles.photoImage}
-                                  />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  style={styles.deletePhoto}
-                                  onPress={() => handleDeleteImage(photo)}
-                                >
-                                  <CloseIcon color={"#fff"} width={"60%"} height={"60%"} />
-                                </TouchableOpacity>
-                                <Text
-                                  numberOfLines={1}
-                                  ellipsizeMode="tail"
-                                  style={styles.imageFileName}
-                                >
-                                  {photo.name}
-                                </Text>
-                              </View>
-                            ))}
-                          </View>
-                        ) : (
-                          <View style={{ flex: 1 }}>
-                            <ContentLoader />
-                          </View>
-                        )}
-                      </View>
-                    </View>
-                  ) : (
+                  {!categoryApplyToInspection && (
                     <View style={styles.resultLabel}>
                       <Text style={styles.labelItemText}>Photos:</Text>
                       <Text style={styles.noResultText}>N/A</Text>
                     </View>
+                  )}
+                  {categoryApplyToInspection && (
+                    <ItemImageList
+                      itemImages={itemImages}
+                      loaderImages={loaderImages}
+                      handleOpenModalImage={handleOpenModalImage}
+                      handleDeleteImage={handleDeleteImage}
+                      handleChoosePhoto={handleChoosePhoto}
+                      handleTakePhoto={handleTakePhoto}
+                      inspectionIsComplete={inspectionItem?.status === InspectionStatus.COMPLETE}
+                    />
                   )}
                 </View>
               </View>
