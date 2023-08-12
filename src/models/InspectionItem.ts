@@ -1,7 +1,7 @@
-import { InspectionVisibleStatus } from "./inspectionStatus";
-import { IComment } from "./Comment";
+import { InspectionVisibleStatus } from "../types/inspectionStatus";
+import { IComment } from "../types/Comment";
 
-export interface InspectionItem {
+export interface InspectionType {
   id: string;
   scheduledOn: string | null;
   visitationRange: string | null;

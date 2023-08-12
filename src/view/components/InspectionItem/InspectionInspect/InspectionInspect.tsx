@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import { SearchForm } from "../../Inspections/SearchForm";
 import { InspecitonAddCategory } from "./InspectionAddCategory";
 import { ModalAddCategory } from "./ModalAddCategory";
@@ -15,13 +15,13 @@ import { ContentLoader } from "../../Loader/Loader";
 import { CategoryList } from "./CategoryList";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { CategoryItemValueField, CategoryType } from "~/types/Category";
-import { normalize } from "~/utils/getWindowHeight";
-import { getCategoryResult } from "~/utils/storeCategoryTemplate";
+import { CategoryItemValueField, CategoryType } from "~/models/category";
+import { normalize } from "~/utils/normalize/normalize";
+import { getCategoryResult } from "~/utils/category.ts/storeCategoryTemplate";
 import { actionsCategoryItemsValuesActions } from "~/modules/categoryItemsValue";
 
 interface Props {
-  route: RouteProp<{ params: InspectionItem }, "params">;
+  route: RouteProp<{ params: InspectionType }, "params">;
   navigation: NavigationProp<ParamListBase>;
 }
 

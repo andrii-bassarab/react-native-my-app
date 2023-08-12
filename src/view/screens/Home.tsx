@@ -8,7 +8,7 @@ import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
 import { ContentLoader } from "../components/Loader/Loader";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   navigation: NavigationProp<ParamListBase>;

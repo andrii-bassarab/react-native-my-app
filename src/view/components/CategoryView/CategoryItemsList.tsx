@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { colors, textStyles } from "../../theme";
-import { CategoryItems } from "~/types/Category";
+import { CategoryItems } from "~/models/category";
 import { CharacterCard } from "../../components/CategoryView/CharacterCard";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { fetchInspectionFiles } from "~/modules/inspectionFiles";

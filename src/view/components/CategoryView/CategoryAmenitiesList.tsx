@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { colors, textStyles } from "../../theme";
-import { CategoryAmenities } from "~/types/Category";
+import { CategoryAmenities } from "~/models/category";
 import { AmenitiesCard } from "./AmenitiesCard";
 import { ContentLoader } from "../Loader/Loader";
 import { useAppSelector } from "~/store/hooks";

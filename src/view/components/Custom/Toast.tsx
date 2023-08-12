@@ -6,7 +6,7 @@ import { colors, textStyles } from "~/view/theme";
 import { actionsToastNotification } from "../../../modules/toastNotification";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
 import SyncIcon from "~/view/assets/icons/sync.svg";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 export const Toast = () => {
   const dispatch = useAppDispatch();

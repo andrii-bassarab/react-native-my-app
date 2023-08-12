@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { colors, textStyles } from "../../theme";
 import { setSelectedSite } from "~/modules/user/actions";
 import { actionsShowWindow } from "~/modules/showWindow";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { CustomSelect, OptionItem } from "../Custom/CustomSelect";
 
 export const CustomerSite = () => {

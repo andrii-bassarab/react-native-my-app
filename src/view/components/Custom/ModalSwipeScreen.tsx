@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   children?: React.ReactNode;

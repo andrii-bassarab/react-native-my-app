@@ -10,7 +10,7 @@ import {
 import { Screen } from "../components/Screen/Screen";
 import { colors, textStyles } from "../theme";
 import LeftErrow from "../assets/icons/leftArrow.svg";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   children?: React.ReactNode;

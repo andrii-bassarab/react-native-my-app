@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, Pressable } from "react-native";
 import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import CloseIcon from "~/view/assets/icons/failed.svg";
 import { colors, textStyles } from "~/view/theme";
 import { ContentLoader } from "../Loader/Loader";
-import { InspectionFile } from "~/types/InspectionFile";
+import { InspectionFile } from "~/models/InspectionFile";
 import { Asset } from "react-native-image-picker";
 import { FILE_ROOM_API_HEADERS } from "~/models/fileRoom";
 

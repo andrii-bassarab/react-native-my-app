@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Platform, Animated } from "react-na
 import { colors, textStyles } from "../../theme";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface TopTabBarProps extends MaterialTopTabBarProps {}
 

@@ -3,7 +3,7 @@ import { Modal, Pressable, View, StyleSheet, Text, TouchableOpacity } from "reac
 import { SvgProps } from "react-native-svg";
 import { colors, textStyles } from "~/view/theme";
 import { ModalLoader } from "../Loader/ModalLoader";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   title: string;

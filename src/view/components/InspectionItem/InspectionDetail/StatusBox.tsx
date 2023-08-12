@@ -1,13 +1,13 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { useAppSelector } from "~/store/hooks";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { getInspectionDate } from "~/utils/visibleDate";
+import { getInspectionDate } from "~/utils/date/visibleDate";
 import { textStyles } from "~/view/theme";
 
 interface Props {
-  inspection: InspectionItem;
+  inspection: InspectionType;
 }
 
 export const StatusBox: React.FC<Props> = ({ inspection }) => {

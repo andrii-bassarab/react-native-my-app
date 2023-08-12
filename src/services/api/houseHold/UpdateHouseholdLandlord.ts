@@ -1,5 +1,5 @@
 import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
-import { makeRequest } from "~/utils/fetch";
+import { makeRequest } from "~/utils/fetch/fetch";
 
 export const updateHouseHoldPhoneNumber = (id: string, phoneNumber: string, email: string) =>
   makeRequest({

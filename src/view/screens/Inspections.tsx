@@ -14,10 +14,10 @@ import {
 import { Screen } from "../components/Screen/Screen";
 import { InspectionVisibleStatus } from "~/types/inspectionStatus";
 import { InspectionCard } from "../components/Inspections/InspectionCard";
-import { getCalendarVisibleDate } from "~/utils/visibleDate";
-import { InspectionItem } from "~/types/InspectionItem";
+import { getCalendarVisibleDate } from "~/utils/date/visibleDate";
+import { InspectionType } from "~/models/InspectionItem";
 import { ContentLoader } from "../components/Loader/Loader";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   route: RouteProp<{ params: {} }, "params">;
@@ -129,7 +129,7 @@ export const Inspections: React.FC<Props> = ({ route, navigation }) => {
         item.visibleStatus === InspectionVisibleStatus.FAILED
     );
 
-    let filteredInspections: InspectionItem[] = [];
+    let filteredInspections: InspectionType[] = [];
 
     if (statusNewUnscheduled) {
       filteredInspections.push(...newUnscheduledInspections);

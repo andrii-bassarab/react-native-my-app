@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { makeRequest } from '~/utils/fetch';
+import { makeRequest } from '~/utils/fetch/fetch';
 
 export const GET_HOUSEHOLD_NAME = gql`
   query($householdId: String!) {

@@ -20,7 +20,7 @@ import { CalendarRange } from "../Custom/CalendarRange";
 import { filterInspectionsActions } from "../../../modules/filterInspections";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 export const InspectionsFilter = () => {
   const windowHeight = Dimensions.get('window').height;

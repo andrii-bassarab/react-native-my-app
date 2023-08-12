@@ -18,7 +18,7 @@ import {
 } from "~/services/api/category/GetInspectionCategory";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryAmenitiesResponse, CategoryAmenityField } from "~/types/Category";
+import { CategoryAmenitiesResponse, CategoryAmenityField } from "~/models/category";
 
 const initialState = {} as CategoryAmenitiesResponse;
 

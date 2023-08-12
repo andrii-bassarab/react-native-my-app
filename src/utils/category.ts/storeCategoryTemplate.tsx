@@ -1,4 +1,4 @@
-import { CategoryItemsValues, CategoryType } from "~/types/Category";
+import { CategoryItemsValues, CategoryType } from "~/models/category";
 
 export const getCategoryResult = (
   responseCategories: CategoryType[],

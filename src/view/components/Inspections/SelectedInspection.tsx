@@ -1,25 +1,25 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import CalendarIcon from "~/view/assets/icons/calendar.svg";
-import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
+import { getInspectionColorByStatus } from "~/utils/inspection/getInspectionColor";
 import { colors, textStyles } from "../../theme";
 import LeftErrow from "~/view/assets/icons/leftArrow.svg";
 import { InspectionVisibleStatus } from "~/types/inspectionStatus";
-import { Category } from "~/types/Category";
+import { Category } from "~/models/category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { SelectedCategory } from "../InspectionItem/InspectionInspect/SelectedCategory";
-import { InspectionItem } from "~/types/InspectionItem";
-import { getInspectionDate } from "~/utils/visibleDate";
+import { InspectionType } from "~/models/InspectionItem";
+import { getInspectionDate } from "~/utils/date/visibleDate";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { ApolloCache, useMutation } from "@apollo/client";
 import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspections/inspections";
 import { ModalLoader } from "../Loader/ModalLoader";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
-  item: InspectionItem;
+  item: InspectionType;
   goBack: () => void;
   includeCategory?: boolean;
   category?: Category;

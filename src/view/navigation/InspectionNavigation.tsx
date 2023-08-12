@@ -5,8 +5,7 @@ import { InspectionItem } from "../screens/InspectionItem";
 import { Inspections } from "../screens/Inspections";
 import { InspectionCategoryScreen } from "../screens/InspectionCategoryView";
 import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/native";
-import { Inspection } from "~/types/Inspection";
-import { colors } from "../theme";
+import { InspectionType } from "~/models/InspectionItem";
 
 const screenOptions = {
   gestureEnabled: false,
@@ -16,7 +15,7 @@ const screenOptions = {
 const InspectionStack = createNativeStackNavigator();
 
 interface Props {
-  route: RouteProp<{ params?: { navigate?: string; item: Inspection } }, "params">;
+  route: RouteProp<{ params?: { navigate?: string; item: InspectionType } }, "params">;
   navigation: NavigationProp<ParamListBase>;
 }
 

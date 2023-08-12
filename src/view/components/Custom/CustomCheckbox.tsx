@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { colors, textStyles } from '../../theme';
-import { normalize } from '~/utils/getWindowHeight';
+import { normalize } from '~/utils/normalize/normalize';
 
 interface Props {
   label?: string; 

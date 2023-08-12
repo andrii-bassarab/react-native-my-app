@@ -2,15 +2,15 @@ import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { StatusBox } from "./StatusBox";
 import { RouteProp } from "@react-navigation/native";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import { AssignedBox } from "./AssignedBox";
 import { AdressBox } from "./AdressBox";
 import { CustomAttributes } from "./CustomAttributes";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { useAppSelector } from "~/store/hooks";
 
 interface Props {
-  route: RouteProp<{ params: InspectionItem }, "params">;
+  route: RouteProp<{ params: InspectionType }, "params">;
 }
 
 export const InspectionDetails: React.FC<Props> = ({ route }) => {

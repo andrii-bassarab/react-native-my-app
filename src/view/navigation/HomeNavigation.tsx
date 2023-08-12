@@ -12,9 +12,9 @@ import { NavigationDrawerStructure } from "../components/Navigation/NavigationDr
 import { colors } from "../theme";
 import { NavigationNotificationStructure } from "../components/Navigation/NavigationNotificationStructure";
 import { getHouseHoldNameById, getLandlordNameById } from "~/services/api/houseHold/HouseHoldMembers";
-import { getInspectionStatus } from "~/utils/getInspectionStatus";
+import { getInspectionStatus } from "~/utils/inspection/getInspectionStatus";
 import { actionsInspections } from "~/modules/inspections";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import { GET_INSPECTION_TEMPLATES } from "~/services/api/inspections/InspectionTemplates";
 import { useQuery } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
@@ -22,10 +22,10 @@ import { GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import { getAvailableUsers } from "~/services/api/users/GetUserById";
 import { GET_ALL_INSPECTIONS_CATEGORY } from "~/services/api/category/GetInspectionCategory";
 import { setAvailableUsers } from "~/modules/user/actions";
-import { getVisibleAssignedTo } from "~/utils/getVisibleAssigned";
+import { getVisibleAssignedTo } from "~/utils/inspection/getVisibleAssigned";
 import { actionsCategoryTemplate } from "~/modules/categoriesTemplates";
-import { CategoryType } from "~/types/Category";
-import { getCategoryResult } from "~/utils/storeCategoryTemplate";
+import { CategoryType } from "~/models/category";
+import { getCategoryResult } from "~/utils/category.ts/storeCategoryTemplate";
 
 const Drawer = createDrawerNavigator();
 
@@ -129,7 +129,7 @@ export const HomeNavigation: React.FC = () => {
           ).name,
           visibleLandlordPhoneNumber: inspections[index].visibleLandlordPhoneNumber,
         })
-      ) as InspectionItem[];
+      ) as InspectionType[];
 
       dispatch(actionsInspections.setInspections(inspectionsFromServer));
 
@@ -194,7 +194,7 @@ export const HomeNavigation: React.FC = () => {
           ).name,
           visibleLandlordPhoneNumber: arrayOfLandlordsNames[index].phoneNumber,
         })
-      ) as InspectionItem[];
+      ) as InspectionType[];
 
       dispatch(actionsInspections.setInspections(inspectionsFromServer));
     } catch (error) {

@@ -1,7 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Action, createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import { getInspectionFiles } from "~/services/api/files/getInspectionFiles";
-import { RootState } from "~/store/types";
-import { InspectionFile } from "~/types/InspectionFile";
+import { InspectionFile } from "~/models/InspectionFile";
 
 interface InspectionFilesState {
   [inspectionId: string]: {
@@ -57,12 +56,11 @@ export const {
 } = inspectionFilesSlice.actions;
 
 export const fetchInspectionFiles =
-  (inspectionId: string) => async (dispatch: any, getState: () => RootState) => {
+  (inspectionId: string) => async (dispatch: ReturnType<() => Dispatch<Action<any>>>) => {
     try {
       dispatch(fetchInspectionFilesStart(inspectionId));
-      const { sideId } = getState().user.selectedSite;
 
-      const response = await getInspectionFiles(inspectionId, sideId);
+      const response = await getInspectionFiles(inspectionId);
       dispatch(fetchInspectionFilesSuccess({ inspectionId, files: response }));
     } catch (error) {
       dispatch(

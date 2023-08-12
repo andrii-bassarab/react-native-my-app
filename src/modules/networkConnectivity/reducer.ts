@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const networkConnectivitySlice = createSlice({
   name: "inspections",
-  initialState: true,
+  initialState: true as boolean,
   reducers: {
     setNetworkStatus: (_state, action: PayloadAction<boolean>) => action.payload
   },

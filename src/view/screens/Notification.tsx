@@ -13,10 +13,10 @@ import NotificationsIcon from "../assets/icons/notifications.svg";
 import SyncIcon from "../assets/icons/sync.svg";
 import { colors, textStyles } from "../theme";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { getVisibleDate } from "~/utils/visibleDate";
+import { getVisibleDate } from "~/utils/date/visibleDate";
 import { actionsShowWindow } from "~/modules/showWindow";
 import { actionsNotifications } from "~/modules/notifications";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 export const Notifications: React.FC = () => {
   const windowHeight = Dimensions.get("window").height;

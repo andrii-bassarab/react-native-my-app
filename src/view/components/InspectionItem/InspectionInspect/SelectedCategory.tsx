@@ -2,12 +2,12 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { CustomToggleInput } from "../../Custom/CustomToggleInput";
-import { Category } from "~/types/Category";
+import { Category } from "~/models/category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import FailedIcon from "~/view/assets/icons/failed.svg";
 
 interface Props {

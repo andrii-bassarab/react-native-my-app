@@ -13,13 +13,13 @@ import { ModalDeleteItem } from "../components/Custom/ModalDeleteItem";
 import SaveIcon from "~/view/assets/icons/save.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionComments } from "../components/InspectionItem/InspectionComments/InspectionComments";
-import { InspectionItem as Inspection } from "~/types/InspectionItem";
+import { InspectionType as Inspection } from "~/models/InspectionItem";
 import { SignatureView } from "../components/Signature/SignatureView";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionFilesView } from "../components/InspectionItem/InspectionFiles/InspectionFilesView";
 import { KeyboardAvoidingDisplayComponent } from "../hoc/KeyboardAvoidingDisplayComponent";
-import { normalize } from "~/utils/getWindowHeight";
-import { openFile } from "~/utils/readDocument";
+import { normalize } from "~/utils/normalize/normalize";
+import { openFile } from "~/services/api/files/readDocument";
 
 interface Props {
   route: RouteProp<{ params: Inspection }, "params">;

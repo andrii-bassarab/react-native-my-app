@@ -18,7 +18,7 @@ import { signOut } from "~/modules/user/actions";
 import { WelcomeBox } from "../components/Screen/WelcomeBox";
 import { colors, textStyles } from "../theme";
 import { actionsShowWindow } from "~/modules/showWindow";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { CUSTOMER_NAME } from "~/constants/env";
 
 interface Props extends DrawerContentComponentProps {}

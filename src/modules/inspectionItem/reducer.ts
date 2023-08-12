@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryItemsValues, CategoryType } from "~/types/Category";
-import { InspectionItem } from "~/types/InspectionItem";
+import { CategoryItemsValues, CategoryType } from "~/models/category";
+import { InspectionType } from "~/models/InspectionItem";
 import { InspectionVisibleStatus } from "~/types/inspectionStatus";
-import { getInspectionStatus } from "~/utils/getInspectionStatus";
+import { getInspectionStatus } from "~/utils/inspection/getInspectionStatus";
 
-const initialInspectionItem: InspectionItem = {
+const initialInspectionItem: InspectionType = {
   id: "",
   scheduledOn: null,
   visitationRange: null,
@@ -38,6 +38,7 @@ const initialInspectionItem: InspectionItem = {
     squareFootage: null,
     isHandicapAccessible: false,
     yearConstructed: null,
+    landlordId: null,
   },
   household: {
     lastActionName: "",
@@ -47,7 +48,7 @@ const initialInspectionItem: InspectionItem = {
 };
 
 const initialState = {
-  inspectionItem: initialInspectionItem as InspectionItem,
+  inspectionItem: initialInspectionItem as InspectionType,
   categories: [] as CategoryType[],
   startSignature: false,
   signatureCount: 0,
@@ -104,7 +105,7 @@ const inspectionItemSlice = createSlice({
         }
       }
     },
-    setInspectionItem: (state, action: PayloadAction<InspectionItem>) => {
+    setInspectionItem: (state, action: PayloadAction<InspectionType>) => {
       state.inspectionItem = action.payload;
       state.assignedOption = {
         value: action.payload.assignedTo,

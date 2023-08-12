@@ -16,7 +16,7 @@ import { CustomRadioCheckbox } from "../Custom/CustomRadioCheckbox";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { actionsCategoryItem } from "~/modules/categoryItem";
 

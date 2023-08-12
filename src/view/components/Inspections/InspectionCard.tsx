@@ -2,13 +2,13 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import CalendarIcon from "../../assets/icons/calendar.svg";
 import { colors, textStyles } from "~/view/theme";
-import { getInspectionDate } from "~/utils/visibleDate";
-import { getInspectionColorByStatus } from "~/utils/getInspectionColor";
-import { InspectionItem } from "~/types/InspectionItem";
-import { normalize } from "~/utils/getWindowHeight";
+import { getInspectionDate } from "~/utils/date/visibleDate";
+import { getInspectionColorByStatus } from "~/utils/inspection/getInspectionColor";
+import { InspectionType } from "~/models/InspectionItem";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
-  inspection: InspectionItem;
+  inspection: InspectionType;
   onPress: () => void;
 }
 

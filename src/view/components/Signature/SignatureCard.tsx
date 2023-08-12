@@ -2,8 +2,8 @@ import React, { Dispatch, SetStateAction } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import CompleteIcon from "~/view/assets/icons/completed.svg";
-import { normalize } from "~/utils/getWindowHeight";
-import { InspectionFile } from "~/types/InspectionFile";
+import { normalize } from "~/utils/normalize/normalize";
+import { InspectionFile } from "~/models/InspectionFile";
 
 interface Props {
   position: string;

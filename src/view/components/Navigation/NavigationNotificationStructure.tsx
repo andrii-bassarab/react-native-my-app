@@ -10,7 +10,7 @@ import { ParamListBase } from "@react-navigation/native";
 import { colors, textStyles } from "~/view/theme";
 import NetInfo from "@react-native-community/netinfo";
 import { actionsNetworkConnectivity } from "~/modules/networkConnectivity";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;

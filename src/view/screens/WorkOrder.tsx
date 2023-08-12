@@ -7,7 +7,7 @@ import { colors, layout, textStyles } from "../theme";
 import BuilderIncon from "../assets/icons/build.svg";
 import SettingsDetail from "../assets/icons/settings.svg";
 import { Screen } from "../components/Screen/Screen";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   navigation: BottomTabNavigationProp<ParamListBase>;

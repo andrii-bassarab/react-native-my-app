@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from "react-native";
-import { getColorIconFileByFormat } from "~/utils/getInspectionColor";
+import { getColorIconFileByFormat } from "~/utils/inspection/getInspectionColor";
 import DotsIcon from "~/view/assets/icons/dots.svg";
 import { colors, textStyles } from "~/view/theme";
 import DeleteIcon from "~/view/assets/icons/delete.svg";
 import { ModalDeleteItem } from "../../Custom/ModalDeleteItem";
 import DeleteModalIcon from "~/view/assets/icons/deleteModal.svg";
-import { normalize } from "~/utils/getWindowHeight";
-import { getInspectionDate } from "~/utils/visibleDate";
-import { InspectionFile } from "~/types/InspectionFile";
+import { normalize } from "~/utils/normalize/normalize";
+import { getInspectionDate } from "~/utils/date/visibleDate";
+import { InspectionFile } from "~/models/InspectionFile";
 
 interface Props {
   file: InspectionFile;

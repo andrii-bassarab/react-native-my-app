@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 import { colors, textStyles } from "../../theme";
 import { useAppSelector } from "~/store/hooks";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { CUSTOMER_NAME } from "~/constants/env";
 
 interface Props {

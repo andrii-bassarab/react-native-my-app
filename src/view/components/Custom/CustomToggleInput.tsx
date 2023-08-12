@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { normalize } from '~/utils/getWindowHeight';
+import { normalize } from '~/utils/normalize/normalize';
 import { colors } from '~/view/theme';
 
 interface Props {

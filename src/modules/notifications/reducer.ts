@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { signOut } from "../user/actions";
-import { NotificationItem } from "~/types/NotificationItem";
+import { NotificationItem } from "~/models/NotificationItem";
 
 const initialState = {
   notifications: [] as NotificationItem[],

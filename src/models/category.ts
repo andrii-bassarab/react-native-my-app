@@ -1,5 +1,3 @@
-import { IComment } from "./Comment";
-
 export interface Category {
   id: string;
   title: string;

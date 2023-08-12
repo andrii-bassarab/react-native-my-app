@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { colors } from "../../theme";
 import { Calendar } from "react-native-calendars";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface DateObject {
   [key: string]: any;

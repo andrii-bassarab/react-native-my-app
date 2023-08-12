@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryItemsValues, CategoryItemValueField } from "~/types/Category";
+import { CategoryItemsValues, CategoryItemValueField } from "~/models/category";
 
 const initialState = {} as {
   [categoryId: string]: CategoryItemsValues

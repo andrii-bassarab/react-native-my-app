@@ -11,21 +11,21 @@ import {
   Alert,
 } from "react-native";
 import { colors, textStyles } from "~/view/theme";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { InspectionStatus } from "~/types/inspectionStatus";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
-import { getInspectionDate } from "~/utils/visibleDate";
+import { getInspectionDate } from "~/utils/date/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { updateHouseHoldPhoneNumber } from "~/services/api/houseHold/UpdateHouseholdLandlord";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsInspections } from "~/modules/inspections";
 
 interface Props {
-  inspection: InspectionItem;
+  inspection: InspectionType;
 }
 
 export const AdressBox: React.FC<Props> = ({ inspection }) => {

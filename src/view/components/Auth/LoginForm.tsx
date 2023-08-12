@@ -9,7 +9,7 @@ import {
 import EyeIcon from "~/view/assets/icons/eyeslash.svg";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { colors, textStyles } from "~/view/theme";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   goToHome: () => void;

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import { colors, textStyles } from "~/view/theme";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import EditIcon from "~/view/assets/icons/edit.svg";
 import { ModalSwipeScreen } from "../../Custom/ModalSwipeScreen";
 import { CustomSelect, OptionItem } from "../../Custom/CustomSelect";
-import { getInspectionDate } from "~/utils/visibleDate";
+import { getInspectionDate } from "~/utils/date/visibleDate";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { InspectionStatus } from "~/types/inspectionStatus";
@@ -13,11 +13,11 @@ import { GET_ALL_INSPECTIONS, UPDATE_INSPECTION } from "~/services/api/inspectio
 import { ApolloCache, useMutation } from "@apollo/client";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { ModalLoader } from "../../Loader/ModalLoader";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {
-  inspection: InspectionItem;
+  inspection: InspectionType;
 }
 
 export const AssignedBox: React.FC<Props> = ({ inspection }) => {

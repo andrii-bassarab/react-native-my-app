@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 
 const initialState = {
-  inspections: [] as InspectionItem[],
+  inspections: [] as InspectionType[],
   inspectionsSync: false,
   visibleLoader: false,
   syncError: false,
@@ -12,10 +12,10 @@ const inspectionsSlice = createSlice({
   name: "inspections",
   initialState,
   reducers: {
-    setInspections: (state, action: PayloadAction<InspectionItem[]>) => {
+    setInspections: (state, action: PayloadAction<InspectionType[]>) => {
       state.inspections = action.payload
     },
-    pushInspection: (state, action: PayloadAction<InspectionItem>) => {
+    pushInspection: (state, action: PayloadAction<InspectionType>) => {
       state.inspections = [...state.inspections, action.payload]
     },
     clearInspections: (state) => {

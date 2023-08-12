@@ -2,14 +2,14 @@ import React from "react";
 import { FlatList, View, TouchableOpacity } from "react-native";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { InspectionCategory } from "./InspectionCategory";
-import { CategoryType } from "~/types/Category";
-import { InspectionItem } from "~/types/InspectionItem";
-import { normalize } from "~/utils/getWindowHeight";
+import { CategoryType } from "~/models/category";
+import { InspectionType } from "~/models/InspectionItem";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   visibleCategories: CategoryType[];
   navigation: NavigationProp<ParamListBase>;
-  inspection: InspectionItem;
+  inspection: InspectionType;
 }
 
 export const CategoryList: React.FC<Props> = ({

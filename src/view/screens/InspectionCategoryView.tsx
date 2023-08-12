@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "rea
 import { Screen } from "../components/Screen/Screen";
 import { colors, layout, textStyles } from "../theme";
 import { SelectedInspection } from "../components/Inspections/SelectedInspection";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import {
   Category,
   CategoryItems,
@@ -12,12 +12,12 @@ import {
   CategoryAmenitiesResponse,
   CategoryItemsValues,
   CategoryItemValueField,
-} from "~/types/Category";
+} from "~/models/category";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { CategoryItemsList } from "../components/CategoryView/CategoryItemsList";
 import { CategoryAmenitiesList } from "../components/CategoryView/CategoryAmenitiesList";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   GET_ALL_INSPECTIONS_CATEGORY,
@@ -42,7 +42,7 @@ interface Props {
     {
       params: {
         category: Category;
-        inspection: InspectionItem;
+        inspection: InspectionType;
         items: CategoryItems[];
         amenities: CategoryAmenities[];
       };

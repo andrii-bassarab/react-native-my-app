@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { colors, textStyles } from "../../theme";
 import SelectIcon from "~/view/assets/icons/selectArrow.svg";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 export type OptionItem = string | { name: string; value: string | null };
 

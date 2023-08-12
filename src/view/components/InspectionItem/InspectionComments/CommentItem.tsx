@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { IComment } from "~/types/Comment";
-import { getVisibleDate } from "~/utils/visibleDate";
+import { getVisibleDate } from "~/utils/date/visibleDate";
 import { colors, textStyles } from "~/view/theme";
 import EditIcon from "~/view/assets/icons/edit.svg";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   comment: IComment;

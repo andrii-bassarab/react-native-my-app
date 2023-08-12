@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import PlusIcon from "~/view/assets/icons/plus.svg";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 export const InspectionFilesAddButton: React.FC = () => {
   return (

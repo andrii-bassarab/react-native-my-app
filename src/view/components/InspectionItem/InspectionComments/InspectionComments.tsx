@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { colors, textStyles } from "~/view/theme";
 import { RouteProp } from "@react-navigation/native";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import CommentIcon from "~/view/assets/icons/comment.svg";
 import { AddCommentBox } from "./AddCommentBox";
 import { CommentItem } from "./CommentItem";
@@ -12,7 +12,7 @@ import { useAppSelector } from "~/store/hooks";
 import { KeyboardAvoidingDisplayComponent } from "~/view/hoc/KeyboardAvoidingDisplayComponent";
 
 interface Props {
-  route: RouteProp<{ params: InspectionItem }, "params">;
+  route: RouteProp<{ params: InspectionType }, "params">;
 }
 
 export const InspectionComments: React.FC<Props> = ({ route }) => {

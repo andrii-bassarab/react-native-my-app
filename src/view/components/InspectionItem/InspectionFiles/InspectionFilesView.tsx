@@ -12,7 +12,7 @@ import { NavigationProp, ParamListBase, RouteProp } from "@react-navigation/nati
 import { SearchForm } from "../../Inspections/SearchForm";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
 import { InspectionFilesAddButton } from "./InspectionFilesAddButton";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import { InspectionFileCard } from "./InspectionFileCard";
 import FileIcon from "~/view/assets/icons/file.svg";
 import TakePhotoIcon from "~/view/assets/icons/takePhoto.svg";
@@ -24,21 +24,21 @@ import DocumentPicker, { DocumentPickerOptions } from "react-native-document-pic
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes";
 import { ModalViewImage } from "../../CategoryView/ModalViewImage";
 import { InspectionStatus } from "~/types/inspectionStatus";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import FileViewer from "react-native-file-viewer";
 import { uploadFile } from "~/services/api/files/uploadFile";
 import { fetchInspectionFiles } from "~/modules/inspectionFiles";
 import { ContentLoader } from "../../Loader/Loader";
 import { actionsToastNotification } from "~/modules/toastNotification";
-import { openFile } from "~/utils/readDocument";
+import { openFile } from "~/services/api/files/readDocument";
 import { InspectionFileModalDocument } from "./InspectionFileModalDocument";
 import { BASE_DOCUMENT_API } from "~/constants/env";
-import { InspectionFile } from "~/types/InspectionFile";
+import { InspectionFile } from "~/models/InspectionFile";
 import { requestDeleteFile } from "~/services/api/files/deleteFile";
 
 interface Props {
-  route: RouteProp<{ params: InspectionItem }, "params">;
+  route: RouteProp<{ params: InspectionType }, "params">;
   navigation: NavigationProp<ParamListBase>;
 }
 
@@ -201,16 +201,12 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
 
         setLoader(true);
 
-        try {
-          await uploadFile({
-            singleFile: selectedFile,
-            inspectionId: inspectionItem.id,
-            email: profile?.email || "",
-            documentType: "Document",
-          });
-        } catch {
-          Alert.alert("Failed to upload document");
-        }
+        await uploadFile({
+          singleFile: selectedFile,
+          inspectionId: inspectionItem.id,
+          email: profile?.email || "",
+          documentType: "Document",
+        });
 
         await callFetchInspectionFiles();
 
@@ -218,6 +214,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
       }
     } catch (e) {
       console.log("DocumentPickerError", e);
+      Alert.alert("Failed to upload document");
     } finally {
       setLoader(false);
     }
@@ -321,10 +318,7 @@ export const InspectionFilesView: React.FC<Props> = ({ route, navigation }) => {
                     style={{ marginBottom: "4%" }}
                     onPress={() => handleOpenModalFile(file)}
                   >
-                    <InspectionFileCard
-                      file={file}
-                      deleteFile={handleDeleteFile}
-                    />
+                    <InspectionFileCard file={file} deleteFile={handleDeleteFile} />
                   </TouchableOpacity>
                 ))}
               </>

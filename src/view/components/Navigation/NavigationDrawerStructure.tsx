@@ -11,7 +11,7 @@ import { GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import SyncIcon from "~/view/assets/icons/sync.svg";
 import { colors } from "~/view/theme";
 import { actionsShowWindow } from "~/modules/showWindow";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   navigationProps: DrawerNavigationProp<ParamListBase>;

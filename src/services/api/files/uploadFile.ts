@@ -1,9 +1,10 @@
 import { BASE_DOCUMENT_API, X_API_KEY, X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 import { Asset } from "react-native-image-picker";
 import { Platform } from "react-native";
-import { getUploadFileDate } from "~/utils/visibleDate";
+import { getUploadFileDate } from "~/utils/date/visibleDate";
 import { DocumentPickerResponse } from "react-native-document-picker";
 import { FILE_ROOM_API_HEADERS } from "~/models/fileRoom";
+import { IMetadata } from "~/models/InspectionFile";
 
 const isAssetType = (file: Asset | DocumentPickerResponse): file is Asset => {
   return "uri" in file && "fileName" in file && "type" in file;
@@ -14,19 +15,6 @@ interface IParams {
   inspectionId: string;
   email: string;
   documentType: "Image" | "Document" | "Signature";
-  signaturePosition?: "Inspector" | "Landlord" | "Tenant";
-  fileRelatedToCategoryInspection?: boolean;
-  categoryIdRelation?: string;
-  inspectionItemIdRelation?: string;
-}
-
-export interface IMetadata {
-  user: string;
-  createdOn: string;
-  department: string;
-  documentType: string;
-  documentFormat: "image" | "document" | "signature";
-  inspectionId: string;
   signaturePosition?: "Inspector" | "Landlord" | "Tenant";
   fileRelatedToCategoryInspection?: boolean;
   categoryIdRelation?: string;

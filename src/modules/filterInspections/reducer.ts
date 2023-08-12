@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { SortByOption } from "./types";
 
 const initialState = {
   statusNewUnscheduled: true,
@@ -7,7 +8,7 @@ const initialState = {
   statusCompleted: true,
   assignedToMe: true,
   unassigned: true,
-  sortBy:  "Scheduled Date/Time" as "Scheduled Date/Time" | "Status",
+  sortBy:  "Scheduled Date/Time" as SortByOption,
   selectedDayStartFrom: '',
   selectedDayBy: '',
 }
@@ -34,7 +35,7 @@ const filterInspectionsSlice = createSlice({
     setUnassigned: (state, action: PayloadAction<boolean>) => {
       state.unassigned = action.payload;
     },
-    setSortBy: (state, action: PayloadAction<"Scheduled Date/Time" | "Status">) => {
+    setSortBy: (state, action: PayloadAction<SortByOption>) => {
       state.sortBy = action.payload;
     },
     setSelectedDayStartFrom: (state, action: PayloadAction<string>) => {

@@ -6,11 +6,11 @@ import SignatureCapture, { SaveEventParams } from "react-native-signature-captur
 import { colors, textStyles } from "~/view/theme";
 import { actionsToastNotification } from "~/modules/toastNotification";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { InspectionItem } from "~/types/InspectionItem";
+import { InspectionType } from "~/models/InspectionItem";
 import { actionsInspectionItem } from "~/modules/inspectionItem";
 import { uploadFile } from "~/services/api/files/uploadFile";
 import { Asset } from "react-native-image-picker";
-import { getVisibleDate } from "~/utils/visibleDate";
+import { getVisibleDate } from "~/utils/date/visibleDate";
 import { ModalLoader } from "../Loader/ModalLoader";
 import { ContentLoader } from "../Loader/Loader";
 import { BASE_DOCUMENT_API, FILEROOM_API_KEY } from "~/constants/env";
@@ -18,7 +18,7 @@ import { fetchInspectionFiles } from "~/modules/inspectionFiles";
 import { FILE_ROOM_API_HEADERS } from "~/models/fileRoom";
 
 interface Props {
-  inspection: InspectionItem;
+  inspection: InspectionType;
 }
 
 export const SignatureView: React.FC<Props> = ({ inspection }) => {

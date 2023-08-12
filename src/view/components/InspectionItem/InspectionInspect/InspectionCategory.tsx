@@ -7,7 +7,7 @@ import {
   GestureResponderEvent,
   Dimensions,
 } from "react-native";
-import { getColorCategoryByResult } from "~/utils/getInspectionColor";
+import { getColorCategoryByResult } from "~/utils/inspection/getInspectionColor";
 import { colors, textStyles } from "~/view/theme";
 import CompletedIcon from "~/view/assets/icons/completed.svg";
 import FailedIcon from "~/view/assets/icons/failed.svg";
@@ -24,7 +24,7 @@ import {
 } from "~/services/api/category/GetInspectionCategory";
 import { ModalLoader } from "../../Loader/ModalLoader";
 import { actionsToastNotification } from "~/modules/toastNotification";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { X_CUSTOMER_ID, X_SIDE_ID } from "~/constants/env";
 
 interface Props {

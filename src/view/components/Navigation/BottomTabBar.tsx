@@ -13,7 +13,7 @@ import { CustomerSite } from "../Screen/CustomerSite";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_INSPECTIONS } from "~/services/api/inspections/inspections";
 import { actionsInspections } from "~/modules/inspections";
-import { getPreviousValue } from "~/utils/getPreviousValue";
+import { getPreviousValue } from "~/utils/previousValue/getPreviousValue";
 
 interface Props extends BottomTabBarProps {}
 

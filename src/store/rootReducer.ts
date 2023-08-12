@@ -4,7 +4,6 @@ import { createTransform, persistReducer } from 'redux-persist';
 
 import { resetStore } from '~/modules/app/actions';
 import { userReducer } from '~/modules/user/reducer';
-import eventsSlice from '~/modules/events';
 import notificationsReducer from '~/modules/notifications';
 import filterInspectionsReducer from '~/modules/filterInspections';
 import inspectionsReducer from '~/modules/inspections';
@@ -40,7 +39,6 @@ const rootPersistConfig = {
 
 const appReducer = combineReducers({
   user: userReducer,
-  events: eventsSlice,
   notifications: notificationsReducer,
   filterInspections: filterInspectionsReducer,
   inspections: inspectionsReducer,

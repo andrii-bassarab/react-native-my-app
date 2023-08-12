@@ -6,7 +6,7 @@ import { colors, textStyles } from "../../theme";
 import { useAppDispatch } from "~/store/hooks";
 import CloseIcon from "~/view/assets/svg/close";
 import { actionsShowWindow } from "~/modules/showWindow";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 interface Props {
   query: string;

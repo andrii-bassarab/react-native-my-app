@@ -4,7 +4,7 @@ import CloseIcon from "~/view/assets/icons/failed.svg";
 import Pdf, { Source } from "react-native-pdf";
 import { ContentLoader } from "../../Loader/Loader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 import { textStyles } from "~/view/theme";
 import FileViewer from "react-native-file-viewer";
 

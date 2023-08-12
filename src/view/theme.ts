@@ -1,5 +1,5 @@
 import { Dimensions } from "react-native";
-import { normalize } from "~/utils/getWindowHeight";
+import { normalize } from "~/utils/normalize/normalize";
 
 const colors = {
   layout: 'rgba(35, 71, 99, 1)',
